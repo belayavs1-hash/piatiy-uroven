@@ -91,176 +91,252 @@ body {
 #screen-login {
   align-items: center;
   justify-content: center;
-  padding: 20px;
+  padding: 24px 16px 100px;
   position: relative;
   overflow: hidden;
-  background: linear-gradient(180deg, #1a6fd4 0%, #2563eb 30%, #1e3fa8 60%, #0e1c5c 100%) fixed;
   min-height: 100vh;
+}
+
+/* Слоистый фон: рассвет над замком */
+.login-sky {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg,
+    #0a1628 0%,
+    #0d2060 18%,
+    #1a3fa8 38%,
+    #2d6ee0 55%,
+    #5ba3f5 72%,
+    #a8d4ff 85%,
+    #ffd89b 93%,
+    #ffb347 100%
+  );
+}
+/* Звёзды */
+.login-stars {
+  position: absolute;
+  inset: 0 0 40% 0;
+  pointer-events: none;
+}
+.star {
+  position: absolute;
+  width: 3px; height: 3px;
+  background: #fff;
+  border-radius: 50%;
+  animation: starTwinkle ease-in-out infinite;
+}
+@keyframes starTwinkle{0%,100%{opacity:.9;transform:scale(1)}50%{opacity:.2;transform:scale(.5)}}
+
+/* Замок на горизонте */
+.login-castle {
+  position: absolute;
+  bottom: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  pointer-events: none;
+  opacity: .22;
+  filter: blur(1px);
 }
 
 /* Облака */
 .login-clouds { position:absolute; inset:0; pointer-events:none; overflow:hidden; }
 .cloud {
   position: absolute;
-  background: rgba(255,255,255,.85);
+  background: rgba(255,255,255,.9);
   border-radius: 50px;
   animation: cloudDrift linear infinite;
 }
-.cloud::before, .cloud::after {
-  content:''; position:absolute;
-  background: rgba(255,255,255,.85);
-  border-radius: 50%;
-}
-.cloud-1 { width:90px; height:28px; top:8%; left:-100px; animation-duration:18s; animation-delay:0s; }
-.cloud-1::before { width:40px; height:40px; top:-20px; left:12px; }
-.cloud-1::after  { width:28px; height:28px; top:-14px; left:44px; }
-.cloud-2 { width:70px; height:22px; top:18%; left:-80px; animation-duration:24s; animation-delay:6s; }
-.cloud-2::before { width:30px; height:30px; top:-16px; left:10px; }
-.cloud-2::after  { width:22px; height:22px; top:-12px; left:36px; }
-.cloud-3 { width:110px; height:32px; top:4%; left:-120px; animation-duration:30s; animation-delay:12s; }
-.cloud-3::before { width:50px; height:50px; top:-26px; left:14px; }
-.cloud-3::after  { width:34px; height:34px; top:-18px; left:56px; }
-@keyframes cloudDrift { from{transform:translateX(0)} to{transform:translateX(calc(100vw + 140px))} }
+.cloud::before,.cloud::after{content:'';position:absolute;background:rgba(255,255,255,.9);border-radius:50%}
+.cloud-1{width:100px;height:30px;top:55%;left:-110px;animation-duration:20s}
+.cloud-1::before{width:44px;height:44px;top:-22px;left:14px}
+.cloud-1::after{width:30px;height:30px;top:-15px;left:50px}
+.cloud-2{width:75px;height:24px;top:62%;left:-90px;animation-duration:28s;animation-delay:8s}
+.cloud-2::before{width:32px;height:32px;top:-16px;left:10px}
+.cloud-2::after{width:24px;height:24px;top:-12px;left:36px}
+.cloud-3{width:120px;height:34px;top:48%;left:-130px;animation-duration:35s;animation-delay:14s}
+.cloud-3::before{width:54px;height:54px;top:-28px;left:16px}
+.cloud-3::after{width:36px;height:36px;top:-20px;left:60px}
+@keyframes cloudDrift{from{transform:translateX(0)}to{transform:translateX(calc(100vw + 160px))}}
 
-/* Minecraft-блоки летающие */
-.login-blocks { position:absolute; inset:0; pointer-events:none; }
-.mc-block {
-  position: absolute;
-  border-radius: 10px;
-  font-size: 22px;
-  font-weight: 900;
-  color: #fff;
-  display: flex; align-items: center; justify-content: center;
-  animation: mcFloat ease-in-out infinite;
-  box-shadow: 0 6px 20px rgba(0,0,0,.3);
+/* Летающие матем-блоки */
+.login-blocks{position:absolute;inset:0;pointer-events:none;}
+.mc-block{
+  position:absolute;
+  border-radius:12px;
+  font-size:20px;font-weight:900;color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  animation:mcFloat ease-in-out infinite;
+  box-shadow:0 8px 24px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.3);
 }
-.mc-block:nth-child(1){width:52px;height:52px;background:linear-gradient(135deg,#7C3AED,#5b21b6);top:10%;left:5%;animation-duration:3.5s;animation-delay:0s}
-.mc-block:nth-child(2){width:44px;height:44px;background:linear-gradient(135deg,#FACC15,#d97706);top:20%;right:7%;animation-duration:4s;animation-delay:.8s}
-.mc-block:nth-child(3){width:40px;height:40px;background:linear-gradient(135deg,#22C55E,#16a34a);top:55%;left:4%;animation-duration:5s;animation-delay:1.5s}
-.mc-block:nth-child(4){width:48px;height:48px;background:linear-gradient(135deg,#EF4444,#b91c1c);bottom:22%;right:5%;animation-duration:3.8s;animation-delay:2.2s}
-.mc-block:nth-child(5){width:38px;height:38px;background:linear-gradient(135deg,#06b6d4,#0284c7);bottom:12%;left:10%;animation-duration:4.5s;animation-delay:.4s}
-.mc-block:nth-child(6){width:42px;height:42px;background:linear-gradient(135deg,#f97316,#ea580c);top:38%;right:4%;animation-duration:3.2s;animation-delay:1.9s}
-@keyframes mcFloat{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-16px) rotate(4deg)}}
+.mc-block:nth-child(1){width:54px;height:54px;background:linear-gradient(145deg,#7C3AED,#5b21b6);top:8%;left:4%;animation-duration:3.8s}
+.mc-block:nth-child(2){width:46px;height:46px;background:linear-gradient(145deg,#FACC15,#d97706);top:14%;right:6%;animation-duration:4.3s;animation-delay:.9s}
+.mc-block:nth-child(3){width:42px;height:42px;background:linear-gradient(145deg,#22C55E,#15803d);top:42%;left:3%;animation-duration:5.1s;animation-delay:1.6s}
+.mc-block:nth-child(4){width:50px;height:50px;background:linear-gradient(145deg,#EF4444,#b91c1c);top:28%;right:4%;animation-duration:4s;animation-delay:2.4s}
+.mc-block:nth-child(5){width:40px;height:40px;background:linear-gradient(145deg,#06b6d4,#0e7490);top:60%;left:5%;animation-duration:4.7s;animation-delay:.5s}
+.mc-block:nth-child(6){width:44px;height:44px;background:linear-gradient(145deg,#f97316,#c2410c);top:34%;right:3%;animation-duration:3.5s;animation-delay:2s}
+@keyframes mcFloat{0%,100%{transform:translateY(0) rotate(-5deg) scale(1)}50%{transform:translateY(-18px) rotate(5deg) scale(1.05)}}
 
-/* Земля внизу */
-.login-ground {
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
-  height: 70px;
-  background: linear-gradient(180deg, #22c55e 0%, #16a34a 40%, #166534 100%);
-  border-radius: 0;
+/* Земля пиксельная */
+.login-ground{
+  position:absolute;bottom:0;left:0;right:0;height:80px;
+  background:linear-gradient(180deg,#16a34a 0%,#15803d 35%,#166534 100%);
+  z-index:1;
 }
-.login-ground::before {
-  content:'';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 18px;
-  background: repeating-linear-gradient(90deg, #22c55e 0px, #22c55e 48px, #16a34a 48px, #16a34a 96px);
+.login-ground::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:20px;
+  background:repeating-linear-gradient(90deg,#22c55e 0,#22c55e 40px,#16a34a 40px,#16a34a 80px);
+}
+/* Трава-блоки */
+.login-ground::after{
+  content:'';position:absolute;top:-10px;left:0;right:0;height:20px;
+  background:repeating-linear-gradient(90deg,transparent 0,transparent 38px,rgba(255,255,255,.06) 38px,rgba(255,255,255,.06) 40px);
 }
 
-/* Карточка */
-.login-wrap {
-  width: 100%;
-  max-width: 400px;
-  background: #fff;
-  border-radius: 28px;
-  padding: 0 0 28px;
-  text-align: center;
-  position: relative;
-  z-index: 2;
-  box-shadow: 0 24px 60px rgba(0,0,0,.35), 0 4px 0 rgba(0,0,0,.15);
-  margin-bottom: 40px;
+/* ─── ГЛАВНАЯ КАРТОЧКА ─── */
+.login-wrap{
+  width:100%;max-width:420px;
+  background:#fff;
+  border-radius:28px;
+  overflow:hidden;
+  position:relative;z-index:10;
+  box-shadow:0 32px 80px rgba(0,0,0,.45),0 4px 0 #0d1f5c;
+  animation:cardReveal .6s cubic-bezier(.34,1.56,.64,1) both;
+}
+@keyframes cardReveal{from{opacity:0;transform:translateY(40px) scale(.95)}to{opacity:1;transform:none}}
+
+/* Шапка карточки */
+.login-card-header{
+  background:linear-gradient(135deg,#1e40af 0%,#4f46e5 50%,#7c3aed 100%);
+  padding:22px 24px 18px;
+  text-align:center;
+  position:relative;
+  overflow:hidden;
+}
+.login-card-header::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 50% 0%,rgba(255,255,255,.18) 0%,transparent 70%);
+}
+.login-badge{
+  display:inline-flex;align-items:center;gap:10px;
+  background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);
+  border-radius:20px;padding:8px 16px;margin-bottom:10px;
+  backdrop-filter:blur(8px);
+}
+.login-badge-num{
+  width:34px;height:34px;
+  background:linear-gradient(135deg,#facc15,#f59e0b);
+  border-radius:10px;font-size:18px;font-weight:900;color:#0f172a;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 3px 8px rgba(0,0,0,.25);
+}
+.login-badge-text{font-size:16px;font-weight:900;color:#fff;letter-spacing:.5px}
+.login-title{font-size:13px;font-weight:700;color:rgba(255,255,255,.8);line-height:1.5}
+
+/* Тело карточки */
+.login-body{padding:22px 24px 24px}
+.login-label{
+  font-size:11px;font-weight:800;color:#64748b;
+  text-transform:uppercase;letter-spacing:.7px;
+  display:block;text-align:left;margin-bottom:8px;
 }
 
-.login-card-header {
-  background: linear-gradient(135deg, #1d4ed8, #7C3AED);
-  border-radius: 28px 28px 0 0;
-  padding: 24px 28px 20px;
-  margin-bottom: 24px;
+/* Поле имени + микрофон */
+.login-name-row{display:flex;gap:8px;margin-bottom:20px;align-items:center}
+.login-input{
+  flex:1;padding:13px 16px;
+  border-radius:14px;border:2px solid #e2e8f0;
+  background:#f8fafc;color:#0f172a;
+  font-family:inherit;font-size:16px;font-weight:700;
+  outline:none;transition:border-color .2s,background .2s,box-shadow .2s;
+  min-width:0;
 }
-.login-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 12px;
-}
-.login-badge-num {
-  width: 42px; height: 42px;
-  background: rgba(255,255,255,.2);
-  border-radius: 12px;
-  font-size: 22px;
-  font-weight: 900;
-  color: #fff;
-  display: flex; align-items: center; justify-content: center;
-  border: 2px solid rgba(255,255,255,.3);
-}
-.login-badge-text { font-size: 18px; font-weight: 900; color: #fff; letter-spacing: .5px; }
-.login-title { font-size: 15px; font-weight: 700; color: rgba(255,255,255,.8); line-height: 1.4; }
+.login-input:focus{border-color:#4f46e5;background:#f5f3ff;box-shadow:0 0 0 4px rgba(79,70,229,.12)}
+.login-input::placeholder{color:#94a3b8;font-weight:600}
+.login-input.listening{border-color:#ef4444;background:#fef2f2;animation:listenPulse 1s ease-in-out infinite}
+@keyframes listenPulse{0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,.35)}50%{box-shadow:0 0 0 10px rgba(239,68,68,0)}}
 
-.login-body { padding: 0 28px; }
-.login-label { font-size: 12px; font-weight: 800; color: #64748b; text-align: left; margin-bottom: 8px; display: block; letter-spacing: .5px; text-transform: uppercase; }
+.btn-mic{
+  width:48px;height:48px;flex-shrink:0;
+  border-radius:14px;border:2px solid #e2e8f0;
+  background:#f8fafc;color:#64748b;font-size:18px;
+  cursor:pointer;transition:all .2s;
+  display:flex;align-items:center;justify-content:center;
+}
+.btn-mic:hover{background:#fef2f2;border-color:#f87171;color:#ef4444;transform:scale(1.05)}
+.btn-mic.active{background:#fee2e2;border-color:#ef4444;color:#ef4444;animation:micPulse .8s ease-in-out infinite}
+@keyframes micPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
 
-.login-name-row {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 20px;
-  align-items: center;
+/* ─── КАРТОЧКИ РОЛИ — ЭКРАН ВЫБОРА ПЕРСОНАЖА ─── */
+.role-row{display:flex;gap:12px;margin-bottom:20px}
+.role-btn{
+  flex:1;
+  border-radius:20px;
+  border:3px solid #e2e8f0;
+  background:#fff;
+  cursor:pointer;
+  transition:transform .25s cubic-bezier(.34,1.56,.64,1),box-shadow .25s,border-color .2s;
+  overflow:hidden;
+  padding:0;
+  position:relative;
+  font-family:inherit;
 }
-.login-input {
-  flex: 1;
-  padding: 14px 16px;
-  border-radius: 14px;
-  border: 2px solid #e2e8f0;
-  background: #f8fafc;
-  color: #0f172a;
-  font-family: inherit;
-  font-size: 17px;
-  font-weight: 700;
-  outline: none;
-  transition: border-color .2s, background .2s;
-  min-width: 0;
-}
-.login-input:focus { border-color: #2563eb; background: #eff6ff; }
-.login-input::placeholder { color: #94a3b8; }
-.login-input.listening { border-color: #ef4444; background: #fef2f2; animation: listenPulse 1s ease-in-out infinite; }
-@keyframes listenPulse{0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,.3)}50%{box-shadow:0 0 0 8px rgba(239,68,68,0)}}
+.role-btn:hover{transform:translateY(-5px) scale(1.02);box-shadow:0 16px 40px rgba(0,0,0,.15)}
+.role-btn.selected{border-color:#4f46e5;box-shadow:0 0 0 4px rgba(79,70,229,.18),0 16px 40px rgba(79,70,229,.25);transform:translateY(-6px) scale(1.03)}
 
-.btn-mic {
-  width: 50px; height: 50px; flex-shrink: 0;
-  border-radius: 14px;
-  border: 2px solid #e2e8f0;
-  background: #f8fafc;
-  color: #64748b;
-  font-size: 20px;
-  cursor: pointer;
-  transition: all .2s;
-  display: flex; align-items: center; justify-content: center;
+/* Фото-плашка */
+.role-photo{
+  width:100%;
+  height:130px;
+  position:relative;
+  overflow:hidden;
 }
-.btn-mic:hover { background: #fef2f2; border-color: #ef4444; color: #ef4444; }
-.btn-mic.active { background: #fef2f2; border-color: #ef4444; color: #ef4444; }
+.role-photo-bg{
+  width:100%;height:100%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:70px;
+  position:relative;
+}
+/* Плашка поверх фото */
+.role-photo-overlay{
+  position:absolute;bottom:0;left:0;right:0;
+  padding:8px 12px;
+  background:linear-gradient(0deg,rgba(0,0,0,.65) 0%,transparent 100%);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.role-photo-name{font-size:13px;font-weight:900;color:#fff;letter-spacing:.3px}
+.role-check{
+  width:22px;height:22px;
+  border-radius:50%;border:2px solid rgba(255,255,255,.5);
+  background:transparent;
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;color:#fff;
+  transition:all .2s;
+}
+.role-btn.selected .role-check{background:#4f46e5;border-color:#4f46e5}
 
-.role-row { display: flex; gap: 10px; margin-bottom: 24px; }
-.role-btn {
-  flex: 1;
-  padding: 14px 8px;
-  border-radius: 16px;
-  border: 2.5px solid #e2e8f0;
-  background: #f8fafc;
-  color: #64748b;
-  font-family: inherit;
-  cursor: pointer;
-  transition: all .2s;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 5px;
+/* Нижняя часть карточки роли */
+.role-info{padding:12px 14px 14px;text-align:left}
+.role-label-name{font-size:14px;font-weight:900;color:#0f172a;margin-bottom:3px}
+.role-hint{font-size:11px;font-weight:600;color:#94a3b8;line-height:1.4}
+.role-btn.selected .role-label-name{color:#4f46e5}
+.role-btn.selected .role-hint{color:#6366f1}
+
+/* Иконки «ученик» и «родитель» — рисуем SVG-аватарки через CSS */
+.avatar-student{background:linear-gradient(145deg,#dbeafe 0%,#bfdbfe 100%)}
+.avatar-parent{background:linear-gradient(145deg,#dcfce7 0%,#bbf7d0 100%)}
+.avatar-student .av-figure{position:relative;width:100%;height:100%;display:flex;align-items:flex-end;justify-content:center;gap:6px;padding-bottom:4px}
+.avatar-parent .av-figure{position:relative;width:100%;height:100%;display:flex;align-items:flex-end;justify-content:center;gap:4px;padding-bottom:4px}
+.av-kid{
+  display:flex;flex-direction:column;align-items:center;
+  animation:avBob ease-in-out infinite;
 }
-.role-btn .role-icon { font-size: 28px; }
-.role-btn .role-label { font-size: 14px; font-weight: 800; color: #0f172a; }
-.role-btn .role-hint { font-size: 10px; font-weight: 600; color: #94a3b8; line-height: 1.3; }
-.role-btn.selected { border-color: #2563eb; background: #eff6ff; }
-.role-btn.selected .role-label { color: #1d4ed8; }
-.role-btn.selected .role-hint { color: #3b82f6; }
+.av-kid:nth-child(2){animation-delay:.3s}
+@keyframes avBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+.av-head{border-radius:50%;border:3px solid rgba(255,255,255,.8);box-shadow:0 4px 12px rgba(0,0,0,.12)}
+.av-body{border-radius:8px 8px 0 0;margin-top:3px;box-shadow:0 4px 8px rgba(0,0,0,.1)}
+.av-bag{position:absolute;right:calc(50% - 28px);top:28px;width:16px;height:18px;border-radius:5px;background:#f59e0b;box-shadow:0 2px 6px rgba(0,0,0,.15)}
+/* звёздочки над учеником */
+.av-stars{position:absolute;top:6px;left:50%;transform:translateX(-50%);display:flex;gap:4px;font-size:14px}
 .btn-primary {
   width: 100%;
   padding: 16px;
@@ -723,13 +799,16 @@ body {
 
 <!-- ===== LOGIN ===== -->
 <div id="screen-login" class="screen active">
-  <!-- Облака -->
+  <div class="login-sky"></div>
+
+  <div class="login-stars" id="login-stars"></div>
+
   <div class="login-clouds">
     <div class="cloud cloud-1"></div>
     <div class="cloud cloud-2"></div>
     <div class="cloud cloud-3"></div>
   </div>
-  <!-- Летающие блоки -->
+
   <div class="login-blocks">
     <div class="mc-block">5</div>
     <div class="mc-block">½</div>
@@ -738,39 +817,89 @@ body {
     <div class="mc-block">π</div>
     <div class="mc-block">×</div>
   </div>
-  <!-- Карточка входа -->
+
   <div class="login-wrap">
+    <!-- Шапка -->
     <div class="login-card-header">
       <div class="login-badge">
         <div class="login-badge-num">5</div>
         <div class="login-badge-text">ПЯТЫЙ УРОВЕНЬ</div>
       </div>
-      <div class="login-title">ИИ-репетитор по математике для 5 класса</div>
+      <div class="login-title">ИИ-репетитор по математике · 5 класс</div>
     </div>
+
     <div class="login-body">
+      <!-- Имя -->
       <label class="login-label">Как тебя зовут?</label>
       <div class="login-name-row">
-        <input type="text" class="login-input" id="login-name" placeholder="Например: Маша" maxlength="30"
+        <input type="text" class="login-input" id="login-name"
+          placeholder="Например: Маша" maxlength="30"
           onkeydown="if(event.key==='Enter')doLogin()">
         <button class="btn-mic" id="login-mic-btn" onclick="toggleLoginMic()" title="Назвать имя голосом">🎤</button>
       </div>
-      <label class="login-label">Кто заходит?</label>
+
+      <!-- Выбор роли — карточки-персонажи -->
+      <label class="login-label">Кто ты?</label>
       <div class="role-row">
+
+        <!-- Ученик -->
         <button class="role-btn selected" data-role="student" onclick="selectRole(this)">
-          <span class="role-icon">🎒</span>
-          <span class="role-label">Ученик</span>
-          <span class="role-hint">Решаю домашку</span>
+          <div class="role-photo">
+            <div class="role-photo-bg avatar-student">
+              <div class="av-figure">
+                <div class="av-stars">⭐✨</div>
+                <div class="av-kid">
+                  <div class="av-head" style="width:44px;height:44px;background:linear-gradient(145deg,#fde68a,#fbbf24)"></div>
+                  <div class="av-body" style="width:36px;height:34px;background:linear-gradient(145deg,#3b82f6,#1d4ed8)"></div>
+                </div>
+                <div class="av-bag"></div>
+              </div>
+            </div>
+            <div class="role-photo-overlay">
+              <span class="role-photo-name">🎒 Ученик</span>
+              <div class="role-check">✓</div>
+            </div>
+          </div>
+          <div class="role-info">
+            <div class="role-label-name">Я решаю</div>
+            <div class="role-hint">Домашка, тренажёры,<br>разбор с Умником</div>
+          </div>
         </button>
+
+        <!-- Родитель -->
         <button class="role-btn" data-role="parent" onclick="selectRole(this)">
-          <span class="role-icon">👨‍👩‍👧</span>
-          <span class="role-label">Родитель</span>
-          <span class="role-hint">Смотрю прогресс</span>
+          <div class="role-photo">
+            <div class="role-photo-bg avatar-parent">
+              <div class="av-figure">
+                <div class="av-kid" style="animation-delay:.1s">
+                  <div class="av-head" style="width:38px;height:38px;background:linear-gradient(145deg,#bbf7d0,#4ade80)"></div>
+                  <div class="av-body" style="width:32px;height:30px;background:linear-gradient(145deg,#86efac,#22c55e)"></div>
+                </div>
+                <div class="av-kid" style="animation-delay:.5s">
+                  <div class="av-head" style="width:30px;height:30px;background:linear-gradient(145deg,#fde68a,#fbbf24)"></div>
+                  <div class="av-body" style="width:24px;height:24px;background:linear-gradient(145deg,#6ee7b7,#10b981)"></div>
+                </div>
+              </div>
+            </div>
+            <div class="role-photo-overlay">
+              <span class="role-photo-name">👨‍👩‍👧 Родитель</span>
+              <div class="role-check">✓</div>
+            </div>
+          </div>
+          <div class="role-info">
+            <div class="role-label-name">Я смотрю</div>
+            <div class="role-hint">Прогресс, ошибки,<br>рекомендации</div>
+          </div>
         </button>
+
       </div>
-      <button class="btn-primary" onclick="doLogin()">Далее →</button>
+
+      <button class="btn-primary" onclick="doLogin()" style="font-size:16px;padding:15px;letter-spacing:.3px">
+        Войти в игру →
+      </button>
     </div>
   </div>
-  <!-- Земля -->
+
   <div class="login-ground"></div>
 </div>
 
@@ -1248,10 +1377,23 @@ function updateAllXP() {
   });
 }
 
+// ===== STARS =====
+(function spawnStars() {
+  const c = document.getElementById('login-stars');
+  if (!c) return;
+  for (let i = 0; i < 55; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    s.style.cssText = `left:${Math.random()*100}%;top:${Math.random()*100}%;width:${Math.random()*3+1}px;height:${Math.random()*3+1}px;animation-duration:${1.5+Math.random()*3}s;animation-delay:${Math.random()*4}s;opacity:${.3+Math.random()*.7}`;
+    c.appendChild(s);
+  }
+})();
+
 // ===== LOGIN =====
 function selectRole(btn) {
   document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('selected'));
   btn.classList.add('selected');
+  btn.style.transform = '';
 }
 function doLogin() {
   const name = document.getElementById('login-name').value.trim() || 'Маша';
