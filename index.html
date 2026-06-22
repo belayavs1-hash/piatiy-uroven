@@ -97,18 +97,18 @@ body {
   min-height: 100vh;
 }
 
-/* Слоистый фон: дневное небо */
+/* Слоистый фон: ночное небо со звёздами */
 .login-sky {
   position: absolute;
   inset: 0;
   background: linear-gradient(180deg,
-    #1e3a8a 0%,
-    #2563eb 25%,
-    #3b82f6 50%,
-    #60a5fa 70%,
-    #93c5fd 85%,
-    #bfdbfe 95%,
-    #dbeafe 100%
+    #060d1f 0%,
+    #0a1535 20%,
+    #0f2060 45%,
+    #1a3a8a 65%,
+    #2563eb 80%,
+    #3b82f6 92%,
+    #60a5fa 100%
   );
 }
 /* Звёзды */
@@ -220,11 +220,13 @@ body {
 
 /* ── СИНИЙ 3D-КУБИК ── */
 .login-badge{
-  display:inline-flex;align-items:center;gap:12px;
+  display:flex;align-items:center;justify-content:center;gap:12px;
+  width:100%;
   background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);
-  border-radius:24px;padding:10px 20px 10px 10px;margin-bottom:12px;
+  border-radius:24px;padding:12px 20px 12px 14px;margin-bottom:12px;
   backdrop-filter:blur(8px);
   position:relative;z-index:1;
+  box-sizing:border-box;
 }
 
 /* Кубик-обёртка */
@@ -236,19 +238,21 @@ body {
 /* Передняя грань */
 .login-cube-front{
   position:absolute;inset:0;
-  background:linear-gradient(145deg,#3b82f6 0%,#2563eb 60%,#1d4ed8 100%);
+  background:linear-gradient(145deg,#2d5be3 0%,#1a3fbf 55%,#152fa0 100%);
   border-radius:12px;
   display:flex;align-items:center;justify-content:center;
-  font-size:24px;font-weight:900;color:#fff;
-  box-shadow:inset 0 2px 0 rgba(255,255,255,.35),inset 0 -2px 0 rgba(0,0,0,.2);
+  font-size:26px;font-weight:900;color:#fff;
+  font-family:var(--pixel, monospace);
+  box-shadow:inset 0 2px 0 rgba(255,255,255,.4),inset 0 -3px 0 rgba(0,0,0,.3);
   z-index:3;
+  letter-spacing:-1px;
 }
 /* Правая грань */
 .login-cube-right{
   position:absolute;
-  top:4px;right:-7px;
-  width:10px;height:100%;
-  background:linear-gradient(180deg,#1e40af,#1e3a8a);
+  top:4px;right:-8px;
+  width:11px;height:100%;
+  background:linear-gradient(180deg,#0f2580,#091a60);
   border-radius:0 4px 4px 0;
   transform:skewY(-42deg);
   transform-origin:top left;
@@ -257,9 +261,9 @@ body {
 /* Верхняя грань */
 .login-cube-top{
   position:absolute;
-  top:-7px;left:4px;
-  width:100%;height:10px;
-  background:linear-gradient(90deg,#60a5fa,#3b82f6);
+  top:-8px;left:4px;
+  width:100%;height:11px;
+  background:linear-gradient(90deg,#4d7ef5,#2d5be3);
   border-radius:4px 4px 0 0;
   transform:skewX(-42deg);
   transform-origin:bottom left;
@@ -269,10 +273,10 @@ body {
 .login-cube::after{
   content:'✦ ✦';
   position:absolute;
-  top:-20px;left:50%;transform:translateX(-50%);
-  font-size:10px;color:#facc15;
+  top:-22px;left:50%;transform:translateX(-50%);
+  font-size:11px;color:#facc15;
   white-space:nowrap;
-  text-shadow:0 0 6px rgba(250,204,21,.8);
+  text-shadow:0 0 8px rgba(250,204,21,.9);
   animation:starsBlink 1.8s ease-in-out infinite;
   z-index:5;
 }
@@ -330,12 +334,12 @@ body {
   font-family:inherit;
   box-shadow:0 4px 16px rgba(0,0,0,.08);
 }
-.role-btn:hover{transform:translateY(-6px) scale(1.02);box-shadow:0 20px 48px rgba(0,0,0,.18)}
-/* Обе выбранные — одинаковая яркая синяя рамка */
+.role-btn:hover{box-shadow:0 20px 48px rgba(0,0,0,.18)}
+/* Обе выбранные — одинаковая яркая синяя рамка, без scale */
 .role-btn.selected{
   border-color:#4f46e5;
-  box-shadow:0 0 0 4px rgba(79,70,229,.2),0 20px 48px rgba(79,70,229,.28);
-  transform:translateY(-7px) scale(1.03)
+  box-shadow:0 0 0 4px rgba(79,70,229,.2),0 8px 24px rgba(79,70,229,.28);
+  transform:none;
 }
 
 /* Фото-зона */
