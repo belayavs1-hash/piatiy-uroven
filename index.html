@@ -94,70 +94,115 @@ body {
   padding: 20px;
   position: relative;
   overflow: hidden;
+  background: linear-gradient(180deg, #1a6fd4 0%, #2563eb 30%, #1e3fa8 60%, #0e1c5c 100%) fixed;
+  min-height: 100vh;
 }
-.login-floats {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  overflow: hidden;
-}
-.lf-sym {
-  position: absolute;
-  font-size: 28px;
-  font-weight: 900;
-  opacity: .18;
-  color: #fff;
-  animation: lfFloat 4s ease-in-out infinite;
-}
-.lf-sym:nth-child(1){top:8%;left:6%;animation-delay:0s}
-.lf-sym:nth-child(2){top:15%;right:8%;animation-delay:.7s}
-.lf-sym:nth-child(3){top:40%;left:3%;animation-delay:1.4s}
-.lf-sym:nth-child(4){bottom:25%;right:5%;animation-delay:2.1s}
-.lf-sym:nth-child(5){bottom:10%;left:12%;animation-delay:2.8s}
-.lf-sym:nth-child(6){top:60%;right:12%;animation-delay:.3s}
-@keyframes lfFloat{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-14px) rotate(5deg)}}
 
+/* Облака */
+.login-clouds { position:absolute; inset:0; pointer-events:none; overflow:hidden; }
+.cloud {
+  position: absolute;
+  background: rgba(255,255,255,.85);
+  border-radius: 50px;
+  animation: cloudDrift linear infinite;
+}
+.cloud::before, .cloud::after {
+  content:''; position:absolute;
+  background: rgba(255,255,255,.85);
+  border-radius: 50%;
+}
+.cloud-1 { width:90px; height:28px; top:8%; left:-100px; animation-duration:18s; animation-delay:0s; }
+.cloud-1::before { width:40px; height:40px; top:-20px; left:12px; }
+.cloud-1::after  { width:28px; height:28px; top:-14px; left:44px; }
+.cloud-2 { width:70px; height:22px; top:18%; left:-80px; animation-duration:24s; animation-delay:6s; }
+.cloud-2::before { width:30px; height:30px; top:-16px; left:10px; }
+.cloud-2::after  { width:22px; height:22px; top:-12px; left:36px; }
+.cloud-3 { width:110px; height:32px; top:4%; left:-120px; animation-duration:30s; animation-delay:12s; }
+.cloud-3::before { width:50px; height:50px; top:-26px; left:14px; }
+.cloud-3::after  { width:34px; height:34px; top:-18px; left:56px; }
+@keyframes cloudDrift { from{transform:translateX(0)} to{transform:translateX(calc(100vw + 140px))} }
+
+/* Minecraft-блоки летающие */
+.login-blocks { position:absolute; inset:0; pointer-events:none; }
+.mc-block {
+  position: absolute;
+  border-radius: 10px;
+  font-size: 22px;
+  font-weight: 900;
+  color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  animation: mcFloat ease-in-out infinite;
+  box-shadow: 0 6px 20px rgba(0,0,0,.3);
+}
+.mc-block:nth-child(1){width:52px;height:52px;background:linear-gradient(135deg,#7C3AED,#5b21b6);top:10%;left:5%;animation-duration:3.5s;animation-delay:0s}
+.mc-block:nth-child(2){width:44px;height:44px;background:linear-gradient(135deg,#FACC15,#d97706);top:20%;right:7%;animation-duration:4s;animation-delay:.8s}
+.mc-block:nth-child(3){width:40px;height:40px;background:linear-gradient(135deg,#22C55E,#16a34a);top:55%;left:4%;animation-duration:5s;animation-delay:1.5s}
+.mc-block:nth-child(4){width:48px;height:48px;background:linear-gradient(135deg,#EF4444,#b91c1c);bottom:22%;right:5%;animation-duration:3.8s;animation-delay:2.2s}
+.mc-block:nth-child(5){width:38px;height:38px;background:linear-gradient(135deg,#06b6d4,#0284c7);bottom:12%;left:10%;animation-duration:4.5s;animation-delay:.4s}
+.mc-block:nth-child(6){width:42px;height:42px;background:linear-gradient(135deg,#f97316,#ea580c);top:38%;right:4%;animation-duration:3.2s;animation-delay:1.9s}
+@keyframes mcFloat{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-16px) rotate(4deg)}}
+
+/* Земля внизу */
+.login-ground {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 70px;
+  background: linear-gradient(180deg, #22c55e 0%, #16a34a 40%, #166534 100%);
+  border-radius: 0;
+}
+.login-ground::before {
+  content:'';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 18px;
+  background: repeating-linear-gradient(90deg, #22c55e 0px, #22c55e 48px, #16a34a 48px, #16a34a 96px);
+}
+
+/* Карточка */
 .login-wrap {
   width: 100%;
-  max-width: 440px;
-  background: rgba(12,18,48,.88);
-  backdrop-filter: blur(24px);
-  border: 1px solid rgba(255,255,255,.13);
-  border-radius: 32px;
-  padding: 44px 36px 40px;
+  max-width: 400px;
+  background: #fff;
+  border-radius: 28px;
+  padding: 0 0 28px;
   text-align: center;
   position: relative;
   z-index: 2;
-  box-shadow: 0 32px 80px rgba(0,0,0,.5);
+  box-shadow: 0 24px 60px rgba(0,0,0,.35), 0 4px 0 rgba(0,0,0,.15);
+  margin-bottom: 40px;
 }
 
+.login-card-header {
+  background: linear-gradient(135deg, #1d4ed8, #7C3AED);
+  border-radius: 28px 28px 0 0;
+  padding: 24px 28px 20px;
+  margin-bottom: 24px;
+}
 .login-badge {
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  background: linear-gradient(135deg, var(--blue), var(--purple));
-  border-radius: 20px;
-  padding: 10px 20px;
-  margin-bottom: 20px;
+  margin-bottom: 12px;
 }
 .login-badge-num {
-  width: 36px; height: 36px;
+  width: 42px; height: 42px;
   background: rgba(255,255,255,.2);
-  border-radius: 10px;
-  font-size: 20px;
+  border-radius: 12px;
+  font-size: 22px;
   font-weight: 900;
   color: #fff;
   display: flex; align-items: center; justify-content: center;
+  border: 2px solid rgba(255,255,255,.3);
 }
-.login-badge-text { font-size: 16px; font-weight: 900; color: #fff; letter-spacing: .5px; }
+.login-badge-text { font-size: 18px; font-weight: 900; color: #fff; letter-spacing: .5px; }
+.login-title { font-size: 15px; font-weight: 700; color: rgba(255,255,255,.8); line-height: 1.4; }
 
-.login-title { font-size: 28px; font-weight: 900; color: #fff; margin-bottom: 6px; line-height: 1.2; }
-.login-sub { font-size: 14px; color: rgba(255,255,255,.5); margin-bottom: 32px; }
-.login-label { font-size: 12px; font-weight: 800; color: rgba(255,255,255,.55); text-align: left; margin-bottom: 8px; display: block; letter-spacing: .5px; text-transform: uppercase; }
+.login-body { padding: 0 28px; }
+.login-label { font-size: 12px; font-weight: 800; color: #64748b; text-align: left; margin-bottom: 8px; display: block; letter-spacing: .5px; text-transform: uppercase; }
 
 .login-name-row {
   display: flex;
-  gap: 10px;
+  gap: 8px;
   margin-bottom: 20px;
   align-items: center;
 }
@@ -165,9 +210,9 @@ body {
   flex: 1;
   padding: 14px 16px;
   border-radius: 14px;
-  border: 1.5px solid rgba(255,255,255,.15);
-  background: rgba(255,255,255,.08);
-  color: #fff;
+  border: 2px solid #e2e8f0;
+  background: #f8fafc;
+  color: #0f172a;
   font-family: inherit;
   font-size: 17px;
   font-weight: 700;
@@ -175,48 +220,47 @@ body {
   transition: border-color .2s, background .2s;
   min-width: 0;
 }
-.login-input:focus { border-color: var(--blue); background: rgba(37,99,235,.1); }
-.login-input::placeholder { color: rgba(255,255,255,.28); }
-.login-input.listening { border-color: #ef4444; background: rgba(239,68,68,.1); animation: listenPulse 1s ease-in-out infinite; }
-@keyframes listenPulse{0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,.4)}50%{box-shadow:0 0 0 8px rgba(239,68,68,0)}}
+.login-input:focus { border-color: #2563eb; background: #eff6ff; }
+.login-input::placeholder { color: #94a3b8; }
+.login-input.listening { border-color: #ef4444; background: #fef2f2; animation: listenPulse 1s ease-in-out infinite; }
+@keyframes listenPulse{0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,.3)}50%{box-shadow:0 0 0 8px rgba(239,68,68,0)}}
 
 .btn-mic {
   width: 50px; height: 50px; flex-shrink: 0;
   border-radius: 14px;
-  border: 1.5px solid rgba(255,255,255,.15);
-  background: rgba(255,255,255,.08);
-  color: rgba(255,255,255,.7);
+  border: 2px solid #e2e8f0;
+  background: #f8fafc;
+  color: #64748b;
   font-size: 20px;
   cursor: pointer;
   transition: all .2s;
   display: flex; align-items: center; justify-content: center;
 }
-.btn-mic:hover { background: rgba(239,68,68,.2); border-color: #ef4444; color: #fff; }
-.btn-mic.active { background: rgba(239,68,68,.3); border-color: #ef4444; color: #ef4444; }
+.btn-mic:hover { background: #fef2f2; border-color: #ef4444; color: #ef4444; }
+.btn-mic.active { background: #fef2f2; border-color: #ef4444; color: #ef4444; }
 
-.role-row { display: flex; gap: 10px; margin-bottom: 28px; }
+.role-row { display: flex; gap: 10px; margin-bottom: 24px; }
 .role-btn {
   flex: 1;
-  padding: 16px 10px;
+  padding: 14px 8px;
   border-radius: 16px;
-  border: 2px solid rgba(255,255,255,.13);
-  background: rgba(255,255,255,.05);
-  color: rgba(255,255,255,.5);
+  border: 2.5px solid #e2e8f0;
+  background: #f8fafc;
+  color: #64748b;
   font-family: inherit;
-  font-size: 13px;
-  font-weight: 800;
   cursor: pointer;
   transition: all .2s;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
 }
-.role-btn .role-icon { font-size: 26px; }
-.role-btn .role-label { font-size: 13px; font-weight: 800; }
-.role-btn .role-hint { font-size: 10px; font-weight: 600; color: rgba(255,255,255,.3); line-height: 1.3; }
-.role-btn.selected { border-color: var(--blue); background: rgba(37,99,235,.22); color: #fff; }
-.role-btn.selected .role-hint { color: rgba(255,255,255,.55); }
+.role-btn .role-icon { font-size: 28px; }
+.role-btn .role-label { font-size: 14px; font-weight: 800; color: #0f172a; }
+.role-btn .role-hint { font-size: 10px; font-weight: 600; color: #94a3b8; line-height: 1.3; }
+.role-btn.selected { border-color: #2563eb; background: #eff6ff; }
+.role-btn.selected .role-label { color: #1d4ed8; }
+.role-btn.selected .role-hint { color: #3b82f6; }
 .btn-primary {
   width: 100%;
   padding: 16px;
@@ -679,44 +723,55 @@ body {
 
 <!-- ===== LOGIN ===== -->
 <div id="screen-login" class="screen active">
-  <div class="login-floats">
-    <div class="lf-sym">5</div>
-    <div class="lf-sym">½</div>
-    <div class="lf-sym">Σ</div>
-    <div class="lf-sym">π</div>
-    <div class="lf-sym">+</div>
-    <div class="lf-sym">×</div>
+  <!-- Облака -->
+  <div class="login-clouds">
+    <div class="cloud cloud-1"></div>
+    <div class="cloud cloud-2"></div>
+    <div class="cloud cloud-3"></div>
   </div>
+  <!-- Летающие блоки -->
+  <div class="login-blocks">
+    <div class="mc-block">5</div>
+    <div class="mc-block">½</div>
+    <div class="mc-block">Σ</div>
+    <div class="mc-block">+</div>
+    <div class="mc-block">π</div>
+    <div class="mc-block">×</div>
+  </div>
+  <!-- Карточка входа -->
   <div class="login-wrap">
-    <div class="login-badge">
-      <div class="login-badge-num">5</div>
-      <div class="login-badge-text">ПЯТЫЙ УРОВЕНЬ</div>
+    <div class="login-card-header">
+      <div class="login-badge">
+        <div class="login-badge-num">5</div>
+        <div class="login-badge-text">ПЯТЫЙ УРОВЕНЬ</div>
+      </div>
+      <div class="login-title">ИИ-репетитор по математике для 5 класса</div>
     </div>
-    <div class="login-title">ИИ-репетитор<br>по математике</div>
-    <div class="login-sub">Помогу разобрать домашку,<br>найти ошибки и прокачать счёт</div>
-
-    <label class="login-label">Как тебя зовут?</label>
-    <div class="login-name-row">
-      <input type="text" class="login-input" id="login-name" placeholder="Например: Маша" maxlength="30"
-        onkeydown="if(event.key==='Enter')doLogin()">
-      <button class="btn-mic" id="login-mic-btn" onclick="toggleLoginMic()" title="Назвать имя голосом">🎤</button>
+    <div class="login-body">
+      <label class="login-label">Как тебя зовут?</label>
+      <div class="login-name-row">
+        <input type="text" class="login-input" id="login-name" placeholder="Например: Маша" maxlength="30"
+          onkeydown="if(event.key==='Enter')doLogin()">
+        <button class="btn-mic" id="login-mic-btn" onclick="toggleLoginMic()" title="Назвать имя голосом">🎤</button>
+      </div>
+      <label class="login-label">Кто заходит?</label>
+      <div class="role-row">
+        <button class="role-btn selected" data-role="student" onclick="selectRole(this)">
+          <span class="role-icon">🎒</span>
+          <span class="role-label">Ученик</span>
+          <span class="role-hint">Решаю домашку</span>
+        </button>
+        <button class="role-btn" data-role="parent" onclick="selectRole(this)">
+          <span class="role-icon">👨‍👩‍👧</span>
+          <span class="role-label">Родитель</span>
+          <span class="role-hint">Смотрю прогресс</span>
+        </button>
+      </div>
+      <button class="btn-primary" onclick="doLogin()">Далее →</button>
     </div>
-
-    <label class="login-label">Кто заходит?</label>
-    <div class="role-row">
-      <button class="role-btn selected" data-role="student" onclick="selectRole(this)">
-        <span class="role-icon">🎒</span>
-        <span class="role-label">Ученик</span>
-        <span class="role-hint">Решаю домашку</span>
-      </button>
-      <button class="role-btn" data-role="parent" onclick="selectRole(this)">
-        <span class="role-icon">👨‍👩‍👧</span>
-        <span class="role-label">Родитель</span>
-        <span class="role-hint">Смотрю прогресс</span>
-      </button>
-    </div>
-    <button class="btn-primary" onclick="doLogin()">Далее →</button>
   </div>
+  <!-- Земля -->
+  <div class="login-ground"></div>
 </div>
 
 <!-- ===== HOME ===== -->
