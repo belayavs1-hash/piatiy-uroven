@@ -97,19 +97,18 @@ body {
   min-height: 100vh;
 }
 
-/* Слоистый фон: рассвет над замком */
+/* Слоистый фон: дневное небо */
 .login-sky {
   position: absolute;
   inset: 0;
   background: linear-gradient(180deg,
-    #0a1628 0%,
-    #0d2060 18%,
-    #1a3fa8 38%,
-    #2d6ee0 55%,
-    #5ba3f5 72%,
-    #a8d4ff 85%,
-    #ffd89b 93%,
-    #ffb347 100%
+    #1e3a8a 0%,
+    #2563eb 25%,
+    #3b82f6 50%,
+    #60a5fa 70%,
+    #93c5fd 85%,
+    #bfdbfe 95%,
+    #dbeafe 100%
   );
 }
 /* Звёзды */
@@ -178,18 +177,19 @@ body {
 
 /* Земля пиксельная */
 .login-ground{
-  position:absolute;bottom:0;left:0;right:0;height:80px;
-  background:linear-gradient(180deg,#16a34a 0%,#15803d 35%,#166534 100%);
+  position:absolute;bottom:0;left:0;right:0;height:72px;
+  background:linear-gradient(180deg,#16a34a 0%,#15803d 40%,#14532d 100%);
   z-index:1;
 }
+/* Блоки травы сверху */
 .login-ground::before{
-  content:'';position:absolute;top:0;left:0;right:0;height:20px;
-  background:repeating-linear-gradient(90deg,#22c55e 0,#22c55e 40px,#16a34a 40px,#16a34a 80px);
+  content:'';position:absolute;top:0;left:0;right:0;height:22px;
+  background:repeating-linear-gradient(90deg,#22c55e 0,#22c55e 46px,#16a34a 46px,#16a34a 48px);
 }
-/* Трава-блоки */
+/* Тёмные линии-блоки */
 .login-ground::after{
-  content:'';position:absolute;top:-10px;left:0;right:0;height:20px;
-  background:repeating-linear-gradient(90deg,transparent 0,transparent 38px,rgba(255,255,255,.06) 38px,rgba(255,255,255,.06) 40px);
+  content:'';position:absolute;top:22px;left:0;right:0;bottom:0;
+  background:repeating-linear-gradient(90deg,transparent 0,transparent 47px,rgba(0,0,0,.12) 47px,rgba(0,0,0,.12) 48px);
 }
 
 /* ─── ГЛАВНАЯ КАРТОЧКА ─── */
@@ -206,50 +206,80 @@ body {
 
 /* Шапка карточки */
 .login-card-header{
-  background:linear-gradient(135deg,#1e40af 0%,#4f46e5 50%,#7c3aed 100%);
-  padding:22px 24px 18px;
+  background:linear-gradient(160deg,#1e3a8a 0%,#3730a3 45%,#6d28d9 100%);
+  padding:26px 24px 20px;
   text-align:center;
   position:relative;
-  overflow:hidden;
+  overflow:visible;
 }
 .login-card-header::before{
   content:'';position:absolute;inset:0;
-  background:radial-gradient(ellipse at 50% 0%,rgba(255,255,255,.18) 0%,transparent 70%);
+  background:radial-gradient(ellipse at 50% 0%,rgba(255,255,255,.15) 0%,transparent 65%);
+  border-radius:28px 28px 0 0;
 }
+
+/* ── СИНИЙ 3D-КУБИК ── */
 .login-badge{
-  display:inline-flex;align-items:center;gap:10px;
-  background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);
-  border-radius:20px;padding:8px 16px;margin-bottom:10px;
+  display:inline-flex;align-items:center;gap:12px;
+  background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);
+  border-radius:24px;padding:10px 20px 10px 10px;margin-bottom:12px;
   backdrop-filter:blur(8px);
+  position:relative;z-index:1;
 }
-.login-badge-num{
-  width:40px;height:40px;
-  background:linear-gradient(135deg,#facc15,#f59e0b);
-  border-radius:12px;font-size:22px;font-weight:900;color:#0f172a;
-  display:flex;align-items:center;justify-content:center;
-  box-shadow:0 4px 12px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.4);
-  /* Кубик — три грани */
+
+/* Кубик-обёртка */
+.login-cube{
+  width:48px;height:48px;
   position:relative;
+  flex-shrink:0;
 }
-.login-badge-num::before{
-  content:'';position:absolute;
-  top:-3px;right:-4px;
-  width:100%;height:100%;
-  background:linear-gradient(135deg,#d97706,#92400e);
+/* Передняя грань */
+.login-cube-front{
+  position:absolute;inset:0;
+  background:linear-gradient(145deg,#3b82f6 0%,#2563eb 60%,#1d4ed8 100%);
   border-radius:12px;
-  z-index:-1;
-  transform:translate(4px,4px);
+  display:flex;align-items:center;justify-content:center;
+  font-size:24px;font-weight:900;color:#fff;
+  box-shadow:inset 0 2px 0 rgba(255,255,255,.35),inset 0 -2px 0 rgba(0,0,0,.2);
+  z-index:3;
 }
-.login-badge-num::after{
-  content:'';position:absolute;
-  top:0;right:-4px;
-  width:8px;height:100%;
-  background:linear-gradient(180deg,#b45309,#78350f);
+/* Правая грань */
+.login-cube-right{
+  position:absolute;
+  top:4px;right:-7px;
+  width:10px;height:100%;
+  background:linear-gradient(180deg,#1e40af,#1e3a8a);
   border-radius:0 4px 4px 0;
-  transform:skewY(-15deg) translateX(4px);
+  transform:skewY(-42deg);
+  transform-origin:top left;
+  z-index:2;
 }
-.login-badge-text{font-size:18px;font-weight:900;color:#fff;letter-spacing:.8px}
-.login-title{font-size:14px;font-weight:700;color:rgba(255,255,255,.8);line-height:1.5}
+/* Верхняя грань */
+.login-cube-top{
+  position:absolute;
+  top:-7px;left:4px;
+  width:100%;height:10px;
+  background:linear-gradient(90deg,#60a5fa,#3b82f6);
+  border-radius:4px 4px 0 0;
+  transform:skewX(-42deg);
+  transform-origin:bottom left;
+  z-index:4;
+}
+/* Звёздочки над кубиком */
+.login-cube::after{
+  content:'✦ ✦';
+  position:absolute;
+  top:-20px;left:50%;transform:translateX(-50%);
+  font-size:10px;color:#facc15;
+  white-space:nowrap;
+  text-shadow:0 0 6px rgba(250,204,21,.8);
+  animation:starsBlink 1.8s ease-in-out infinite;
+  z-index:5;
+}
+@keyframes starsBlink{0%,100%{opacity:1;transform:translateX(-50%) scale(1)}50%{opacity:.4;transform:translateX(-50%) scale(.8)}}
+
+.login-badge-text{font-size:18px;font-weight:900;color:#fff;letter-spacing:1px}
+.login-title{font-size:13px;font-weight:700;color:rgba(255,255,255,.75);line-height:1.5;margin-top:2px}
 
 /* Тело карточки */
 .login-body{padding:24px 28px 28px}
@@ -944,7 +974,11 @@ body {
     <!-- Шапка -->
     <div class="login-card-header">
       <div class="login-badge">
-        <div class="login-badge-num">5</div>
+        <div class="login-cube">
+          <div class="login-cube-top"></div>
+          <div class="login-cube-front">5</div>
+          <div class="login-cube-right"></div>
+        </div>
         <div class="login-badge-text">ПЯТЫЙ УРОВЕНЬ</div>
       </div>
       <div class="login-title">ИИ-репетитор по математике · 5 класс</div>
