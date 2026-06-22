@@ -231,7 +231,7 @@ body {
 
 /* Кубик-обёртка */
 .login-cube{
-  width:52px;height:58px;
+  width:76px;height:84px;
   position:relative;
   flex-shrink:0;
 }
@@ -240,8 +240,8 @@ body {
 /* Звёздочки над кубиком */
 .cube-stars{
   position:absolute;
-  top:-14px;left:50%;transform:translateX(-50%);
-  font-size:11px;color:#facc15;
+  top:-16px;left:50%;transform:translateX(-50%);
+  font-size:13px;color:#facc15;
   white-space:nowrap;
   text-shadow:0 0 8px rgba(250,204,21,.9);
   animation:starsBlink 1.8s ease-in-out infinite;
@@ -949,22 +949,22 @@ body {
     <div class="login-card-header">
       <div class="login-badge">
         <div class="login-cube">
-          <svg width="52" height="58" viewBox="0 0 52 58" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <!-- Верхняя грань -->
-            <polygon points="26,4 48,16 26,28 4,16" fill="#4d7ef5"/>
-            <polygon points="26,4 48,16 26,28 4,16" fill="url(#topGrad)"/>
-            <!-- Левая грань -->
-            <polygon points="4,16 26,28 26,52 4,40" fill="#1a3fbf"/>
-            <!-- Правая грань -->
-            <polygon points="48,16 26,28 26,52 48,40" fill="#0f2580"/>
-            <!-- Цифра 5 на передней грани (левой) -->
-            <text x="14" y="44" font-family="Arial Black, sans-serif" font-size="15" font-weight="900" fill="white" opacity="0.95">5</text>
+          <svg width="76" height="84" viewBox="0 0 76 84" fill="none" xmlns="http://www.w3.org/2000/svg">
             <defs>
-              <linearGradient id="topGrad" x1="4" y1="16" x2="48" y2="16" gradientUnits="userSpaceOnUse">
-                <stop offset="0" stop-color="rgba(255,255,255,0.15)"/>
-                <stop offset="1" stop-color="rgba(0,0,0,0.1)"/>
+              <linearGradient id="topGrad" x1="4" y1="22" x2="72" y2="22" gradientUnits="userSpaceOnUse">
+                <stop offset="0" stop-color="rgba(255,255,255,0.18)"/>
+                <stop offset="1" stop-color="rgba(0,0,0,0.08)"/>
               </linearGradient>
             </defs>
+            <!-- Верхняя грань -->
+            <polygon points="38,4 72,22 38,40 4,22" fill="#4d7ef5"/>
+            <polygon points="38,4 72,22 38,40 4,22" fill="url(#topGrad)"/>
+            <!-- Левая грань (передняя) -->
+            <polygon points="4,22 38,40 38,76 4,58" fill="#2251d0"/>
+            <!-- Правая грань -->
+            <polygon points="72,22 38,40 38,76 72,58" fill="#0f2580"/>
+            <!-- Цифра 5 по центру левой грани: центр грани примерно x=21, y=49 -->
+            <text x="21" y="62" font-family="Arial Black, sans-serif" font-size="26" font-weight="900" fill="white" opacity="0.97" text-anchor="middle">5</text>
           </svg>
           <!-- Звёздочки -->
           <span class="cube-stars">✦ ✦</span>
