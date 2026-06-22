@@ -998,27 +998,7 @@ body {
       <label class="login-label">Кто Ты?</label>
       <div class="role-row">
 
-        <!-- Родитель — теперь первый -->
-        <button class="role-btn" data-role="parent" onclick="selectRole(this)">
-          <div class="role-photo">
-            <div class="role-photo-bg" style="padding:0;overflow:hidden;background:#dcfce7">
-              <img src="ChatGPT Image 22 июн. 2026 г., 19_40_01.png"
-                   alt="Родитель"
-                   style="width:100%;height:100%;object-fit:cover;object-position:center top;display:block"
-                   onerror="this.style.display='none'">
-            </div>
-            <div class="role-photo-overlay">
-              <span class="role-photo-name">👨‍👩‍👧 Родитель</span>
-              <div class="role-check">✓</div>
-            </div>
-          </div>
-          <div class="role-info">
-            <div class="role-label-name">Я смотрю</div>
-            <div class="role-hint">Прогресс, ошибки,<br>рекомендации</div>
-          </div>
-        </button>
-
-        <!-- Ученик — теперь второй -->
+        <!-- Ученик — мальчик (19_39_36) -->
         <button class="role-btn selected" data-role="student" onclick="selectRole(this)">
           <div class="role-photo">
             <div class="role-photo-bg" style="padding:0;overflow:hidden;background:#dbeafe">
@@ -1035,6 +1015,26 @@ body {
           <div class="role-info">
             <div class="role-label-name">Я решаю</div>
             <div class="role-hint">Домашка, тренажёры,<br>разбор с Умником</div>
+          </div>
+        </button>
+
+        <!-- Родитель — мама с учеником (19_40_01) -->
+        <button class="role-btn" data-role="parent" onclick="selectRole(this)">
+          <div class="role-photo">
+            <div class="role-photo-bg" style="padding:0;overflow:hidden;background:#dcfce7">
+              <img src="ChatGPT Image 22 июн. 2026 г., 19_40_01.png"
+                   alt="Родитель"
+                   style="width:100%;height:100%;object-fit:cover;object-position:center top;display:block"
+                   onerror="this.style.display='none'">
+            </div>
+            <div class="role-photo-overlay">
+              <span class="role-photo-name">👨‍👩‍👧 Родитель</span>
+              <div class="role-check">✓</div>
+            </div>
+          </div>
+          <div class="role-info">
+            <div class="role-label-name">Я смотрю</div>
+            <div class="role-hint">Прогресс, ошибки,<br>рекомендации</div>
           </div>
         </button>
 
