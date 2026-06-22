@@ -223,21 +223,40 @@ body {
   backdrop-filter:blur(8px);
 }
 .login-badge-num{
-  width:34px;height:34px;
+  width:40px;height:40px;
   background:linear-gradient(135deg,#facc15,#f59e0b);
-  border-radius:10px;font-size:18px;font-weight:900;color:#0f172a;
+  border-radius:12px;font-size:22px;font-weight:900;color:#0f172a;
   display:flex;align-items:center;justify-content:center;
-  box-shadow:0 3px 8px rgba(0,0,0,.25);
+  box-shadow:0 4px 12px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.4);
+  /* Кубик — три грани */
+  position:relative;
 }
-.login-badge-text{font-size:16px;font-weight:900;color:#fff;letter-spacing:.5px}
-.login-title{font-size:13px;font-weight:700;color:rgba(255,255,255,.8);line-height:1.5}
+.login-badge-num::before{
+  content:'';position:absolute;
+  top:-3px;right:-4px;
+  width:100%;height:100%;
+  background:linear-gradient(135deg,#d97706,#92400e);
+  border-radius:12px;
+  z-index:-1;
+  transform:translate(4px,4px);
+}
+.login-badge-num::after{
+  content:'';position:absolute;
+  top:0;right:-4px;
+  width:8px;height:100%;
+  background:linear-gradient(180deg,#b45309,#78350f);
+  border-radius:0 4px 4px 0;
+  transform:skewY(-15deg) translateX(4px);
+}
+.login-badge-text{font-size:18px;font-weight:900;color:#fff;letter-spacing:.8px}
+.login-title{font-size:14px;font-weight:700;color:rgba(255,255,255,.8);line-height:1.5}
 
 /* Тело карточки */
-.login-body{padding:22px 24px 24px}
+.login-body{padding:24px 28px 28px}
 .login-label{
-  font-size:11px;font-weight:800;color:#64748b;
+  font-size:13px;font-weight:800;color:#475569;
   text-transform:uppercase;letter-spacing:.7px;
-  display:block;text-align:left;margin-bottom:8px;
+  display:block;text-align:left;margin-bottom:10px;
 }
 
 /* Поле имени + микрофон */
@@ -267,26 +286,32 @@ body {
 @keyframes micPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
 
 /* ─── КАРТОЧКИ РОЛИ — ЭКРАН ВЫБОРА ПЕРСОНАЖА ─── */
-.role-row{display:flex;gap:12px;margin-bottom:20px}
+.role-row{display:flex;gap:14px;margin-bottom:22px}
 .role-btn{
   flex:1;
-  border-radius:20px;
+  border-radius:22px;
   border:3px solid #e2e8f0;
   background:#fff;
   cursor:pointer;
-  transition:transform .25s cubic-bezier(.34,1.56,.64,1),box-shadow .25s,border-color .2s;
+  transition:transform .3s cubic-bezier(.34,1.56,.64,1),box-shadow .3s,border-color .2s;
   overflow:hidden;
   padding:0;
   position:relative;
   font-family:inherit;
+  box-shadow:0 4px 16px rgba(0,0,0,.08);
 }
-.role-btn:hover{transform:translateY(-5px) scale(1.02);box-shadow:0 16px 40px rgba(0,0,0,.15)}
-.role-btn.selected{border-color:#4f46e5;box-shadow:0 0 0 4px rgba(79,70,229,.18),0 16px 40px rgba(79,70,229,.25);transform:translateY(-6px) scale(1.03)}
+.role-btn:hover{transform:translateY(-6px) scale(1.02);box-shadow:0 20px 48px rgba(0,0,0,.18)}
+/* Обе выбранные — одинаковая яркая синяя рамка */
+.role-btn.selected{
+  border-color:#4f46e5;
+  box-shadow:0 0 0 4px rgba(79,70,229,.2),0 20px 48px rgba(79,70,229,.28);
+  transform:translateY(-7px) scale(1.03)
+}
 
-/* Фото-плашка */
+/* Фото-зона */
 .role-photo{
   width:100%;
-  height:130px;
+  height:155px;
   position:relative;
   overflow:hidden;
 }
@@ -296,28 +321,29 @@ body {
   font-size:70px;
   position:relative;
 }
-/* Плашка поверх фото */
+/* Плашка поверх фото — одинакова для обоих */
 .role-photo-overlay{
   position:absolute;bottom:0;left:0;right:0;
-  padding:8px 12px;
-  background:linear-gradient(0deg,rgba(0,0,0,.65) 0%,transparent 100%);
+  padding:10px 14px;
+  background:linear-gradient(0deg,rgba(0,0,0,.72) 0%,rgba(0,0,0,.2) 60%,transparent 100%);
   display:flex;align-items:center;justify-content:space-between;
 }
-.role-photo-name{font-size:13px;font-weight:900;color:#fff;letter-spacing:.3px}
+.role-photo-name{font-size:14px;font-weight:900;color:#fff;letter-spacing:.3px;text-shadow:0 1px 4px rgba(0,0,0,.4)}
 .role-check{
-  width:22px;height:22px;
-  border-radius:50%;border:2px solid rgba(255,255,255,.5);
+  width:24px;height:24px;
+  border-radius:50%;border:2px solid rgba(255,255,255,.6);
   background:transparent;
   display:flex;align-items:center;justify-content:center;
-  font-size:11px;color:#fff;
-  transition:all .2s;
+  font-size:12px;color:#fff;
+  transition:all .25s;
+  flex-shrink:0;
 }
-.role-btn.selected .role-check{background:#4f46e5;border-color:#4f46e5}
+.role-btn.selected .role-check{background:#4f46e5;border-color:#4f46e5;box-shadow:0 0 8px rgba(79,70,229,.6)}
 
-/* Нижняя часть карточки роли */
-.role-info{padding:12px 14px 14px;text-align:left}
-.role-label-name{font-size:14px;font-weight:900;color:#0f172a;margin-bottom:3px}
-.role-hint{font-size:11px;font-weight:600;color:#94a3b8;line-height:1.4}
+/* Нижняя часть */
+.role-info{padding:13px 16px 16px;text-align:left}
+.role-label-name{font-size:15px;font-weight:900;color:#0f172a;margin-bottom:4px}
+.role-hint{font-size:12px;font-weight:600;color:#94a3b8;line-height:1.4}
 .role-btn.selected .role-label-name{color:#4f46e5}
 .role-btn.selected .role-hint{color:#6366f1}
 
@@ -935,30 +961,10 @@ body {
       </div>
 
       <!-- Выбор роли — карточки-персонажи -->
-      <label class="login-label">Кто ты?</label>
+      <label class="login-label">Кто Ты?</label>
       <div class="role-row">
 
-        <!-- Ученик -->
-        <button class="role-btn selected" data-role="student" onclick="selectRole(this)">
-          <div class="role-photo">
-            <div class="role-photo-bg" style="padding:0;overflow:hidden;background:#dbeafe">
-              <img src="ChatGPT Image 22 июн. 2026 г., 19_39_36.png"
-                   alt="Ученик"
-                   style="width:100%;height:100%;object-fit:cover;object-position:center top;display:block"
-                   onerror="this.style.display='none'">
-            </div>
-            <div class="role-photo-overlay">
-              <span class="role-photo-name">🎒 Ученик</span>
-              <div class="role-check">✓</div>
-            </div>
-          </div>
-          <div class="role-info">
-            <div class="role-label-name">Я решаю</div>
-            <div class="role-hint">Домашка, тренажёры,<br>разбор с Умником</div>
-          </div>
-        </button>
-
-        <!-- Родитель -->
+        <!-- Родитель — теперь первый -->
         <button class="role-btn" data-role="parent" onclick="selectRole(this)">
           <div class="role-photo">
             <div class="role-photo-bg" style="padding:0;overflow:hidden;background:#dcfce7">
@@ -978,9 +984,32 @@ body {
           </div>
         </button>
 
+        <!-- Ученик — теперь второй -->
+        <button class="role-btn selected" data-role="student" onclick="selectRole(this)">
+          <div class="role-photo">
+            <div class="role-photo-bg" style="padding:0;overflow:hidden;background:#dbeafe">
+              <img src="ChatGPT Image 22 июн. 2026 г., 19_39_36.png"
+                   alt="Ученик"
+                   style="width:100%;height:100%;object-fit:cover;object-position:center top;display:block"
+                   onerror="this.style.display='none'">
+            </div>
+            <div class="role-photo-overlay">
+              <span class="role-photo-name">🎒 Ученик</span>
+              <div class="role-check">✓</div>
+            </div>
+          </div>
+          <div class="role-info">
+            <div class="role-label-name">Я решаю</div>
+            <div class="role-hint">Домашка, тренажёры,<br>разбор с Умником</div>
+          </div>
+        </button>
+
       </div>
 
-      <button class="btn-primary" onclick="doLogin()" style="font-size:16px;padding:15px;letter-spacing:.3px">
+      <button class="btn-primary" onclick="doLogin()"
+        style="font-size:18px;padding:18px;letter-spacing:.4px;border-radius:18px;
+               background:linear-gradient(135deg,#2563eb,#7c3aed);
+               box-shadow:0 8px 28px rgba(79,70,229,.5)">
         Войти в игру →
       </button>
     </div>
@@ -1452,6 +1481,7 @@ let trCorrect = 0;
 
 // ===== INIT =====
 lsLoad();
+spawnAmbientClouds(); // создаём облака сразу, независимо от экрана
 if(ST.user) {
   renderHome();
   showScreen('screen-home');
@@ -1576,7 +1606,7 @@ const CLOUD_SIZES = ['sz-s','sz-m','sz-l'];
 
 function spawnAmbientClouds() {
   const wrap = document.getElementById('home-ambient');
-  if (!wrap || wrap.children.length > 0) return;
+  if (!wrap || wrap.children.length > 0) return; // уже создано
 
   const clouds = [
     { size:'sz-l', top:12,  dur:28, delay:0,    sym:'7×8=56' },
