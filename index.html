@@ -119,12 +119,17 @@ body {
 }
 .star {
   position: absolute;
-  width: 3px; height: 3px;
-  background: #fff;
-  border-radius: 50%;
   animation: starTwinkle ease-in-out infinite;
 }
-@keyframes starTwinkle{0%,100%{opacity:.9;transform:scale(1)}50%{opacity:.2;transform:scale(.5)}}
+/* Круг */
+.star.s-circle { background:rgba(255,255,255,.85); border-radius:50%; }
+/* Квадрат */
+.star.s-square { background:rgba(255,255,255,.75); border-radius:1px; }
+/* Ромб */
+.star.s-diamond { background:rgba(255,255,255,.8); transform-origin:center; }
+/* Треугольник — через border */
+.star.s-triangle { background:transparent!important; width:0!important; height:0!important; border-left:solid transparent; border-right:solid transparent; border-bottom:solid rgba(255,255,255,.8); border-radius:0; }
+@keyframes starTwinkle{0%,100%{opacity:.85;transform:scale(1) rotate(var(--r,0deg))}50%{opacity:.15;transform:scale(.4) rotate(var(--r,0deg))}}
 
 /* Замок на горизонте */
 .login-castle {
@@ -952,8 +957,8 @@ body {
           <svg width="76" height="84" viewBox="0 0 76 84" fill="none" xmlns="http://www.w3.org/2000/svg">
             <defs>
               <linearGradient id="topGrad" x1="4" y1="22" x2="72" y2="22" gradientUnits="userSpaceOnUse">
-                <stop offset="0" stop-color="rgba(255,255,255,0.18)"/>
-                <stop offset="1" stop-color="rgba(0,0,0,0.08)"/>
+                <stop offset="0" stop-color="rgba(255,255,255,0.25)"/>
+                <stop offset="1" stop-color="rgba(0,0,0,0.1)"/>
               </linearGradient>
             </defs>
             <!-- Верхняя грань -->
@@ -963,8 +968,12 @@ body {
             <polygon points="4,22 38,40 38,76 4,58" fill="#2251d0"/>
             <!-- Правая грань -->
             <polygon points="72,22 38,40 38,76 72,58" fill="#0f2580"/>
-            <!-- Цифра 5 по центру левой грани: центр грани примерно x=21, y=49 -->
-            <text x="21" y="62" font-family="Arial Black, sans-serif" font-size="26" font-weight="900" fill="white" opacity="0.97" text-anchor="middle">5</text>
+            <!-- 5 на верхней грани (повёрнута -20deg, центр грани ~38,22) -->
+            <text transform="translate(38,24) rotate(-20)" font-family="Arial Black,sans-serif" font-size="13" font-weight="900" fill="#facc15" text-anchor="middle" dominant-baseline="middle" style="filter:drop-shadow(0 1px 3px rgba(0,0,0,.5))">5</text>
+            <!-- 5 на левой грани (повёрнута -30deg, центр ~21,49) -->
+            <text transform="translate(21,50) rotate(-30)" font-family="Arial Black,sans-serif" font-size="20" font-weight="900" fill="#fb923c" text-anchor="middle" dominant-baseline="middle" style="filter:drop-shadow(0 1px 4px rgba(0,0,0,.4))">5</text>
+            <!-- 5 на правой грани (повёрнута 30deg, центр ~55,49) -->
+            <text transform="translate(55,50) rotate(30)" font-family="Arial Black,sans-serif" font-size="16" font-weight="900" fill="#fbbf24" text-anchor="middle" dominant-baseline="middle" opacity="0.85" style="filter:drop-shadow(0 1px 3px rgba(0,0,0,.5))">5</text>
           </svg>
           <!-- Звёздочки -->
           <span class="cube-stars">✦ ✦</span>
@@ -1532,14 +1541,25 @@ function updateAllXP() {
   });
 }
 
-// ===== STARS =====
+// ===== STARS (фигуры: круг, квадрат, ромб, треугольник) =====
 (function spawnStars() {
   const c = document.getElementById('login-stars');
   if (!c) return;
+  const shapes = ['s-circle','s-square','s-diamond','s-triangle'];
   for (let i = 0; i < 55; i++) {
     const s = document.createElement('div');
-    s.className = 'star';
-    s.style.cssText = `left:${Math.random()*100}%;top:${Math.random()*100}%;width:${Math.random()*3+1}px;height:${Math.random()*3+1}px;animation-duration:${1.5+Math.random()*3}s;animation-delay:${Math.random()*4}s;opacity:${.3+Math.random()*.7}`;
+    const type = shapes[i % shapes.length];
+    const sz = Math.random()*4+2;
+    const rot = Math.floor(Math.random()*360);
+    s.className = `star ${type}`;
+    if (type === 's-triangle') {
+      const b = sz*1.1;
+      s.style.cssText = `left:${Math.random()*100}%;top:${Math.random()*100}%;border-left:${b/2}px solid transparent;border-right:${b/2}px solid transparent;border-bottom:${b}px solid rgba(255,255,255,.8);--r:${rot}deg;animation-duration:${1.5+Math.random()*3}s;animation-delay:${Math.random()*5}s;opacity:${.3+Math.random()*.7}`;
+    } else if (type === 's-diamond') {
+      s.style.cssText = `left:${Math.random()*100}%;top:${Math.random()*100}%;width:${sz}px;height:${sz}px;--r:${45+rot}deg;animation-duration:${1.5+Math.random()*3}s;animation-delay:${Math.random()*5}s;opacity:${.3+Math.random()*.7}`;
+    } else {
+      s.style.cssText = `left:${Math.random()*100}%;top:${Math.random()*100}%;width:${sz}px;height:${sz}px;--r:${rot}deg;animation-duration:${1.5+Math.random()*3}s;animation-delay:${Math.random()*5}s;opacity:${.3+Math.random()*.7}`;
+    }
     c.appendChild(s);
   }
 })();
