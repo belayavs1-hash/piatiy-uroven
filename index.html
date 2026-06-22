@@ -1150,6 +1150,7 @@ body {
     <button class="nav-back" onclick="showScreen('screen-home')">← Назад</button>
     <div class="nav-logo">📚 Домашка по номеру</div>
     <div class="nav-xp" id="nav-xp-hw">⭐ 0 XP</div>
+    <div class="nav-menu"><a onclick="showScreen('screen-home')">🏠 На главную</a></div>
   </nav>
   <div class="screen-body">
     <div class="hw-grid">
@@ -1197,6 +1198,7 @@ body {
     <button class="nav-back" id="wt-back-btn" onclick="showScreen('screen-homework')">← Назад</button>
     <div class="nav-logo">🤖 Разбор с Умником</div>
     <div class="nav-xp" id="nav-xp-wt">⭐ 0 XP</div>
+    <div class="nav-menu"><a onclick="showScreen('screen-home')">🏠 На главную</a></div>
   </nav>
   <div class="screen-body" style="max-width:680px">
     <div class="white-card">
@@ -1233,6 +1235,7 @@ body {
     <button class="nav-back" id="chk-back-btn" onclick="showScreen('screen-homework')">← Назад</button>
     <div class="nav-logo">✅ Проверить решение</div>
     <div class="nav-xp" id="nav-xp-chk">⭐ 0 XP</div>
+    <div class="nav-menu"><a onclick="showScreen('screen-home')">🏠 На главную</a></div>
   </nav>
   <div class="screen-body" style="max-width:680px">
     <div class="white-card">
@@ -1256,6 +1259,84 @@ body {
   </div>
   <div class="bottom-nav">
     <a onclick="showScreen('screen-homework')"><span class="icon">📚</span>Домашка</a>
+    <a onclick="showScreen('screen-map')"><span class="icon">🗺</span>Темы</a>
+    <a onclick="showScreen('screen-trainers')"><span class="icon">⚡</span>Трени</a>
+    <a onclick="showScreen('screen-parent')"><span class="icon">🏆</span>Прогресс</a>
+  </div>
+</div>
+
+<!-- ===== ALREADY SOLVED ===== -->
+<div id="screen-already-solved" class="screen">
+  <nav class="top-nav">
+    <button class="nav-back" onclick="showScreen('screen-homework')">← Назад</button>
+    <div class="nav-logo">✅ Я уже решил</div>
+    <div class="nav-xp" id="nav-xp-as">⭐ 0 XP</div>
+    <div class="nav-menu">
+      <a onclick="showScreen('screen-home')">🏠 На главную</a>
+    </div>
+  </nav>
+  <div class="screen-body" style="max-width:560px">
+    <div class="white-card">
+      <div class="task-id" id="as-task-id"></div>
+      <div class="task-topic" id="as-task-topic"></div>
+      <div class="task-text" id="as-task-text" style="margin-bottom:24px"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+        <div onclick="goToCheckFromHW()" style="padding:22px 14px;border-radius:20px;border:2px solid #4f46e5;background:#f5f3ff;cursor:pointer;text-align:center;transition:all .2s" onmouseover="this.style.background='#ede9fe';this.style.transform='translateY(-2px)'" onmouseout="this.style.background='#f5f3ff';this.style.transform=''">
+          <div style="font-size:36px;margin-bottom:10px">✍️</div>
+          <div style="font-size:15px;font-weight:900;color:#1e1b4b">Написать ответ</div>
+          <div style="font-size:12px;color:#6366f1;margin-top:4px;font-weight:600">Введу итоговый ответ</div>
+        </div>
+        <div onclick="showScreen('screen-photo-check')" style="padding:22px 14px;border-radius:20px;border:2px solid #0891b2;background:#ecfeff;cursor:pointer;text-align:center;transition:all .2s" onmouseover="this.style.background='#cffafe';this.style.transform='translateY(-2px)'" onmouseout="this.style.background='#ecfeff';this.style.transform=''">
+          <div style="font-size:36px;margin-bottom:10px">📷</div>
+          <div style="font-size:15px;font-weight:900;color:#0c4a6e">Сфотографировать тетрадь</div>
+          <div style="font-size:12px;color:#0891b2;margin-top:4px;font-weight:600">Умник проверит по фото</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="bottom-nav">
+    <a onclick="showScreen('screen-homework')" class="active"><span class="icon">📚</span>Домашка</a>
+    <a onclick="showScreen('screen-map')"><span class="icon">🗺</span>Темы</a>
+    <a onclick="showScreen('screen-trainers')"><span class="icon">⚡</span>Трени</a>
+    <a onclick="showScreen('screen-parent')"><span class="icon">🏆</span>Прогресс</a>
+  </div>
+</div>
+
+<!-- ===== PHOTO CHECK ===== -->
+<div id="screen-photo-check" class="screen">
+  <nav class="top-nav">
+    <button class="nav-back" onclick="showScreen('screen-already-solved')">← Назад</button>
+    <div class="nav-logo">📷 Проверка по фото</div>
+    <div class="nav-xp" id="nav-xp-ph">⭐ 0 XP</div>
+    <div class="nav-menu">
+      <a onclick="showScreen('screen-home')">🏠 На главную</a>
+    </div>
+  </nav>
+  <div class="screen-body" style="max-width:600px">
+    <div class="white-card">
+      <div class="task-id" id="ph-task-id"></div>
+      <div class="task-text" id="ph-task-text" style="margin-bottom:20px"></div>
+      <div style="border:2px dashed #93c5fd;border-radius:18px;padding:28px 20px;text-align:center;background:#eff6ff;margin-bottom:16px">
+        <div style="font-size:44px;margin-bottom:12px">📷</div>
+        <div style="font-size:14px;font-weight:700;color:#1e40af;margin-bottom:16px;line-height:1.5">На телефоне откроется камера.<br>На компьютере — выбор файла с диска.</div>
+        <label style="display:inline-block;padding:13px 28px;background:linear-gradient(135deg,#2563eb,#7c3aed);color:#fff;border-radius:14px;cursor:pointer;font-weight:900;font-size:15px;box-shadow:0 6px 20px rgba(37,99,235,.35)">
+          📸 Выбрать фото
+          <input type="file" accept="image/*" capture="environment" onchange="previewPhotoCheck(event)" style="display:none">
+        </label>
+        <img id="photo-preview-img" style="max-width:100%;max-height:300px;border-radius:14px;display:none;margin-top:16px;border:2px solid #e2e8f0;box-shadow:0 4px 16px rgba(0,0,0,.1)" alt="Твоё решение">
+        <div id="photo-preview-actions" style="display:none;margin-top:16px;gap:10px;justify-content:center">
+          <button onclick="clearPhotoCheck()" class="btn-ghost">🔄 Переснять</button>
+          <button onclick="checkPhotoSolution()" class="btn-check" style="padding:13px 24px">✅ Проверить по фото</button>
+        </div>
+      </div>
+      <div id="photo-check-result"></div>
+      <div style="text-align:center;margin-top:12px;font-size:13px;color:var(--ink3)">
+        Или <button onclick="goToCheckFromHW()" style="border:none;background:none;color:var(--blue);cursor:pointer;font-weight:800;font-size:13px;text-decoration:underline;padding:0">введи ответ вручную →</button>
+      </div>
+    </div>
+  </div>
+  <div class="bottom-nav">
+    <a onclick="showScreen('screen-homework')" class="active"><span class="icon">📚</span>Домашка</a>
     <a onclick="showScreen('screen-map')"><span class="icon">🗺</span>Темы</a>
     <a onclick="showScreen('screen-trainers')"><span class="icon">⚡</span>Трени</a>
     <a onclick="showScreen('screen-parent')"><span class="icon">🏆</span>Прогресс</a>
@@ -1530,12 +1611,65 @@ function showScreen(id) {
   updateAllXP();
   if(id === 'screen-parent') renderParent();
   if(id === 'screen-trainers') showTrainerList();
+  if(id === 'screen-already-solved') fillAlreadySolved();
+  if(id === 'screen-photo-check') fillPhotoCheck();
   window.scrollTo(0,0);
+}
+
+function fillAlreadySolved() {
+  if(!currentTask) return;
+  document.getElementById('as-task-id').textContent = `Задание ${currentTask.id}`;
+  document.getElementById('as-task-topic').textContent = currentTask.topic || '';
+  document.getElementById('as-task-text').textContent = currentTask.text || '';
+}
+
+function fillPhotoCheck() {
+  if(!currentTask) return;
+  document.getElementById('ph-task-id').textContent = `Задание ${currentTask.id}`;
+  document.getElementById('ph-task-text').textContent = currentTask.text || '';
+  clearPhotoCheck();
+}
+
+function previewPhotoCheck(e) {
+  const file = e.target.files[0];
+  if(!file) return;
+  const img = document.getElementById('photo-preview-img');
+  img.src = URL.createObjectURL(file);
+  img.style.display = 'block';
+  document.getElementById('photo-preview-actions').style.display = 'flex';
+  document.getElementById('photo-check-result').innerHTML = '';
+}
+
+function clearPhotoCheck() {
+  const img = document.getElementById('photo-preview-img');
+  if(img) { img.style.display='none'; img.src=''; }
+  const actions = document.getElementById('photo-preview-actions');
+  if(actions) actions.style.display='none';
+  const res = document.getElementById('photo-check-result');
+  if(res) res.innerHTML='';
+}
+
+function checkPhotoSolution() {
+  const img = document.getElementById('photo-preview-img');
+  if(!img || !img.src || img.style.display==='none') {
+    document.getElementById('photo-check-result').innerHTML = `<div class="result-err" style="text-align:left;margin-top:14px"><div class="r-text">Сначала загрузи фото 📷</div></div>`;
+    return;
+  }
+  const res = document.getElementById('photo-check-result');
+  res.innerHTML = `<div style="padding:14px;border-radius:14px;background:rgba(37,99,235,.1);border:2px solid rgba(37,99,235,.2);color:var(--ink2);font-weight:700;margin-top:14px">🔍 Умник смотрит решение…</div>`;
+  setTimeout(() => {
+    res.innerHTML = `<div class="result-ok" style="text-align:left;margin-top:14px">
+      <div class="r-icon">📸</div>
+      <div class="r-text">Фото загружено!</div>
+      <div class="result-answer" style="margin-top:8px">В полной версии Умник распознает текст и проверит шаги. Сейчас введи ответ вручную — Умник сравнит.</div>
+      <button class="btn-find" style="margin-top:14px" onclick="goToCheckFromHW()">✍️ Ввести ответ вручную</button>
+    </div>`;
+  }, 1200);
 }
 
 function updateAllXP() {
   const xpStr = `⭐ ${ST.xp} XP`;
-  ['nav-xp-home','nav-xp-hw','nav-xp-wt','nav-xp-chk','nav-xp-map','nav-xp-tr','nav-xp-par'].forEach(id => {
+  ['nav-xp-home','nav-xp-hw','nav-xp-wt','nav-xp-chk','nav-xp-map','nav-xp-tr','nav-xp-par','nav-xp-as','nav-xp-ph'].forEach(id => {
     const el = document.getElementById(id);
     if(el) el.textContent = xpStr;
   });
@@ -1705,7 +1839,7 @@ function findTask() {
     <div class="task-text">${task.text}</div>
     <div class="task-actions">
       <button class="btn-find" onclick="goToWalkthroughFromHW()">🤖 Разобрать с Умником</button>
-      <button class="btn-secondary" onclick="goToCheckFromHW()">✅ Я сделал сам — проверить</button>
+      <button class="btn-secondary" onclick="showScreen('screen-already-solved')">✅ Я уже решил</button>
     </div>
   </div>`;
 }
