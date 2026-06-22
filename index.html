@@ -388,24 +388,85 @@ body {
 
 /* ===== HOME ===== */
 #screen-home { padding-bottom: 0; }
+
+/* Навигация главной — с аватаром */
+.home-nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+}
+.home-nav-logo-cube {
+  width: 38px; height: 38px;
+  background: linear-gradient(135deg,#4f46e5,#7c3aed);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; font-weight: 900; color: var(--gold);
+  box-shadow: 0 4px 12px rgba(79,70,229,.5);
+}
+.home-nav-logo-text { font-size: 16px; font-weight: 900; color: #fff; }
+.home-nav-logo-sub { font-size: 11px; font-weight: 600; color: rgba(255,255,255,.5); }
+.home-nav-avatar {
+  display: flex; align-items: center; gap: 10px;
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.15);
+  border-radius: 24px;
+  padding: 5px 14px 5px 6px;
+  cursor: pointer;
+  transition: background .2s;
+}
+.home-nav-avatar:hover { background: rgba(255,255,255,.14); }
+.home-nav-avatar-pic {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg,#f59e0b,#d97706);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+}
+.home-nav-avatar-name { font-size: 13px; font-weight: 800; color: #fff; }
+.home-nav-avatar-xp {
+  font-size: 12px; font-weight: 700; color: var(--gold);
+  display: flex; align-items: center; gap: 4px;
+}
+
+/* Тело главной */
 .home-body {
   flex: 1;
-  display: grid;
-  grid-template-columns: 1fr 420px;
-  gap: 0;
+  display: flex;
+  flex-direction: column;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 28px 24px;
+  padding: 28px 24px 20px;
   width: 100%;
+  gap: 24px;
 }
-.home-left { padding-right: 32px; }
+
+/* Верхняя зона: 2 колонки */
+.home-top {
+  display: grid;
+  grid-template-columns: 1fr 420px;
+  gap: 28px;
+  align-items: start;
+}
+
+.home-left {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
 .home-greeting {
-  font-size: 28px;
+  font-size: 32px;
   font-weight: 900;
   color: #fff;
   margin-bottom: 4px;
+  line-height: 1.2;
 }
-.home-sub { font-size: 15px; color: rgba(255,255,255,.55); margin-bottom: 28px; }
+.home-sub {
+  font-size: 15px;
+  color: rgba(255,255,255,.55);
+  margin-bottom: 20px;
+}
 .xp-pill {
   display: inline-flex;
   align-items: center;
@@ -417,34 +478,189 @@ body {
   font-size: 15px;
   font-weight: 800;
   color: var(--gold);
-  margin-bottom: 28px;
+  margin-bottom: 20px;
 }
-.sections-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
+
+/* Карточка домашки — большая */
+.home-hw-card {
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.14);
+  border-radius: 24px;
+  padding: 24px;
+  backdrop-filter: blur(12px);
 }
-.section-card {
-  background: rgba(255,255,255,.95);
-  border-radius: 20px;
-  padding: 20px 18px;
+.home-hw-label {
+  font-size: 15px;
+  font-weight: 900;
+  color: #fff;
+  margin-bottom: 16px;
+}
+.home-hw-input-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.home-hw-input {
+  flex: 1;
+  padding: 14px 18px;
+  border-radius: 14px;
+  border: 2px solid rgba(255,255,255,.15);
+  background: rgba(255,255,255,.08);
+  color: #fff;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 700;
+  outline: none;
+  transition: border-color .2s, background .2s;
+}
+.home-hw-input:focus { border-color: #4f46e5; background: rgba(79,70,229,.12); }
+.home-hw-input::placeholder { color: rgba(255,255,255,.35); font-weight: 600; }
+.home-hw-btn {
+  padding: 14px 20px;
+  border-radius: 14px;
+  border: none;
+  background: linear-gradient(135deg,#4f46e5,#7c3aed);
+  color: #fff;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 900;
   cursor: pointer;
-  transition: transform .2s, box-shadow .2s;
-  border: 2px solid transparent;
+  white-space: nowrap;
+  transition: transform .15s, box-shadow .15s;
+  box-shadow: 0 6px 20px rgba(79,70,229,.5);
+}
+.home-hw-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(79,70,229,.6); }
+.home-hw-hint { font-size: 12px; font-weight: 600; color: rgba(255,255,255,.35); }
+
+/* Правая колонка: робот + прогресс */
+.home-right {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* Карточка Умника */
+.home-robot-card {
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.14);
+  border-radius: 24px;
+  overflow: hidden;
+}
+.home-robot-header {
+  padding: 18px 20px 10px;
+}
+.home-robot-title {
+  font-size: 17px;
+  font-weight: 900;
+  color: #fff;
+  margin-bottom: 4px;
+}
+.home-robot-sub {
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255,255,255,.5);
+  margin-bottom: 12px;
+}
+.home-robot-visual {
+  background: linear-gradient(160deg, rgba(79,70,229,.25) 0%, rgba(30,20,80,.4) 100%);
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 120px;
   position: relative;
   overflow: hidden;
 }
-.section-card:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(0,0,0,.25); }
+.home-robot-emoji {
+  font-size: 64px;
+  animation: bob 3s ease-in-out infinite;
+  position: relative;
+  z-index: 1;
+}
+.home-robot-fraction {
+  position: absolute;
+  font-size: 22px;
+  font-weight: 900;
+  color: rgba(255,255,255,.5);
+  animation: floatSym ease-in-out infinite;
+}
+.home-robot-fraction:nth-child(2){ top: 16px; left: 30px; animation-duration: 3.2s; }
+.home-robot-fraction:nth-child(3){ top: 20px; right: 24px; animation-duration: 3.8s; animation-delay: .6s; }
+.home-robot-fraction:nth-child(4){ bottom: 12px; left: 40px; font-size: 18px; animation-duration: 4.2s; animation-delay: 1.2s; }
+.home-robot-fraction:nth-child(5){ bottom: 14px; right: 32px; font-size: 16px; animation-duration: 3.5s; animation-delay: .3s; }
+
+/* Прогресс тем */
+.home-progress {
+  padding: 14px 20px 18px;
+}
+.home-progress-title {
+  font-size: 13px;
+  font-weight: 800;
+  color: rgba(255,255,255,.5);
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+}
+.progress-item {
+  margin-bottom: 12px;
+}
+.progress-item:last-child { margin-bottom: 0; }
+.progress-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 5px;
+}
+.progress-bar-bg {
+  height: 6px;
+  background: rgba(255,255,255,.1);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.progress-bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width .6s ease;
+}
+.home-progress-tip {
+  margin-top: 10px;
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(255,255,255,.4);
+}
+.home-progress-tip span { color: var(--blue); font-weight: 800; cursor: pointer; }
+.home-progress-tip span:hover { color: #60a5fa; }
+
+/* Нижние 4 карточки */
+.home-cards-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+.section-card {
+  background: rgba(255,255,255,.07);
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 20px;
+  padding: 20px 18px;
+  cursor: pointer;
+  transition: transform .2s, box-shadow .2s, background .2s;
+  position: relative;
+  overflow: hidden;
+}
+.section-card:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(0,0,0,.3); background: rgba(255,255,255,.11); }
 .section-card::before {
   content: '';
   position: absolute;
   top: 0; left: 0; right: 0;
   height: 4px;
   background: var(--accent, var(--blue));
+  border-radius: 4px 4px 0 0;
 }
 .sc-icon { font-size: 28px; margin-bottom: 10px; display: block; }
-.sc-name { font-size: 15px; font-weight: 900; color: var(--ink); margin-bottom: 4px; }
-.sc-desc { font-size: 12px; color: var(--ink3); line-height: 1.4; }
+.sc-name { font-size: 15px; font-weight: 900; color: #fff; margin-bottom: 4px; }
+.sc-desc { font-size: 12px; color: rgba(255,255,255,.45); line-height: 1.4; }
 
 /* ===== HOME AMBIENT — облака с цифрами ===== */
 #screen-home { position: relative; overflow: hidden; }
@@ -905,18 +1121,23 @@ body {
 
 /* ===== RESPONSIVE ===== */
 @media (max-width: 768px) {
-  .home-body { grid-template-columns: 1fr; padding: 16px; padding-bottom: 80px; }
-  .home-right { display: none; }
+  .home-body { flex-direction: column; padding: 16px; padding-bottom: 80px; gap: 16px; }
+  .home-top { grid-template-columns: 1fr; gap: 16px; }
+  .home-right { display: block; }
+  .home-cards-row { grid-template-columns: 1fr 1fr; gap: 10px; }
   .sections-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
   .hw-grid { grid-template-columns: 1fr; }
   .nav-menu { display: none; }
+  .home-nav-avatar .home-nav-avatar-name { display: none; }
   .bottom-nav { display: flex; }
   .screen-body { padding-bottom: 88px; }
   .stats-row { grid-template-columns: 1fr; }
   .topics-grid { grid-template-columns: 1fr 1fr; }
   .trainers-grid { grid-template-columns: 1fr 1fr; }
+  .home-hw-input-row { flex-direction: column; }
 }
 @media (max-width: 400px) {
+  .home-cards-row { grid-template-columns: 1fr; }
   .sections-grid { grid-template-columns: 1fr; }
   .topics-grid { grid-template-columns: 1fr; }
   .trainers-grid { grid-template-columns: 1fr 1fr; }
@@ -1056,90 +1277,107 @@ body {
 <div id="screen-home" class="screen">
 
   <nav class="top-nav" style="position:relative;z-index:10">
-    <div class="nav-logo">⚡ Пятый Уровень</div>
-    <div class="nav-xp" id="nav-xp-home">⭐ 0 XP</div>
+    <div class="home-nav-logo">
+      <div class="home-nav-logo-cube">5</div>
+      <div>
+        <div class="home-nav-logo-text">Пятый уровень</div>
+        <div class="home-nav-logo-sub">ИИ-репетитор по математике</div>
+      </div>
+    </div>
     <div class="nav-menu">
-      <a onclick="showScreen('screen-homework')">📚 Домашка</a>
-      <a onclick="showScreen('screen-map')">🗺 Темы</a>
-      <a onclick="showScreen('screen-trainers')">⚡ Тренажёры</a>
-      <a onclick="showScreen('screen-parent')">🏆 Прогресс</a>
-      <a onclick="doLogout()" style="color:rgba(255,255,255,.3);font-size:12px">Выйти</a>
+      <a onclick="showScreen('screen-home')" class="active">Главная</a>
+      <a onclick="showScreen('screen-map')">Карта тем</a>
+      <a onclick="showScreen('screen-trainers')">Тренажёры</a>
+      <a onclick="showScreen('screen-parent')">Родителю</a>
+    </div>
+    <div class="home-nav-avatar" onclick="doLogout()">
+      <div class="home-nav-avatar-pic">🧑</div>
+      <div>
+        <div class="home-nav-avatar-name" id="home-nav-name">Маша • 5 класс</div>
+        <div class="home-nav-avatar-xp" id="nav-xp-home">⭐ 0 XP</div>
+      </div>
     </div>
   </nav>
 
   <div class="home-body" style="position:relative;z-index:1">
-    <div class="home-left">
-      <div class="home-greeting" id="home-greeting">Привет, Маша! 👋</div>
-      <div class="home-sub">Что будем делать сегодня?</div>
-      <div class="xp-pill" id="home-xp">⭐ 0 XP заработано</div>
-      <div class="sections-grid">
-        <div class="section-card" style="--accent:#2563EB" onclick="showScreen('screen-homework')">
-          <span class="sc-icon">📚</span>
-          <div class="sc-name">Домашка по номеру</div>
-          <div class="sc-desc">Введи номер задания из учебника</div>
+    <!-- Верх: домашка слева, умник справа -->
+    <div class="home-top">
+      <div class="home-left">
+        <div class="home-greeting" id="home-greeting">Привет, Маша! 👋</div>
+        <div class="home-sub">Что будем делать сегодня?</div>
+        <div class="xp-pill" id="home-xp">⭐ 0 XP заработано</div>
+        <div class="home-hw-card">
+          <div class="home-hw-label">Домашка по номеру</div>
+          <div class="home-hw-input-row">
+            <input class="home-hw-input" id="home-hw-num" type="text" placeholder="Например: 5.103" oninput="homeHwInput(this)" onkeydown="if(event.key==='Enter')homeHwGo()">
+            <button class="home-hw-btn" onclick="homeHwGo()">Показать задание →</button>
+          </div>
+          <div class="home-hw-hint">Демо-номера: 1.71, 1.108, 1.124, 2.36, 5.40, 5.103, 5.125, 5.163</div>
         </div>
-        <div class="section-card" style="--accent:#7C3AED" onclick="goWalkthrough()">
-          <span class="sc-icon">🤖</span>
-          <div class="sc-name">Разобрать с Умником</div>
-          <div class="sc-desc">Умник объяснит по шагам</div>
-        </div>
-        <div class="section-card" style="--accent:#22C55E" onclick="goCheck()">
-          <span class="sc-icon">✅</span>
-          <div class="sc-name">Проверить решение</div>
-          <div class="sc-desc">Я решил — проверь ответ</div>
-        </div>
-        <div class="section-card" style="--accent:#F59E0B" onclick="showScreen('screen-map')">
-          <span class="sc-icon">🗺</span>
-          <div class="sc-name">Карта тем</div>
-          <div class="sc-desc">Маршрут повторения тем</div>
-        </div>
-        <div class="section-card" style="--accent:#EF4444" onclick="showScreen('screen-trainers')">
-          <span class="sc-icon">⚡</span>
-          <div class="sc-name">Тренажёры</div>
-          <div class="sc-desc">Тренируй скорость счёта</div>
-        </div>
-        <div class="section-card" style="--accent:#EC4899" onclick="showScreen('screen-parent')">
-          <span class="sc-icon">👨‍👩‍👧</span>
-          <div class="sc-name">Кабинет родителя</div>
-          <div class="sc-desc">Прогресс и рекомендации</div>
+      </div>
+
+      <div class="home-right">
+        <div class="home-robot-card">
+          <div class="home-robot-header">
+            <div class="home-robot-title">Умник рядом 🤖</div>
+            <div class="home-robot-sub">Я не решаю за тебя, а помогаю разобраться по шагам.</div>
+          </div>
+          <div class="home-robot-visual">
+            <div class="home-robot-fraction">1/2</div>
+            <div class="home-robot-emoji">🤖</div>
+            <div class="home-robot-fraction">?</div>
+            <div class="home-robot-fraction">5</div>
+            <div class="home-robot-fraction">π</div>
+          </div>
+          <div class="home-progress">
+            <div class="home-progress-title">Мой прогресс</div>
+            <div class="progress-item">
+              <div class="progress-label"><span>Дроби</span><span>40%</span></div>
+              <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:40%;background:#4f46e5"></div></div>
+            </div>
+            <div class="progress-item">
+              <div class="progress-label"><span>Геометрия</span><span>65%</span></div>
+              <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:65%;background:#f59e0b"></div></div>
+            </div>
+            <div class="progress-item">
+              <div class="progress-label"><span>Натуральные числа</span><span>80%</span></div>
+              <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:80%;background:#22c55e"></div></div>
+            </div>
+            <div class="home-progress-tip">Сегодня лучше повторить: <span onclick="showScreen('screen-map')">дроби</span>.</div>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- Замок с анимациями -->
-    <div class="home-right">
-      <div class="voxel-scene">
-        <div class="float-sym">5</div>
-        <div class="float-sym">Σ</div>
-        <div class="float-sym">+</div>
-        <div class="float-sym">½</div>
-        <div class="sun"></div>
-        <div class="ground voxel-block"></div>
-        <div class="castle-wall voxel-block">
-          <div class="castle-door"></div>
-        </div>
-        <div class="tower-l voxel-block">
-          <div class="tower-window tw-l1"></div>
-          <div class="tower-window tw-l2"></div>
-        </div>
-        <div class="tower-r voxel-block">
-          <div class="tower-window tw-r1"></div>
-          <div class="tower-window tw-r2"></div>
-        </div>
-        <div class="tower-c voxel-block">
-          <div class="tower-flag"></div>
-          <div class="tower-window tw-c1"></div>
-          <div class="tower-window tw-c2"></div>
-        </div>
-        <div class="castle-base voxel-block"></div>
+    <!-- Нижние 4 карточки -->
+    <div class="home-cards-row">
+      <div class="section-card" style="--accent:#2563EB" onclick="showScreen('screen-map')">
+        <span class="sc-icon">🗺</span>
+        <div class="sc-name">Карта тем</div>
+        <div class="sc-desc">Повторить тему и закрыть пробелы.</div>
+      </div>
+      <div class="section-card" style="--accent:#F59E0B" onclick="showScreen('screen-trainers')">
+        <span class="sc-icon">⚡</span>
+        <div class="sc-name">Тренажёры</div>
+        <div class="sc-desc">Короткие тренировки на 5–7 минут.</div>
+      </div>
+      <div class="section-card" style="--accent:#EF4444" onclick="showScreen('screen-parent')">
+        <span class="sc-icon">🧩</span>
+        <div class="sc-name">Мои ошибки</div>
+        <div class="sc-desc">Разбери места, где чаще всего ошибаюсь.</div>
+      </div>
+      <div class="section-card" style="--accent:#EC4899" onclick="showScreen('screen-parent')">
+        <span class="sc-icon">👨‍👩‍👧</span>
+        <div class="sc-name">Кабинет родителя</div>
+        <div class="sc-desc">Прогресс, рекомендации и достижения.</div>
       </div>
     </div>
   </div>
 
   <div class="bottom-nav" style="position:relative;z-index:10">
-    <a onclick="showScreen('screen-homework')"><span class="icon">📚</span>Домашка</a>
+    <a onclick="showScreen('screen-home')" class="active"><span class="icon">🏠</span>Главная</a>
     <a onclick="showScreen('screen-map')"><span class="icon">🗺</span>Темы</a>
-    <a onclick="showScreen('screen-trainers')"><span class="icon">⚡</span>Трени</a>
+    <a onclick="showScreen('screen-trainers')"><span class="icon">⚡</span>Тренажёр</a>
     <a onclick="showScreen('screen-parent')"><span class="icon">🏆</span>Прогресс</a>
   </div>
 </div>
@@ -1769,7 +2007,56 @@ function renderHome() {
   document.getElementById('home-greeting').textContent = `Привет, ${ST.user.name}! 👋`;
   document.getElementById('home-xp').textContent = `⭐ ${ST.xp} XP заработано`;
   document.getElementById('nav-xp-home').textContent = `⭐ ${ST.xp} XP`;
+  const navName = document.getElementById('home-nav-name');
+  if(navName) navName.textContent = `${ST.user.name} • 5 класс`;
   spawnAmbientClouds();
+}
+
+// Поиск задания с главной страницы (единое поле)
+function homeHwInput(inp) {
+  // нормализуем: заменяем запятую на точку
+  inp.value = inp.value.replace(',','.');
+}
+
+function homeHwGo() {
+  const raw = document.getElementById('home-hw-num').value.trim().replace(',','.');
+  if(!raw) return;
+
+  // нормализуем: "5103" → "5.103", "5.103" → "5.103"
+  let query = raw;
+  if(!/\./.test(query) && query.length > 1) {
+    // попробуем найти по частичному совпадению — ищем по id
+  }
+
+  const found = TASKS.find(t => t.id === query) ||
+    TASKS.find(t => t.id.replace('.','') === query.replace('.',''));
+
+  if(!found) {
+    const hint = document.querySelector('.home-hw-hint');
+    const prev = hint.dataset.orig || hint.textContent;
+    hint.dataset.orig = prev;
+    hint.textContent = `❌ Задание «${raw}» не найдено. Попробуй другой номер.`;
+    hint.style.color = '#ef4444';
+    setTimeout(() => { hint.textContent = prev; hint.style.color = ''; delete hint.dataset.orig; }, 3000);
+    return;
+  }
+
+  currentTask = found;
+  showScreen('screen-homework');
+  setTimeout(() => {
+    const col = document.getElementById('hw-result-col');
+    if(!col) return;
+    const done = ST.solvedTasks && ST.solvedTasks[found.id];
+    col.innerHTML = `<div class="white-card">
+      <div class="task-id">Задание ${found.id} ${done ? '✅' : ''}</div>
+      <div class="task-topic">${found.topic}</div>
+      <div class="task-text">${found.text}</div>
+      <div class="task-actions">
+        <button class="btn-find" onclick="goToWalkthroughFromHW()">🤖 Разобрать с Умником</button>
+        <button class="btn-secondary" onclick="showScreen('screen-already-solved')">✅ Я уже решил</button>
+      </div>
+    </div>`;
+  }, 50);
 }
 
 // Облака с формулами летят по главному экрану
