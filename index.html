@@ -913,6 +913,7 @@ body {
       <a onclick="showScreen('screen-map')">🗺 Темы</a>
       <a onclick="showScreen('screen-trainers')">⚡ Тренажёры</a>
       <a onclick="showScreen('screen-parent')">🏆 Прогресс</a>
+      <a onclick="doLogout()" style="color:rgba(255,255,255,.35);font-size:12px">Выйти</a>
     </div>
   </nav>
   <div class="home-body">
@@ -1403,6 +1404,12 @@ function doLogin() {
   lsSave();
   renderHome();
   showScreen('screen-home');
+}
+function doLogout() {
+  ST.user = null;
+  lsSave();
+  document.getElementById('login-name').value = '';
+  showScreen('screen-login');
 }
 
 let loginRecognition = null;
