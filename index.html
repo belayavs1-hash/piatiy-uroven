@@ -92,52 +92,131 @@ body {
   align-items: center;
   justify-content: center;
   padding: 20px;
+  position: relative;
+  overflow: hidden;
 }
+.login-floats {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+.lf-sym {
+  position: absolute;
+  font-size: 28px;
+  font-weight: 900;
+  opacity: .18;
+  color: #fff;
+  animation: lfFloat 4s ease-in-out infinite;
+}
+.lf-sym:nth-child(1){top:8%;left:6%;animation-delay:0s}
+.lf-sym:nth-child(2){top:15%;right:8%;animation-delay:.7s}
+.lf-sym:nth-child(3){top:40%;left:3%;animation-delay:1.4s}
+.lf-sym:nth-child(4){bottom:25%;right:5%;animation-delay:2.1s}
+.lf-sym:nth-child(5){bottom:10%;left:12%;animation-delay:2.8s}
+.lf-sym:nth-child(6){top:60%;right:12%;animation-delay:.3s}
+@keyframes lfFloat{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-14px) rotate(5deg)}}
+
 .login-wrap {
   width: 100%;
-  max-width: 420px;
-  background: rgba(15,23,42,.82);
-  backdrop-filter: blur(20px);
-  border: 1px solid var(--border);
-  border-radius: 28px;
-  padding: 40px 32px;
+  max-width: 440px;
+  background: rgba(12,18,48,.88);
+  backdrop-filter: blur(24px);
+  border: 1px solid rgba(255,255,255,.13);
+  border-radius: 32px;
+  padding: 44px 36px 40px;
   text-align: center;
+  position: relative;
+  z-index: 2;
+  box-shadow: 0 32px 80px rgba(0,0,0,.5);
 }
-.login-logo { font-size: 52px; margin-bottom: 8px; }
-.login-title { font-size: 26px; font-weight: 900; color: #fff; margin-bottom: 4px; }
-.login-sub { font-size: 14px; color: rgba(255,255,255,.55); margin-bottom: 32px; }
-.login-label { font-size: 13px; font-weight: 700; color: rgba(255,255,255,.6); text-align: left; margin-bottom: 6px; display: block; }
+
+.login-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: linear-gradient(135deg, var(--blue), var(--purple));
+  border-radius: 20px;
+  padding: 10px 20px;
+  margin-bottom: 20px;
+}
+.login-badge-num {
+  width: 36px; height: 36px;
+  background: rgba(255,255,255,.2);
+  border-radius: 10px;
+  font-size: 20px;
+  font-weight: 900;
+  color: #fff;
+  display: flex; align-items: center; justify-content: center;
+}
+.login-badge-text { font-size: 16px; font-weight: 900; color: #fff; letter-spacing: .5px; }
+
+.login-title { font-size: 28px; font-weight: 900; color: #fff; margin-bottom: 6px; line-height: 1.2; }
+.login-sub { font-size: 14px; color: rgba(255,255,255,.5); margin-bottom: 32px; }
+.login-label { font-size: 12px; font-weight: 800; color: rgba(255,255,255,.55); text-align: left; margin-bottom: 8px; display: block; letter-spacing: .5px; text-transform: uppercase; }
+
+.login-name-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  align-items: center;
+}
 .login-input {
-  width: 100%;
+  flex: 1;
   padding: 14px 16px;
   border-radius: 14px;
   border: 1.5px solid rgba(255,255,255,.15);
   background: rgba(255,255,255,.08);
   color: #fff;
   font-family: inherit;
-  font-size: 16px;
+  font-size: 17px;
   font-weight: 700;
-  margin-bottom: 20px;
   outline: none;
-  transition: border-color .2s;
+  transition: border-color .2s, background .2s;
+  min-width: 0;
 }
-.login-input:focus { border-color: var(--blue); }
-.login-input::placeholder { color: rgba(255,255,255,.3); }
+.login-input:focus { border-color: var(--blue); background: rgba(37,99,235,.1); }
+.login-input::placeholder { color: rgba(255,255,255,.28); }
+.login-input.listening { border-color: #ef4444; background: rgba(239,68,68,.1); animation: listenPulse 1s ease-in-out infinite; }
+@keyframes listenPulse{0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,.4)}50%{box-shadow:0 0 0 8px rgba(239,68,68,0)}}
+
+.btn-mic {
+  width: 50px; height: 50px; flex-shrink: 0;
+  border-radius: 14px;
+  border: 1.5px solid rgba(255,255,255,.15);
+  background: rgba(255,255,255,.08);
+  color: rgba(255,255,255,.7);
+  font-size: 20px;
+  cursor: pointer;
+  transition: all .2s;
+  display: flex; align-items: center; justify-content: center;
+}
+.btn-mic:hover { background: rgba(239,68,68,.2); border-color: #ef4444; color: #fff; }
+.btn-mic.active { background: rgba(239,68,68,.3); border-color: #ef4444; color: #ef4444; }
+
 .role-row { display: flex; gap: 10px; margin-bottom: 28px; }
 .role-btn {
   flex: 1;
-  padding: 12px;
-  border-radius: 14px;
-  border: 2px solid rgba(255,255,255,.15);
-  background: rgba(255,255,255,.06);
-  color: rgba(255,255,255,.55);
+  padding: 16px 10px;
+  border-radius: 16px;
+  border: 2px solid rgba(255,255,255,.13);
+  background: rgba(255,255,255,.05);
+  color: rgba(255,255,255,.5);
   font-family: inherit;
-  font-size: 14px;
-  font-weight: 700;
+  font-size: 13px;
+  font-weight: 800;
   cursor: pointer;
   transition: all .2s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
 }
-.role-btn.selected { border-color: var(--blue); background: rgba(37,99,235,.25); color: #fff; }
+.role-btn .role-icon { font-size: 26px; }
+.role-btn .role-label { font-size: 13px; font-weight: 800; }
+.role-btn .role-hint { font-size: 10px; font-weight: 600; color: rgba(255,255,255,.3); line-height: 1.3; }
+.role-btn.selected { border-color: var(--blue); background: rgba(37,99,235,.22); color: #fff; }
+.role-btn.selected .role-hint { color: rgba(255,255,255,.55); }
 .btn-primary {
   width: 100%;
   padding: 16px;
@@ -600,18 +679,43 @@ body {
 
 <!-- ===== LOGIN ===== -->
 <div id="screen-login" class="screen active">
+  <div class="login-floats">
+    <div class="lf-sym">5</div>
+    <div class="lf-sym">½</div>
+    <div class="lf-sym">Σ</div>
+    <div class="lf-sym">π</div>
+    <div class="lf-sym">+</div>
+    <div class="lf-sym">×</div>
+  </div>
   <div class="login-wrap">
-    <div class="login-logo">🏰</div>
-    <div class="login-title">ПЯТЫЙ УРОВЕНЬ</div>
-    <div class="login-sub">ИИ-репетитор по математике</div>
-    <label class="login-label">Твоё имя</label>
-    <input type="text" class="login-input" id="login-name" placeholder="Например: Яся" maxlength="30">
-    <label class="login-label">Я — это:</label>
-    <div class="role-row">
-      <button class="role-btn selected" data-role="student" onclick="selectRole(this)">🎒 Ученик</button>
-      <button class="role-btn" data-role="parent" onclick="selectRole(this)">👨‍👩‍👧 Родитель</button>
+    <div class="login-badge">
+      <div class="login-badge-num">5</div>
+      <div class="login-badge-text">ПЯТЫЙ УРОВЕНЬ</div>
     </div>
-    <button class="btn-primary" onclick="doLogin()">🚀 ПОЕХАЛИ!</button>
+    <div class="login-title">ИИ-репетитор<br>по математике</div>
+    <div class="login-sub">Помогу разобрать домашку,<br>найти ошибки и прокачать счёт</div>
+
+    <label class="login-label">Как тебя зовут?</label>
+    <div class="login-name-row">
+      <input type="text" class="login-input" id="login-name" placeholder="Например: Маша" maxlength="30"
+        onkeydown="if(event.key==='Enter')doLogin()">
+      <button class="btn-mic" id="login-mic-btn" onclick="toggleLoginMic()" title="Назвать имя голосом">🎤</button>
+    </div>
+
+    <label class="login-label">Кто заходит?</label>
+    <div class="role-row">
+      <button class="role-btn selected" data-role="student" onclick="selectRole(this)">
+        <span class="role-icon">🎒</span>
+        <span class="role-label">Ученик</span>
+        <span class="role-hint">Решаю домашку</span>
+      </button>
+      <button class="role-btn" data-role="parent" onclick="selectRole(this)">
+        <span class="role-icon">👨‍👩‍👧</span>
+        <span class="role-label">Родитель</span>
+        <span class="role-hint">Смотрю прогресс</span>
+      </button>
+    </div>
+    <button class="btn-primary" onclick="doLogin()">Далее →</button>
   </div>
 </div>
 
@@ -1095,13 +1199,56 @@ function selectRole(btn) {
   btn.classList.add('selected');
 }
 function doLogin() {
-  const name = document.getElementById('login-name').value.trim() || 'Яся';
+  const name = document.getElementById('login-name').value.trim() || 'Маша';
   const roleBtn = document.querySelector('.role-btn.selected');
   const role = roleBtn ? roleBtn.dataset.role : 'student';
   ST.user = { name, role };
   lsSave();
   renderHome();
   showScreen('screen-home');
+}
+
+let loginRecognition = null;
+function toggleLoginMic() {
+  const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRec) { alert('Голосовой ввод не поддерживается в этом браузере'); return; }
+  const btn = document.getElementById('login-mic-btn');
+  const inp = document.getElementById('login-name');
+  if (loginRecognition) {
+    loginRecognition.stop();
+    loginRecognition = null;
+    btn.classList.remove('active');
+    inp.classList.remove('listening');
+    return;
+  }
+  loginRecognition = new SpeechRec();
+  loginRecognition.lang = 'ru-RU';
+  loginRecognition.interimResults = false;
+  loginRecognition.maxAlternatives = 1;
+  btn.classList.add('active');
+  inp.classList.add('listening');
+  inp.placeholder = 'Слушаю...';
+  loginRecognition.start();
+  loginRecognition.onresult = (e) => {
+    const text = e.results[0][0].transcript.trim();
+    inp.value = text.charAt(0).toUpperCase() + text.slice(1);
+    btn.classList.remove('active');
+    inp.classList.remove('listening');
+    inp.placeholder = 'Например: Маша';
+    loginRecognition = null;
+  };
+  loginRecognition.onerror = () => {
+    btn.classList.remove('active');
+    inp.classList.remove('listening');
+    inp.placeholder = 'Например: Маша';
+    loginRecognition = null;
+  };
+  loginRecognition.onend = () => {
+    btn.classList.remove('active');
+    inp.classList.remove('listening');
+    inp.placeholder = 'Например: Маша';
+    loginRecognition = null;
+  };
 }
 
 // ===== HOME =====
