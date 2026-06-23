@@ -2051,6 +2051,7 @@ function showScreen(id) {
   document.getElementById(id).classList.add('active');
   updateAllXP();
   if(id === 'screen-parent') renderParent();
+  if(id === 'screen-homework') updateTopics();
   if(id === 'screen-trainers') showTrainerList();
   if(id === 'screen-already-solved') fillAlreadySolved();
   if(id === 'screen-photo-check') fillPhotoCheck();
