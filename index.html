@@ -1398,18 +1398,23 @@ body {
           <div class="screen-subtitle" style="color:var(--ink3)">Выбери параграф, тему и номер</div>
           <div class="form-group">
             <label class="form-label">Параграф</label>
-            <select class="form-select" id="hw-part" onchange="updateParas()">
-              <option value="1">Часть 1 (§1–§7)</option>
-              <option value="2">Часть 2 (§5–§7)</option>
+            <select class="form-select" id="hw-para" onchange="updateTopics()">
+              <option value="1">§1 — Натуральные числа и нуль. Шкалы</option>
+              <option value="2">§2 — Сложение и вычитание</option>
+              <option value="3">§3 — Умножение и деление</option>
+              <option value="4">§4 — Площади и объёмы</option>
+              <option value="5">§5 — Обыкновенные дроби</option>
+              <option value="6">§6 — Десятичные дроби</option>
+              <option value="7">§7 — Инструменты для вычислений</option>
             </select>
           </div>
           <div class="form-group">
             <label class="form-label">Тема</label>
-            <select class="form-select" id="hw-para"></select>
+            <select class="form-select" id="hw-topic"></select>
           </div>
           <div class="form-group">
             <label class="form-label">Номер задания</label>
-            <input type="text" class="form-input" id="hw-num" placeholder="Например: 71">
+            <input type="text" class="form-input" id="hw-num" placeholder="Например: 1.1">
           </div>
           <button class="btn-find" onclick="findTask()">🔍 Найти задание</button>
         </div>
@@ -2036,7 +2041,7 @@ if(ST.user) {
 } else {
   showScreen('screen-login');
 }
-updateParas();
+updateTopics();
 renderMap();
 renderTrainers();
 
@@ -2294,25 +2299,85 @@ function spawnAmbientClouds() {
 }
 
 // ===== HOMEWORK =====
-function updateParas() {
-  const part = parseInt(document.getElementById('hw-part').value);
-  const sel = document.getElementById('hw-para');
-  sel.innerHTML = (PARAS[part] || []).map(p => `<option>${p}</option>`).join('');
+const PARA_TOPICS = {
+  1: [
+    "1. Числовая информация в таблицах",
+    "2. Цифры и числа",
+    "3. Отрезок. Ломаная. Многоугольник",
+    "4. Плоскость, прямая, луч, угол",
+    "5. Шкалы и координатная прямая",
+    "6. Сравнение натуральных чисел",
+    "7. Числовая информация в диаграммах",
+    "8. Повторение §1"
+  ],
+  2: [
+    "8. Действие сложения. Свойства",
+    "9. Действие вычитания. Свойства",
+    "10. Числовые и буквенные выражения",
+    "11. Уравнение"
+  ],
+  3: [
+    "12. Действие умножения. Свойства",
+    "13. Действие деления",
+    "14. Деление с остатком",
+    "15. Упрощение выражений",
+    "16. Порядок действий",
+    "17. Степень с натуральным показателем",
+    "18. Квадрат и куб числа"
+  ],
+  4: [
+    "19. Площадь. Формула площади прямоугольника",
+    "20. Единицы площади",
+    "21. Прямоугольный параллелепипед",
+    "22. Объём прямоугольного параллелепипеда",
+    "23. Единицы объёма"
+  ],
+  5: [
+    "24. Доли",
+    "25. Обыкновенные дроби",
+    "26. Сравнение дробей с одинаковым знаменателем",
+    "27. Правильные и неправильные дроби",
+    "28. Сложение и вычитание дробей с одинаковым знаменателем",
+    "29. Смешанные числа"
+  ],
+  6: [
+    "30. Десятичная запись дробных чисел",
+    "31. Сравнение десятичных дробей",
+    "32. Сложение и вычитание десятичных дробей",
+    "33. Умножение десятичной дроби на натуральное число",
+    "34. Деление десятичной дроби на натуральное число",
+    "35. Задачи на десятичные дроби"
+  ],
+  7: [
+    "36. Округление десятичных дробей",
+    "37. Прикидка результата",
+    "38. Среднее арифметическое"
+  ]
+};
+
+function updateTopics() {
+  const para = parseInt(document.getElementById('hw-para').value);
+  const sel = document.getElementById('hw-topic');
+  sel.innerHTML = (PARA_TOPICS[para] || []).map(t => `<option>${t}</option>`).join('');
 }
 
 function findTask() {
-  const part = parseInt(document.getElementById('hw-part').value);
-  const para = document.getElementById('hw-para').value.split(' ')[0]; // §N
-  const num = document.getElementById('hw-num').value.trim();
-  if(!num) { alert('Введи номер задания'); return; }
-  const taskId = `${part}.${num}`;
+  const num = document.getElementById('hw-num').value.trim().replace(',', '.');
+  if (!num) { alert('Введи номер задания, например: 1.1'); return; }
+  // Принимаем как "1.5" так и просто "5" при выбранном §1
+  let taskId = num;
+  if (!/\./.test(num)) {
+    const para = document.getElementById('hw-para').value;
+    taskId = `${para}.${num}`;
+  }
   const task = TASKS.find(t => t.id === taskId);
   const col = document.getElementById('hw-result-col');
-  if(!task) {
+  if (!task) {
+    const available = TASKS.slice(0, 5).map(t => t.id).join(', ');
     col.innerHTML = `<div class="white-card" style="border:2px solid var(--red);text-align:center;padding:32px 20px">
       <div style="font-size:36px;margin-bottom:12px">😕</div>
       <div style="font-size:16px;font-weight:800;color:var(--ink)">Задание ${taskId} не найдено</div>
-      <div style="font-size:13px;color:var(--ink3);margin-top:8px">В базе есть: 1.71, 1.45, 1.92, 1.108, 1.120,<br>5.40, 5.55, 5.78, 5.103, 5.163</div>
+      <div style="font-size:13px;color:var(--ink3);margin-top:8px">Введи номер как в учебнике: <b>1.1</b>, <b>2.43</b> и т.д.</div>
     </div>`;
     return;
   }
