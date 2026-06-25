@@ -1142,6 +1142,31 @@ body {
   .topics-grid { grid-template-columns: 1fr; }
   .trainers-grid { grid-template-columns: 1fr 1fr; }
 }
+
+/* Две большие плашки на главной */
+.home-two-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 28px;
+}
+.home-big-card {
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.14);
+  border-radius: 24px;
+  padding: 28px 24px;
+  cursor: pointer;
+  transition: transform .15s, background .15s;
+  backdrop-filter: blur(12px);
+}
+.home-big-card:hover { transform: translateY(-3px); background: rgba(255,255,255,.12); }
+.home-big-card-green { border-color: rgba(16,185,129,.35); background: rgba(16,185,129,.08); }
+.home-big-card-green:hover { background: rgba(16,185,129,.14); }
+.home-big-card-icon { font-size: 32px; margin-bottom: 10px; }
+.home-big-card-title { font-size: 18px; font-weight: 900; color: #fff; margin-bottom: 4px; }
+.home-big-card-sub { font-size: 13px; color: rgba(255,255,255,.5); font-weight: 700; margin-bottom: 16px; }
+.home-big-card-desc { font-size: 14px; color: rgba(255,255,255,.65); line-height: 1.5; }
+@media(max-width:600px) { .home-two-cards { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
@@ -1300,56 +1325,32 @@ body {
   </nav>
 
   <div class="home-body" style="position:relative;z-index:1">
-    <!-- Верх: домашка слева, умник справа -->
-    <div class="home-top">
-      <div class="home-left">
-        <div class="home-greeting" id="home-greeting">Привет, Маша! 👋</div>
-        <div class="home-sub">Что будем делать сегодня?</div>
-        <div class="xp-pill" id="home-xp">⭐ 0 XP заработано</div>
-        <div class="home-hw-card">
-          <div class="home-hw-label">Домашка по номеру</div>
-          <div class="home-hw-input-row">
-            <input class="home-hw-input" id="home-hw-num" type="text" placeholder="Например: 5.103" oninput="homeHwInput(this)" onkeydown="if(event.key==='Enter')homeHwGo()">
-            <button class="home-hw-btn" onclick="homeHwGo()">Показать задание →</button>
-          </div>
-          <div class="home-hw-hint">Демо-номера: 1.71, 1.108, 1.124, 2.36, 5.40, 5.103, 5.125, 5.163</div>
-        </div>
-      </div>
+    <!-- Приветствие -->
+    <div class="home-greeting" id="home-greeting">Привет, Маша! 👋</div>
+    <div class="home-sub">Что будем делать сегодня?</div>
+    <div class="xp-pill" id="home-xp">⭐ 0 XP заработано</div>
 
-      <div class="home-right">
-        <div class="home-robot-card">
-          <div class="home-robot-header">
-            <div class="home-robot-title">Умник рядом 🤖</div>
-            <div class="home-robot-sub">Я не решаю за тебя, а помогаю разобраться по шагам.</div>
-          </div>
-          <div class="home-robot-visual">
-            <div class="home-robot-fraction">1/2</div>
-            <div class="home-robot-emoji">🤖</div>
-            <div class="home-robot-fraction">?</div>
-            <div class="home-robot-fraction">5</div>
-            <div class="home-robot-fraction">π</div>
-          </div>
-          <div class="home-progress">
-            <div class="home-progress-title">Мой прогресс</div>
-            <div class="progress-item">
-              <div class="progress-label"><span>Дроби</span><span>40%</span></div>
-              <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:40%;background:#4f46e5"></div></div>
-            </div>
-            <div class="progress-item">
-              <div class="progress-label"><span>Геометрия</span><span>65%</span></div>
-              <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:65%;background:#f59e0b"></div></div>
-            </div>
-            <div class="progress-item">
-              <div class="progress-label"><span>Натуральные числа</span><span>80%</span></div>
-              <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:80%;background:#22c55e"></div></div>
-            </div>
-            <div class="home-progress-tip">Сегодня лучше повторить: <span onclick="showScreen('screen-map')">дроби</span>.</div>
-          </div>
+    <!-- Две большие плашки: домашка + проверь себя -->
+    <div class="home-two-cards">
+      <div class="home-big-card">
+        <div class="home-big-card-icon">📖</div>
+        <div class="home-big-card-title">Домашка по номеру</div>
+        <div class="home-big-card-sub">Тема: введи номер задания из учебника</div>
+        <div class="home-hw-input-row">
+          <input class="home-hw-input" id="home-hw-num" type="text" placeholder="Например: 1.5" oninput="homeHwInput(this)" onkeydown="if(event.key==='Enter')homeHwGo()">
+          <button class="home-hw-btn" onclick="homeHwGo()">Найти →</button>
         </div>
+        <div class="home-hw-hint" id="home-hw-hint" style="min-height:16px"></div>
+      </div>
+      <div class="home-big-card home-big-card-green" onclick="showScreen('screen-self-check')">
+        <div class="home-big-card-icon">✅</div>
+        <div class="home-big-card-title">Проверь себя</div>
+        <div class="home-big-card-sub">Тема: проверочные работы из учебника</div>
+        <div class="home-big-card-desc">Тест по каждой теме §1–§7 с автопроверкой</div>
       </div>
     </div>
 
-    <!-- Нижние 4 карточки -->
+    <!-- Нижние карточки -->
     <div class="home-cards-row">
       <div class="section-card" style="--accent:#2563EB" onclick="showScreen('screen-map')">
         <span class="sc-icon">🗺</span>
@@ -1371,12 +1372,8 @@ body {
         <div class="sc-name">Кабинет родителя</div>
         <div class="sc-desc">Прогресс, рекомендации и достижения.</div>
       </div>
-      <div class="section-card" style="--accent:#10B981" onclick="showScreen('screen-self-check')">
-        <span class="sc-icon">✅</span>
-        <div class="sc-name">Проверь себя</div>
-        <div class="sc-desc">Проверочные работы из учебника по темам.</div>
-      </div>
     </div>
+  
   </div>
 
   <div class="bottom-nav" style="position:relative;z-index:10">
@@ -3270,31 +3267,19 @@ function homeHwGo() {
     TASKS.find(t => t.id.replace('.','') === query.replace('.',''));
 
   if(!found) {
-    const hint = document.querySelector('.home-hw-hint');
-    const prev = hint.dataset.orig || hint.textContent;
-    hint.dataset.orig = prev;
-    hint.textContent = `❌ Задание «${raw}» не найдено. Попробуй другой номер.`;
-    hint.style.color = '#ef4444';
-    setTimeout(() => { hint.textContent = prev; hint.style.color = ''; delete hint.dataset.orig; }, 3000);
+    const hint = document.getElementById('home-hw-hint');
+    if (hint) {
+      hint.textContent = `❌ Задание «${raw}» не найдено.`;
+      hint.style.color = '#ef4444';
+      setTimeout(() => { hint.textContent = ''; hint.style.color = ''; }, 3000);
+    }
     return;
   }
 
   currentTask = found;
+  document.getElementById('hw-num').value = found.id;
   showScreen('screen-homework');
-  setTimeout(() => {
-    const col = document.getElementById('hw-result-col');
-    if(!col) return;
-    const done = ST.solvedTasks && ST.solvedTasks[found.id];
-    col.innerHTML = `<div class="white-card">
-      <div class="task-id">Задание ${found.id} ${done ? '✅' : ''}</div>
-      <div class="task-topic">${found.topic}</div>
-      <div class="task-text">${found.text}</div>
-      <div class="task-actions">
-        <button class="btn-find" onclick="goToWalkthroughFromHW()">🤖 Разобрать с Умником</button>
-        <button class="btn-secondary" onclick="showScreen('screen-already-solved')">✅ Я уже решил</button>
-      </div>
-    </div>`;
-  }, 50);
+  setTimeout(() => findTask(), 50);
 }
 
 // Облака с формулами летят по главному экрану
@@ -3909,11 +3894,11 @@ const SELF_CHECKS = [
     title: "Проверочная работа №1",
     subtitle: "Тема 3 · стр. 22",
     tasks: [
-      { q: "Переведи в сантиметры: 3 м 45 см = ? см", a: "345", hint: "3·100+45=345 см" },
-      { q: "Переведи в миллиметры: 2 м 3 дм 5 мм = ? мм", a: "2035", hint: "2м=2000мм, 3дм=300мм, +5мм = 2305 мм... Стоп: 2м=2000, 3дм=300, 5мм=5 → 2305 мм" },
-      { q: "Переведи в метры и дециметры: 275 см = ? м ? дм", a: "2 м 7 дм", hint: "275 см = 200 см + 70 см + 5 см = 2 м 7 дм 5 см" },
-      { q: "Расположи в порядке возрастания: 2 м 15 см; 250 см; 2 дм 15 мм. Что меньше?", a: "2 дм 15 мм", hint: "2дм15мм=215мм=21,5см — самое маленькое; 2м15см=215см; 250см" },
-      { q: "Найди периметр прямоугольника со сторонами 4 дм 5 см и 2 дм 8 см.", a: "14 дм 6 см", hint: "P=2·(45+28)=2·73=146 см=14 дм 6 см" }
+      { q: "Выразите в сантиметрах: а) 5 м; б) 7 дм 90 мм", a: "а) 500; б) 79", hint: "а) 5×100=500 см; б) 7дм=70см, 90мм=9см → 79 см" },
+      { q: "Выразите в дециметрах: а) 4 м 2 дм; б) 1 м 30 см", a: "а) 42; б) 13", hint: "а) 4м=40дм+2дм=42дм; б) 1м=10дм, 30см=3дм → 13дм" },
+      { q: "Выразите в километрах и метрах: а) 8563 м; б) 30 600 м", a: "а) 8 км 563 м; б) 30 км 600 м", hint: "а) 8563÷1000=8 км ост.563 м; б) 30600÷1000=30 км ост.600 м" },
+      { q: "Выразите в одних единицах измерения: а) 30 м 40 дм; б) 13 м 700 см", a: "а) 34 м; б) 20 м", hint: "а) 40дм=4м → 30+4=34 м; б) 700см=7м → 13+7=20 м" },
+      { q: "При постройке забора поставили по одной стороне 7 столбов на расстоянии 2 м друг от друга. Найдите длину этой стороны забора.", a: "12", hint: "7 столбов = 6 промежутков; 6 × 2 = 12 м" }
     ]
   },
   {
@@ -3921,27 +3906,26 @@ const SELF_CHECKS = [
     title: "Проверочная работа №2",
     subtitle: "Тема 3 · стр. 22",
     tasks: [
-      { q: "На рисунке 1.13 ломаная ABCD. Сколько звеньев у ломаной?", a: "3", hint: "AB, BC, CD — 3 звена" },
-      { q: "Ломаная ABCD замкнута или нет?", a: "нет", hint: "A и D — разные точки, ломаная не замкнута" },
-      { q: "Как называется замкнутая ломаная?", a: "многоугольник", hint: "Замкнутая ломаная — это многоугольник (контур фигуры)" },
-      { q: "Если AB=3 см, BC=4 см, CD=5 см, найди длину ломаной ABCD.", a: "12", hint: "3+4+5=12 см" }
+      { q: "На рисунке 1.13 изображена фигура.<br><svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 130' width='180' height='130' style='display:block;margin:8px 0'><line x1='30' y1='30' x2='150' y2='20' stroke='#6366F1' stroke-width='1.8'/><line x1='150' y1='20' x2='160' y2='100' stroke='#6366F1' stroke-width='1.8'/><line x1='160' y1='100' x2='20' y2='110' stroke='#6366F1' stroke-width='1.8'/><circle cx='30' cy='30' r='3' fill='#222'/><text x='18' y='26' font-size='12' font-family='serif' fill='#111'>A</text><circle cx='150' cy='20' r='3' fill='#222'/><text x='154' y='18' font-size='12' font-family='serif' fill='#111'>B</text><circle cx='160' cy='100' r='3' fill='#222'/><text x='164' y='104' font-size='12' font-family='serif' fill='#111'>C</text><circle cx='20' cy='110' r='3' fill='#222'/><text x='6' y='114' font-size='12' font-family='serif' fill='#111'>D</text><text x='4' y='126' font-size='9' fill='#888' font-family='sans-serif'>Рис. 1.13</text></svg><br>Является ли ломаная ABCD замкнутой или незамкнутой?", a: "незамкнутой", hint: "Точки A и D не совпадают — ломаная незамкнута" },
+      { q: "Как называется изображённая фигура? Перечислите её стороны и вершины.", a: "ломаная; стороны: AB, BC, CD; вершины: A, B, C, D", hint: "3 звена: AB, BC, CD. Вершины: A, B, C, D" },
+      { q: "Измерьте длину отрезка AB на рис. 1.13 и выразите её в миллиметрах и в сантиметрах. (AB ≈ 35 мм по учебнику)", a: "35 мм; 3 см 5 мм", hint: "Измерь линейкой. 1 см = 10 мм" },
+      { q: "Найдите периметр фигуры ABCD. AB≈35 мм, BC≈25 мм, CD≈45 мм. Выразите в мм и в сантиметрах.", a: "105 мм; 10 см 5 мм", hint: "P=35+25+45=105 мм = 10 см 5 мм" }
     ]
-  }
-,
+  },
   {
     id: "pr-t4-1",
     title: "Проверочная работа",
     subtitle: "Тема 4 · стр. 27",
     tasks: [
-      { q: "Рассмотрите рисунок 1.24. Какой луч дополнительный к лучу AC?", a: "луч CA (противоположный)", hint: "Дополнительный луч — противоположный: начало то же (A), направление обратное" },
-      { q: "Какие точки принадлежат прямой MN; не принадлежат прямой PO?", a: "MN: B, A, T, C (на горизонтальной прямой). Не принадлежат PO: B, A, T, C, F, Q, R", hint: "Прямая MN — горизонтальная линия через B, A, T, C" },
-      { q: "На какие части делит прямую MO точка P?", a: "Точка P делит прямую MO на два луча: PM (вниз) и PO (вверх)", hint: "Точка на прямой делит её на 2 луча" },
-      { q: "Пересекаются ли прямые BC и MO?", a: "Да, пересекаются в точке T (или A — определяется по рисунку)", hint: "Найди точку пересечения горизонтальной и наклонной прямых" },
-      { q: "Имеют ли общие точки лучи AB и PM; лучи AB и PO?", a: "Лучи AB и PM: да, имеют общую точку (пересечение прямых). Лучи AB и PO: зависит от направлений — нужно проверить по рисунку", hint: "Луч AB идёт от A через B влево; луч PM — вниз от P" },
-      { q: "Проведите прямую через точку R так, чтобы она имела только одну общую точку с прямыми BC и MO.", a: "Прямая через R должна пересекать BC и MO каждую ровно в одной точке (не параллельна им)", hint: "Нарисуй наклонную прямую через R, пересекающую обе прямые" },
-      { q: "Какие из утверждений верны? а) луч AB имеет общую точку с прямой OM; б) прямая AB имеет общую точку с лучом OM; в) прямая AB имеет общую точку с прямой OM; г) луч AB имеет общую точку с лучом OM?", a: "а) да; б) да; в) да; г) зависит от направления луча AB и луча OM — проверь по рисунку", hint: "Прямая бесконечна в обе стороны, луч — в одну. Пересечение зависит от направлений" }
+      { q: "Рассмотрите рисунок 1.24.<br><svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 220 190' width='220' height='190' style='display:block;margin:8px 0'><line x1='8' y1='155' x2='212' y2='155' stroke='#333' stroke-width='1.5'/><polygon points='4,155 12,151 12,159' fill='#333'/><polygon points='216,155 208,151 208,159' fill='#333'/><circle cx='28' cy='155' r='2.5' fill='#222'/><text x='22' y='169' font-size='11' font-family='serif' fill='#222'>B</text><circle cx='78' cy='155' r='2.5' fill='#222'/><text x='72' y='169' font-size='11' font-family='serif' fill='#222'>A</text><circle cx='138' cy='155' r='2.5' fill='#222'/><text x='132' y='169' font-size='11' font-family='serif' fill='#222'>T</text><circle cx='193' cy='155' r='2.5' fill='#222'/><text x='187' y='169' font-size='11' font-family='serif' fill='#222'>C</text><line x1='98' y1='182' x2='183' y2='38' stroke='#EF4444' stroke-width='1.5'/><polygon points='183,34 178,44 188,44' fill='#EF4444'/><circle cx='178' cy='46' r='2.5' fill='#222'/><text x='182' y='44' font-size='11' font-family='serif' fill='#222'>O</text><circle cx='158' cy='82' r='2.5' fill='#222'/><text x='162' y='80' font-size='11' font-family='serif' fill='#222'>N</text><circle cx='138' cy='118' r='2.5' fill='#222'/><text x='142' y='116' font-size='11' font-family='serif' fill='#222'>P</text><circle cx='108' cy='168' r='2.5' fill='#222'/><text x='112' y='180' font-size='11' font-family='serif' fill='#222'>M</text><circle cx='190' cy='22' r='2.5' fill='#222'/><text x='194' y='20' font-size='11' font-family='serif' fill='#222'>F</text><circle cx='208' cy='90' r='2.5' fill='#222'/><text x='212' y='88' font-size='11' font-family='serif' fill='#222'>Q</text><circle cx='22' cy='90' r='2.5' fill='#222'/><text x='8' y='88' font-size='11' font-family='serif' fill='#222'>R</text><text x='4' y='14' font-size='9' fill='#888' font-family='sans-serif'>Рис. 1.24</text></svg><br>Какой луч дополнительный к лучу AC?", a: "луч AB", hint: "Дополнительный луч — противоположный: от A в сторону B" },
+      { q: "Какие точки принадлежат прямой MN? Какие точки не принадлежат прямой PO?", a: "прямой MN: B, A, T, C не принадлежат; PO: F, Q, R не принадлежат", hint: "Прямая MO идёт через O, N, P, M. Горизонтальная — через B, A, T, C" },
+      { q: "На какие лучи делит прямую MO точка P?", a: "луч PM и луч PO", hint: "Точка P на прямой делит её на 2 луча: PM (вниз) и PO (вверх)" },
+      { q: "Пересекаются ли прямые BC и MO?", a: "да", hint: "Наклонная MO пересекает горизонтальную BC в точке между A и T" },
+      { q: "Имеют ли общие точки лучи AB и PM? Лучи AB и PO?", a: "AB и PM: да; AB и PO: нет", hint: "Луч AB — от A влево. Луч PM — вниз от P, пересекает AB. Луч PO — вверх от P, не пересекает AB" },
+      { q: "Какие из утверждений верны? а) луч AB имеет общую точку с прямой OM; б) прямая AB имеет общую точку с лучом OM; в) прямая AB имеет общую точку с прямой OM; г) луч AB имеет общую точку с лучом OM?", a: "а) да; б) да; в) да; г) нет", hint: "Прямая бесконечна в обе стороны и пересекает всё. Луч AB (влево) и луч OM (вверх-влево) не пересекаются" }
     ]
   }
+
 ];
 
 let scCurrentCheck = null;
