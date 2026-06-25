@@ -1377,7 +1377,7 @@ body {
   <div class="bottom-nav" style="position:relative;z-index:10">
     <a onclick="showScreen('screen-home')" class="active"><span class="icon">🏠</span>Главная</a>
     <a onclick="showScreen('screen-map')"><span class="icon">🗺</span>Темы</a>
-    <a onclick="showScreen('screen-trainers')"><span class="icon">⚡</span>Тренажёр</a>
+    <a onclick="showScreen('screen-self-check')"><span class="icon">✅</span>Проверка</a>
     <a onclick="showScreen('screen-parent')"><span class="icon">🏆</span>Прогресс</a>
   </div>
 </div>
@@ -1430,7 +1430,7 @@ body {
   <div class="bottom-nav">
     <a onclick="showScreen('screen-homework')" class="active"><span class="icon">📚</span>Домашка</a>
     <a onclick="showScreen('screen-map')"><span class="icon">🗺</span>Темы</a>
-    <a onclick="showScreen('screen-trainers')"><span class="icon">⚡</span>Трени</a>
+    <a onclick="showScreen('screen-self-check')"><span class="icon">✅</span>Проверка</a>
     <a onclick="showScreen('screen-parent')"><span class="icon">🏆</span>Прогресс</a>
   </div>
 </div>
@@ -1607,7 +1607,7 @@ body {
   <div class="bottom-nav">
     <a onclick="showScreen('screen-homework')"><span class="icon">📚</span>Домашка</a>
     <a onclick="showScreen('screen-map')" class="active"><span class="icon">🗺</span>Темы</a>
-    <a onclick="showScreen('screen-trainers')"><span class="icon">⚡</span>Трени</a>
+    <a onclick="showScreen('screen-self-check')"><span class="icon">✅</span>Проверка</a>
     <a onclick="showScreen('screen-parent')"><span class="icon">🏆</span>Прогресс</a>
   </div>
 </div>
@@ -1690,6 +1690,55 @@ body {
     <a onclick="showScreen('screen-map')"><span class="icon">🗺</span>Темы</a>
     <a onclick="showScreen('screen-trainers')"><span class="icon">⚡</span>Трени</a>
     <a onclick="showScreen('screen-parent')" class="active"><span class="icon">🏆</span>Прогресс</a>
+  </div>
+</div>
+
+<!-- ===== SELF CHECK ===== -->
+<div id="screen-self-check" class="screen">
+  <nav class="top-nav">
+    <button class="nav-back" onclick="showScreen('screen-home')">← Назад</button>
+    <div class="nav-logo">✅ Проверь себя</div>
+    <div class="nav-xp" id="nav-xp-sc">⭐ 0 XP</div>
+    <div class="nav-menu">
+      <a onclick="showScreen('screen-homework')">📚 Домашка</a>
+      <a onclick="showScreen('screen-map')">🗺 Темы</a>
+      <a onclick="showScreen('screen-self-check')" class="active">✅ Проверь себя</a>
+      <a onclick="showScreen('screen-parent')">🏆 Прогресс</a>
+    </div>
+  </nav>
+  <div class="screen-body">
+    <div class="screen-title">Проверь себя</div>
+    <div class="screen-subtitle">Проверочные работы из учебника</div>
+    <div id="sc-list-view">
+      <div id="sc-cards"></div>
+    </div>
+    <div id="sc-session-view" style="display:none">
+      <div class="trainer-session">
+        <div class="session-progress" id="sc-session-prog"></div>
+        <div class="task-num" id="sc-task-num">Задание 1 из 5</div>
+        <div style="font-size:13px;color:rgba(255,255,255,0.7);margin-bottom:8px" id="sc-task-source"></div>
+        <div class="trainer-task-text" id="sc-task-text"></div>
+        <input type="text" class="trainer-input" id="sc-input" placeholder="Ответ..." onkeydown="if(event.key==='Enter')checkSelfCheck()">
+        <button class="btn-check" onclick="checkSelfCheck()">✅ Проверить</button>
+        <div class="xp-flash" id="sc-xp-flash">+10 XP ⭐</div>
+        <div id="sc-result" style="margin-top:16px;display:none"></div>
+        <div id="sc-next-wrap" style="display:none;margin-top:12px">
+          <button class="btn-secondary" onclick="nextSelfCheckTask()">Следующее →</button>
+        </div>
+      </div>
+    </div>
+    <div id="sc-done-view" style="display:none;text-align:center;padding:40px 0">
+      <div style="font-size:56px;margin-bottom:16px">🏆</div>
+      <div style="font-size:24px;font-weight:900;color:#fff;margin-bottom:8px">Проверочная пройдена!</div>
+      <div style="font-size:15px;color:rgba(255,255,255,0.8);margin-bottom:24px" id="sc-done-score"></div>
+      <button class="btn-primary" onclick="showSCList()">← К списку работ</button>
+    </div>
+  </div>
+  <div class="bottom-nav">
+    <a onclick="showScreen('screen-homework')"><span class="icon">📚</span>Домашка</a>
+    <a onclick="showScreen('screen-map')"><span class="icon">🗺</span>Темы</a>
+    <a onclick="showScreen('screen-self-check')" class="active"><span class="icon">✅</span>Проверка</a>
+    <a onclick="showScreen('screen-parent')"><span class="icon">🏆</span>Прогресс</a>
   </div>
 </div>
 
@@ -3011,6 +3060,7 @@ function showScreen(id) {
   if(id === 'screen-trainers') showTrainerList();
   if(id === 'screen-already-solved') fillAlreadySolved();
   if(id === 'screen-photo-check') fillPhotoCheck();
+  if(id === 'screen-self-check') showSCList();
   window.scrollTo(0,0);
 }
 
@@ -3780,6 +3830,144 @@ function grantAchievement(id) {
     lsSave();
   }
 }
+
+// ===== ПРОВЕРОЧНЫЕ РАБОТЫ =====
+const SELF_CHECKS = [
+  {
+    id: "pr-t2-1",
+    title: "Проверочная работа №1",
+    subtitle: "Тема 2 · стр. 15",
+    tasks: [
+      { q: "В таблице: лук — 280 кг, морковь — 175 кг, капуста — 420 кг, яблоки — 315 кг. Чего больше всего заготовили?", a: "капуста", hint: "Сравни все числа: 280, 175, 420, 315" },
+      { q: "Чего меньше всего заготовили? (лук — 280 кг, морковь — 175 кг, капуста — 420 кг, яблоки — 315 кг)", a: "морковь", hint: "Найди наименьшее число: 175" },
+      { q: "На сколько кг лука заготовили больше, чем моркови? (лук 280 кг, морковь 175 кг)", a: "105", hint: "280 − 175 = 105" },
+      { q: "Сколько всего килограммов овощей и фруктов заготовили? (лук 280, морковь 175, капуста 420, яблоки 315)", a: "1190", hint: "280 + 175 + 420 + 315 = 1190" },
+      { q: "На сколько кг капусты заготовили больше, чем яблок? (капуста 420 кг, яблоки 315 кг)", a: "105", hint: "420 − 315 = 105" }
+    ]
+  },
+  {
+    id: "pr-t2-2",
+    title: "Проверочная работа №2",
+    subtitle: "Тема 2 · стр. 15",
+    tasks: [
+      { q: "Запиши шестизначное число, в котором единицы равны 6, десятки равны 0, сотни равны 4, тысячи равны 9, десятки тысяч равны 3, сотни тысяч равны 7.", a: "739406", hint: "Читай разряды: сотни тысяч=7, десятки тысяч=3, тысячи=9, сотни=4, десятки=0, единицы=6" },
+      { q: "Запиши цифру разряда сотен числа 739406.", a: "4", hint: "739406: ...4.. — сотни стоят на третьем месте справа" },
+      { q: "Запиши цифру разряда тысяч числа 739406.", a: "9", hint: "739406: ..9... — четвёртое место справа" },
+      { q: "Запиши число, в котором 7 сотен тысяч, 3 десятка тысяч, 9 тысяч, 4 сотни, 0 десятков, 6 единиц.", a: "739406", hint: "7·100000+3·10000+9·1000+4·100+0·10+6=739406" },
+      { q: "На сколько число 739406 больше числа 700000?", a: "39406", hint: "739406 − 700000 = 39406" },
+      { q: "Между какими сотнями тысяч находится число 739406?", a: "700000 и 800000", hint: "700000 < 739406 < 800000" },
+      { q: "Округли число 739406 до десятков тысяч.", a: "740000", hint: "Смотрим на тысячи: 9 ≥ 5, значит округляем вверх: 740000" },
+      { q: "Округли число 739406 до сотен тысяч.", a: "700000", hint: "Смотрим на десятки тысяч: 3 < 5, значит округляем вниз: 700000" }
+    ]
+  },
+  {
+    id: "pr-t3-1",
+    title: "Проверочная работа №1",
+    subtitle: "Тема 3 · стр. 22",
+    tasks: [
+      { q: "Переведи в сантиметры: 3 м 45 см = ? см", a: "345", hint: "3·100+45=345 см" },
+      { q: "Переведи в миллиметры: 2 м 3 дм 5 мм = ? мм", a: "2035", hint: "2м=2000мм, 3дм=300мм, +5мм = 2305 мм... Стоп: 2м=2000, 3дм=300, 5мм=5 → 2305 мм" },
+      { q: "Переведи в метры и дециметры: 275 см = ? м ? дм", a: "2 м 7 дм", hint: "275 см = 200 см + 70 см + 5 см = 2 м 7 дм 5 см" },
+      { q: "Расположи в порядке возрастания: 2 м 15 см; 250 см; 2 дм 15 мм. Что меньше?", a: "2 дм 15 мм", hint: "2дм15мм=215мм=21,5см — самое маленькое; 2м15см=215см; 250см" },
+      { q: "Найди периметр прямоугольника со сторонами 4 дм 5 см и 2 дм 8 см.", a: "14 дм 6 см", hint: "P=2·(45+28)=2·73=146 см=14 дм 6 см" }
+    ]
+  },
+  {
+    id: "pr-t3-2",
+    title: "Проверочная работа №2",
+    subtitle: "Тема 3 · стр. 22",
+    tasks: [
+      { q: "На рисунке 1.13 ломаная ABCD. Сколько звеньев у ломаной?", a: "3", hint: "AB, BC, CD — 3 звена" },
+      { q: "Ломаная ABCD замкнута или нет?", a: "нет", hint: "A и D — разные точки, ломаная не замкнута" },
+      { q: "Как называется замкнутая ломаная?", a: "многоугольник", hint: "Замкнутая ломаная — это многоугольник (контур фигуры)" },
+      { q: "Если AB=3 см, BC=4 см, CD=5 см, найди длину ломаной ABCD.", a: "12", hint: "3+4+5=12 см" }
+    ]
+  }
+];
+
+let scCurrentCheck = null;
+let scCurrentIndex = 0;
+let scCorrectCount = 0;
+
+function renderSelfCheckList() {
+  const grid = document.getElementById('sc-cards');
+  grid.innerHTML = SELF_CHECKS.map(ch => `
+    <div class="white-card" style="margin-bottom:12px;cursor:pointer" onclick="startSelfCheck('${ch.id}')">
+      <div style="font-size:16px;font-weight:900;color:var(--ink);margin-bottom:4px">${ch.title}</div>
+      <div style="font-size:13px;color:#888;margin-bottom:8px">${ch.subtitle}</div>
+      <div style="font-size:13px;color:var(--purple)">${ch.tasks.length} вопросов</div>
+    </div>
+  `).join('');
+}
+
+function showSCList() {
+  document.getElementById('sc-list-view').style.display = '';
+  document.getElementById('sc-session-view').style.display = 'none';
+  document.getElementById('sc-done-view').style.display = 'none';
+  renderSelfCheckList();
+}
+
+function startSelfCheck(id) {
+  scCurrentCheck = SELF_CHECKS.find(c => c.id === id);
+  if(!scCurrentCheck) return;
+  scCurrentIndex = 0;
+  scCorrectCount = 0;
+  document.getElementById('sc-list-view').style.display = 'none';
+  document.getElementById('sc-session-view').style.display = '';
+  document.getElementById('sc-done-view').style.display = 'none';
+  showSCTask();
+}
+
+function showSCTask() {
+  const t = scCurrentCheck.tasks[scCurrentIndex];
+  const total = scCurrentCheck.tasks.length;
+  document.getElementById('sc-task-num').textContent = `Вопрос ${scCurrentIndex+1} из ${total}`;
+  document.getElementById('sc-task-source').textContent = scCurrentCheck.title + ' · ' + scCurrentCheck.subtitle;
+  document.getElementById('sc-task-text').textContent = t.q;
+  document.getElementById('sc-input').value = '';
+  document.getElementById('sc-result').style.display = 'none';
+  document.getElementById('sc-next-wrap').style.display = 'none';
+  document.getElementById('sc-xp-flash').style.display = 'none';
+  const prog = Math.round((scCurrentIndex / total) * 100);
+  document.getElementById('sc-session-prog').style.setProperty('--prog', prog + '%');
+  document.getElementById('sc-session-prog').innerHTML = `<div style="height:6px;background:rgba(255,255,255,0.2);border-radius:3px"><div style="height:6px;background:var(--gold);border-radius:3px;width:${prog}%"></div></div>`;
+  setTimeout(() => document.getElementById('sc-input').focus(), 100);
+}
+
+function checkSelfCheck() {
+  const t = scCurrentCheck.tasks[scCurrentIndex];
+  const userAns = document.getElementById('sc-input').value.trim().toLowerCase().replace(/\s+/g,' ');
+  const correctAns = String(t.a).toLowerCase();
+  const isOk = userAns === correctAns || correctAns.split(';').some(a => a.trim() === userAns);
+  const resEl = document.getElementById('sc-result');
+  resEl.style.display = 'block';
+  if(isOk) {
+    scCorrectCount++;
+    resEl.innerHTML = `<div class="result-correct">✅ Верно! Ответ: ${t.a}</div>`;
+    const flash = document.getElementById('sc-xp-flash');
+    flash.style.display = 'block';
+    flash.textContent = '+10 XP ⭐';
+    setTimeout(() => flash.style.display = 'none', 1500);
+    addXP(10);
+  } else {
+    resEl.innerHTML = `<div class="result-wrong">❌ Ответ: <b>${t.a}</b><br><small>${t.hint}</small></div>`;
+  }
+  document.getElementById('sc-next-wrap').style.display = 'block';
+}
+
+function nextSelfCheckTask() {
+  scCurrentIndex++;
+  if(scCurrentIndex >= scCurrentCheck.tasks.length) {
+    document.getElementById('sc-session-view').style.display = 'none';
+    document.getElementById('sc-done-view').style.display = '';
+    const total = scCurrentCheck.tasks.length;
+    document.getElementById('sc-done-score').textContent = `Правильно: ${scCorrectCount} из ${total}`;
+  } else {
+    showSCTask();
+  }
+}
+
+
 </script>
 </body>
 </html>
