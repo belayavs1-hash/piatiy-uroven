@@ -1371,6 +1371,11 @@ body {
         <div class="sc-name">Кабинет родителя</div>
         <div class="sc-desc">Прогресс, рекомендации и достижения.</div>
       </div>
+      <div class="section-card" style="--accent:#10B981" onclick="showScreen('screen-self-check')">
+        <span class="sc-icon">✅</span>
+        <div class="sc-name">Проверь себя</div>
+        <div class="sc-desc">Проверочные работы из учебника по темам.</div>
+      </div>
     </div>
   </div>
 
@@ -3400,6 +3405,22 @@ function findTask() {
     const para = document.getElementById('hw-para').value;
     taskId = `${para}.${num}`;
   }
+  // Синхронизируем параграф и тему по найденному заданию
+  const _syncTask = TASKS.find(t => t.id === taskId);
+  if (_syncTask) {
+    const _pNum = parseInt(_syncTask.para.replace('§',''));
+    const _pEl = document.getElementById('hw-para');
+    if (_pEl && _pNum) {
+      _pEl.value = _pNum;
+      const _tEl = document.getElementById('hw-topic');
+      if (_tEl && PARA_TOPICS[_pNum]) {
+        const _tops = PARA_TOPICS[_pNum];
+        _tEl.innerHTML = _tops.map(t => `<option>${t}</option>`).join('');
+        const _idx = _tops.indexOf(_syncTask.topic);
+        if (_idx >= 0) _tEl.selectedIndex = _idx;
+      }
+    }
+  }
   const task = TASKS.find(t => t.id === taskId);
   const col = document.getElementById('hw-result-col');
   if (!task) {
@@ -3415,7 +3436,7 @@ function findTask() {
   const done = ST.solvedTasks[task.id];
   col.innerHTML = `<div class="white-card">
     <div class="task-id">Задание ${task.id} ${done ? '✅' : ''}</div>
-    <div class="task-topic">${task.topic}</div>
+    <div style="font-size:12px;color:#6366f1;font-weight:700;margin-bottom:2px">${task.para} · ${task.topic}</div>
     <div class="task-text">${task.text}</div>
     <div class="task-actions">
       <button class="btn-find" onclick="goToWalkthroughFromHW()">🤖 Разобрать с Умником</button>
