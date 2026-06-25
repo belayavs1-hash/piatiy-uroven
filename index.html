@@ -3882,11 +3882,11 @@ const SELF_CHECKS = [
     title: "Проверочная работа №1",
     subtitle: "Тема 2 · стр. 15",
     tasks: [
-      { q: "В таблице: лук — 280 кг, морковь — 175 кг, капуста — 420 кг, яблоки — 315 кг. Чего больше всего заготовили?", a: "капуста", hint: "Сравни все числа: 280, 175, 420, 315" },
-      { q: "Чего меньше всего заготовили? (лук — 280 кг, морковь — 175 кг, капуста — 420 кг, яблоки — 315 кг)", a: "морковь", hint: "Найди наименьшее число: 175" },
-      { q: "На сколько кг лука заготовили больше, чем моркови? (лук 280 кг, морковь 175 кг)", a: "105", hint: "280 − 175 = 105" },
-      { q: "Сколько всего килограммов овощей и фруктов заготовили? (лук 280, морковь 175, капуста 420, яблоки 315)", a: "1190", hint: "280 + 175 + 420 + 315 = 1190" },
-      { q: "На сколько кг капусты заготовили больше, чем яблок? (капуста 420 кг, яблоки 315 кг)", a: "105", hint: "420 − 315 = 105" }
+      { q: "В магазине купили лук, морковь, капусту и яблоки.<br><table style='border-collapse:collapse;margin:8px 0;font-size:13px'><tr style='background:#e0f2fe'><th style='padding:4px 8px;border:1px solid #bae6fd;text-align:left'>Наименование</th><th style='padding:4px 8px;border:1px solid #bae6fd'>Цена, р.</th><th style='padding:4px 8px;border:1px solid #bae6fd'>Масса, кг</th><th style='padding:4px 8px;border:1px solid #bae6fd'>Стоимость, р.</th></tr><tr><td style='padding:4px 8px;border:1px solid #bae6fd'>Лук</td><td style='padding:4px 8px;border:1px solid #bae6fd;text-align:center'>35</td><td style='padding:4px 8px;border:1px solid #bae6fd;text-align:center'>3</td><td style='padding:4px 8px;border:1px solid #bae6fd;text-align:center'>105</td></tr><tr style='background:#f8fafc'><td style='padding:4px 8px;border:1px solid #bae6fd'>Морковь</td><td style='padding:4px 8px;border:1px solid #bae6fd;text-align:center'>28</td><td style='padding:4px 8px;border:1px solid #bae6fd;text-align:center'>2</td><td style='padding:4px 8px;border:1px solid #bae6fd;text-align:center'>?</td></tr><tr><td style='padding:4px 8px;border:1px solid #bae6fd'>Капуста</td><td style='padding:4px 8px;border:1px solid #bae6fd;text-align:center'>78</td><td style='padding:4px 8px;border:1px solid #bae6fd;text-align:center'>?</td><td style='padding:4px 8px;border:1px solid #bae6fd;text-align:center'>234</td></tr><tr style='background:#f8fafc'><td style='padding:4px 8px;border:1px solid #bae6fd'>Яблоки</td><td style='padding:4px 8px;border:1px solid #bae6fd;text-align:center'>?</td><td style='padding:4px 8px;border:1px solid #bae6fd;text-align:center'>2</td><td style='padding:4px 8px;border:1px solid #bae6fd;text-align:center'>260</td></tr><tr style='background:#e0f2fe'><td colspan='3' style='padding:4px 8px;border:1px solid #bae6fd;font-weight:bold'>Итого</td><td style='padding:4px 8px;border:1px solid #bae6fd;text-align:center'>?</td></tr></table><br>Какова стоимость моркови? (цена 28 р., масса 2 кг)", a: "56", hint: "Стоимость = цена × масса: 28 × 2 = 56 р." },
+      { q: "Какова масса капусты? (цена 78 р., стоимость 234 р.)", a: "3", hint: "Масса = стоимость ÷ цена: 234 ÷ 78 = 3 кг" },
+      { q: "Какова цена яблок? (масса 2 кг, стоимость 260 р.)", a: "130", hint: "Цена = стоимость ÷ масса: 260 ÷ 2 = 130 р." },
+      { q: "Сколько стоит вся покупка? (лук=105 р., морковь=56 р., капуста=234 р., яблоки=260 р.)", a: "655", hint: "105 + 56 + 234 + 260 = 655 р." },
+      { q: "Сколько денег потратят, если купят лука на 1 кг меньше (2 кг), моркови на 1 кг больше (3 кг), капусты на 1 кг меньше (2 кг) и 3 кг яблок?", a: "700", hint: "Лук: 35×2=70; Морковь: 28×3=84; Капуста: 78×2=156; Яблоки: 130×3=390. Итого: 70+84+156+390=700 р." }
     ]
   },
   {
@@ -3894,14 +3894,14 @@ const SELF_CHECKS = [
     title: "Проверочная работа №2",
     subtitle: "Тема 2 · стр. 15",
     tasks: [
-      { q: "Запиши шестизначное число, в котором единицы равны 6, десятки равны 0, сотни равны 4, тысячи равны 9, десятки тысяч равны 3, сотни тысяч равны 7.", a: "739406", hint: "Читай разряды: сотни тысяч=7, десятки тысяч=3, тысячи=9, сотни=4, десятки=0, единицы=6" },
-      { q: "Запиши цифру разряда сотен числа 739406.", a: "4", hint: "739406: ...4.. — сотни стоят на третьем месте справа" },
-      { q: "Запиши цифру разряда тысяч числа 739406.", a: "9", hint: "739406: ..9... — четвёртое место справа" },
-      { q: "Запиши число, в котором 7 сотен тысяч, 3 десятка тысяч, 9 тысяч, 4 сотни, 0 десятков, 6 единиц.", a: "739406", hint: "7·100000+3·10000+9·1000+4·100+0·10+6=739406" },
-      { q: "На сколько число 739406 больше числа 700000?", a: "39406", hint: "739406 − 700000 = 39406" },
-      { q: "Между какими сотнями тысяч находится число 739406?", a: "700000 и 800000", hint: "700000 < 739406 < 800000" },
-      { q: "Округли число 739406 до десятков тысяч.", a: "740000", hint: "Смотрим на тысячи: 9 ≥ 5, значит округляем вверх: 740000" },
-      { q: "Округли число 739406 до сотен тысяч.", a: "700000", hint: "Смотрим на десятки тысяч: 3 < 5, значит округляем вниз: 700000" }
+      { q: "Запишите любое трёхзначное число и припишите к нему ещё одно такое же. Например: 235 → 235235. Сколько знаков содержит полученное число?", a: "6", hint: "Трёхзначное + трёхзначное = шестизначное: всегда 6 знаков" },
+      { q: "Какое число стоит в классе единиц числа 235235?", a: "235", hint: "Класс единиц — последние три цифры: ...235" },
+      { q: "Какая цифра стоит в разряде единиц числа 235235?", a: "5", hint: "Единицы — самый правый разряд: 23523<b>5</b>" },
+      { q: "Какая цифра стоит в разряде единиц тысяч числа 235235?", a: "5", hint: "Единицы тысяч — четвёртый разряд справа: 23<b>5</b>235" },
+      { q: "Увеличьте число 235235 на 1.", a: "235236", hint: "235235 + 1 = 235236" },
+      { q: "Запишите число, предшествующее числу 235235.", a: "235234", hint: "Предыдущее = 235235 − 1 = 235234" },
+      { q: "Увеличьте число 235235 на 1000.", a: "236235", hint: "235235 + 1000 = 236235" },
+      { q: "Разделите число 235235 на 1001.", a: "235", hint: "Любое такое шестизначное число ÷ 1001 = исходное трёхзначное" }
     ]
   },
   {
@@ -3997,7 +3997,12 @@ function checkSelfCheck() {
   const t = scCurrentCheck.tasks[scCurrentIndex];
   const userAns = document.getElementById('sc-input').value.trim().toLowerCase().replace(/\s+/g,' ');
   const correctAns = String(t.a).toLowerCase();
-  const isOk = userAns === correctAns || correctAns.split(';').some(a => a.trim() === userAns);
+  // Нечёткое сравнение: принимаем совпадение, вхождение (падежи), варианты через ; или |
+  const _norm = s => s.replace(/[.,;:!?]/g,'').replace(/\s+/g,' ').trim();
+  const _u = _norm(userAns);
+  const _c = _norm(correctAns);
+  const _vars = _c.split(/[|]/).map(v => _norm(v));
+  const isOk = _vars.some(v => v === _u || v.includes(_u) || _u.includes(v));
   const resEl = document.getElementById('sc-result');
   resEl.style.display = 'block';
   if(isOk) {
