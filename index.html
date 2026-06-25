@@ -1187,6 +1187,17 @@ body {
 .chat-task-text { font-size:15px; color:#fff; font-weight:600; line-height:1.5; }
 .chat-xp { display:inline-block; background:rgba(250,204,21,.2); border:1px solid rgba(250,204,21,.4); border-radius:12px; padding:3px 10px; font-size:13px; font-weight:800; color:#fbbf24; margin-top:6px; }
 @keyframes bubbleIn { from { opacity:0; transform:translateY(8px) scale(.97); } to { opacity:1; transform:translateY(0) scale(1); } }
+
+/* ===== FUN FACTS & CHEATSHEET ===== */
+.fact-card { background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.1); border-radius: 18px; padding: 18px 20px; margin-bottom: 14px; display: flex; gap: 14px; align-items: flex-start; }
+.fact-icon { font-size: 32px; flex-shrink: 0; line-height: 1; }
+.fact-title { font-size: 15px; font-weight: 900; color: #fff; margin-bottom: 6px; }
+.fact-text { font-size: 14px; color: rgba(255,255,255,.75); line-height: 1.55; }
+.cs-section { margin-bottom: 20px; }
+.cs-section-header { display: flex; align-items: center; gap: 10px; font-size: 16px; font-weight: 900; color: var(--gold); margin-bottom: 12px; padding: 10px 16px; background: rgba(250,204,21,.08); border: 1px solid rgba(250,204,21,.2); border-radius: 14px; }
+.cs-rule { background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.09); border-radius: 12px; padding: 12px 16px; margin-bottom: 8px; }
+.cs-rule-name { font-size: 13px; font-weight: 800; color: #818cf8; margin-bottom: 4px; }
+.cs-rule-text { font-size: 14px; color: rgba(255,255,255,.85); line-height: 1.5; font-weight: 600; }
 </style>
 </head>
 <body>
@@ -1393,7 +1404,21 @@ body {
         <div class="sc-desc">Прогресс, рекомендации и достижения.</div>
       </div>
     </div>
-  
+
+    <!-- Дополнительные рубрики -->
+    <div class="home-cards-row" style="margin-top:12px">
+      <div class="section-card" style="--accent:#8B5CF6" onclick="showScreen('screen-funfacts')">
+        <span class="sc-icon">💡</span>
+        <div class="sc-name">Хочу всё знать</div>
+        <div class="sc-desc">Интересные факты о математике.</div>
+      </div>
+      <div class="section-card" style="--accent:#0EA5E9" onclick="showScreen('screen-cheatsheet')">
+        <span class="sc-icon">📋</span>
+        <div class="sc-name">Шпаргалка</div>
+        <div class="sc-desc">Формулы и правила под рукой.</div>
+      </div>
+    </div>
+
   </div>
 
   <div class="bottom-nav" style="position:relative;z-index:10">
@@ -1634,6 +1659,46 @@ body {
     <a onclick="showScreen('screen-homework')"><span class="icon">📚</span>Домашка</a>
     <a onclick="showScreen('screen-map')"><span class="icon">🗺</span>Темы</a>
     <a onclick="showScreen('screen-trainers')" class="active"><span class="icon">⚡</span>Трени</a>
+    <a onclick="showScreen('screen-parent')"><span class="icon">🏆</span>Прогресс</a>
+  </div>
+</div>
+
+<!-- ===== FUN FACTS ===== -->
+<div id="screen-funfacts" class="screen">
+  <nav class="top-nav">
+    <button class="nav-back" onclick="showScreen('screen-home')">← Назад</button>
+    <div class="nav-logo">💡 Хочу всё знать</div>
+    <div class="nav-xp" id="nav-xp-ff">⭐ 0 XP</div>
+  </nav>
+  <div class="screen-body" style="max-width:600px">
+    <div class="screen-title">Хочу всё знать</div>
+    <div class="screen-subtitle">Интересные факты о математике</div>
+    <div id="ff-cards"></div>
+  </div>
+  <div class="bottom-nav">
+    <a onclick="showScreen('screen-home')"><span class="icon">🏠</span>Главная</a>
+    <a onclick="showScreen('screen-cheatsheet')"><span class="icon">📋</span>Шпаргалка</a>
+    <a onclick="showScreen('screen-trainers')"><span class="icon">⚡</span>Трени</a>
+    <a onclick="showScreen('screen-parent')"><span class="icon">🏆</span>Прогресс</a>
+  </div>
+</div>
+
+<!-- ===== CHEATSHEET ===== -->
+<div id="screen-cheatsheet" class="screen">
+  <nav class="top-nav">
+    <button class="nav-back" onclick="showScreen('screen-home')">← Назад</button>
+    <div class="nav-logo">📋 Шпаргалка</div>
+    <div class="nav-xp" id="nav-xp-cs">⭐ 0 XP</div>
+  </nav>
+  <div class="screen-body" style="max-width:600px">
+    <div class="screen-title">Шпаргалка</div>
+    <div class="screen-subtitle">Правила и формулы по всем темам §1–§7</div>
+    <div id="cs-cards"></div>
+  </div>
+  <div class="bottom-nav">
+    <a onclick="showScreen('screen-home')"><span class="icon">🏠</span>Главная</a>
+    <a onclick="showScreen('screen-funfacts')"><span class="icon">💡</span>Факты</a>
+    <a onclick="showScreen('screen-trainers')"><span class="icon">⚡</span>Трени</a>
     <a onclick="showScreen('screen-parent')"><span class="icon">🏆</span>Прогресс</a>
   </div>
 </div>
@@ -2981,6 +3046,95 @@ const TOPICS_MAP = [
   ]}
 ];
 
+const FUN_FACTS = [
+  { icon: "🔢", title: "Ноль — изобретение", text: "Цифру 0 изобрели в Индии около 628 года нашей эры. До этого в Европе числа записывали римскими цифрами, и нуля вообще не было!" },
+  { icon: "🐚", title: "Раковина и Фибоначчи", text: "Если свернуть раковину улитки, получится спираль Фибоначчи — последовательность чисел 1, 1, 2, 3, 5, 8, 13... Каждое число = сумма двух предыдущих." },
+  { icon: "🌍", title: "Магический квадрат", text: "Магический квадрат — таблица чисел, где сумма по любой строке, столбцу и диагонали одинакова. Древние египтяне знали о нём 4000 лет назад!" },
+  { icon: "🍕", title: "Дробь в жизни", text: "Когда делишь пиццу на 8 кусков — ты работаешь с дробью 1/8! Пицца целая = 8/8 = 1." },
+  { icon: "🔭", title: "Число π", text: "Число π (пи) ≈ 3.14159... Его знают больше 100 триллионов знаков после запятой! Его никогда нельзя записать точно — цифры идут до бесконечности." },
+  { icon: "♟️", title: "Шахматная задача", text: "Если на первую клетку шахматной доски положить 1 зерно, на вторую — 2, на третью — 4 (каждый раз удваивать), на 64-й клетке зерна займут весь земной шар!" },
+  { icon: "📐", title: "Пифагор и музыка", text: "Пифагор открыл, что красивые музыкальные гармонии — это простые дроби. Например, октава — это отношение 2:1, а квинта — 3:2." },
+  { icon: "🧊", title: "Трёхмерный мир", text: "У куба 6 граней, 12 рёбер и 8 вершин. Это не случайно: по формуле Эйлера для любого многогранника вершины − рёбра + грани = 2." },
+  { icon: "🌱", title: "Дерево и дроби", text: "Ветви дерева делятся примерно в соотношении золотого сечения — это дробь ≈ 0.618. Природа «любит» этот отрезок потому, что так растение использует свет эффективнее." },
+  { icon: "⏱️", title: "Скорость света", text: "Свет летит со скоростью около 300 000 км/с. От Земли до Луны свет доходит всего за 1,3 секунды — задача на умножение: 300 000 × 1.3 = 390 000 км!" },
+  { icon: "🎲", title: "Вероятность", text: "Если подбросить монету 10 раз, то выпадение 10 орлов подряд — возможно! Вероятность — 1/1024, то есть это случается примерно раз в тысячу попыток." },
+  { icon: "🌊", title: "Периметр острова", text: "Чем точнее измеряешь берег острова, тем он длиннее! Это парадокс береговой линии — чем мельче линейка, тем больше неровностей учитываешь." },
+  { icon: "🔁", title: "Счастливый билет", text: "«Счастливый» автобусный билет — 6 цифр, где сумма первых трёх = сумме последних трёх. Примерно каждый 9-й билет — счастливый." },
+  { icon: "💎", title: "Кристаллы", text: "Кристаллы соли, снежинки, пчелиные соты — всё это правильные геометрические формы! Природа выбирает фигуры с наименьшим расходом материала." },
+  { icon: "🐝", title: "Соты пчёл", text: "Пчёлы строят соты в форме правильных шестиугольников. Математики доказали: именно такая форма позволяет хранить максимум мёда при минимуме воска." }
+];
+
+const CHEATSHEET = [
+  {
+    section: "Натуральные числа",
+    icon: "🔢",
+    rules: [
+      { name: "Натуральные числа", text: "1, 2, 3, 4, ... — числа для счёта. Нуль — не натуральное." },
+      { name: "Разряды", text: "Единицы → Десятки → Сотни → Тысячи → Десятки тысяч → Сотни тысяч → Миллион" },
+      { name: "Отрезок", text: "Отрезок — часть прямой с двумя концами. Длина = расстояние между концами." },
+      { name: "Луч", text: "Луч — часть прямой с одним концом (началом) и бесконечной длиной." },
+      { name: "Угол", text: "Угол — две лучи с общим началом (вершиной). Острый: <90°, Прямой: 90°, Тупой: >90°." }
+    ]
+  },
+  {
+    section: "Сложение и вычитание",
+    icon: "➕",
+    rules: [
+      { name: "Переместительный закон", text: "a + b = b + a (от перестановки слагаемых сумма не меняется)" },
+      { name: "Сочетательный закон", text: "(a + b) + c = a + (b + c) (можно менять скобки)" },
+      { name: "Проверка вычитания", text: "a − b = c → проверка: c + b = a" }
+    ]
+  },
+  {
+    section: "Умножение и деление",
+    icon: "✖️",
+    rules: [
+      { name: "Переместительный закон", text: "a × b = b × a" },
+      { name: "Сочетательный закон", text: "(a × b) × c = a × (b × c)" },
+      { name: "Распределительный закон", text: "(a + b) × c = a×c + b×c" },
+      { name: "Умножение на 0 и 1", text: "a × 0 = 0, a × 1 = a" },
+      { name: "Деление", text: "a ÷ b = c → проверка: c × b = a. На 0 делить нельзя!" }
+    ]
+  },
+  {
+    section: "Длина и единицы",
+    icon: "📏",
+    rules: [
+      { name: "Единицы длины", text: "1 км = 1000 м, 1 м = 100 см, 1 дм = 10 см, 1 см = 10 мм" },
+      { name: "Периметр прямоугольника", text: "P = (a + b) × 2, где a и b — стороны" },
+      { name: "Периметр квадрата", text: "P = 4 × a, где a — сторона" }
+    ]
+  },
+  {
+    section: "Площадь",
+    icon: "⬛",
+    rules: [
+      { name: "Площадь прямоугольника", text: "S = a × b (длина × ширина). Единицы: мм², см², дм², м², км²" },
+      { name: "Площадь квадрата", text: "S = a × a = a²" },
+      { name: "Перевод площади", text: "1 см² = 100 мм², 1 дм² = 100 см², 1 м² = 100 дм²" }
+    ]
+  },
+  {
+    section: "Дроби обыкновенные",
+    icon: "½",
+    rules: [
+      { name: "Дробь", text: "a/b — числитель a из знаменателя b равных частей. Правильная: a < b." },
+      { name: "Сравнение", text: "Одинаковые знаменатели: больше та, у которой числитель больше." },
+      { name: "Сложение дробей", text: "a/n + b/n = (a+b)/n — складывают числители при равных знаменателях." },
+      { name: "Вычитание дробей", text: "a/n − b/n = (a−b)/n" }
+    ]
+  },
+  {
+    section: "Десятичные дроби",
+    icon: "0.5",
+    rules: [
+      { name: "Запись", text: "0.3 = 3/10, 0.07 = 7/100, 1.5 = 15/10 = 1½" },
+      { name: "Сравнение", text: "Сравнивай поразрядно: 1.4 > 1.39 (четыре десятых > три десятых)" },
+      { name: "Сложение", text: "Пишут в столбик, выравнивая запятую. Пустые разряды заполняют нулями." }
+    ]
+  }
+];
+
 const TRAINERS_DEF = [
   {id:"add", icon:"➕", name:"Сложение", desc:"Двузначные числа"},
   {id:"sub", icon:"➖", name:"Вычитание", desc:"С переходом"},
@@ -3058,6 +3212,8 @@ function showScreen(id) {
   if(id === 'screen-parent') renderParent();
   if(id === 'screen-homework') updateTopics();
   if(id === 'screen-trainers') showTrainerList();
+  if(id === 'screen-funfacts') renderFunFacts();
+  if(id === 'screen-cheatsheet') renderCheatsheet();
   if(id === 'screen-already-solved') fillAlreadySolved();
   if(id === 'screen-photo-check') fillPhotoCheck();
   if(id === 'screen-self-check') showSCList();
@@ -3683,11 +3839,33 @@ function startTrainer(id) {
   renderTrainerTask();
 }
 
+// Пул для тренажёра: генерируем 30 задач заранее, выдаём без повторений
+const trainerPools = {};
+
 function generateTrainerTasks(type, count) {
-  const tasks = [];
-  for(let i = 0; i < count; i++) {
-    tasks.push(genOne(type));
+  if (!trainerPools[type] || trainerPools[type].length < count) {
+    // Генерируем большой пул задач
+    const pool = [];
+    const seen = new Set();
+    let attempts = 0;
+    while (pool.length < 30 && attempts < 200) {
+      attempts++;
+      const t = genOne(type);
+      const key = t.q;
+      if (!seen.has(key)) {
+        seen.add(key);
+        pool.push(t);
+      }
+    }
+    // Перемешиваем
+    for (let i = pool.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [pool[i], pool[j]] = [pool[j], pool[i]];
+    }
+    trainerPools[type] = pool;
   }
+  // Берём первые count задач из пула, остаток оставляем
+  const tasks = trainerPools[type].splice(0, count);
   return tasks;
 }
 
@@ -3767,6 +3945,38 @@ function endTrainer() {
   document.getElementById('tr-done-view').style.display = 'block';
   document.getElementById('tr-done-score').textContent = `${trCorrect} из ${trTasks.length} верно`;
   document.getElementById('tr-done-xp').textContent = `+${trCorrect * 10} XP ⭐`;
+}
+
+// ===== FUN FACTS =====
+function renderFunFacts() {
+  const el = document.getElementById('ff-cards');
+  if (!el) return;
+  el.innerHTML = FUN_FACTS.map(f => `
+    <div class="fact-card">
+      <div class="fact-icon">${f.icon}</div>
+      <div>
+        <div class="fact-title">${f.title}</div>
+        <div class="fact-text">${f.text}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ===== CHEATSHEET =====
+function renderCheatsheet() {
+  const el = document.getElementById('cs-cards');
+  if (!el) return;
+  el.innerHTML = CHEATSHEET.map(sec => `
+    <div class="cs-section">
+      <div class="cs-section-header"><span>${sec.icon}</span>${sec.section}</div>
+      ${sec.rules.map(r => `
+        <div class="cs-rule">
+          <div class="cs-rule-name">${r.name}</div>
+          <div class="cs-rule-text">${r.text}</div>
+        </div>
+      `).join('')}
+    </div>
+  `).join('');
 }
 
 // ===== PARENT =====
