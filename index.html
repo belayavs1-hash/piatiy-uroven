@@ -1167,6 +1167,9 @@ body {
 .home-big-card-sub { font-size: 13px; color: rgba(255,255,255,.5); font-weight: 700; margin-bottom: 16px; }
 .home-big-card-desc { font-size: 14px; color: rgba(255,255,255,.65); line-height: 1.5; }
 @media(max-width:600px) { .home-two-cards { grid-template-columns: 1fr; } }
+
+.hint-box-active { background: #eff6ff; border-color: #3b82f6; animation: fadeInUp .3s ease; }
+@keyframes fadeInUp { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
 </style>
 </head>
 <body>
@@ -1397,28 +1400,14 @@ body {
       <div>
         <div class="white-card">
           <div class="screen-title" style="color:var(--ink)">Найти задание</div>
-          <div class="screen-subtitle" style="color:var(--ink3)">Выбери параграф, тему и номер</div>
-          <div class="form-group">
-            <label class="form-label">Параграф</label>
-            <select class="form-select" id="hw-para" onchange="updateTopics()">
-              <option value="1">§1 — Натуральные числа и нуль. Шкалы</option>
-              <option value="2">§2 — Сложение и вычитание</option>
-              <option value="3">§3 — Умножение и деление</option>
-              <option value="4">§4 — Площади и объёмы</option>
-              <option value="5">§5 — Обыкновенные дроби</option>
-              <option value="6">§6 — Десятичные дроби</option>
-              <option value="7">§7 — Инструменты для вычислений</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Тема</label>
-            <select class="form-select" id="hw-topic"></select>
-          </div>
-          <div class="form-group">
+          <div class="screen-subtitle" style="color:var(--ink3)">Введи номер задания из учебника</div>
+          <div class="form-group" style="margin-top:20px">
             <label class="form-label">Номер задания</label>
-            <input type="text" class="form-input" id="hw-num" placeholder="Например: 1.1">
+            <input type="text" class="form-input" id="hw-num" placeholder="Например: 1.1" onkeydown="if(event.key==='Enter')findTask()" style="font-size:20px;padding:16px;font-weight:800">
           </div>
-          <button class="btn-find" onclick="findTask()">🔍 Найти задание</button>
+          <button class="btn-find" onclick="findTask()" style="margin-top:12px">🔍 Найти задание</button>
+          <div id="hw-para" style="display:none"></div>
+          <div id="hw-topic" style="display:none"></div>
         </div>
       </div>
       <div id="hw-result-col">
@@ -3460,7 +3449,7 @@ function openWalkthrough(task, backScreen) {
   document.getElementById('wt-result').style.display = 'none';
   document.getElementById('wt-after').style.display = 'none';
   document.getElementById('wt-answer-area').style.display = 'block';
-  document.getElementById('wt-next-hint-wrap').style.display = 'block';
+  document.getElementById('wt-next-hint-wrap').style.display = 'none'; // скрыта — появится после ошибки
   renderHintProgress();
   renderHints();
   showScreen('screen-walkthrough');
@@ -3473,13 +3462,26 @@ function renderHintProgress() {
   document.getElementById('wt-next-btn').style.display = wtHintIdx >= t.hints.length ? 'none' : 'block';
 }
 
+// Умник: сократические вопросы на основе hints
+function umnikQuestion(hint, attempt) {
+  // Превращаем hint-ответ в наводящий вопрос
+  if(attempt === 1) return '🤔 Не совсем... Подумай: ' + hint.replace(/^[а-яА-Я]*:?s*/,'').split('.')[0] + '. Попробуй ещё раз!';
+  if(attempt === 2) return '💡 Вот подсказка: ' + hint + '. Теперь попробуй!';
+  return '📖 Разбор: ' + hint;
+}
+
 function renderHints() {
   const t = currentTask;
+  if(wtHintIdx === 0) {
+    document.getElementById('wt-hints').innerHTML = '';
+    return;
+  }
   let html = '';
   for(let i = 0; i < wtHintIdx; i++) {
-    html += `<div class="hint-box">
-      <div class="hint-num">Подсказка ${i+1}</div>
-      <div class="hint-text">${t.hints[i]}</div>
+    const msg = umnikQuestion(t.hints[Math.min(i, t.hints.length-1)], i+1);
+    const isLast = i === wtHintIdx - 1;
+    html += `<div class="hint-box${isLast ? ' hint-box-active' : ''}">
+      <div class="hint-text" style="font-style:${i < 2 ? 'normal' : 'normal'}">${msg}</div>
     </div>`;
   }
   document.getElementById('wt-hints').innerHTML = html;
@@ -3511,17 +3513,26 @@ function checkWalkthrough() {
     document.getElementById('wt-answer-area').style.display = 'none';
     document.getElementById('wt-next-hint-wrap').style.display = 'none';
     document.getElementById('wt-after').style.display = 'block';
-    const xp = wtHintIdx === 0 ? 20 : 10;
+    const xp = wtAttempts === 1 ? 20 : wtAttempts === 2 ? 15 : wtAttempts === 3 ? 10 : 5;
     addXP(xp);
     markSolved(currentTask.id, {attempts: wtAttempts, withHints: wtHintIdx > 0, correct: true});
     if(wtHintIdx === 0) grantAchievement('solved_self');
     showDone('🤖', 'Разобрался!', `С Умником по ${currentTask.hints.length} подсказкам`, xp);
   } else {
-    resultEl.innerHTML = `<div class="result-err">
-      <div class="r-icon">🤔</div>
-      <div class="r-text">Не совсем... попробуй ещё раз</div>
-      ${wtAttempts >= 3 ? `<div class="result-answer">Правильный ответ: <b>${currentTask.answer}</b></div>` : ''}
-    </div>`;
+    // Умник: сократический диалог — показываем подсказку как вопрос
+    const hintIdx = Math.min(wtAttempts - 1, currentTask.hints.length - 1);
+    const hint = currentTask.hints[hintIdx] || '';
+    let umnikMsg = '';
+    if(wtAttempts === 1) {
+      umnikMsg = `<div class="hint-box hint-box-active" style="margin-top:8px"><div class="hint-text">🤔 Не совсем... Подумай: ${hint.split('.')[0]}. Попробуй ещё раз!</div></div>`;
+    } else if(wtAttempts === 2) {
+      const h2 = currentTask.hints[Math.min(1, currentTask.hints.length-1)];
+      umnikMsg = `<div class="hint-box hint-box-active" style="margin-top:8px"><div class="hint-text">💡 Подсказка: ${h2}. Теперь попробуй!</div></div>`;
+    } else {
+      const h3 = currentTask.hints[Math.min(2, currentTask.hints.length-1)];
+      umnikMsg = `<div class="hint-box" style="margin-top:8px;background:#fef3c7;border-color:#f59e0b"><div class="hint-text">📖 Разбор: ${h3}</div></div>`;
+    }
+    resultEl.innerHTML = `${umnikMsg}`;
     if(wtAttempts >= 3) grantAchievement('no_give_up');
     addMistake(currentTask.topic, 'wrong_answer');
   }
@@ -3966,7 +3977,7 @@ function showSCTask() {
   const total = scCurrentCheck.tasks.length;
   document.getElementById('sc-task-num').textContent = `Вопрос ${scCurrentIndex+1} из ${total}`;
   document.getElementById('sc-task-source').textContent = scCurrentCheck.title + ' · ' + scCurrentCheck.subtitle;
-  document.getElementById('sc-task-text').textContent = t.q;
+  document.getElementById('sc-task-text').innerHTML = t.q;
   document.getElementById('sc-input').value = '';
   document.getElementById('sc-result').style.display = 'none';
   document.getElementById('sc-next-wrap').style.display = 'none';
