@@ -3420,7 +3420,6 @@ function goCheck() {
   showScreen('screen-homework');
 }
 
-// ===== WALKTHROUGH =====
 function openWalkthrough(task, backScreen) {
   currentTask = task;
   wtHintIdx = 0;
@@ -3491,7 +3490,19 @@ function checkWalkthrough() {
       const chat = document.getElementById('wt-chat');
       const div = document.createElement('div');
       div.className = 'chat-msg bot';
-      div.innerHTML = '<div class="chat-avatar">🤖</div><div style="display:flex;flex-direction:column;gap:8px"><button onclick="afterWalkthrough()" style="padding:10px 20px;border-radius:20px;border:none;background:linear-gradient(135deg,#059669,#10b981);color:#fff;font-size:14px;font-weight:800;cursor:pointer">🏆 На главную</button><button onclick="showScreen('screen-homework')" style="padding:10px 20px;border-radius:20px;border:none;background:rgba(255,255,255,.1);color:#fff;font-size:14px;font-weight:700;cursor:pointer">📚 Следующее задание</button></div>';
+            const _btns = document.createElement('div');
+      _btns.style.cssText = 'display:flex;flex-direction:column;gap:8px';
+      const _b1 = document.createElement('button');
+      _b1.textContent = '🏆 На главную';
+      _b1.style.cssText = 'padding:10px 20px;border-radius:20px;border:none;background:linear-gradient(135deg,#059669,#10b981);color:#fff;font-size:14px;font-weight:800;cursor:pointer';
+      _b1.onclick = afterWalkthrough;
+      const _b2 = document.createElement('button');
+      _b2.textContent = '📚 Следующее задание';
+      _b2.style.cssText = 'padding:10px 20px;border-radius:20px;border:none;background:rgba(255,255,255,.1);color:#fff;font-size:14px;font-weight:700;cursor:pointer';
+      _b2.onclick = () => showScreen('screen-homework');
+      _btns.appendChild(_b1); _btns.appendChild(_b2);
+      div.appendChild(document.createRange().createContextualFragment('<div class="chat-avatar">🤖</div>'));
+      div.appendChild(_btns);
       chat.appendChild(div);
       chat.scrollTop = chat.scrollHeight;
       document.getElementById('wt-input-bar').style.opacity = '0.4';
