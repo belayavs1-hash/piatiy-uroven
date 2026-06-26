@@ -1334,6 +1334,104 @@ body {
 .pirate-status.ok  { color:#4ade80; }
 .pirate-status.err { color:#f87171; }
 
+/* ===== ТРЕНАЖЁР КУБИК ===== */
+.dice-wrap { max-width:500px; margin:0 auto; padding:16px; }
+.dice-scene {
+  position:relative; height:170px; border-radius:16px; overflow:hidden; margin-bottom:14px;
+  background:linear-gradient(135deg,#1e1b4b,#312e81,#1e1b4b);
+  display:flex; align-items:center; justify-content:space-around;
+}
+/* Поле как шахматная доска */
+.dice-board {
+  position:absolute; inset:0; display:grid;
+  grid-template-columns:repeat(8,1fr); grid-template-rows:repeat(4,1fr);
+  opacity:.12;
+}
+.dice-cell-w { background:#fff; }
+.dice-cell-b { background:transparent; }
+/* Кубик */
+.dice-cube {
+  position:relative; width:72px; height:72px; z-index:5;
+  transform-style:preserve-3d; cursor:pointer;
+  transition:transform .05s;
+  filter:drop-shadow(0 8px 20px rgba(0,0,0,.5));
+}
+.dice-cube.rolling { animation:diceRoll .7s cubic-bezier(.4,0,.2,1); }
+@keyframes diceRoll {
+  0%  { transform:rotateX(0) rotateY(0) rotateZ(0) scale(1); }
+  25% { transform:rotateX(180deg) rotateY(90deg) rotateZ(45deg) scale(1.15); }
+  50% { transform:rotateX(360deg) rotateY(180deg) rotateZ(90deg) scale(1.1); }
+  75% { transform:rotateX(270deg) rotateY(270deg) rotateZ(135deg) scale(1.05); }
+  100%{ transform:rotateX(360deg) rotateY(360deg) rotateZ(180deg) scale(1); }
+}
+.dice-face {
+  width:72px; height:72px; border-radius:14px;
+  background:linear-gradient(145deg,#fff,#e2e8f0);
+  box-shadow:inset -3px -3px 6px rgba(0,0,0,.15), inset 2px 2px 4px rgba(255,255,255,.8);
+  display:grid; place-items:center;
+}
+/* Точки на кубике */
+.dice-dots { display:grid; gap:5px; width:52px; height:52px; padding:4px; }
+.dice-dot  { width:10px; height:10px; border-radius:50%; background:#1e1b4b; margin:auto; }
+.dice-dot.e{ background:transparent; }
+/* Число */
+.dice-result-num {
+  position:absolute; top:-28px; left:50%; transform:translateX(-50%);
+  font-size:28px; font-weight:900; color:#fbbf24;
+  text-shadow:0 2px 8px rgba(0,0,0,.5); opacity:0;
+  transition:opacity .3s;
+}
+.dice-result-num.show { opacity:1; }
+/* Фишка-ходок */
+.dice-pawn {
+  font-size:44px; filter:drop-shadow(0 4px 8px rgba(0,0,0,.5));
+  transition:transform .3s;
+  z-index:5;
+}
+.dice-pawn.move { animation:pawnJump .5s ease; }
+@keyframes pawnJump { 0%,100%{transform:translateY(0)} 45%{transform:translateY(-22px) rotate(10deg)} }
+/* Клетки пути */
+.dice-path {
+  display:flex; gap:4px; z-index:5; flex-wrap:wrap; justify-content:center;
+  max-width:120px;
+}
+.dice-path-cell {
+  width:18px; height:18px; border-radius:5px; border:2px solid rgba(255,255,255,.3);
+  background:rgba(255,255,255,.08); transition:background .3s;
+  display:flex; align-items:center; justify-content:center; font-size:9px;
+}
+.dice-path-cell.passed { background:rgba(99,102,241,.5); border-color:#818cf8; }
+.dice-path-cell.current { background:#fbbf24; border-color:#f59e0b; }
+/* Вопрос */
+.dice-q-label { font-size:11px;font-weight:700;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px; }
+.dice-q-text  { font-size:21px;font-weight:900;color:#fff;margin-bottom:14px;min-height:50px;line-height:1.4; }
+.dice-roll-btn {
+  display:block; width:100%; padding:14px; border-radius:14px; border:none; margin-bottom:12px;
+  background:linear-gradient(135deg,#7c3aed,#a855f7);
+  color:#fff; font-family:inherit; font-size:16px; font-weight:900; cursor:pointer;
+  transition:opacity .2s, transform .1s;
+}
+.dice-roll-btn:hover { transform:translateY(-2px); }
+.dice-roll-btn:disabled { opacity:.4; cursor:default; transform:none; }
+.dice-inp {
+  width:100%;padding:13px 16px;border-radius:14px;border:2px solid rgba(255,255,255,.2);
+  background:rgba(255,255,255,.08);color:#fff;font-family:inherit;
+  font-size:22px;font-weight:900;text-align:center;outline:none;box-sizing:border-box;
+  transition:border-color .2s; margin-bottom:10px; display:none;
+}
+.dice-inp:focus { border-color:#818cf8; }
+.dice-inp.ok  { border-color:#22c55e !important; background:rgba(34,197,94,.12) !important; }
+.dice-inp.err { border-color:#ef4444 !important; background:rgba(239,68,68,.12) !important; }
+.dice-check-btn {
+  width:100%;padding:14px;border-radius:14px;border:none;
+  background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;
+  font-family:inherit;font-size:16px;font-weight:900;cursor:pointer; display:none;
+}
+.dice-check-btn:disabled { opacity:.4;cursor:default; }
+.dice-status { text-align:center;font-size:14px;font-weight:700;min-height:20px;padding:5px 0; }
+.dice-status.ok  { color:#4ade80; }
+.dice-status.err { color:#f87171; }
+
 /* ===== ТРЕНАЖЁР СТРЕЛОК ===== */
 .archer-wrap { max-width:500px; margin:0 auto; padding:16px; }
 .archer-question { font-size:22px; font-weight:900; color:#fff; text-align:center; margin-bottom:20px; min-height:52px; line-height:1.35; }
@@ -4378,7 +4476,8 @@ const TRAINERS_DEF = [
   {id:"taskfr", icon:"📊", name:"Задачи: дроби",        desc:"Часть от числа"},
   {id:"geo_t",  icon:"📐", name:"Геом. задачи",          desc:"Периметр, площадь, объём"},
   {id:"archer", icon:"🎯", name:"Стрелок",               desc:"Попади в десятку!"},
-  {id:"pirate", icon:"🏴‍☠️", name:"Пират",                desc:"Собери клад в сундук!"}
+  {id:"pirate", icon:"🏴‍☠️", name:"Пират",                desc:"Собери клад в сундук!"},
+  {id:"dice",   icon:"🎲",   name:"Игра в кости",        desc:"Бросай кубик и решай!"}
 ];
 
 const ACHIEVEMENTS = [
@@ -5443,12 +5542,15 @@ function showTrainerList(highlightId) {
   document.getElementById('tr-title').textContent = '⚡ Тренажёры';
   document.getElementById('tr-back-btn').onclick = () => showScreen('screen-home');
   var hid = highlightId || currentTopicTrainerId;
+  currentTopicTrainerId = null; // сбрасываем после использования
   renderTrainers(hid);
   if (hid) {
     requestAnimationFrame(function() {
       requestAnimationFrame(function() {
         var card = document.querySelector('.trainer-card-highlight');
-        if (card) card.scrollIntoView({behavior:'smooth', block:'center'});
+        if (card) {
+          card.scrollIntoView({behavior:'smooth', block:'center'});
+        }
       });
     });
   }
@@ -5480,6 +5582,8 @@ function startTrainer(id) {
     builderInit();
   } else if (id === 'pirate') {
     pirateInit();
+  } else if (id === 'dice') {
+    diceInit();
   } else {
     tgInit();
   }
@@ -5646,6 +5750,7 @@ function genOne(type) {
       break;
     }
 
+    case 'dice':
     case 'pirate':
     case 'archer': {
       // Смешанные задачи из разных тем
@@ -5679,7 +5784,20 @@ function tgMode() {
   return (tgTrainerCount % 2 === 0) ? 'input' : 'choices';
 }
 
+// Скрыть все игровые контейнеры перед стартом нового тренажёра
+function trainerHideAll() {
+  const wrap = document.querySelector('#tr-session-view .tg-wrap');
+  if (wrap) wrap.style.display = 'none';
+  ['archer-container','builder-container','pirate-container','dice-container'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) el.style.display = 'none';
+  });
+}
+
 function tgInit() {
+  trainerHideAll();
+  const wrap = document.querySelector('#tr-session-view .tg-wrap');
+  if (wrap) wrap.style.display = 'block';
   tgAnswered = false;
   tgAttempt = 0;
   tgBuildScene();
@@ -5992,11 +6110,9 @@ var ARCHER_RINGS = [
 ];
 
 function archerInit() {
+  trainerHideAll();
   archerAnswered = false;
   archerAttempt = 0;
-  // Перестраиваем содержимое tr-session-view
-  const wrap = document.querySelector('#tr-session-view .tg-wrap');
-  if (wrap) wrap.style.display = 'none';
   // Создаём архер-контейнер если нет
   let archerEl = document.getElementById('archer-container');
   if (!archerEl) {
@@ -6274,10 +6390,10 @@ function builderShowGame() {
 
 // Запуск: показать экран выбора
 function builderInit() {
+  trainerHideAll();
   builderChoice = null;
   builderAnswered = false;
   builderAttempt = 0;
-  builderHideGame();
   const el = builderGetContainer();
   el.style.display = 'block';
 
@@ -6467,10 +6583,9 @@ function pirateGetContainer() {
 }
 
 function pirateInit() {
+  trainerHideAll();
   pirateAnswered = false;
   pirateAttempt  = 0;
-  const wrap = document.querySelector('#tr-session-view .tg-wrap');
-  if (wrap) wrap.style.display = 'none';
   const el = pirateGetContainer();
   el.style.display = 'block';
   pirateRender();
@@ -6639,6 +6754,209 @@ function pirateAdvance() {
     }, 1500);
   } else {
     pirateRender();
+  }
+}
+
+// ===== ТРЕНАЖЁР КУБИК =====
+var diceAnswered  = false;
+var diceAttempt   = 0;
+var dicePhase     = 'roll'; // 'roll' | 'answer'
+var dicePawnPos   = 0;
+var diceLastRoll  = 0;
+
+// Точки на гранях кубика (2D)
+const DICE_FACES = {
+  1: [[0,0,0],[0,1,0],[0,0,0]],
+  2: [[1,0,0],[0,0,0],[0,0,1]],
+  3: [[1,0,0],[0,1,0],[0,0,1]],
+  4: [[1,0,1],[0,0,0],[1,0,1]],
+  5: [[1,0,1],[0,1,0],[1,0,1]],
+  6: [[1,0,1],[1,0,1],[1,0,1]]
+};
+
+function diceGetContainer() {
+  let el = document.getElementById('dice-container');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'dice-container';
+    document.getElementById('tr-session-view').appendChild(el);
+  }
+  return el;
+}
+
+function diceInit() {
+  trainerHideAll();
+  diceAnswered = false;
+  diceAttempt  = 0;
+  dicePhase    = 'roll';
+  dicePawnPos  = 0;
+  diceLastRoll = 0;
+  diceGetContainer().style.display = 'block';
+  diceRenderScene();
+}
+
+function diceFaceHtml(n) {
+  const rows = DICE_FACES[n];
+  const cells = rows.map(r => r.map(c => `<div class="dice-dot${c ? '' : ' e'}"></div>`).join('')).join('');
+  return `<div class="dice-face"><div class="dice-dots" style="grid-template-columns:repeat(3,1fr)">${cells}</div></div>`;
+}
+
+function dicePathHtml() {
+  return trTasks.map((t, i) => {
+    const cls = i < dicePawnPos ? 'passed' : (i === dicePawnPos ? 'current' : '');
+    const icon = t._result === 'ok' ? '★' : t._result === 'err' ? '✕' : '';
+    return `<div class="dice-path-cell ${cls}">${icon}</div>`;
+  }).join('');
+}
+
+// Шахматная доска (4×8 клеток)
+function diceBoardHtml() {
+  let h = '';
+  for (let r = 0; r < 4; r++) {
+    for (let c = 0; c < 8; c++) {
+      h += `<div class="${(r+c)%2===0 ? 'dice-cell-w' : 'dice-cell-b'}"></div>`;
+    }
+  }
+  return h;
+}
+
+function diceRenderScene() {
+  const el = diceGetContainer();
+  const task = trTasks[trIdx];
+  const mode = (tgTrainerCount % 2 === 0) ? 'input' : 'choices';
+  const n = diceLastRoll || 1;
+
+  let choicesHtml = '';
+  if (dicePhase === 'answer' && mode === 'choices') {
+    const w = genWrongNums(task.a, 3);
+    const opts = w ? arrShuffle([task.a, ...w]) : [task.a];
+    choicesHtml = `<div class="tg-choices" id="dice-choices">` +
+      opts.map(o => `<button class="tg-choice" onclick="diceChoose(this,'${o.replace(/'/g,"\\'")}')">${o}</button>`).join('') +
+      `</div>`;
+  }
+
+  el.innerHTML = `
+    <div class="dice-wrap">
+      <div class="dice-q-label">Задание ${trIdx+1} из ${trTasks.length}</div>
+      <div class="dice-q-text" id="dice-q">${dicePhase === 'answer' ? task.q : 'Брось кубик!'}</div>
+      <div class="dice-scene">
+        <div class="dice-board">${diceBoardHtml()}</div>
+        <div style="position:relative;z-index:5">
+          <div class="dice-result-num${diceLastRoll ? ' show' : ''}" id="dice-num">${diceLastRoll || ''}</div>
+          <div class="dice-cube" id="dice-cube" onclick="diceRoll()">${diceFaceHtml(n)}</div>
+        </div>
+        <div class="dice-pawn" id="dice-pawn">♟️</div>
+        <div class="dice-path">${dicePathHtml()}</div>
+      </div>
+      ${dicePhase === 'roll' ? `<button class="dice-roll-btn" id="dice-roll-btn" onclick="diceRoll()">🎲 Бросить кубик!</button>` : ''}
+      ${dicePhase === 'answer' && mode === 'input' ? `
+        <input type="text" class="dice-inp" id="dice-inp" placeholder="Ответ..." autocomplete="off"
+          style="display:block" onkeydown="if(event.key==='Enter')diceCheck()">
+        <button class="dice-check-btn" id="dice-check-btn" style="display:block" onclick="diceCheck()">✅ Ответить</button>
+      ` : choicesHtml}
+      <div class="dice-status" id="dice-status"></div>
+    </div>`;
+
+  if (dicePhase === 'answer' && mode === 'input') {
+    setTimeout(() => { const i = document.getElementById('dice-inp'); if(i) i.focus(); }, 80);
+  }
+}
+
+function diceRoll() {
+  if (dicePhase !== 'roll') return;
+  const cube = document.getElementById('dice-cube');
+  if (!cube) return;
+  const rollBtn = document.getElementById('dice-roll-btn');
+  if (rollBtn) rollBtn.disabled = true;
+  cube.classList.add('rolling');
+
+  setTimeout(() => {
+    const n = rnd(1, 6);
+    diceLastRoll = n;
+    cube.classList.remove('rolling');
+    cube.innerHTML = diceFaceHtml(n);
+    const numEl = document.getElementById('dice-num');
+    if (numEl) { numEl.textContent = n; numEl.classList.add('show'); }
+    // Пешка прыгает
+    const pawn = document.getElementById('dice-pawn');
+    if (pawn) { pawn.classList.add('move'); setTimeout(() => pawn.classList.remove('move'), 500); }
+    // Через 800ms — показать вопрос
+    setTimeout(() => {
+      dicePhase = 'answer';
+      diceAnswered = false;
+      diceAttempt = 0;
+      diceRenderScene();
+    }, 800);
+  }, 750);
+}
+
+function diceChoose(btn, val) {
+  if (diceAnswered) return;
+  diceAnswered = true;
+  document.getElementById('dice-container').querySelectorAll('.tg-choice').forEach(b => b.disabled = true);
+  const task = trTasks[trIdx];
+  const correct = val.replace(/\s/g,'').toLowerCase() === task.a.replace(/\s/g,'').toLowerCase();
+  if (correct) btn.classList.add('ok'); else btn.classList.add('err');
+  diceResolve(correct, task.a);
+}
+
+function diceCheck() {
+  if (diceAnswered) return;
+  const inp = document.getElementById('dice-inp');
+  if (!inp || !inp.value.trim()) return;
+  diceAnswered = true;
+  inp.disabled = true;
+  const btn = document.getElementById('dice-check-btn');
+  if (btn) btn.disabled = true;
+  const task = trTasks[trIdx];
+  const correct = inp.value.trim().replace(/\s/g,'').toLowerCase() === task.a.replace(/\s/g,'').toLowerCase();
+  inp.classList.add(correct ? 'ok' : 'err');
+  diceResolve(correct, task.a);
+}
+
+function diceResolve(correct, rightAnswer) {
+  const task = trTasks[trIdx];
+  const statusEl = document.getElementById('dice-status');
+  const xpBonus = diceLastRoll; // кубик = множитель XP (1-6)
+
+  if (correct) {
+    task._result = 'ok';
+    trCorrect++;
+    addXP(xpBonus);
+    dicePawnPos = Math.min(dicePawnPos + diceLastRoll, trTasks.length);
+    if (statusEl) { statusEl.textContent = `✅ Верно! +${xpBonus} XP (кубик ×${xpBonus})`; statusEl.className = 'dice-status ok'; }
+    setTimeout(diceAdvance, 1000);
+  } else {
+    if (diceAttempt === 0) {
+      diceAttempt = 1;
+      if (statusEl) { statusEl.textContent = '😬 Не угадал — попробуй ещё раз!'; statusEl.className = 'dice-status err'; }
+      setTimeout(() => {
+        diceAnswered = false;
+        const inp = document.getElementById('dice-inp');
+        if (inp) { inp.value = ''; inp.disabled = false; inp.className = 'dice-inp'; inp.focus(); }
+        const btn = document.getElementById('dice-check-btn');
+        if (btn) btn.disabled = false;
+        document.getElementById('dice-container').querySelectorAll('.tg-choice').forEach(b => { b.disabled = false; b.className = 'tg-choice'; });
+        if (statusEl) { statusEl.textContent = ''; statusEl.className = 'dice-status'; }
+      }, 900);
+    } else {
+      task._result = 'err';
+      addMistake(currentTrainer.name, 'trainer_wrong');
+      if (statusEl) { statusEl.textContent = '❌ Правильно: ' + rightAnswer; statusEl.className = 'dice-status err'; }
+      setTimeout(diceAdvance, 1200);
+    }
+  }
+}
+
+function diceAdvance() {
+  trIdx++;
+  if (trIdx >= trTasks.length) {
+    document.getElementById('dice-container').style.display = 'none';
+    endTrainer();
+  } else {
+    dicePhase = 'roll';
+    diceLastRoll = 0;
+    diceRenderScene();
   }
 }
 
