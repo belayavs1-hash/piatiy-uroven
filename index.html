@@ -961,7 +961,50 @@ body {
 .hp-dot.done { background: var(--blue); }
 
 /* ===== MAP ===== */
-.map-block { margin-bottom: 28px; }
+.map-block { margin-bottom: 32px; }
+.map-block-header {
+  font-size: 13px;
+  font-weight: 900;
+  color: rgba(255,255,255,.45);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 10px;
+  padding-left: 2px;
+}
+.map-topic-row {
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(255,255,255,.09);
+  border-radius: 16px;
+  padding: 14px 16px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+.map-topic-name {
+  font-size: 15px;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 3px;
+  line-height: 1.3;
+}
+.map-topic-desc {
+  font-size: 12px;
+  color: rgba(255,255,255,.45);
+  margin-bottom: 2px;
+  line-height: 1.4;
+}
+.prog-pill {
+  font-size: 11px;
+  font-weight: 900;
+  color: rgba(255,255,255,.4);
+  background: rgba(255,255,255,.07);
+  border-radius: 20px;
+  padding: 3px 10px;
+  white-space: nowrap;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
 .map-block-title {
   font-size: 13px;
   font-weight: 900;
@@ -4353,7 +4396,7 @@ function renderMap() {
         '<div class="map-topic-name">' + t.name + '</div>' +
         '<div class="map-topic-desc">' + t.desc + '</div>' +
         '<div class="map-topic-btns">' +
-        '<button class="map-btn-study" onclick="toggleMapRule(this)">📖 Правило</button>' +
+        '<button class="map-btn-study" onclick="toggleMapRule(this)">📖 Повтори</button>' +
         '<button class="map-btn-train" onclick="topicTrain(\'' + t.id + '\')">⚡ Тренажёр</button>' +
         '<button class="map-btn-check" onclick="topicCheck(\'' + t.id + '\')">✏️ Закрепить</button>' +
         '</div>' +
@@ -4373,13 +4416,13 @@ function toggleMapRule(btn) {
   var panel = row.querySelector('.map-rule-panel');
   if (panel.style.display !== 'none') {
     panel.style.display = 'none';
-    btn.textContent = '📖 Правило';
+    btn.textContent = '📖 Повтори';
     return;
   }
   var ruleKey = row.dataset.rule || '';
   var rule = TOPIC_RULES[ruleKey];
   if (!rule) {
-    panel.innerHTML = '<div class="map-rule-box"><div class="map-rule-text">Правило скоро появится</div></div>';
+    panel.innerHTML = '<div class="map-rule-box"><div class="map-rule-text">Материал по этой теме скоро появится</div></div>';
     panel.style.display = 'block'; return;
   }
   var quizzes = rule.quizzes || [];
