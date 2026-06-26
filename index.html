@@ -1248,6 +1248,40 @@ body {
 .chat-rule-keys { font-size: 12px; color: rgba(255,255,255,.55); margin-bottom: 8px; font-style: italic; }
 .chat-rule-text { font-size: 15px; color: #fff; font-weight: 600; line-height: 1.55; }
 
+/* ===== RULE SCREEN ===== */
+.rule-steps-bar { display:flex; align-items:center; gap:8px; margin-bottom:24px; padding:14px 16px; background:rgba(255,255,255,.05); border-radius:14px; }
+.rule-step { font-size:12px; font-weight:800; color:rgba(255,255,255,.35); padding:5px 12px; border-radius:20px; transition:all .3s; }
+.rule-step-active { color:#fff; background:rgba(255,255,255,.12); }
+.rule-step-done { color:#10b981; }
+.rule-step-arrow { color:rgba(255,255,255,.25); font-size:14px; }
+.rule-card { background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.1); border-radius:20px; padding:24px; margin-bottom:20px; }
+.rule-card-keys { font-size:12px; color:rgba(255,255,255,.45); font-style:italic; margin-bottom:12px; }
+.rule-card-text { font-size:17px; color:#fff; font-weight:700; line-height:1.65; }
+.rule-next-btn { width:100%; padding:16px; border-radius:16px; border:none; background:linear-gradient(135deg,#4f46e5,#7c3aed); color:#fff; font-size:16px; font-weight:900; cursor:pointer; margin-bottom:10px; font-family:inherit; transition:opacity .2s; }
+.rule-next-btn:hover { opacity:.85; }
+.rule-next-btn-sec { background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.15); }
+.rule-quiz-header { margin-bottom:16px; }
+.rule-quiz-counter { font-size:13px; font-weight:800; color:rgba(255,255,255,.5); margin-bottom:8px; }
+.rule-quiz-progress { height:6px; background:rgba(255,255,255,.1); border-radius:3px; overflow:hidden; }
+.rule-quiz-bar { height:100%; background:linear-gradient(90deg,#10b981,#059669); border-radius:3px; transition:width .4s; }
+.rule-quiz-card { background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.1); border-radius:20px; padding:24px; }
+.rule-quiz-q { font-size:18px; font-weight:800; color:#fff; margin-bottom:20px; line-height:1.5; }
+.rule-quiz-inp { width:100%; padding:14px 16px; border-radius:14px; border:1.5px solid rgba(255,255,255,.2); background:rgba(255,255,255,.08); color:#fff; font-size:16px; font-weight:700; font-family:inherit; outline:none; box-sizing:border-box; margin-bottom:12px; }
+.rule-quiz-inp:focus { border-color:#4f46e5; }
+.rule-quiz-check { width:100%; padding:14px; border-radius:14px; border:none; background:#4f46e5; color:#fff; font-size:15px; font-weight:900; cursor:pointer; font-family:inherit; }
+.rule-quiz-feedback { margin-top:12px; font-size:15px; font-weight:700; min-height:22px; }
+.rule-done-card { background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.1); border-radius:20px; padding:32px 24px; text-align:center; margin-bottom:16px; }
+.rule-done-icon { font-size:52px; margin-bottom:12px; }
+.rule-done-title { font-size:22px; font-weight:900; color:#fff; margin-bottom:8px; }
+.rule-done-score { font-size:15px; color:rgba(255,255,255,.6); margin-bottom:24px; }
+
+/* ===== ИНДИКАТОРЫ НА ПЛАШКЕ ===== */
+.map-topic-dots { display:flex; gap:5px; margin-top:8px; }
+.map-dot { height:4px; flex:1; border-radius:2px; background:rgba(255,255,255,.12); transition:background .4s; }
+.map-dot.done-rule { background:#818cf8; }
+.map-dot.done-quiz { background:#10b981; }
+.map-dot.done-train { background:#f59e0b; }
+
 /* ===== КАРТА ТЕМ — ПРАВИЛА ===== */
 .map-topic-btns { display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; }
 .map-btn-study, .map-btn-train, .map-btn-check { padding:6px 14px; border-radius:14px; border:none; font-size:12px; font-weight:800; cursor:pointer; font-family:inherit; transition:all .2s; }
@@ -1678,6 +1712,65 @@ body {
     <div class="screen-title">Карта тем</div>
     <div class="screen-subtitle">Маршрут повторения — отдельно от домашних заданий</div>
     <div id="map-content"></div>
+  </div>
+  <div class="bottom-nav">
+    <a onclick="showScreen('screen-homework')"><span class="icon">📚</span>Домашка</a>
+    <a onclick="showScreen('screen-map')" class="active"><span class="icon">🗺</span>Темы</a>
+    <a onclick="showScreen('screen-self-check')"><span class="icon">✅</span>Проверка</a>
+    <a onclick="showScreen('screen-parent')"><span class="icon">🏆</span>Прогресс</a>
+  </div>
+</div>
+
+<!-- ===== RULE SCREEN ===== -->
+<div id="screen-rule" class="screen">
+  <nav class="top-nav">
+    <button class="nav-back" id="rule-back-btn">← Назад</button>
+    <div class="nav-logo" id="rule-nav-title">📖 Правило</div>
+    <div class="nav-xp" id="nav-xp-rule">⭐ 0 XP</div>
+    <div class="nav-menu">
+      <a onclick="showScreen('screen-homework')">📚 Домашка</a>
+      <a onclick="showScreen('screen-map')" class="active">🗺 Темы</a>
+      <a onclick="showScreen('screen-trainers')">⚡ Тренажёры</a>
+      <a onclick="showScreen('screen-parent')">🏆 Прогресс</a>
+    </div>
+  </nav>
+  <div class="screen-body" style="max-width:540px;margin:0 auto">
+    <div class="rule-steps-bar">
+      <div class="rule-step rule-step-active" id="rule-step-1">📖 Правило</div>
+      <div class="rule-step-arrow">→</div>
+      <div class="rule-step" id="rule-step-2">✅ Тест</div>
+      <div class="rule-step-arrow">→</div>
+      <div class="rule-step" id="rule-step-3">⚡ Тренажёр</div>
+    </div>
+
+    <!-- Шаг 1: Правило -->
+    <div id="rule-phase-rule">
+      <div class="rule-card">
+        <div class="rule-card-keys" id="rule-keys"></div>
+        <div class="rule-card-text" id="rule-text"></div>
+      </div>
+      <button class="rule-next-btn" onclick="ruleNextToQuiz()">Понял, проверить себя →</button>
+    </div>
+
+    <!-- Шаг 2: Мини-тест -->
+    <div id="rule-phase-quiz" style="display:none">
+      <div class="rule-quiz-header">
+        <div class="rule-quiz-counter" id="rule-q-counter">Вопрос 1 из 5</div>
+        <div class="rule-quiz-progress"><div class="rule-quiz-bar" id="rule-q-bar" style="width:0%"></div></div>
+      </div>
+      <div class="rule-quiz-card" id="rule-quiz-card"></div>
+    </div>
+
+    <!-- Шаг 3: Результат -->
+    <div id="rule-phase-done" style="display:none">
+      <div class="rule-done-card">
+        <div class="rule-done-icon">🎉</div>
+        <div class="rule-done-title">Тема повторена!</div>
+        <div class="rule-done-score" id="rule-done-score"></div>
+        <button class="rule-next-btn" onclick="ruleDoneToTrain()">⚡ К тренажёру →</button>
+        <button class="rule-next-btn rule-next-btn-sec" onclick="showScreen('screen-map')">← К карте тем</button>
+      </div>
+    </div>
   </div>
   <div class="bottom-nav">
     <a onclick="showScreen('screen-homework')"><span class="icon">📚</span>Домашка</a>
@@ -4384,23 +4477,38 @@ function goToWalkthrough() {
 }
 
 // ===== MAP =====
+var ruleState = { topicId:'', ruleKey:'', quizzes:[], qIdx:0, correct:0 };
+
+function mapDotClass(id, dot) {
+  if (!ST.mapProgress) ST.mapProgress = {};
+  var p = ST.mapProgress[id] || 0;
+  if (dot === 1) return p >= 1 ? 'map-dot done-rule' : 'map-dot';
+  if (dot === 2) return p >= 2 ? 'map-dot done-quiz' : 'map-dot';
+  if (dot === 3) return p >= 3 ? 'map-dot done-train' : 'map-dot';
+  return 'map-dot';
+}
+
 function renderMap() {
   const el = document.getElementById('map-content');
   if(!el) return;
+  if (!ST.mapProgress) ST.mapProgress = {};
   el.innerHTML = TOPICS_MAP.map(function(block) {
     var topicsHtml = block.topics.map(function(t) {
       var prog = ST.topicProgress[t.id] || 0;
       var ruleKey = Object.keys(TOPIC_RULES).find(function(k){ return k === t.name; }) || '';
-      return '<div class="map-topic-row" data-rule="' + ruleKey + '">' +
+      var d1 = mapDotClass(t.id, 1);
+      var d2 = mapDotClass(t.id, 2);
+      var d3 = mapDotClass(t.id, 3);
+      return '<div class="map-topic-row" data-id="' + t.id + '" data-rule="' + ruleKey + '">' +
         '<div style="flex:1">' +
         '<div class="map-topic-name">' + t.name + '</div>' +
         '<div class="map-topic-desc">' + t.desc + '</div>' +
         '<div class="map-topic-btns">' +
-        '<button class="map-btn-study" onclick="toggleMapRule(this)">📖 Повтори</button>' +
+        '<button class="map-btn-study" onclick="topicStudy(\'' + t.id + '\',\'' + ruleKey.replace(/'/g,"\\'") + '\')">📖 Повтори</button>' +
+        '<button class="map-btn-check" onclick="topicCheck(\'' + t.id + '\',\'' + ruleKey.replace(/'/g,"\\'") + '\')">✅ Закрепи</button>' +
         '<button class="map-btn-train" onclick="topicTrain(\'' + t.id + '\')">⚡ Тренажёр</button>' +
-        '<button class="map-btn-check" onclick="topicCheck(\'' + t.id + '\')">✏️ Закрепить</button>' +
         '</div>' +
-        '<div class="map-rule-panel" style="display:none"></div>' +
+        '<div class="map-topic-dots"><div class="' + d1 + '"></div><div class="' + d2 + '"></div><div class="' + d3 + '"></div></div>' +
         '</div>' +
         '<div class="prog-pill">' + prog + '%</div>' +
         '</div>';
@@ -4411,71 +4519,103 @@ function renderMap() {
   }).join('');
 }
 
-function toggleMapRule(btn) {
-  var row = btn.closest('.map-topic-row');
-  var panel = row.querySelector('.map-rule-panel');
-  if (panel.style.display !== 'none') {
-    panel.style.display = 'none';
-    btn.textContent = '📖 Повтори';
-    return;
-  }
-  var ruleKey = row.dataset.rule || '';
+function topicStudy(id, ruleKey) {
   var rule = TOPIC_RULES[ruleKey];
-  if (!rule) {
-    panel.innerHTML = '<div class="map-rule-box"><div class="map-rule-text">Материал по этой теме скоро появится</div></div>';
-    panel.style.display = 'block'; return;
+  ruleState = { topicId: id, ruleKey: ruleKey, quizzes: rule ? (rule.quizzes || []) : [], qIdx: 0, correct: 0 };
+  document.getElementById('rule-back-btn').onclick = function(){ showScreen('screen-map'); };
+  document.getElementById('rule-nav-title').textContent = '📖 ' + (ruleKey || 'Правило');
+  document.getElementById('rule-keys').textContent = rule ? ('🔑 ' + rule.keys) : '';
+  document.getElementById('rule-text').textContent = rule ? rule.rule : 'Материал по этой теме скоро появится';
+  document.getElementById('rule-phase-rule').style.display = 'block';
+  document.getElementById('rule-phase-quiz').style.display = 'none';
+  document.getElementById('rule-phase-done').style.display = 'none';
+  document.getElementById('rule-step-1').className = 'rule-step rule-step-active';
+  document.getElementById('rule-step-2').className = 'rule-step';
+  document.getElementById('rule-step-3').className = 'rule-step';
+  if (!ST.mapProgress) ST.mapProgress = {};
+  if ((ST.mapProgress[id] || 0) < 1) { ST.mapProgress[id] = 1; lsSave(); }
+  showScreen('screen-rule');
+}
+
+function ruleNextToQuiz() {
+  if (!ruleState.quizzes.length) { ruleDoneToTrain(); return; }
+  document.getElementById('rule-phase-rule').style.display = 'none';
+  document.getElementById('rule-phase-quiz').style.display = 'block';
+  document.getElementById('rule-step-1').className = 'rule-step rule-step-done';
+  document.getElementById('rule-step-2').className = 'rule-step rule-step-active';
+  ruleState.qIdx = 0; ruleState.correct = 0;
+  ruleShowQuestion();
+}
+
+function ruleShowQuestion() {
+  var quizzes = ruleState.quizzes;
+  var i = ruleState.qIdx;
+  var total = quizzes.length;
+  document.getElementById('rule-q-counter').textContent = 'Вопрос ' + (i+1) + ' из ' + total;
+  document.getElementById('rule-q-bar').style.width = Math.round((i/total)*100) + '%';
+  var qz = quizzes[i];
+  var card = document.getElementById('rule-quiz-card');
+  card.innerHTML = '<div class="rule-quiz-q">' + qz.q + '</div>' +
+    '<input type="text" class="rule-quiz-inp" id="rule-inp" placeholder="Твой ответ..." autocomplete="off">' +
+    '<button class="rule-quiz-check" id="rule-check-btn">Проверить →</button>' +
+    '<div class="rule-quiz-feedback" id="rule-feedback"></div>';
+  var inp = document.getElementById('rule-inp');
+  var btn = document.getElementById('rule-check-btn');
+  inp.focus();
+  var checked = false;
+  function doCheck() {
+    if (checked) { ruleNextQuestion(); return; }
+    checked = true;
+    var userAns = inp.value.trim().toLowerCase().replace(/[.,;:!?]/g,'');
+    var correct = qz.a.toLowerCase().replace(/[.,;:!?]/g,'');
+    var ok = userAns === correct || correct.includes(userAns) || userAns.includes(correct);
+    if (ok) ruleState.correct++;
+    var fb = document.getElementById('rule-feedback');
+    fb.innerHTML = ok
+      ? '<span style="color:#10b981;font-weight:800">✅ Верно!</span>'
+      : '<span style="color:#ef4444;font-weight:700">Не совсем. Правильно: <b>' + qz.a + '</b></span>';
+    btn.textContent = i + 1 < ruleState.quizzes.length ? 'Следующий вопрос →' : 'Завершить →';
   }
-  var quizzes = rule.quizzes || [];
-  var qHtml = quizzes.map(function(qz, i) {
-    return '<div class="map-quiz-item">' +
-      '<div class="map-quiz-num">Вопрос ' + (i+1) + '</div>' +
-      '<div class="map-quiz-q">' + qz.q + '</div>' +
-      '<div class="map-quiz-input-row">' +
-      '<input type="text" class="map-quiz-input" placeholder="Ответ..." data-answer="' + qz.a.replace(/"/g,'&quot;') + '">' +
-      '<button class="map-quiz-btn">→</button>' +
-      '</div><div class="map-quiz-result"></div></div>';
-  }).join('');
-  panel.innerHTML = '<div class="map-rule-box">' +
-    '<div class="map-rule-keys">🔑 ' + rule.keys + '</div>' +
-    '<div class="map-rule-text">' + rule.rule + '</div>' +
-    '<div class="map-quiz-label">✅ Проверь себя (' + quizzes.length + ' вопроса):</div>' +
-    qHtml + '</div>';
-  panel.style.display = 'block';
-  btn.textContent = '✕ Закрыть';
-  panel.querySelectorAll('.map-quiz-item').forEach(function(item) {
-    var inp = item.querySelector('.map-quiz-input');
-    var cb = item.querySelector('.map-quiz-btn');
-    inp.addEventListener('keydown', function(e) { if(e.key==='Enter') checkMapQuiz(inp); });
-    cb.addEventListener('click', function() { checkMapQuiz(inp); });
-  });
+  inp.addEventListener('keydown', function(e){ if(e.key==='Enter') doCheck(); });
+  btn.addEventListener('click', doCheck);
 }
 
-function checkMapQuiz(input) {
-  const correct = input.dataset.answer || '';
-  const userAns = input.value.trim().toLowerCase().replace(/[.,;:!?]/g,'');
-  const correctNorm = correct.toLowerCase().replace(/[.,;:!?]/g,'');
-  const ok = userAns === correctNorm || correctNorm.includes(userAns) || userAns.includes(correctNorm);
-  const result = input.parentElement.nextElementSibling;
-  result.innerHTML = ok
-    ? '<span style="color:#10b981;font-weight:800">✅ Верно!</span>'
-    : '<span style="color:#ef4444;font-weight:700">Не совсем. Правильно: ' + correct + '</span>';
+function ruleNextQuestion() {
+  ruleState.qIdx++;
+  if (ruleState.qIdx < ruleState.quizzes.length) {
+    ruleShowQuestion();
+  } else {
+    ruleFinishQuiz();
+  }
 }
 
-function topicLearn(id) {
-  ST.topicProgress[id] = Math.min(100, (ST.topicProgress[id] || 0) + 20);
-  lsSave();
+function ruleFinishQuiz() {
+  if (!ST.mapProgress) ST.mapProgress = {};
+  var id = ruleState.topicId;
+  if ((ST.mapProgress[id] || 0) < 2) { ST.mapProgress[id] = 2; lsSave(); }
+  addXP(ruleState.correct * 3);
+  document.getElementById('rule-phase-quiz').style.display = 'none';
+  document.getElementById('rule-phase-done').style.display = 'block';
+  document.getElementById('rule-step-2').className = 'rule-step rule-step-done';
+  document.getElementById('rule-step-3').className = 'rule-step rule-step-active';
+  document.getElementById('rule-q-bar').style.width = '100%';
+  document.getElementById('rule-done-score').textContent =
+    'Правильных ответов: ' + ruleState.correct + ' из ' + ruleState.quizzes.length;
+}
+
+function ruleDoneToTrain() {
+  showScreen('screen-trainers');
+}
+
+function topicCheck(id, ruleKey) {
+  topicStudy(id, ruleKey);
+}
+
+function topicTrain(id) {
+  if (!ST.mapProgress) ST.mapProgress = {};
+  if ((ST.mapProgress[id] || 0) < 3) { ST.mapProgress[id] = 3; lsSave(); }
   renderMap();
-  addXP(5);
-}
-function topicTrain(id) { showScreen('screen-trainers'); }
-function topicCheck(id) {
-  const tasksByTopic = TASKS.filter(t => {
-    const block = TOPICS_MAP.find(b => b.topics.some(tp => tp.id === id));
-    return block && block.topics.some(tp => tp.id === id && tp.name.toLowerCase().includes(t.topic.toLowerCase().split(' ')[0]));
-  });
-  if(tasksByTopic.length) { openWalkthrough(tasksByTopic[0], 'screen-map'); return; }
-  const rnd = TASKS[Math.floor(Math.random() * TASKS.length)];
-  openWalkthrough(rnd, 'screen-map');
+  showScreen('screen-trainers');
 }
 
 // ===== TRAINERS =====
