@@ -4754,6 +4754,13 @@ function topicTrain(id) {
   if (!ST.mapProgress) ST.mapProgress = {};
   if ((ST.mapProgress[id] || 0) < 3) { ST.mapProgress[id] = 3; lsSave(); }
   renderMap();
+  // Найти ruleKey по id темы, потом trainerId по ruleKey
+  var ruleKey = '';
+  for (var b = 0; b < TOPICS_MAP.length; b++) {
+    var t = TOPICS_MAP[b].topics.find(function(t){ return t.id === id; });
+    if (t) { ruleKey = t.name; break; }
+  }
+  currentTopicTrainerId = TOPIC_TRAINER_MAP[ruleKey] || null;
   showScreen('screen-trainers');
 }
 
