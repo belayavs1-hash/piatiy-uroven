@@ -1094,12 +1094,12 @@ body {
   background:linear-gradient(180deg,#0f172a 0%,#1e3a5f 60%,#1e293b 100%);
   border-radius:18px 18px 0 0;
 }
-/* Звёздный фон */
-.tg-scene::before {
-  content:'★ ✦ · ★ · ✦ ★ ✦ · ★';
-  position:absolute; top:8px; left:0; right:0;
-  font-size:9px; letter-spacing:12px; color:rgba(255,255,255,.25);
-  white-space:nowrap; overflow:hidden;
+/* Звёздный фон — точки через box-shadow */
+.tg-stars {
+  position:absolute; top:0; left:0; right:0; bottom:0; pointer-events:none; z-index:0;
+}
+.tg-star {
+  position:absolute; width:2px; height:2px; border-radius:50%; background:#fff;
 }
 /* Платформы */
 .tg-platforms { position:absolute; bottom:0; left:0; right:0; height:44px; }
@@ -1133,7 +1133,7 @@ body {
 
 /* Герой-человечек (SVG-подобный через CSS) */
 .tg-hero {
-  position:absolute; bottom:24px; width:22px; height:36px;
+  position:absolute; bottom:24px; width:22px; height:38px;
   transition:left .38s cubic-bezier(.34,1.56,.64,1);
   z-index:10;
 }
@@ -1184,16 +1184,90 @@ body {
   100%{ transform:translateY(0); opacity:1; }
 }
 
-/* Мишень на некоторых платформах */
-.tg-target {
-  position:absolute; top:-18px; left:50%; transform:translateX(-50%);
-  width:16px; height:16px; border-radius:50%;
-  background:radial-gradient(circle,#fff 25%,#ef4444 25%,#ef4444 50%,#fff 50%,#fff 65%,#ef4444 65%);
-  border:1px solid rgba(0,0,0,.3);
-  animation:targetBob .9s ease-in-out infinite alternate;
-  pointer-events:none;
+/* ===== ТРЕНАЖЁР СТРЕЛОК ===== */
+.archer-wrap { max-width:500px; margin:0 auto; padding:16px; }
+.archer-question { font-size:22px; font-weight:900; color:#fff; text-align:center; margin-bottom:20px; min-height:52px; line-height:1.35; }
+.archer-target-wrap { position:relative; width:220px; height:220px; margin:0 auto 20px; }
+/* Кольца мишени */
+.archer-ring {
+  position:absolute; border-radius:50%; transform:translate(-50%,-50%);
+  top:50%; left:50%;
+  border:2px solid rgba(0,0,0,.15);
+  transition:opacity .3s;
 }
-@keyframes targetBob { from{transform:translateX(-50%) translateY(0)} to{transform:translateX(-50%) translateY(-4px)} }
+/* Стрела */
+.archer-arrow {
+  position:absolute; top:50%; left:-30px; transform:translateY(-50%);
+  width:0; height:0; pointer-events:none; z-index:20; opacity:0;
+  transition:none;
+}
+.archer-arrow.fly { animation:arrowFly .5s cubic-bezier(.2,.8,.4,1) forwards; }
+@keyframes arrowFly {
+  0%   { left:-30px; opacity:1; }
+  100% { left:calc(50% - 4px); opacity:1; }
+}
+/* Стрела — SVG inline через background */
+.archer-arrow-body {
+  position:absolute; top:50%; left:0; transform:translateY(-50%);
+  width:80px; height:4px; background:linear-gradient(90deg,#92400e,#d97706);
+  border-radius:2px;
+}
+.archer-arrow-body::after {
+  content:'▶'; position:absolute; right:-10px; top:50%; transform:translateY(-50%);
+  font-size:12px; color:#d97706; line-height:1;
+}
+.archer-arrow-body::before {
+  content:''; position:absolute; left:-4px; top:50%; transform:translateY(-50%);
+  border:5px solid transparent; border-right:8px solid #92400e;
+}
+/* Попадание — вспышка */
+.archer-hit {
+  position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+  font-size:48px; font-weight:900; color:#fbbf24; pointer-events:none;
+  opacity:0; z-index:30;
+}
+.archer-hit.show { animation:archerHitPop .7s ease-out forwards; }
+@keyframes archerHitPop {
+  0%   { opacity:0; transform:translate(-50%,-50%) scale(.4); }
+  40%  { opacity:1; transform:translate(-50%,-50%) scale(1.3); }
+  100% { opacity:0; transform:translate(-50%,-50%) scale(1);  }
+}
+/* Результат очков */
+.archer-score-pop {
+  position:absolute; top:10%; left:50%; transform:translateX(-50%);
+  font-size:32px; font-weight:900; pointer-events:none;
+  opacity:0; z-index:31;
+}
+.archer-score-pop.show { animation:archerScorePop .9s ease-out forwards; }
+@keyframes archerScorePop {
+  0%   { opacity:0; transform:translateX(-50%) translateY(0) scale(.5); }
+  40%  { opacity:1; transform:translateX(-50%) translateY(-14px) scale(1.2); }
+  100% { opacity:0; transform:translateX(-50%) translateY(-28px) scale(1); }
+}
+/* Прогресс стрелок */
+.archer-progress { display:flex; gap:6px; justify-content:center; margin-bottom:12px; flex-wrap:wrap; }
+.archer-shot { width:20px; height:20px; border-radius:50%; border:2px solid rgba(255,255,255,.2); font-size:11px; display:flex; align-items:center; justify-content:center; }
+.archer-shot.hit  { background:#22c55e; border-color:#22c55e; }
+.archer-shot.miss { background:#ef4444; border-color:#ef4444; }
+/* Ввод и кнопки */
+.archer-input-wrap { display:flex; gap:10px; align-items:center; }
+.archer-inp {
+  flex:1; padding:14px 16px; border-radius:14px; border:2px solid rgba(255,255,255,.2);
+  background:rgba(255,255,255,.08); color:#fff; font-family:inherit;
+  font-size:22px; font-weight:900; text-align:center; outline:none; box-sizing:border-box;
+  transition:border-color .2s;
+}
+.archer-inp:focus { border-color:#818cf8; }
+.archer-inp.ok  { border-color:#22c55e !important; background:rgba(34,197,94,.12) !important; }
+.archer-inp.err { border-color:#ef4444 !important; background:rgba(239,68,68,.12) !important; }
+.archer-shoot-btn {
+  padding:14px 20px; border-radius:14px; border:none;
+  background:linear-gradient(135deg,#f59e0b,#d97706);
+  color:#fff; font-family:inherit; font-size:16px; font-weight:900;
+  cursor:pointer; white-space:nowrap; transition:opacity .2s;
+}
+.archer-shoot-btn:disabled { opacity:.4; cursor:default; }
+.archer-choices { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:10px; }
 
 /* Сцена — горизонтальный скролл при нехватке места */
 .tg-scene { overflow-x:hidden; }
@@ -2031,6 +2105,7 @@ body {
         <div class="tg-progress-bar" id="tg-progress"></div>
         <!-- игровая сцена -->
         <div class="tg-scene" id="tg-scene">
+          <div class="tg-stars" id="tg-stars"></div>
           <div class="tg-platforms" id="tg-platforms"></div>
           <div class="tg-hero" id="tg-hero"><div class="tg-hero-body"></div></div>
         </div>
@@ -4151,7 +4226,8 @@ const TRAINERS_DEF = [
   {id:"decmul", icon:"🔸", name:"Десят. × ÷",           desc:"Умножение и деление"},
   {id:"tasknat",icon:"📝", name:"Задачи: числа",        desc:"Цена, время, части"},
   {id:"taskfr", icon:"📊", name:"Задачи: дроби",        desc:"Часть от числа"},
-  {id:"geo_t",  icon:"📐", name:"Геом. задачи",          desc:"Периметр, площадь, объём"}
+  {id:"geo_t",  icon:"📐", name:"Геом. задачи",          desc:"Периметр, площадь, объём"},
+  {id:"archer", icon:"🎯", name:"Стрелок",               desc:"Попади в десятку!"}
 ];
 
 const ACHIEVEMENTS = [
@@ -5245,7 +5321,11 @@ function startTrainer(id) {
   document.getElementById('tr-session-view').style.display = 'block';
   document.getElementById('tr-title').textContent = currentTrainer.icon + ' ' + currentTrainer.name;
   document.getElementById('tr-back-btn').onclick = trainersBack;
-  tgInit();
+  if (id === 'archer') {
+    archerInit();
+  } else {
+    tgInit();
+  }
 }
 
 // Пул для тренажёра: генерируем 30 задач заранее, выдаём без повторений
@@ -5409,6 +5489,16 @@ function genOne(type) {
       break;
     }
 
+    case 'archer': {
+      // Смешанные задачи из разных тем — стрелок решает всё
+      const tp = rnd(1,5);
+      if(tp===1){ const x=rnd(10,99),y=rnd(10,99); q=`${x} + ${y} = ?`; a=String(x+y); }
+      else if(tp===2){ const x=rnd(20,99),y=rnd(10,x); q=`${x} − ${y} = ?`; a=String(x-y); }
+      else if(tp===3){ const x=rnd(2,12),y=rnd(2,12); q=`${x} × ${y} = ?`; a=String(x*y); }
+      else if(tp===4){ const y=rnd(2,12),x=y*rnd(2,9); q=`${x} ÷ ${y} = ?`; a=String(x/y); }
+      else { const n=rnd(1,10); q=`${n}² = ?`; a=String(n*n); }
+      break;
+    }
     default: { const x=rnd(1,100),y=rnd(1,100); q=`${x} + ${y} = ?`; a=String(x+y); }
   }
 
@@ -5448,18 +5538,27 @@ function tgBuildScene() {
   const pitW  = 48;
   const totalW = (total + 1) * platW + total * pitW + 8;
 
-  // Мишени: на каждой 3-й платформе (индексы 2,5,8)
-  const targetIdxs = new Set([2, 5, 8]);
+  // Звёздочки — случайные точки в верхней части сцены
+  const starsEl = document.getElementById('tg-stars');
+  if (starsEl) {
+    const sw = scene.offsetWidth || 340;
+    let shtml = '';
+    for (let i = 0; i < 18; i++) {
+      const sx = Math.floor(Math.random() * sw);
+      const sy = Math.floor(Math.random() * 55);
+      const op = (0.2 + Math.random() * 0.5).toFixed(2);
+      const sz = Math.random() < 0.3 ? 3 : 2;
+      shtml += `<div class="tg-star" style="left:${sx}px;top:${sy}px;opacity:${op};width:${sz}px;height:${sz}px"></div>`;
+    }
+    starsEl.innerHTML = shtml;
+  }
 
   let html = '';
   const positions = [];
   let x = 4;
   for (let i = 0; i <= total; i++) {
     positions.push(x);
-    const hasTgt = targetIdxs.has(i) && i > 0;
-    html += `<div class="tg-platform" id="tg-plat-${i}" style="left:${x}px;width:${platW}px">` +
-            (hasTgt ? '<div class="tg-target"></div>' : '') +
-            '</div>';
+    html += `<div class="tg-platform" id="tg-plat-${i}" style="left:${x}px;width:${platW}px"></div>`;
     x += platW;
     if (i < total) {
       html += `<div class="tg-pit" style="left:${x}px;width:${pitW}px;height:${22+Math.floor(Math.random()*10)}px"></div>`;
@@ -5473,10 +5572,12 @@ function tgBuildScene() {
   scene._platPositions = positions;
   scene._platW = platW;
   scene._sceneW = scene.offsetWidth || 340;
+  scene._scrollOffset = 0;
 
   // Герой на платформе 0
   const hero = document.getElementById('tg-hero');
   hero.style.left = (positions[0] + platW/2 - 11) + 'px';
+  hero.style.opacity = '1';
   hero.className = 'tg-hero';
 }
 
@@ -5717,6 +5818,205 @@ function tgAdvance() {
 function renderTrainerTask() { tgRenderTask(); }
 function checkTrainer() { tgCheck(); }
 function nextTrainerTask() { tgAdvance(); }
+
+// ===== ТРЕНАЖЁР СТРЕЛОК =====
+var archerAnswered = false;
+var archerAttempt = 0;
+
+// Размеры колец мишени (диаметры px) и их цвета + очки
+var ARCHER_RINGS = [
+  { d:220, color:'#fef2f2', pts:1  },
+  { d:180, color:'#fca5a5', pts:2  },
+  { d:140, color:'#f87171', pts:3  },
+  { d:100, color:'#ef4444', pts:5  },
+  { d: 60, color:'#dc2626', pts:8  },
+  { d: 24, color:'#7f1d1d', pts:10 }
+];
+
+function archerInit() {
+  archerAnswered = false;
+  archerAttempt = 0;
+  // Перестраиваем содержимое tr-session-view
+  const wrap = document.querySelector('#tr-session-view .tg-wrap');
+  if (wrap) wrap.style.display = 'none';
+  // Создаём архер-контейнер если нет
+  let archerEl = document.getElementById('archer-container');
+  if (!archerEl) {
+    archerEl = document.createElement('div');
+    archerEl.id = 'archer-container';
+    document.getElementById('tr-session-view').appendChild(archerEl);
+  }
+  archerEl.style.display = 'block';
+  archerRender();
+}
+
+function archerRender() {
+  archerAnswered = false;
+  archerAttempt = 0;
+  const task = trTasks[trIdx];
+  const mode = (tgTrainerCount % 2 === 0) ? 'input' : 'choices';
+
+  // Варианты для режима кнопок
+  let choicesHtml = '';
+  if (mode === 'choices') {
+    const w = genWrongNums(task.a, 3);
+    const opts = w ? arrShuffle([task.a, ...w]) : [task.a];
+    choicesHtml = `<div class="archer-choices">` +
+      opts.map(o => `<button class="tg-choice" onclick="archerChoose(this,'${o.replace(/'/g,"\\'")}')">${o}</button>`).join('') +
+      `</div>`;
+  }
+
+  // Прогресс
+  const progressHtml = trTasks.map((t, i) => {
+    const cls = i < trIdx ? (t._result === 'ok' ? 'hit' : 'miss') : '';
+    const icon = i < trIdx ? (t._result === 'ok' ? '🏹' : '✕') : '';
+    return `<div class="archer-shot ${cls}">${icon}</div>`;
+  }).join('');
+
+  // Кольца мишени
+  const ringsHtml = ARCHER_RINGS.map(r =>
+    `<div class="archer-ring" style="width:${r.d}px;height:${r.d}px;background:${r.color};margin-left:-${r.d/2}px;margin-top:-${r.d/2}px"></div>`
+  ).join('');
+  // Метки очков
+  const labelsHtml = [10, 8, 5, 3, 2, 1].map((pts, li) => {
+    const r = ARCHER_RINGS[li];
+    return `<div style="position:absolute;top:${50 - r.d/2/2.2}%;left:52%;font-size:9px;font-weight:900;color:rgba(0,0,0,.4);pointer-events:none">${pts}</div>`;
+  }).join('');
+
+  document.getElementById('archer-container').innerHTML = `
+    <div class="archer-wrap">
+      <div style="font-size:11px;font-weight:700;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px">Задание ${trIdx+1} из ${trTasks.length}</div>
+      <div class="archer-question" id="archer-q">${task.q}</div>
+      <div class="archer-progress">${progressHtml}</div>
+      <div class="archer-target-wrap" id="archer-target-wrap">
+        ${ringsHtml}
+        ${labelsHtml}
+        <div class="archer-hit" id="archer-hit"></div>
+        <div class="archer-score-pop" id="archer-score-pop"></div>
+        <div class="archer-arrow" id="archer-arrow"><div class="archer-arrow-body"></div></div>
+      </div>
+      ${mode === 'input' ? `
+        <div class="archer-input-wrap">
+          <input type="text" class="archer-inp" id="archer-inp" placeholder="Ответ..." autocomplete="off" onkeydown="if(event.key==='Enter')archerShoot()">
+          <button class="archer-shoot-btn" id="archer-shoot-btn" onclick="archerShoot()">🏹 Выстрел!</button>
+        </div>
+        <div class="tg-status" id="archer-status"></div>
+      ` : `
+        ${choicesHtml}
+        <div class="tg-status" id="archer-status"></div>
+      `}
+    </div>
+  `;
+  if (mode === 'input') setTimeout(() => { const i = document.getElementById('archer-inp'); if(i) i.focus(); }, 80);
+}
+
+function archerChoose(btn, val) {
+  if (archerAnswered) return;
+  archerAnswered = true;
+  document.getElementById('archer-container').querySelectorAll('.tg-choice').forEach(b => b.disabled = true);
+  const task = trTasks[trIdx];
+  const correct = val.replace(/\s/g,'').toLowerCase() === task.a.replace(/\s/g,'').toLowerCase();
+  if (correct) btn.classList.add('ok'); else btn.classList.add('err');
+  archerResolve(correct, task.a);
+}
+
+function archerShoot() {
+  if (archerAnswered) return;
+  const inp = document.getElementById('archer-inp');
+  if (!inp || !inp.value.trim()) return;
+  archerAnswered = true;
+  inp.disabled = true;
+  const btn = document.getElementById('archer-shoot-btn');
+  if (btn) btn.disabled = true;
+  const task = trTasks[trIdx];
+  const correct = inp.value.trim().replace(/\s/g,'').toLowerCase() === task.a.replace(/\s/g,'').toLowerCase();
+  inp.classList.add(correct ? 'ok' : 'err');
+  archerResolve(correct, task.a);
+}
+
+function archerResolve(correct, rightAnswer) {
+  const arrow = document.getElementById('archer-arrow');
+  const hitEl = document.getElementById('archer-hit');
+  const scorePop = document.getElementById('archer-score-pop');
+  const statusEl = document.getElementById('archer-status');
+  const task = trTasks[trIdx];
+
+  if (correct) {
+    // Стрела летит в центр (10)
+    arrow.style.opacity = '1';
+    arrow.classList.add('fly');
+    setTimeout(() => {
+      hitEl.textContent = '✦';
+      hitEl.style.color = '#fbbf24';
+      hitEl.classList.add('show');
+      scorePop.textContent = '10 🎯';
+      scorePop.style.color = '#4ade80';
+      scorePop.classList.add('show');
+    }, 480);
+    task._result = 'ok';
+    trCorrect++;
+    addXP(10);
+    if (statusEl) { statusEl.textContent = '✅ В десятку! +10 XP'; statusEl.className = 'tg-status ok'; }
+    setTimeout(archerAdvance, 1400);
+  } else {
+    if (archerAttempt === 0) {
+      archerAttempt = 1;
+      // Стрела в ноль — летит далеко в сторону (miss)
+      arrow.style.opacity = '1';
+      arrow.style.transform = 'translateY(30px) rotate(15deg)';
+      arrow.classList.add('fly');
+      setTimeout(() => {
+        hitEl.textContent = '✕';
+        hitEl.style.color = '#ef4444';
+        hitEl.style.fontSize = '36px';
+        hitEl.style.top = '75%';
+        hitEl.classList.add('show');
+        scorePop.textContent = '0 😬';
+        scorePop.style.color = '#f87171';
+        scorePop.classList.add('show');
+      }, 480);
+      if (statusEl) { statusEl.textContent = '😵 Упс! Попробуй ещё раз'; statusEl.className = 'tg-status err'; }
+      // Через 1.2s — перерешать
+      setTimeout(() => {
+        archerAnswered = false;
+        arrow.style.opacity = '0';
+        arrow.classList.remove('fly');
+        arrow.style.transform = '';
+        hitEl.classList.remove('show');
+        scorePop.classList.remove('show');
+        hitEl.style.top = '50%';
+        // Разблокировать ввод
+        const inp = document.getElementById('archer-inp');
+        if (inp) { inp.value = ''; inp.disabled = false; inp.className = 'archer-inp'; inp.focus(); }
+        const btn = document.getElementById('archer-shoot-btn');
+        if (btn) btn.disabled = false;
+        document.getElementById('archer-container').querySelectorAll('.tg-choice').forEach(b => { b.disabled = false; b.className = 'tg-choice'; });
+        if (statusEl) { statusEl.textContent = '🏹 Вторая попытка!'; statusEl.className = 'tg-status'; }
+      }, 1300);
+    } else {
+      // Вторая ошибка
+      arrow.style.opacity = '1';
+      arrow.style.transform = 'translateY(50px) rotate(25deg)';
+      arrow.classList.add('fly');
+      task._result = 'err';
+      addMistake(currentTrainer.name, 'trainer_wrong');
+      if (statusEl) { statusEl.textContent = '❌ Правильно: ' + rightAnswer; statusEl.className = 'tg-status err'; }
+      setTimeout(archerAdvance, 1400);
+    }
+  }
+}
+
+function archerAdvance() {
+  trIdx++;
+  if (trIdx >= trTasks.length) {
+    document.getElementById('archer-container').style.display = 'none';
+    const wrap = document.querySelector('#tr-session-view .tg-wrap');
+    if (wrap) wrap.style.display = '';
+    endTrainer();
+  } else {
+    archerRender();
+  }
+}
 
 function endTrainer() {
   if(!ST.trainerStats[currentTrainer.id]) ST.trainerStats[currentTrainer.id] = {done:0, correct:0};
