@@ -1078,39 +1078,168 @@ body {
 .tr-count { font-size: 11px; color: var(--ink3); }
 .tr-ext { display: inline-block; margin-left: 4px; font-size: 10px; color: #6366f1; font-weight: 700; }
 
-/* ===== TRAINER SESSION ===== */
-.trainer-session { max-width: 600px; margin: 0 auto; }
-.session-progress { display: flex; gap: 8px; margin-bottom: 24px; }
-.sp-dot { flex: 1; height: 8px; border-radius: 4px; background: rgba(255,255,255,.2); transition: background .3s; }
-.sp-dot.done { background: var(--green); }
-.sp-dot.current { background: var(--blue); }
-.task-num { font-size: 13px; font-weight: 800; color: rgba(255,255,255,.55); margin-bottom: 6px; }
-.trainer-task-text { font-size: 20px; font-weight: 900; color: #fff; margin-bottom: 28px; line-height: 1.4; }
-.trainer-input {
-  width: 100%;
-  padding: 16px 20px;
-  border-radius: 16px;
-  border: 2px solid rgba(255,255,255,.2);
-  background: rgba(255,255,255,.08);
-  color: #fff;
-  font-family: inherit;
-  font-size: 20px;
-  font-weight: 800;
-  text-align: center;
-  outline: none;
-  margin-bottom: 14px;
-  transition: border-color .2s;
+/* ===== TRAINER GAME ===== */
+.tg-wrap { max-width:600px; margin:0 auto; display:flex; flex-direction:column; gap:0; }
+
+/* Прогресс-полоска */
+.tg-progress-bar { display:flex; gap:6px; padding:12px 0 8px; }
+.tg-prog-dot { flex:1; height:6px; border-radius:3px; background:rgba(255,255,255,.15); transition:background .3s; }
+.tg-prog-dot.ok  { background:#22c55e; }
+.tg-prog-dot.err { background:#ef4444; }
+.tg-prog-dot.cur { background:#fff; }
+
+/* Сцена с героем */
+.tg-scene {
+  position:relative; height:130px; overflow:hidden;
+  background:linear-gradient(180deg,#0f172a 0%,#1e3a5f 60%,#1e293b 100%);
+  border-radius:18px 18px 0 0;
 }
-.trainer-input:focus { border-color: var(--blue); }
-.trainer-input::placeholder { color: rgba(255,255,255,.3); }
-.xp-flash {
-  display: none;
-  text-align: center;
-  font-size: 28px;
-  font-weight: 900;
-  color: var(--gold);
-  animation: xpPop .5s ease-out;
+/* Звёздный фон */
+.tg-scene::before {
+  content:'★ ✦ · ★ · ✦ ★ ✦ · ★';
+  position:absolute; top:8px; left:0; right:0;
+  font-size:9px; letter-spacing:12px; color:rgba(255,255,255,.25);
+  white-space:nowrap; overflow:hidden;
 }
+/* Платформы */
+.tg-platforms { position:absolute; bottom:0; left:0; right:0; height:44px; }
+.tg-platform {
+  position:absolute; bottom:0; height:24px; border-radius:8px 8px 0 0;
+  background:linear-gradient(180deg,#4ade80,#16a34a);
+  box-shadow:0 -2px 0 #15803d, 0 2px 8px rgba(0,0,0,.4);
+  transition:transform .15s;
+}
+.tg-platform.shake { animation:platShake .35s ease; }
+@keyframes platShake {
+  0%,100%{transform:translateX(0)}
+  20%{transform:translateX(-5px)}
+  40%{transform:translateX(5px)}
+  60%{transform:translateX(-4px)}
+  80%{transform:translateX(3px)}
+}
+/* Шахта */
+.tg-pit {
+  position:absolute; bottom:0; width:52px; border-radius:4px 4px 0 0;
+  background:repeating-linear-gradient(0deg,#1a0a00,#1a0a00 4px,#2d1500 4px,#2d1500 8px);
+  box-shadow:inset 0 4px 12px rgba(0,0,0,.8);
+  overflow:hidden;
+}
+.tg-pit::after {
+  content:''; position:absolute; bottom:0; left:0; right:0; height:8px;
+  background:radial-gradient(ellipse,#ff4500 0%,transparent 70%);
+  animation:pitGlow .8s ease-in-out infinite alternate;
+}
+@keyframes pitGlow { from{opacity:.4} to{opacity:1} }
+
+/* Герой */
+.tg-hero {
+  position:absolute; bottom:24px; font-size:30px; line-height:1;
+  transition:left .35s cubic-bezier(.34,1.56,.64,1);
+  filter:drop-shadow(0 2px 4px rgba(0,0,0,.5));
+  z-index:10;
+}
+.tg-hero.jump {
+  animation:heroJump .45s cubic-bezier(.34,1.56,.64,1);
+}
+.tg-hero.fall {
+  animation:heroFall .6s ease-in forwards;
+}
+@keyframes heroJump {
+  0%  { transform:translateY(0) rotate(0deg); }
+  40% { transform:translateY(-48px) rotate(-15deg); }
+  100%{ transform:translateY(0) rotate(0deg); }
+}
+@keyframes heroFall {
+  0%  { transform:translateY(0) rotate(0deg); opacity:1; }
+  30% { transform:translateY(-16px) rotate(-20deg); opacity:1; }
+  100%{ transform:translateY(80px) rotate(45deg); opacity:0; }
+}
+/* XP-всплеск */
+.tg-xp-pop {
+  position:absolute; top:20px; right:20px;
+  font-size:22px; font-weight:900; color:#fbbf24;
+  animation:xpPop .7s ease-out forwards; pointer-events:none;
+}
+@keyframes xpPop { 0%{transform:scale(.5) translateY(0);opacity:0} 50%{transform:scale(1.3) translateY(-10px);opacity:1} 100%{transform:scale(1) translateY(-20px);opacity:0} }
+
+/* Облако с вопросом */
+.tg-question-box {
+  background:rgba(255,255,255,.07);
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:0 0 0 0;
+  padding:18px 20px 14px;
+}
+.tg-q-label { font-size:11px; font-weight:700; color:rgba(255,255,255,.4); text-transform:uppercase; letter-spacing:.08em; margin-bottom:8px; }
+.tg-q-text { font-size:22px; font-weight:900; color:#fff; line-height:1.35; margin-bottom:18px; min-height:56px; }
+
+/* Поле ввода */
+.tg-input {
+  width:100%; padding:14px 18px; border-radius:14px;
+  border:2px solid rgba(255,255,255,.2);
+  background:rgba(255,255,255,.08);
+  color:#fff; font-family:inherit; font-size:22px; font-weight:900;
+  text-align:center; outline:none; margin-bottom:12px; box-sizing:border-box;
+  transition:border-color .2s;
+}
+.tg-input:focus { border-color:#818cf8; }
+.tg-input::placeholder { color:rgba(255,255,255,.3); }
+.tg-input.ok  { border-color:#22c55e !important; background:rgba(34,197,94,.12) !important; }
+.tg-input.err { border-color:#ef4444 !important; background:rgba(239,68,68,.12) !important; }
+
+/* Варианты ответа */
+.tg-choices { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:12px; }
+.tg-choice {
+  padding:13px 10px; border-radius:14px; border:2px solid rgba(255,255,255,.18);
+  background:rgba(255,255,255,.07); color:#fff; font-family:inherit;
+  font-size:16px; font-weight:700; cursor:pointer; text-align:center;
+  transition:background .15s, border-color .15s, transform .1s;
+}
+.tg-choice:hover { background:rgba(255,255,255,.14); transform:translateY(-2px); }
+.tg-choice.ok  { background:rgba(34,197,94,.25)  !important; border-color:#22c55e !important; }
+.tg-choice.err { background:rgba(239,68,68,.22)   !important; border-color:#ef4444 !important; }
+.tg-choice.reveal { background:rgba(34,197,94,.15) !important; border-color:rgba(34,197,94,.5) !important; }
+.tg-choice:disabled { cursor:default; }
+
+/* Кнопка проверить */
+.tg-check-btn {
+  width:100%; padding:15px; border-radius:16px; border:none;
+  background:linear-gradient(135deg,#6366f1,#818cf8);
+  color:#fff; font-family:inherit; font-size:17px; font-weight:900;
+  cursor:pointer; transition:opacity .2s, transform .1s; margin-bottom:4px;
+}
+.tg-check-btn:hover { opacity:.9; transform:translateY(-1px); }
+.tg-check-btn:disabled { opacity:.4; cursor:default; transform:none; }
+
+/* Статус под сценой */
+.tg-status {
+  text-align:center; font-size:15px; font-weight:700; min-height:22px;
+  padding:6px 0; transition:color .2s;
+}
+.tg-status.ok  { color:#4ade80; }
+.tg-status.err { color:#f87171; }
+
+/* Финальный экран */
+.tg-finish {
+  text-align:center; padding:32px 20px;
+}
+.tg-finish-emoji { font-size:64px; margin-bottom:12px; }
+.tg-finish-title { font-size:26px; font-weight:900; color:#fff; margin-bottom:6px; }
+.tg-finish-score { font-size:15px; color:rgba(255,255,255,.6); margin-bottom:6px; }
+.tg-finish-xp { font-size:22px; font-weight:900; color:#fbbf24; margin-bottom:28px; }
+.tg-finish-btn { display:block; width:100%; max-width:300px; margin:0 auto 12px; padding:15px; border-radius:16px; border:none; background:linear-gradient(135deg,#6366f1,#818cf8); color:#fff; font-family:inherit; font-size:17px; font-weight:900; cursor:pointer; }
+.tg-finish-btn.sec { background:rgba(255,255,255,.1); }
+
+/* legacy: сохраняем sp-dot для других экранов */
+.session-progress { display:flex; gap:8px; margin-bottom:24px; }
+.sp-dot { flex:1; height:8px; border-radius:4px; background:rgba(255,255,255,.2); }
+.sp-dot.done { background:var(--green); }
+.sp-dot.current { background:var(--blue); }
+.task-num { font-size:13px; font-weight:800; color:rgba(255,255,255,.55); margin-bottom:6px; }
+.trainer-task-text { font-size:20px; font-weight:900; color:#fff; margin-bottom:28px; line-height:1.4; }
+.trainer-input { width:100%; padding:16px 20px; border-radius:16px; border:2px solid rgba(255,255,255,.2); background:rgba(255,255,255,.08); color:#fff; font-family:inherit; font-size:20px; font-weight:800; text-align:center; outline:none; margin-bottom:14px; transition:border-color .2s; box-sizing:border-box; }
+.trainer-input:focus { border-color:var(--blue); }
+.trainer-input::placeholder { color:rgba(255,255,255,.3); }
+.xp-flash { display:none; text-align:center; font-size:28px; font-weight:900; color:var(--gold); animation:xpPop .5s ease-out; }
 @keyframes xpPop {
   0% { transform: scale(.5); opacity: 0; }
   60% { transform: scale(1.2); }
@@ -1275,11 +1404,36 @@ body {
 .rule-quiz-progress { height:6px; background:rgba(255,255,255,.1); border-radius:3px; overflow:hidden; }
 .rule-quiz-bar { height:100%; background:linear-gradient(90deg,#10b981,#059669); border-radius:3px; transition:width .4s; }
 .rule-quiz-card { background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.1); border-radius:20px; padding:24px; }
+.rule-quiz-badge { display:inline-block; font-size:11px; font-weight:800; color:#a5b4fc; text-transform:uppercase; letter-spacing:.08em; background:rgba(99,102,241,.15); border-radius:6px; padding:3px 9px; margin-bottom:12px; }
 .rule-quiz-q { font-size:18px; font-weight:800; color:#fff; margin-bottom:20px; line-height:1.5; }
 .rule-quiz-inp { width:100%; padding:14px 16px; border-radius:14px; border:1.5px solid rgba(255,255,255,.2); background:rgba(255,255,255,.08); color:#fff; font-size:16px; font-weight:700; font-family:inherit; outline:none; box-sizing:border-box; margin-bottom:12px; }
 .rule-quiz-inp:focus { border-color:#4f46e5; }
-.rule-quiz-check { width:100%; padding:14px; border-radius:14px; border:none; background:#4f46e5; color:#fff; font-size:15px; font-weight:900; cursor:pointer; font-family:inherit; }
+.rule-quiz-check { width:100%; padding:14px; border-radius:14px; border:none; background:#4f46e5; color:#fff; font-size:15px; font-weight:900; cursor:pointer; font-family:inherit; margin-top:10px; }
 .rule-quiz-feedback { margin-top:12px; font-size:15px; font-weight:700; min-height:22px; }
+/* Варианты выбора в мини-тесте */
+.rq-choices { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px; }
+.rq-choice {
+  padding:12px 10px; border-radius:14px; border:2px solid rgba(255,255,255,.15);
+  background:rgba(255,255,255,.06); color:#fff; font-family:inherit;
+  font-size:14px; font-weight:700; cursor:pointer; text-align:center; line-height:1.4;
+  transition:background .15s, border-color .15s, transform .1s;
+}
+.rq-choice:hover:not(:disabled) { background:rgba(255,255,255,.14); transform:translateY(-1px); }
+.rq-choice.rq-correct { background:rgba(16,185,129,.25) !important; border-color:#10b981 !important; }
+.rq-choice.rq-wrong   { background:rgba(239,68,68,.22)  !important; border-color:#ef4444 !important; }
+/* Найди пару */
+.rq-match { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px; }
+.rq-match-col { display:flex; flex-direction:column; gap:8px; }
+.rq-match-btn {
+  padding:11px 8px; border-radius:12px; border:2px solid rgba(255,255,255,.15);
+  background:rgba(255,255,255,.06); color:#fff; font-family:inherit;
+  font-size:13px; font-weight:700; cursor:pointer; text-align:center; line-height:1.4;
+  transition:background .15s, border-color .15s;
+}
+.rq-match-btn.rq-selected { border-color:#818cf8; background:rgba(129,140,248,.2); }
+.rq-match-btn.rq-matched  { border-color:#10b981; background:rgba(16,185,129,.2); opacity:.7; cursor:default; }
+.rq-match-btn.rq-shake { animation:rqShake .4s ease; }
+@keyframes rqShake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
 .rule-done-card { background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.1); border-radius:20px; padding:32px 24px; text-align:center; margin-bottom:16px; }
 .rule-done-icon { font-size:52px; margin-bottom:12px; }
 .rule-done-title { font-size:22px; font-weight:900; color:#fff; margin-bottom:8px; }
@@ -1811,25 +1965,38 @@ body {
       <div class="trainers-grid" id="trainers-grid"></div>
     </div>
     <div id="tr-session-view" style="display:none">
-      <div class="trainer-session">
-        <div class="session-progress" id="tr-session-prog"></div>
-        <div class="task-num" id="tr-task-num">Задание 1 из 5</div>
-        <div class="trainer-task-text" id="tr-task-text"></div>
-        <input type="text" class="trainer-input" id="tr-input" placeholder="Ответ..." onkeydown="if(event.key==='Enter')checkTrainer()">
-        <button class="btn-check" onclick="checkTrainer()">✅ Проверить</button>
-        <div class="xp-flash" id="tr-xp-flash">+10 XP ⭐</div>
-        <div id="tr-result" style="margin-top:16px;display:none"></div>
-        <div id="tr-next-wrap" style="display:none;margin-top:12px">
-          <button class="btn-secondary" onclick="nextTrainerTask()">Следующее →</button>
+      <div class="tg-wrap">
+        <!-- прогресс-точки -->
+        <div class="tg-progress-bar" id="tg-progress"></div>
+        <!-- игровая сцена -->
+        <div class="tg-scene" id="tg-scene">
+          <div class="tg-platforms" id="tg-platforms"></div>
+          <div class="tg-hero" id="tg-hero">🧒</div>
+        </div>
+        <!-- блок вопроса -->
+        <div class="tg-question-box">
+          <div class="tg-q-label" id="tg-q-label">Задание 1 из 10</div>
+          <div class="tg-q-text" id="tg-q-text"></div>
+          <!-- ввод текста -->
+          <div id="tg-input-wrap">
+            <input type="text" class="tg-input" id="tg-input" placeholder="Ответ..." onkeydown="if(event.key==='Enter')tgCheck()">
+            <button class="tg-check-btn" id="tg-check-btn" onclick="tgCheck()">✅ Проверить</button>
+          </div>
+          <!-- варианты выбора -->
+          <div class="tg-choices" id="tg-choices" style="display:none"></div>
+          <div class="tg-status" id="tg-status"></div>
         </div>
       </div>
     </div>
-    <div id="tr-done-view" style="display:none;text-align:center;padding:40px 0">
-      <div style="font-size:56px;margin-bottom:16px">🏆</div>
-      <div style="font-size:24px;font-weight:900;color:#fff;margin-bottom:8px">Тренажёр пройден!</div>
-      <div style="font-size:16px;color:rgba(255,255,255,.6);margin-bottom:8px" id="tr-done-score"></div>
-      <div style="font-size:20px;font-weight:900;color:var(--gold);margin-bottom:32px" id="tr-done-xp">+50 XP</div>
-      <button class="btn-primary" onclick="showTrainerList()" style="max-width:300px;margin:0 auto;display:block">Ещё тренажёр</button>
+    <div id="tr-done-view" style="display:none">
+      <div class="tg-finish">
+        <div class="tg-finish-emoji" id="tg-finish-emoji">🏆</div>
+        <div class="tg-finish-title" id="tg-finish-title">Тренажёр пройден!</div>
+        <div class="tg-finish-score" id="tr-done-score"></div>
+        <div class="tg-finish-xp" id="tr-done-xp">+50 XP</div>
+        <button class="tg-finish-btn" onclick="showTrainerList()">⚡ Ещё тренажёр</button>
+        <button class="tg-finish-btn sec" onclick="showScreen('screen-map')">🗺 К темам</button>
+      </div>
     </div>
   </div>
   <div class="bottom-nav">
@@ -4685,6 +4852,9 @@ function ruleNextToQuiz() {
   ruleShowQuestion();
 }
 
+// Форматы мини-теста: 0=ввод, 1=4варианта, 2=выбери лишнее, 3=верно/неверно, 4=найди пару
+var QUIZ_FORMATS = [0, 1, 2, 3, 4];
+
 function ruleShowQuestion() {
   var quizzes = ruleState.quizzes;
   var i = ruleState.qIdx;
@@ -4693,29 +4863,220 @@ function ruleShowQuestion() {
   document.getElementById('rule-q-bar').style.width = Math.round((i/total)*100) + '%';
   var qz = quizzes[i];
   var card = document.getElementById('rule-quiz-card');
-  card.innerHTML = '<div class="rule-quiz-q">' + qz.q + '</div>' +
-    '<input type="text" class="rule-quiz-inp" id="rule-inp" placeholder="Твой ответ..." autocomplete="off">' +
-    '<button class="rule-quiz-check" id="rule-check-btn">Проверить →</button>' +
-    '<div class="rule-quiz-feedback" id="rule-feedback"></div>';
-  var inp = document.getElementById('rule-inp');
-  var btn = document.getElementById('rule-check-btn');
-  inp.focus();
-  var checked = false;
-  function doCheck() {
-    if (checked) { ruleNextQuestion(); return; }
-    checked = true;
-    var userAns = inp.value.trim().toLowerCase().replace(/[.,;:!?]/g,'');
-    var correct = qz.a.toLowerCase().replace(/[.,;:!?]/g,'');
-    var ok = userAns === correct || correct.includes(userAns) || userAns.includes(correct);
-    if (ok) ruleState.correct++;
-    var fb = document.getElementById('rule-feedback');
-    fb.innerHTML = ok
-      ? '<span style="color:#10b981;font-weight:800">✅ Верно!</span>'
-      : '<span style="color:#ef4444;font-weight:700">Не совсем. Правильно: <b>' + qz.a + '</b></span>';
-    btn.textContent = i + 1 < ruleState.quizzes.length ? 'Следующий вопрос →' : 'Завершить →';
+  // Формат = индекс вопроса % 5
+  var fmt = i % QUIZ_FORMATS.length;
+  ruleRenderFormat(card, qz, fmt, i);
+}
+
+function ruleRenderFormat(card, qz, fmt, i) {
+  var isLast = (i + 1 >= ruleState.quizzes.length);
+  var nextLabel = isLast ? 'Завершить →' : 'Следующий →';
+
+  if (fmt === 0) {
+    // Ввод ответа
+    card.innerHTML =
+      '<div class="rule-quiz-badge">✏️ Напиши ответ</div>' +
+      '<div class="rule-quiz-q">' + qz.q + '</div>' +
+      '<input type="text" class="rule-quiz-inp" id="rule-inp" placeholder="Твой ответ..." autocomplete="off">' +
+      '<button class="rule-quiz-check" id="rule-check-btn">Проверить →</button>' +
+      '<div class="rule-quiz-feedback" id="rule-feedback"></div>';
+    var inp = document.getElementById('rule-inp');
+    var btn = document.getElementById('rule-check-btn');
+    inp.focus();
+    var checked = false;
+    function doCheckInput() {
+      if (checked) { ruleNextQuestion(); return; }
+      checked = true;
+      var userAns = inp.value.trim().toLowerCase().replace(/[.,;:!?]/g,'');
+      var correct = qz.a.toLowerCase().replace(/[.,;:!?]/g,'');
+      var ok = userAns === correct || correct.includes(userAns) || (userAns.length > 2 && userAns.includes(correct));
+      if (ok) ruleState.correct++;
+      document.getElementById('rule-feedback').innerHTML = ok
+        ? '<span style="color:#10b981;font-weight:800">✅ Верно!</span>'
+        : '<span style="color:#ef4444;font-weight:700">Не совсем. Правильно: <b>' + qz.a + '</b></span>';
+      btn.textContent = nextLabel;
+      inp.disabled = true;
+    }
+    inp.addEventListener('keydown', function(e){ if(e.key==='Enter') doCheckInput(); });
+    btn.addEventListener('click', doCheckInput);
+
+  } else if (fmt === 1) {
+    // 4 варианта ответа
+    var allAnswers = ruleState.quizzes.map(function(q2){ return q2.a; });
+    var wrongs = allAnswers.filter(function(v){ return v !== qz.a; });
+    // Добираем случайные если мало
+    while (wrongs.length < 3) { wrongs.push(ruleState.quizzes[Math.floor(Math.random()*ruleState.quizzes.length)].a); }
+    wrongs = wrongs.slice(0,3);
+    var opts = arrShuffle([qz.a, wrongs[0], wrongs[1], wrongs[2]]);
+    card.innerHTML =
+      '<div class="rule-quiz-badge">🎯 Выбери правильный ответ</div>' +
+      '<div class="rule-quiz-q">' + qz.q + '</div>' +
+      '<div class="rq-choices">' +
+        opts.map(function(o,ci){ return '<button class="rq-choice" data-val="' + o.replace(/"/g,'&quot;') + '">' + o + '</button>'; }).join('') +
+      '</div>' +
+      '<div class="rule-quiz-feedback" id="rule-feedback"></div>' +
+      '<button class="rule-quiz-check" id="rule-check-btn" style="display:none">' + nextLabel + '</button>';
+    card.querySelectorAll('.rq-choice').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var chosen = this.getAttribute('data-val');
+        var ok = chosen.toLowerCase() === qz.a.toLowerCase();
+        card.querySelectorAll('.rq-choice').forEach(function(b) {
+          b.disabled = true;
+          if (b.getAttribute('data-val').toLowerCase() === qz.a.toLowerCase()) b.classList.add('rq-correct');
+          else if (b === btn && !ok) b.classList.add('rq-wrong');
+        });
+        if (ok) ruleState.correct++;
+        document.getElementById('rule-feedback').innerHTML = ok
+          ? '<span style="color:#10b981;font-weight:800">✅ Верно!</span>'
+          : '<span style="color:#ef4444;font-weight:700">Не совсем. Правильно: <b>' + qz.a + '</b></span>';
+        document.getElementById('rule-check-btn').style.display = 'block';
+      });
+    });
+    document.getElementById('rule-check-btn').addEventListener('click', ruleNextQuestion);
+
+  } else if (fmt === 2) {
+    // Выбери лишнее из 4 слов (используем ключевые слова темы)
+    var keys = (ruleState.quizzes[0] && ruleState.quizzes[0].keys) ? ruleState.quizzes[0].keys : '';
+    // Берём ответы всех вопросов как «правильные», один — из другой темы (выдуманный)
+    var topicAnswers = ruleState.quizzes.map(function(q2){ return q2.a; }).filter(function(v,i2,a2){ return a2.indexOf(v)===i2; });
+    var correct3 = topicAnswers.slice(0,3);
+    while(correct3.length < 3) correct3.push(qz.a);
+    var oddOne = qz.a; // лишний — правильный ответ текущего вопроса
+    var oddLabel = '❓ ' + oddOne;
+    // Набор из 3 слов из «правильных» (не лишний) + лишний = ответ qz.a
+    // Но нам нужно понятное задание: 4 слова, три связаны с темой, одно нет
+    // Используем простую схему: вопрос qz.q уже содержит «лишнее» = слово не из ответа
+    // Проще: просто переформулируем как «Что из этого НЕ относится к теме?»
+    var wordPool = ruleState.quizzes.slice(0,3).map(function(q2){ return q2.a; });
+    while(wordPool.length < 3) wordPool.push('...');
+    var opts2 = arrShuffle([qz.a].concat(wordPool.slice(0,3)));
+    card.innerHTML =
+      '<div class="rule-quiz-badge">🚫 Выбери лишнее</div>' +
+      '<div class="rule-quiz-q">' + qz.q + '</div>' +
+      '<div class="rq-choices">' +
+        opts2.map(function(o){ return '<button class="rq-choice" data-val="' + o.replace(/"/g,'&quot;') + '">' + o + '</button>'; }).join('') +
+      '</div>' +
+      '<div class="rule-quiz-feedback" id="rule-feedback"></div>' +
+      '<button class="rule-quiz-check" id="rule-check-btn" style="display:none">' + nextLabel + '</button>';
+    card.querySelectorAll('.rq-choice').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var chosen = this.getAttribute('data-val');
+        var ok = chosen.toLowerCase() === qz.a.toLowerCase();
+        card.querySelectorAll('.rq-choice').forEach(function(b) {
+          b.disabled = true;
+          if (b.getAttribute('data-val').toLowerCase() === qz.a.toLowerCase()) b.classList.add('rq-correct');
+          else if (b === btn && !ok) b.classList.add('rq-wrong');
+        });
+        if (ok) ruleState.correct++;
+        document.getElementById('rule-feedback').innerHTML = ok
+          ? '<span style="color:#10b981;font-weight:800">✅ Верно!</span>'
+          : '<span style="color:#ef4444;font-weight:700">Правильный ответ: <b>' + qz.a + '</b></span>';
+        document.getElementById('rule-check-btn').style.display = 'block';
+      });
+    });
+    document.getElementById('rule-check-btn').addEventListener('click', ruleNextQuestion);
+
+  } else if (fmt === 3) {
+    // Верно / Неверно
+    var claim = qz.q; // утверждение
+    var isTrue = Math.random() > 0.5; // правда или ложь?
+    var displayClaim, correctAnswer;
+    if (isTrue) {
+      displayClaim = claim;
+      correctAnswer = 'Верно';
+    } else {
+      // Меняем ответ на чужой
+      var otherAnswers = ruleState.quizzes.filter(function(q2,j){ return j !== i; }).map(function(q2){ return q2.a; });
+      var fakeA = otherAnswers[Math.floor(Math.random()*otherAnswers.length)] || '???';
+      displayClaim = claim + ' Ответ: ' + fakeA + '.';
+      correctAnswer = 'Неверно';
+    }
+    card.innerHTML =
+      '<div class="rule-quiz-badge">💡 Верно или Неверно?</div>' +
+      '<div class="rule-quiz-q">' + displayClaim + '</div>' +
+      '<div class="rq-choices" style="grid-template-columns:1fr 1fr">' +
+        '<button class="rq-choice" data-val="Верно">✅ Верно</button>' +
+        '<button class="rq-choice" data-val="Неверно">❌ Неверно</button>' +
+      '</div>' +
+      '<div class="rule-quiz-feedback" id="rule-feedback"></div>' +
+      '<button class="rule-quiz-check" id="rule-check-btn" style="display:none">' + nextLabel + '</button>';
+    card.querySelectorAll('.rq-choice').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var chosen = this.getAttribute('data-val');
+        var ok = chosen === correctAnswer;
+        card.querySelectorAll('.rq-choice').forEach(function(b) {
+          b.disabled = true;
+          if (b.getAttribute('data-val') === correctAnswer) b.classList.add('rq-correct');
+          else if (b === btn && !ok) b.classList.add('rq-wrong');
+        });
+        if (ok) ruleState.correct++;
+        document.getElementById('rule-feedback').innerHTML = ok
+          ? '<span style="color:#10b981;font-weight:800">✅ Верно!</span>'
+          : '<span style="color:#ef4444;font-weight:700">Ответ: <b>' + correctAnswer + '</b></span>';
+        document.getElementById('rule-check-btn').style.display = 'block';
+      });
+    });
+    document.getElementById('rule-check-btn').addEventListener('click', ruleNextQuestion);
+
+  } else {
+    // fmt === 4: найди пару (match 2 пары)
+    var pairPool = ruleState.quizzes.slice(0, 4);
+    while (pairPool.length < 2) pairPool.push(qz);
+    var pairs = pairPool.slice(0, 2);
+    var leftItems = arrShuffle(pairs.map(function(p){ return p.q; }));
+    var rightItems = arrShuffle(pairs.map(function(p){ return p.a; }));
+    var pairMap = {};
+    pairs.forEach(function(p){ pairMap[p.q] = p.a; pairMap[p.a] = p.q; });
+    var selectedLeft = null;
+    var matched = 0;
+    var totalPairs = pairs.length;
+
+    card.innerHTML =
+      '<div class="rule-quiz-badge">🔗 Найди пару</div>' +
+      '<div class="rule-quiz-q">Соедини вопрос с ответом</div>' +
+      '<div class="rq-match">' +
+        '<div class="rq-match-col" id="rq-left">' + leftItems.map(function(l){ return '<button class="rq-match-btn" data-val="' + l.replace(/"/g,'&quot;') + '" data-side="left">' + l + '</button>'; }).join('') + '</div>' +
+        '<div class="rq-match-col" id="rq-right">' + rightItems.map(function(r){ return '<button class="rq-match-btn" data-val="' + r.replace(/"/g,'&quot;') + '" data-side="right">' + r + '</button>'; }).join('') + '</div>' +
+      '</div>' +
+      '<div class="rule-quiz-feedback" id="rule-feedback"></div>' +
+      '<button class="rule-quiz-check" id="rule-check-btn" style="display:none">' + nextLabel + '</button>';
+
+    card.querySelectorAll('.rq-match-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        if (this.classList.contains('rq-matched') || this.disabled) return;
+        var side = this.getAttribute('data-side');
+        var val = this.getAttribute('data-val');
+        if (side === 'left') {
+          // снять предыдущий выбор
+          card.querySelectorAll('.rq-match-btn[data-side=left]').forEach(function(b){ b.classList.remove('rq-selected'); });
+          selectedLeft = val;
+          this.classList.add('rq-selected');
+        } else if (selectedLeft !== null) {
+          // Проверить пару
+          var expectedRight = pairMap[selectedLeft];
+          var ok2 = val === expectedRight;
+          var leftBtn = card.querySelector('.rq-match-btn[data-val="' + selectedLeft.replace(/"/g,'&quot;') + '"][data-side=left]');
+          if (ok2) {
+            matched++;
+            if (leftBtn) { leftBtn.classList.remove('rq-selected'); leftBtn.classList.add('rq-matched'); leftBtn.disabled = true; }
+            this.classList.add('rq-matched'); this.disabled = true;
+            selectedLeft = null;
+            if (matched >= totalPairs) {
+              ruleState.correct++;
+              document.getElementById('rule-feedback').innerHTML = '<span style="color:#10b981;font-weight:800">✅ Все пары найдены!</span>';
+              document.getElementById('rule-check-btn').style.display = 'block';
+            }
+          } else {
+            // Неверно — мигание
+            if (leftBtn) leftBtn.classList.add('rq-shake');
+            this.classList.add('rq-shake');
+            setTimeout(function(){ card.querySelectorAll('.rq-shake').forEach(function(b){ b.classList.remove('rq-shake','rq-selected'); }); selectedLeft = null; }, 500);
+          }
+        }
+      });
+    });
+    document.getElementById('rule-check-btn').addEventListener('click', ruleNextQuestion);
   }
-  inp.addEventListener('keydown', function(e){ if(e.key==='Enter') doCheck(); });
-  btn.addEventListener('click', doCheck);
 }
 
 function ruleNextQuestion() {
@@ -4808,7 +5169,7 @@ function trainersBack() {
 
 function startTrainer(id) {
   currentTrainer = TRAINERS_DEF.find(t => t.id === id);
-  trTasks = generateTrainerTasks(id, 5);
+  trTasks = generateTrainerTasks(id, 10);
   trIdx = 0;
   trCorrect = 0;
   document.getElementById('tr-list-view').style.display = 'none';
@@ -4816,7 +5177,7 @@ function startTrainer(id) {
   document.getElementById('tr-session-view').style.display = 'block';
   document.getElementById('tr-title').textContent = currentTrainer.icon + ' ' + currentTrainer.name;
   document.getElementById('tr-back-btn').onclick = trainersBack;
-  renderTrainerTask();
+  tgInit();
 }
 
 // Пул для тренажёра: генерируем 30 задач заранее, выдаём без повторений
@@ -4851,36 +5212,75 @@ function generateTrainerTasks(type, count) {
 
 function rnd(a, b) { return Math.floor(Math.random() * (b - a + 1)) + a; }
 
+// Генерация ложных ответов вокруг правильного (числовые)
+function genWrongNums(correct, count) {
+  const n = parseInt(correct);
+  if (isNaN(n)) return null;
+  const wrongs = new Set();
+  const deltas = [1,2,3,4,5,6,7,8,9,10,11,12,15,20];
+  let di = 0;
+  while (wrongs.size < count) {
+    const d = deltas[di % deltas.length] * (di % 2 === 0 ? 1 : -1);
+    di++;
+    const w = n + d;
+    if (w > 0 && String(w) !== correct) wrongs.add(String(w));
+  }
+  return Array.from(wrongs).slice(0, count);
+}
+
+// Перемешать массив
+function arrShuffle(arr) {
+  const a = arr.slice();
+  for (let i = a.length-1; i > 0; i--) {
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+// Добавить choices к задаче если ответ — число
+function withChoices(task) {
+  const wrongs = genWrongNums(task.a, 3);
+  if (!wrongs) return task;
+  task.choices = arrShuffle([task.a, ...wrongs]);
+  return task;
+}
+
 function genOne(type) {
-  let q, a;
+  let q, a, choices;
   switch(type) {
-    case 'add': { const x=rnd(10,99),y=rnd(10,99); q=`${x} + ${y}`; a=String(x+y); break; }
-    case 'sub': { const x=rnd(20,99),y=rnd(10,x); q=`${x} − ${y}`; a=String(x-y); break; }
-    case 'mul': { const x=rnd(2,12),y=rnd(2,12); q=`${x} × ${y}`; a=String(x*y); break; }
-    case 'div': { const y=rnd(2,12),x=y*rnd(2,12); q=`${x} ÷ ${y}`; a=String(x/y); break; }
-    case 'add3': { const x=rnd(100,499),y=rnd(100,499),z=rnd(10,99); q=`${x} + ${y} + ${z}`; a=String(x+y+z); break; }
-    case 'chain': { const x=rnd(10,50),d1=rnd(1,20),d2=rnd(1,20); q=`${x} + ${d1} − ${d2}`; a=String(x+d1-d2); break; }
-    case 'cmp': { const den=rnd(4,10),a1=rnd(1,den-1),a2=rnd(1,den-1); q=`Сравни: ${a1}/${den} и ${a2}/${den}. Знак?`; a=a1>a2?'>':a1<a2?'<':'='; break; }
-    case 'fradd': { const den=rnd(4,10),a1=rnd(1,den-2),a2=rnd(1,den-1-a1); q=`${a1}/${den} + ${a2}/${den}`; a=`${a1+a2}/${den}`; break; }
-    case 'frsub': { const den=rnd(4,10),a2=rnd(1,den-2),a1=rnd(a2+1,den-1); q=`${a1}/${den} − ${a2}/${den}`; a=`${a1-a2}/${den}`; break; }
-    case 'perim': { const w=rnd(3,20),h=rnd(3,15); q=`Периметр прямоугольника ${w}×${h} см`; a=String(2*(w+h)); break; }
-    case 'area': { const w=rnd(3,20),h=rnd(3,15); q=`Площадь прямоугольника ${w}×${h} см`; a=String(w*h); break; }
+    case 'add': { const x=rnd(10,99),y=rnd(10,99); q=`${x} + ${y} = ?`; a=String(x+y); break; }
+    case 'sub': { const x=rnd(20,99),y=rnd(10,x); q=`${x} − ${y} = ?`; a=String(x-y); break; }
+    case 'mul': { const x=rnd(2,12),y=rnd(2,12); q=`${x} × ${y} = ?`; a=String(x*y); break; }
+    case 'div': { const y=rnd(2,12),x=y*rnd(2,12); q=`${x} ÷ ${y} = ?`; a=String(x/y); break; }
+    case 'add3': { const x=rnd(100,499),y=rnd(100,499),z=rnd(10,99); q=`${x} + ${y} + ${z} = ?`; a=String(x+y+z); break; }
+    case 'chain': { const x=rnd(10,50),d1=rnd(1,20),d2=rnd(1,20); q=`${x} + ${d1} − ${d2} = ?`; a=String(x+d1-d2); break; }
+    case 'cmp': {
+      const den=rnd(4,10),a1=rnd(1,den-1),a2=rnd(1,den-1);
+      q=`Сравни: ${a1}/${den} и ${a2}/${den}`;
+      a=a1>a2?'>':a1<a2?'<':'=';
+      choices=['<','>','='];
+      break;
+    }
+    case 'fradd': { const den=rnd(4,10),a1=rnd(1,den-2),a2=rnd(1,den-1-a1); q=`${a1}/${den} + ${a2}/${den} = ?`; a=`${a1+a2}/${den}`; break; }
+    case 'frsub': { const den=rnd(4,10),a2=rnd(1,den-2),a1=rnd(a2+1,den-1); q=`${a1}/${den} − ${a2}/${den} = ?`; a=`${a1-a2}/${den}`; break; }
+    case 'perim': { const w=rnd(3,20),h=rnd(3,15); q=`Периметр прямоугольника ${w}×${h} см = ?`; a=String(2*(w+h)); break; }
+    case 'area': { const w=rnd(3,20),h=rnd(3,15); q=`Площадь прямоугольника ${w}×${h} см = ?`; a=String(w*h); break; }
     case 'speed': { const v=rnd(20,90),t=rnd(2,8); q=`Скорость ${v} км/ч, время ${t} ч. Расстояние?`; a=String(v*t); break; }
 
-    // Степени
     case 'pow': { const n=rnd(1,10); q=`${n}² = ?`; a=String(n*n); break; }
     case 'pow2': { const n=rnd(11,20); q=`${n}² = ?`; a=String(n*n); break; }
     case 'pow3': { const n=rnd(1,10); q=`${n}³ = ?`; a=String(n*n*n); break; }
 
-    // Дроби с разными знаменателями
     case 'fradd2': {
       const denA=rnd(2,6), denB=rnd(2,6);
       const lcm = denA*denB/gcd(denA,denB);
       const numA=rnd(1,denA-1), numB=rnd(1,denB-1);
       const rNum=numA*(lcm/denA)+numB*(lcm/denB), rDen=lcm;
       const g=gcd(rNum,rDen);
-      if(rNum/rDen>=1 && rNum%rDen===0) { q=`${numA}/${denA} + ${numB}/${denB}`; a=String(Math.round(rNum/rDen)); }
-      else { q=`${numA}/${denA} + ${numB}/${denB}`; a=`${rNum/g}/${rDen/g}`; }
+      q=`${numA}/${denA} + ${numB}/${denB} = ?`;
+      if(rNum/rDen>=1 && rNum%rDen===0) { a=String(Math.round(rNum/rDen)); }
+      else { a=`${rNum/g}/${rDen/g}`; }
       break;
     }
     case 'frsub2': {
@@ -4890,38 +5290,33 @@ function genOne(type) {
       const la=numA*(lcm/denA), lb=numB*(lcm/denB);
       if(la<=lb){ numA=numB+rnd(1,3); }
       const rNum2=numA*(lcm/denA)-numB*(lcm/denB), rDen2=lcm;
-      if(rNum2<=0){q=`${denA}/${denA+1} − ${1}/${denA+1}`; a=`${denA-1}/${denA+1}`; break;}
+      if(rNum2<=0){q=`${denA}/${denA+1} − 1/${denA+1} = ?`; a=`${denA-1}/${denA+1}`; break;}
       const g2=gcd(rNum2,rDen2);
-      q=`${numA}/${denA} − ${numB}/${denB}`; a=`${rNum2/g2}/${rDen2/g2}`;
+      q=`${numA}/${denA} − ${numB}/${denB} = ?`; a=`${rNum2/g2}/${rDen2/g2}`;
       break;
     }
 
-    // Десятичные дроби
     case 'decadd': {
-      const r=Math.random();
-      if(r<0.5){
+      if(Math.random()<0.5){
         const x=+(rnd(1,9)/10).toFixed(1), y=+(rnd(1,9)/10).toFixed(1);
-        const ans=+(x+y).toFixed(1);
-        q=`${x} + ${y}`; a=String(ans);
+        q=`${x} + ${y} = ?`; a=String(+(x+y).toFixed(1));
       } else {
         const x=+(rnd(10,90)/10).toFixed(1), y=+(rnd(1,Math.round(x*10)-1)/10).toFixed(1);
-        q=`${x} − ${y}`; a=String(+(x-y).toFixed(1));
+        q=`${x} − ${y} = ?`; a=String(+(x-y).toFixed(1));
       }
       break;
     }
     case 'decmul': {
-      const r=Math.random();
-      if(r<0.5){
+      if(Math.random()<0.5){
         const x=+(rnd(1,9)/10).toFixed(1), y=rnd(2,9);
-        q=`${x} × ${y}`; a=String(+(x*y).toFixed(1));
+        q=`${x} × ${y} = ?`; a=String(+(x*y).toFixed(1));
       } else {
         const y=rnd(2,9), x=+(y*rnd(1,9)/10).toFixed(1);
-        q=`${x} ÷ ${y}`; a=String(+(x/y).toFixed(1));
+        q=`${x} ÷ ${y} = ?`; a=String(+(x/y).toFixed(1));
       }
       break;
     }
 
-    // Задачи словесные
     case 'tasknat': {
       const tp=rnd(1,4);
       if(tp===1){const c=rnd(10,50),n=rnd(2,8);q=`Цена товара ${c} р., купили ${n} шт. Стоимость?`;a=String(c*n);}
@@ -4932,9 +5327,9 @@ function genOne(type) {
     }
     case 'taskfr': {
       const tp=rnd(1,3);
-      if(tp===1){const den=rnd(2,6),num=1,all=rnd(10,60);const part=Math.round(all*num/den);if(all%den!==0){q=`1/${den} числа ${den*Math.round(all/den)}`; a=String(Math.round(all/den));}else{q=`1/${den} числа ${all}`;a=String(all/den);}}
-      else if(tp===2){const den=rnd(2,8),n=rnd(2,5);const total=den*n;q=`В коробке ${total} конфет. Съели 1/${den}. Сколько съели?`;a=String(n);}
-      else{const den=rnd(3,8),k=rnd(1,den-1);const total=den*rnd(3,8);q=`Из ${total} задач решили ${k}/${den}. Сколько задач?`;a=String(total*k/den);}
+      if(tp===1){const den=rnd(2,6),all=den*rnd(3,8);q=`1/${den} числа ${all} = ?`;a=String(all/den);}
+      else if(tp===2){const den=rnd(2,8),n=rnd(2,5);const total=den*n;q=`В коробке ${total} конфет. Съели 1/${den}. Сколько?`;a=String(n);}
+      else{const den=rnd(3,8),k=rnd(1,den-1),rows=rnd(3,8);q=`Из ${den*rows} задач решили ${k}/${den}. Сколько?`;a=String(rows*k);}
       break;
     }
     case 'geo_t': {
@@ -4946,57 +5341,216 @@ function genOne(type) {
       break;
     }
 
-    default: { const x=rnd(1,100),y=rnd(1,100); q=`${x} + ${y}`; a=String(x+y); }
+    default: { const x=rnd(1,100),y=rnd(1,100); q=`${x} + ${y} = ?`; a=String(x+y); }
   }
-  return {q, a};
+
+  const task = {q, a};
+  if (choices) { task.choices = choices; return task; }
+  // Для числовых ответов — каждый 2-й вопрос с вариантами
+  if (/^\d+$/.test(a) && Math.random() < 0.5) return withChoices(task);
+  return task;
 }
 
 function gcd(a,b){ return b===0?a:gcd(b,a%b); }
 
-function renderTrainerTask() {
-  const task = trTasks[trIdx];
-  const prog = document.getElementById('tr-session-prog');
-  prog.innerHTML = trTasks.map((_,i) => `<div class="sp-dot${i < trIdx ? ' done' : i === trIdx ? ' current' : ''}"></div>`).join('');
-  document.getElementById('tr-task-num').textContent = `Задание ${trIdx+1} из ${trTasks.length}`;
-  document.getElementById('tr-task-text').textContent = task.q;
-  document.getElementById('tr-input').value = '';
-  document.getElementById('tr-input').focus();
-  document.getElementById('tr-result').style.display = 'none';
-  document.getElementById('tr-next-wrap').style.display = 'none';
-  document.getElementById('tr-xp-flash').style.display = 'none';
+// ===== GAME TRAINER ENGINE =====
+var tgAnswered = false;
+
+function tgInit() {
+  tgAnswered = false;
+  tgBuildScene();
+  tgRenderProgress();
+  tgRenderTask();
 }
 
-function checkTrainer() {
-  const userAns = document.getElementById('tr-input').value.trim();
-  if(!userAns) return;
+function tgBuildScene() {
+  // Строим платформы: герой + 9 целевых + шахта между ними
+  const scene = document.getElementById('tg-scene');
+  const plats = document.getElementById('tg-platforms');
+  const total = trTasks.length; // 10
+  const sceneW = scene.offsetWidth || 360;
+  const platW = Math.max(36, Math.floor((sceneW - (total+1)*6) / (total+1)));
+  const pitW = 52;
+
+  let html = '';
+  const positions = []; // left для каждой платформы (индекс = 0..total)
+  let x = 4;
+  for (let i = 0; i <= total; i++) {
+    positions.push(x);
+    html += `<div class="tg-platform" id="tg-plat-${i}" style="left:${x}px;width:${platW}px"></div>`;
+    x += platW;
+    if (i < total) {
+      html += `<div class="tg-pit" style="left:${x}px;width:${pitW}px;height:${20+Math.floor(Math.random()*12)}px"></div>`;
+      x += pitW;
+    }
+  }
+  plats.innerHTML = html;
+  // Запомним позиции
+  scene._platPositions = positions;
+  scene._platW = platW;
+  // Герой стартует на платформе 0, в центре
+  const hero = document.getElementById('tg-hero');
+  hero.style.left = (positions[0] + platW/2 - 15) + 'px';
+  hero.className = 'tg-hero';
+}
+
+function tgHeroLeft() {
+  const scene = document.getElementById('tg-scene');
+  const pos = scene._platPositions;
+  const platW = scene._platW;
+  const idx = Math.min(trIdx, pos.length - 1);
+  return pos[idx] + platW/2 - 15;
+}
+
+function tgRenderProgress() {
+  const bar = document.getElementById('tg-progress');
+  bar.innerHTML = trTasks.map(function(_, i) {
+    const cls = i < trIdx ? (trTasks[i]._result === 'ok' ? 'ok' : 'err') : (i === trIdx ? 'cur' : '');
+    return `<div class="tg-prog-dot ${cls}"></div>`;
+  }).join('');
+}
+
+function tgRenderTask() {
   const task = trTasks[trIdx];
-  const correct = userAns.replace(/\s/g,'').toLowerCase() === task.a.replace(/\s/g,'').toLowerCase();
-  const resultEl = document.getElementById('tr-result');
-  resultEl.style.display = 'block';
-  if(correct) {
-    resultEl.innerHTML = `<div class="result-ok"><div class="r-icon">✅</div><div class="r-text">Верно!</div></div>`;
+  document.getElementById('tg-q-label').textContent = `Задание ${trIdx+1} из ${trTasks.length}`;
+  document.getElementById('tg-q-text').textContent = task.q;
+  document.getElementById('tg-status').textContent = '';
+  document.getElementById('tg-status').className = 'tg-status';
+  tgAnswered = false;
+
+  // Выбираем режим: если у задачи есть choices — показываем кнопки, иначе ввод
+  const hasChoices = task.choices && task.choices.length;
+  const inputWrap = document.getElementById('tg-input-wrap');
+  const choicesEl = document.getElementById('tg-choices');
+
+  if (hasChoices) {
+    inputWrap.style.display = 'none';
+    choicesEl.style.display = 'grid';
+    choicesEl.innerHTML = task.choices.map(function(c, ci) {
+      return `<button class="tg-choice" onclick="tgChoose(this,'${c.replace(/'/g,"\\'")}',${ci})">${c}</button>`;
+    }).join('');
+  } else {
+    inputWrap.style.display = 'block';
+    choicesEl.style.display = 'none';
+    const inp = document.getElementById('tg-input');
+    inp.value = '';
+    inp.className = 'tg-input';
+    inp.disabled = false;
+    document.getElementById('tg-check-btn').disabled = false;
+    setTimeout(function(){ inp.focus(); }, 80);
+  }
+}
+
+function tgChoose(btn, val, idx) {
+  if (tgAnswered) return;
+  tgAnswered = true;
+  const task = trTasks[trIdx];
+  const correct = val.replace(/\s/g,'').toLowerCase() === task.a.replace(/\s/g,'').toLowerCase();
+  // Показываем все кнопки результат
+  const btns = document.getElementById('tg-choices').querySelectorAll('.tg-choice');
+  btns.forEach(function(b) { b.disabled = true; });
+  if (correct) {
+    btn.classList.add('ok');
+  } else {
+    btn.classList.add('err');
+    // подсветить правильный
+    btns.forEach(function(b) {
+      if (b.textContent.replace(/\s/g,'').toLowerCase() === task.a.replace(/\s/g,'').toLowerCase()) b.classList.add('reveal');
+    });
+  }
+  tgResolve(correct, task.a);
+}
+
+function tgCheck() {
+  if (tgAnswered) return;
+  const inp = document.getElementById('tg-input');
+  const val = inp.value.trim();
+  if (!val) return;
+  tgAnswered = true;
+  inp.disabled = true;
+  document.getElementById('tg-check-btn').disabled = true;
+  const task = trTasks[trIdx];
+  const correct = val.replace(/\s/g,'').toLowerCase() === task.a.replace(/\s/g,'').toLowerCase();
+  inp.classList.add(correct ? 'ok' : 'err');
+  tgResolve(correct, task.a);
+}
+
+function tgResolve(correct, rightAnswer) {
+  const task = trTasks[trIdx];
+  task._result = correct ? 'ok' : 'err';
+  const statusEl = document.getElementById('tg-status');
+
+  if (correct) {
     trCorrect++;
     addXP(10);
-    const flash = document.getElementById('tr-xp-flash');
-    flash.style.display = 'block';
-    setTimeout(() => flash.style.display = 'none', 1200);
+    statusEl.textContent = '✅ Верно! +10 XP';
+    statusEl.className = 'tg-status ok';
+    tgHeroJump();
   } else {
-    resultEl.innerHTML = `<div class="result-err"><div class="r-icon">❌</div><div class="r-text">Неверно</div><div class="result-answer">Правильно: <b>${task.a}</b></div></div>`;
     addMistake(currentTrainer.name, 'trainer_wrong');
+    statusEl.textContent = '❌ Правильно: ' + rightAnswer;
+    statusEl.className = 'tg-status err';
+    tgHeroFall();
   }
-  document.getElementById('tr-next-wrap').style.display = 'block';
-  document.getElementById('tr-input').disabled = true;
+
+  tgRenderProgress();
+  setTimeout(function() { tgAdvance(); }, correct ? 900 : 1200);
 }
 
-function nextTrainerTask() {
-  document.getElementById('tr-input').disabled = false;
+function tgHeroJump() {
+  const hero = document.getElementById('tg-hero');
+  const scene = document.getElementById('tg-scene');
+  const pos = scene._platPositions;
+  const platW = scene._platW;
+  const nextIdx = Math.min(trIdx + 1, pos.length - 1);
+  const nextLeft = pos[nextIdx] + platW/2 - 15;
+
+  hero.classList.remove('jump', 'fall');
+  void hero.offsetWidth; // reflow
+  hero.classList.add('jump');
+  // через 250ms переставить hero на следующую платформу (в середине прыжка)
+  setTimeout(function() {
+    hero.style.left = nextLeft + 'px';
+  }, 220);
+
+  // XP-всплеск
+  const scene2 = document.getElementById('tg-scene');
+  const pop = document.createElement('div');
+  pop.className = 'tg-xp-pop';
+  pop.textContent = '+10 XP ⭐';
+  scene2.appendChild(pop);
+  setTimeout(function() { if(pop.parentNode) pop.parentNode.removeChild(pop); }, 700);
+}
+
+function tgHeroFall() {
+  const hero = document.getElementById('tg-hero');
+  const platEl = document.getElementById('tg-plat-' + trIdx);
+  // Трясём платформу
+  if (platEl) { platEl.classList.add('shake'); setTimeout(function(){ platEl.classList.remove('shake'); }, 400); }
+  hero.classList.remove('jump', 'fall');
+  void hero.offsetWidth;
+  hero.classList.add('fall');
+  // Через 700ms вернуть героя на ту же платформу
+  setTimeout(function() {
+    hero.classList.remove('fall');
+    void hero.offsetWidth;
+    hero.style.left = tgHeroLeft() + 'px';
+    hero.style.opacity = '1';
+  }, 750);
+}
+
+function tgAdvance() {
   trIdx++;
-  if(trIdx >= trTasks.length) {
+  if (trIdx >= trTasks.length) {
     endTrainer();
   } else {
-    renderTrainerTask();
+    tgRenderTask();
   }
 }
+
+function renderTrainerTask() { tgRenderTask(); }
+function checkTrainer() { tgCheck(); }
+function nextTrainerTask() { tgAdvance(); }
 
 function endTrainer() {
   if(!ST.trainerStats[currentTrainer.id]) ST.trainerStats[currentTrainer.id] = {done:0, correct:0};
