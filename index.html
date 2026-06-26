@@ -5179,34 +5179,57 @@ function topicTrainFromRow(btn) {
 }
 // Маппинг тема → тренажёр
 const TOPIC_TRAINER_MAP = {
+  // Натуральные числа
+  "Цифры и числа": "add",
+  "Сравнение натуральных чисел": "add",
+  "Шкалы и координатная прямая": "add",
+  "Числовая информация в таблицах": "add",
+  "Числовая информация в диаграммах": "add",
+  // Действия
   "Действие сложения. Свойства": "add",
   "Действие вычитания. Свойства": "sub",
   "Действие умножения. Свойства": "mul",
   "Действие деления": "div",
   "Деление с остатком": "div",
   "Порядок действий": "chain",
+  "Числовые и буквенные выражения": "chain",
+  "Уравнение": "chain",
+  "Упрощение выражений": "chain",
+  "Степень с натуральным показателем": "pow",
+  "Квадрат и куб числа": "pow2",
+  // Геометрия
+  "Отрезок. Ломаная. Многоугольник": "perim",
+  "Плоскость, прямая, луч, угол": "perim",
+  "Площадь. Формула площади прямоугольника": "area",
+  "Единицы площади": "area",
+  "Прямоугольный параллелепипед": "geo_t",
+  "Единицы объёма": "geo_t",
+  "Виды углов. Транспортир": "geo_t",
+  "Измерение углов": "geo_t",
+  "Черепаший треугольник": "geo_t",
+  // Дроби
+  "Доли": "fradd",
+  "Обыкновенные дроби": "fradd",
+  "Правильные и неправильные дроби": "fradd",
   "Сравнение дробей с одинаковым знаменателем": "cmp",
   "Сравнение дробей": "cmp",
   "Сравнение дробей с разными знаменателями": "cmp",
   "Сложение дробей с одинаковым знаменателем": "fradd",
   "Сложение и вычитание дробей с одинаковым знаменателем": "frsub",
-  "Сложение и вычитание дробей с разными знаменателями": "fradd2",
   "Смешанные числа": "fradd2",
   "Сложение и вычитание смешанных чисел": "fradd2",
-  "Площадь. Формула площади прямоугольника": "area",
-  "Единицы площади": "area",
-  "Прямоугольный параллелепипед": "geo_t",
-  "Единицы объёма": "geo_t",
+  "Сокращение дробей": "cmp",
+  "Приведение дробей к общему знаменателю": "fradd2",
+  "Сложение и вычитание дробей с разными знаменателями": "fradd2",
+  "Деление натуральных чисел и дроби": "div",
+  // Десятичные дроби
   "Десятичная запись дробных чисел": "decadd",
   "Сравнение десятичных дробей": "decadd",
   "Сложение и вычитание десятичных дробей": "decadd",
   "Умножение десятичной дроби на натуральное число": "decmul",
   "Деление десятичной дроби на натуральное число": "decmul",
-  "Степень с натуральным показателем": "pow",
-  "Квадрат и куб числа": "pow2",
-  "Отрезок. Ломаная. Многоугольник": "perim",
-  "Виды углов. Транспортир": "geo_t",
-  "Измерение углов": "geo_t"
+  "Округление десятичных дробей": "decadd",
+  "Калькулятор": "chain"
 };
 
 function topicStudy(id, ruleKey) {
@@ -5334,21 +5357,22 @@ function ruleRenderFormat(card, qz, fmt, i) {
     document.getElementById('rule-check-btn').addEventListener('click', ruleNextQuestion);
 
   } else if (fmt === 2) {
-    // Выбери лишнее из 4 слов (используем ключевые слова темы)
-    var keys = (ruleState.quizzes[0] && ruleState.quizzes[0].keys) ? ruleState.quizzes[0].keys : '';
-    // Берём ответы всех вопросов как «правильные», один — из другой темы (выдуманный)
-    var topicAnswers = ruleState.quizzes.map(function(q2){ return q2.a; }).filter(function(v,i2,a2){ return a2.indexOf(v)===i2; });
-    var correct3 = topicAnswers.slice(0,3);
-    while(correct3.length < 3) correct3.push(qz.a);
-    var oddOne = qz.a; // лишний — правильный ответ текущего вопроса
-    var oddLabel = '❓ ' + oddOne;
-    // Набор из 3 слов из «правильных» (не лишний) + лишний = ответ qz.a
-    // Но нам нужно понятное задание: 4 слова, три связаны с темой, одно нет
-    // Используем простую схему: вопрос qz.q уже содержит «лишнее» = слово не из ответа
-    // Проще: просто переформулируем как «Что из этого НЕ относится к теме?»
-    var wordPool = ruleState.quizzes.slice(0,3).map(function(q2){ return q2.a; });
-    while(wordPool.length < 3) wordPool.push('...');
-    var opts2 = arrShuffle([qz.a].concat(wordPool.slice(0,3)));
+    // Выбери лишнее: 3 ответа из других вопросов этой темы + правильный ответ текущего (лишний)
+    // Лишний = правильный ответ qz (он «выбивается» из ряда других ответов)
+    var allAnswers = ruleState.quizzes.map(function(q2){ return q2.a; });
+    // Собираем 3 ответа из других вопросов, без дублей и без ответа текущего
+    var pool2 = [];
+    for (var pi = 0; pi < allAnswers.length && pool2.length < 3; pi++) {
+      var v = allAnswers[pi];
+      if (v.toLowerCase() !== qz.a.toLowerCase() && pool2.indexOf(v) === -1) pool2.push(v);
+    }
+    // Если не хватает уникальных — добираем из другого источника
+    var fallbacks = ['число', 'фигура', 'действие', 'формула', 'величина', 'буква', 'знак'];
+    for (var fi = 0; pool2.length < 3 && fi < fallbacks.length; fi++) {
+      if (pool2.indexOf(fallbacks[fi]) === -1 && fallbacks[fi].toLowerCase() !== qz.a.toLowerCase())
+        pool2.push(fallbacks[fi]);
+    }
+    var opts2 = arrShuffle([qz.a].concat(pool2.slice(0,3)));
     card.innerHTML =
       '<div class="rule-quiz-badge">🚫 Выбери лишнее</div>' +
       '<div class="rule-quiz-q">' + qz.q + '</div>' +
@@ -5502,7 +5526,7 @@ function ruleFinishQuiz() {
 }
 
 function ruleDoneToTrain() {
-  currentTopicTrainerId = ruleState.trainerId || null;
+  currentTopicTrainerId = ruleState.trainerId || 'add';
   showScreen('screen-trainers');
 }
 
@@ -5520,7 +5544,7 @@ function topicTrain(id) {
     var t = TOPICS_MAP[b].topics.find(function(t){ return t.id === id; });
     if (t) { ruleKey = t.name; break; }
   }
-  currentTopicTrainerId = TOPIC_TRAINER_MAP[ruleKey] || null;
+  currentTopicTrainerId = TOPIC_TRAINER_MAP[ruleKey] || 'add';
   showScreen('screen-trainers');
 }
 
