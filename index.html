@@ -1365,12 +1365,15 @@ body {
   100%{ transform:rotateX(360deg) rotateY(360deg) rotateZ(180deg) scale(1); }
 }
 .dice-face {
-  width:72px; height:72px; border-radius:14px;
+  width:80px; height:80px; border-radius:16px;
   background:linear-gradient(145deg,#fff,#e2e8f0);
   box-shadow:inset -3px -3px 6px rgba(0,0,0,.15), inset 2px 2px 4px rgba(255,255,255,.8);
   display:grid; place-items:center;
 }
-/* Точки на кубике */
+/* D10 — число вместо точек */
+.dice-face.d10 { display:flex; align-items:center; justify-content:center; background:var(--bg,#6366f1); }
+.dice-num-big { font-size:34px; font-weight:900; color:#fff; line-height:1; text-shadow:0 2px 6px rgba(0,0,0,.4); }
+/* Точки на кубике (legacy, не используется для d10) */
 .dice-dots { display:grid; gap:5px; width:52px; height:52px; padding:4px; }
 .dice-dot  { width:10px; height:10px; border-radius:50%; background:#1e1b4b; margin:auto; }
 .dice-dot.e{ background:transparent; }
@@ -3874,11 +3877,11 @@ const TOPIC_RULES = {
     rule: "Диаграмма — наглядное изображение данных. Столбчатая: высота столбца = значение. Круговая: площадь сектора = доля от целого.",
     example: "Например: столбик «январь» высотой 30 → в январе продали 30 единиц.",
     quizzes: [
-      { q: "Как называется диаграмма, где данные показаны вертикальными столбиками?", a: "столбчатая" },
-      { q: "На диаграмме 3 столбика: 10, 20, 15. Чему равно наибольшее значение?", a: "20" },
-      { q: "Как называется диаграмма, где круг делится на части-сектора?", a: "круговая" },
-      { q: "Что показывает высота столбика на столбчатой диаграмме?", a: "значение" },
-      { q: "На диаграмме 4 сектора: 50%, 25%, 15%, 10%. Какой сектор самый большой?", a: "50%" }
+      { q: "Диаграмма, где данные показаны вертикальными столбиками, называется столбчатой.", a: "столбчатая" },
+      { q: "На диаграмме столбики высотой 10, 20 и 15. Наибольшее значение — 20.", a: "20" },
+      { q: "Диаграмма, где круг делится на сектора, называется круговой.", a: "круговая" },
+      { q: "Высота столбика на диаграмме показывает значение (количество).", a: "значение" },
+      { q: "Сектор 50% в круговой диаграмме — это самый большой сектор из: 50%, 25%, 15%, 10%.", a: "50%" }
     ]
   },
   "Действие сложения. Свойства": {
@@ -3886,11 +3889,11 @@ const TOPIC_RULES = {
     rule: "a + b = b + a (переместительный). (a + b) + c = a + (b + c) (сочетательный). Сумма не изменится, если слагаемые переставить или перегруппировать.",
     example: "Например: 38 + 62 = 62 + 38 = 100 (переставили — считать удобнее).",
     quizzes: [
-      { q: "Используй переместительный закон: 47 + 13 = 13 + ?", a: "47" },
-      { q: "Как называется результат сложения?", a: "сумма" },
-      { q: "Как называются числа, которые складывают?", a: "слагаемые" },
-      { q: "(3 + 4) + 6 = 3 + (4 + ?) — какой закон и чему равен ?", a: "сочетательный, 6" },
-      { q: "Вычисли удобно: 38 + 47 + 62 = ?", a: "147" }
+      { q: "По переместительному закону: 47 + 13 = 13 + ?", a: "47" },
+      { q: "Результат сложения называется суммой.", a: "сумма" },
+      { q: "Числа, которые складывают, называются слагаемыми.", a: "слагаемые" },
+      { q: "По сочетательному закону: (3 + 4) + 6 = 3 + (4 + 6). Правый результат тоже равен 13.", a: "сочетательный, 6" },
+      { q: "Вычисли удобным способом: 38 + 47 + 62 = ?", a: "147" }
     ]
   },
   "Числовые и буквенные выражения": {
@@ -3922,11 +3925,11 @@ const TOPIC_RULES = {
     rule: "a − b = c. Проверка: c + b = a. Вычитание — действие, обратное сложению. Нельзя вычесть большее из меньшего (в натуральных числах).",
     example: "Например: 83 − 27 = 56. Проверка: 56 + 27 = 83 ✓",
     quizzes: [
-      { q: "Проверь: 83 − 27 = 56. Сложи: 56 + 27 = ?", a: "83" },
-      { q: "Как называется результат вычитания?", a: "разность" },
-      { q: "Как называется число, из которого вычитают?", a: "уменьшаемое" },
-      { q: "Как называется число, которое вычитают?", a: "вычитаемое" },
-      { q: "Проверь: 100 − 43 = 57. Правильно? (да/нет)", a: "да" }
+      { q: "Проверка вычитания: 83 − 27 = 56. Значит 56 + 27 = ?", a: "83" },
+      { q: "Результат вычитания называется разностью.", a: "разность" },
+      { q: "Число, из которого вычитают, называется уменьшаемым.", a: "уменьшаемое" },
+      { q: "Число, которое вычитают, называется вычитаемым.", a: "вычитаемое" },
+      { q: "Вычитание — действие, обратное сложению. Проверь: 100 − 43 = ?", a: "57" }
     ]
   },
   "Действие умножения. Свойства": {
@@ -5411,18 +5414,18 @@ function ruleRenderFormat(card, qz, fmt, i) {
     document.getElementById('rule-check-btn').addEventListener('click', ruleNextQuestion);
 
   } else if (fmt === 3) {
-    // Верно / Неверно
-    var claim = qz.q; // утверждение
-    var isTrue = Math.random() > 0.5; // правда или ложь?
+    // Верно / Неверно — строим утверждение из вопроса + ответа
+    var isTrue3 = Math.random() > 0.5;
+    var otherAnswers3 = ruleState.quizzes.filter(function(q2){ return q2.a.toLowerCase() !== qz.a.toLowerCase(); }).map(function(q2){ return q2.a; });
+    var fakeA3 = otherAnswers3.length ? otherAnswers3[Math.floor(Math.random()*otherAnswers3.length)] : null;
     var displayClaim, correctAnswer;
-    if (isTrue) {
-      displayClaim = claim;
+    if (isTrue3 || !fakeA3) {
+      // Показываем правдивое утверждение: «[вопрос] → [правильный ответ]»
+      displayClaim = qz.q.replace(/\?$/, '') + ': <b>' + qz.a + '</b>.';
       correctAnswer = 'Верно';
     } else {
-      // Меняем ответ на чужой
-      var otherAnswers = ruleState.quizzes.filter(function(q2,j){ return j !== i; }).map(function(q2){ return q2.a; });
-      var fakeA = otherAnswers[Math.floor(Math.random()*otherAnswers.length)] || '???';
-      displayClaim = claim + ' Ответ: ' + fakeA + '.';
+      // Ложное: подставляем неверный ответ
+      displayClaim = qz.q.replace(/\?$/, '') + ': <b>' + fakeA3 + '</b>.';
       correctAnswer = 'Неверно';
     }
     card.innerHTML =
@@ -6197,38 +6200,50 @@ function archerRender() {
     return `<div class="archer-shot ${cls}">${icon}</div>`;
   }).join('');
 
-  // Кольца мишени
-  const ringsHtml = ARCHER_RINGS.map(r =>
-    `<div class="archer-ring" style="width:${r.d}px;height:${r.d}px;background:${r.color};margin-left:-${r.d/2}px;margin-top:-${r.d/2}px"></div>`
-  ).join('');
-  // Метки очков
-  const labelsHtml = [10, 8, 5, 3, 2, 1].map((pts, li) => {
-    const r = ARCHER_RINGS[li];
-    return `<div style="position:absolute;top:${50 - r.d/2/2.2}%;left:52%;font-size:9px;font-weight:900;color:rgba(0,0,0,.4);pointer-events:none">${pts}</div>`;
-  }).join('');
+  // SVG мишень — классические кольца
+  const cx = 100, cy = 100;
+  const rings = [
+    {r:96, fill:'#fff',     stroke:'#ccc'},
+    {r:80, fill:'#1e3a8a', stroke:'#1e40af'},
+    {r:64, fill:'#1e3a8a', stroke:'#1e40af'},
+    {r:48, fill:'#dc2626', stroke:'#b91c1c'},
+    {r:32, fill:'#dc2626', stroke:'#b91c1c'},
+    {r:16, fill:'#fbbf24', stroke:'#f59e0b'},
+  ];
+  const labels = ['1','2','3','4','5','6','7','8','9','10'];
+  const targetSvg = `<svg id="archer-svg" viewBox="0 0 200 200" width="200" height="200" style="display:block;margin:0 auto;filter:drop-shadow(0 4px 16px rgba(0,0,0,.5))">
+    ${rings.map((rg,i)=>`<circle cx="${cx}" cy="${cy}" r="${rg.r}" fill="${rg.fill}" stroke="${rg.stroke}" stroke-width="1.5"/>`).join('')}
+    <line x1="${cx}" y1="${cy-96}" x2="${cx}" y2="${cy+96}" stroke="rgba(0,0,0,.12)" stroke-width="1"/>
+    <line x1="${cx-96}" y1="${cy}" x2="${cx+96}" y2="${cy}" stroke="rgba(0,0,0,.12)" stroke-width="1"/>
+    <text x="${cx}" y="${cy-18}" text-anchor="middle" font-size="9" fill="rgba(255,255,255,.7)" font-weight="700">10</text>
+    <text x="${cx}" y="${cy+50}" text-anchor="middle" font-size="9" fill="rgba(255,255,255,.7)" font-weight="700">8</text>
+    <text x="${cx}" y="${cy+66}" text-anchor="middle" font-size="9" fill="rgba(0,0,0,.4)" font-weight="700">6</text>
+    <text x="${cx}" y="${cy+82}" text-anchor="middle" font-size="9" fill="rgba(0,0,0,.4)" font-weight="700">4</text>
+    <circle cx="${cx}" cy="${cy}" r="4" fill="#1a1a1a"/>
+    <!-- стрела (появляется при попадании) -->
+    <g id="archer-arrow-svg" style="display:none">
+      <line id="archer-arrow-line" x1="0" y1="${cy}" x2="${cx}" y2="${cy}" stroke="#92400e" stroke-width="3" stroke-linecap="round"/>
+      <polygon id="archer-arrow-tip" points="${cx},${cy-5} ${cx+12},${cy} ${cx},${cy+5}" fill="#d97706"/>
+    </g>
+    <circle id="archer-hit-circle" cx="${cx}" cy="${cy}" r="0" fill="rgba(251,191,36,0)" opacity="0"/>
+  </svg>`;
 
   document.getElementById('archer-container').innerHTML = `
     <div class="archer-wrap">
       <div style="font-size:11px;font-weight:700;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">Задание ${trIdx+1} из ${trTasks.length}</div>
       <div class="archer-progress">${progressHtml}</div>
-      <div class="archer-target-wrap" id="archer-target-wrap">
-        ${ringsHtml}
-        ${labelsHtml}
-        <div class="archer-hit" id="archer-hit"></div>
+      <div style="position:relative;width:200px;margin:8px auto">
+        ${targetSvg}
         <div class="archer-score-pop" id="archer-score-pop"></div>
-        <div class="archer-arrow" id="archer-arrow"><div class="archer-arrow-body"></div></div>
       </div>
       <div class="archer-question" id="archer-q">${task.q}</div>
+      <div class="tg-status" id="archer-status"></div>
       ${mode === 'input' ? `
         <div class="archer-input-wrap" style="margin-top:12px">
           <input type="text" class="archer-inp" id="archer-inp" placeholder="Ответ..." autocomplete="off" onkeydown="if(event.key==='Enter')archerShoot()">
           <button class="archer-shoot-btn" id="archer-shoot-btn" onclick="archerShoot()">🏹 Выстрел!</button>
         </div>
-        <div class="tg-status" id="archer-status"></div>
-      ` : `
-        ${choicesHtml}
-        <div class="tg-status" id="archer-status"></div>
-      `}
+      ` : choicesHtml}
     </div>
   `;
   if (mode === 'input') setTimeout(() => { const i = document.getElementById('archer-inp'); if(i) i.focus(); }, 80);
@@ -6258,58 +6273,61 @@ function archerShoot() {
   archerResolve(correct, task.a);
 }
 
+function archerAnimateArrow(toX, toY, durationMs, onDone) {
+  const arrowG = document.getElementById('archer-arrow-svg');
+  const line   = document.getElementById('archer-arrow-line');
+  const tip    = document.getElementById('archer-arrow-tip');
+  if (!arrowG || !line || !tip) { if(onDone) onDone(); return; }
+  // Стрела летит из левого края (x=−10) до цели
+  const startX = -10, startY = 100;
+  arrowG.style.display = '';
+  const start = performance.now();
+  function step(now) {
+    const t = Math.min((now - start) / durationMs, 1);
+    const ease = t < 0.5 ? 2*t*t : -1+(4-2*t)*t;
+    const cx = startX + (toX - startX) * ease;
+    const cy2 = startY + (toY - startY) * ease;
+    line.setAttribute('x1', startX); line.setAttribute('y1', startY);
+    line.setAttribute('x2', cx); line.setAttribute('y2', cy2);
+    // наконечник стрелы
+    const ang = Math.atan2(toY - startY, toX - startX);
+    const dx = Math.cos(ang)*10, dy = Math.sin(ang)*10;
+    tip.setAttribute('points', `${cx+dx},${cy2-5} ${cx+dx+12*Math.cos(ang)},${cy2+12*Math.sin(ang)} ${cx+dx},${cy2+5}`);
+    if (t < 1) requestAnimationFrame(step);
+    else if (onDone) onDone();
+  }
+  requestAnimationFrame(step);
+}
+
 function archerResolve(correct, rightAnswer) {
-  const arrow = document.getElementById('archer-arrow');
-  const hitEl = document.getElementById('archer-hit');
   const scorePop = document.getElementById('archer-score-pop');
   const statusEl = document.getElementById('archer-status');
   const task = trTasks[trIdx];
 
   if (correct) {
-    // Стрела летит в центр (10)
-    arrow.style.opacity = '1';
-    arrow.classList.add('fly');
-    setTimeout(() => {
-      hitEl.textContent = '✦';
-      hitEl.style.color = '#fbbf24';
-      hitEl.classList.add('show');
-      scorePop.textContent = '10 🎯';
-      scorePop.style.color = '#4ade80';
-      scorePop.classList.add('show');
-    }, 480);
+    // Стрела летит в центр (10-ка)
+    archerAnimateArrow(100, 100, 500, () => {
+      if (scorePop) { scorePop.textContent = '🎯 10!'; scorePop.style.color = '#4ade80'; scorePop.classList.add('show'); }
+    });
     task._result = 'ok';
     trCorrect++;
     addXP(10);
     if (statusEl) { statusEl.textContent = '✅ В десятку! +10 XP'; statusEl.className = 'tg-status ok'; }
-    setTimeout(archerAdvance, 1400);
+    setTimeout(archerAdvance, 1500);
   } else {
     if (archerAttempt === 0) {
       archerAttempt = 1;
-      // Стрела в ноль — летит далеко в сторону (miss)
-      arrow.style.opacity = '1';
-      arrow.style.transform = 'translateY(30px) rotate(15deg)';
-      arrow.classList.add('fly');
-      setTimeout(() => {
-        hitEl.textContent = '✕';
-        hitEl.style.color = '#ef4444';
-        hitEl.style.fontSize = '36px';
-        hitEl.style.top = '75%';
-        hitEl.classList.add('show');
-        scorePop.textContent = '0 😬';
-        scorePop.style.color = '#f87171';
-        scorePop.classList.add('show');
-      }, 480);
+      // Стрела летит мимо — в угол мишени
+      archerAnimateArrow(170, 170, 400, () => {
+        if (scorePop) { scorePop.textContent = '💨 Мимо!'; scorePop.style.color = '#f87171'; scorePop.classList.add('show'); }
+      });
       if (statusEl) { statusEl.textContent = '😵 Упс! Попробуй ещё раз'; statusEl.className = 'tg-status err'; }
-      // Через 1.2s — перерешать
       setTimeout(() => {
         archerAnswered = false;
-        arrow.style.opacity = '0';
-        arrow.classList.remove('fly');
-        arrow.style.transform = '';
-        hitEl.classList.remove('show');
-        scorePop.classList.remove('show');
-        hitEl.style.top = '50%';
-        // Разблокировать ввод
+        // Убираем стрелу
+        const arrowG = document.getElementById('archer-arrow-svg');
+        if (arrowG) arrowG.style.display = 'none';
+        if (scorePop) scorePop.classList.remove('show');
         const inp = document.getElementById('archer-inp');
         if (inp) { inp.value = ''; inp.disabled = false; inp.className = 'archer-inp'; inp.focus(); }
         const btn = document.getElementById('archer-shoot-btn');
@@ -6318,10 +6336,8 @@ function archerResolve(correct, rightAnswer) {
         if (statusEl) { statusEl.textContent = '🏹 Вторая попытка!'; statusEl.className = 'tg-status'; }
       }, 1300);
     } else {
-      // Вторая ошибка
-      arrow.style.opacity = '1';
-      arrow.style.transform = 'translateY(50px) rotate(25deg)';
-      arrow.classList.add('fly');
+      // Вторая ошибка — стрела падает ниже мишени
+      archerAnimateArrow(100, 185, 400, null);
       task._result = 'err';
       addMistake(currentTrainer.name, 'trainer_wrong');
       if (statusEl) { statusEl.textContent = '❌ Правильно: ' + rightAnswer; statusEl.className = 'tg-status err'; }
@@ -6807,22 +6823,15 @@ function pirateAdvance() {
   }
 }
 
-// ===== ТРЕНАЖЁР КУБИК =====
+// ===== ТРЕНАЖЁР КУБИК (d10) =====
 var diceAnswered  = false;
 var diceAttempt   = 0;
 var dicePhase     = 'roll'; // 'roll' | 'answer'
 var dicePawnPos   = 0;
 var diceLastRoll  = 0;
-
-// Точки на гранях кубика (2D)
-const DICE_FACES = {
-  1: [[0,0,0],[0,1,0],[0,0,0]],
-  2: [[1,0,0],[0,0,0],[0,0,1]],
-  3: [[1,0,0],[0,1,0],[0,0,1]],
-  4: [[1,0,1],[0,0,0],[1,0,1]],
-  5: [[1,0,1],[0,1,0],[1,0,1]],
-  6: [[1,0,1],[1,0,1],[1,0,1]]
-};
+// XP по ячейке: 1=5XP, 2=5XP, ..., 10=15XP (XP растёт с номером ячейки)
+// XP бонус = 4 + diceLastRoll (от 5 до 14 XP)
+function diceXP() { return 4 + diceLastRoll; }
 
 function diceGetContainer() {
   let el = document.getElementById('dice-container');
@@ -6846,9 +6855,10 @@ function diceInit() {
 }
 
 function diceFaceHtml(n) {
-  const rows = DICE_FACES[n];
-  const cells = rows.map(r => r.map(c => `<div class="dice-dot${c ? '' : ' e'}"></div>`).join('')).join('');
-  return `<div class="dice-face"><div class="dice-dots" style="grid-template-columns:repeat(3,1fr)">${cells}</div></div>`;
+  // D10 — показываем число крупно внутри многоугольника
+  const colors = ['','#6366f1','#8b5cf6','#06b6d4','#10b981','#f59e0b','#ef4444','#ec4899','#84cc16','#f97316','#14b8a6'];
+  const bg = colors[n] || '#6366f1';
+  return `<div class="dice-face d10" style="background:${bg}"><span class="dice-num-big">${n}</span></div>`;
 }
 
 function dicePathHtml() {
@@ -6921,7 +6931,7 @@ function diceRoll() {
   cube.classList.add('rolling');
 
   setTimeout(() => {
-    const n = rnd(1, 6);
+    const n = rnd(1, 10);
     diceLastRoll = n;
     cube.classList.remove('rolling');
     cube.innerHTML = diceFaceHtml(n);
@@ -6967,14 +6977,14 @@ function diceCheck() {
 function diceResolve(correct, rightAnswer) {
   const task = trTasks[trIdx];
   const statusEl = document.getElementById('dice-status');
-  const xpBonus = diceLastRoll; // кубик = множитель XP (1-6)
+  const xpBonus = diceXP(); // ячейка 1=5XP, ячейка 10=14XP
 
   if (correct) {
     task._result = 'ok';
     trCorrect++;
     addXP(xpBonus);
-    dicePawnPos = Math.min(dicePawnPos + diceLastRoll, trTasks.length);
-    if (statusEl) { statusEl.textContent = `✅ Верно! +${xpBonus} XP (кубик ×${xpBonus})`; statusEl.className = 'dice-status ok'; }
+    dicePawnPos = Math.min(dicePawnPos + 1, trTasks.length);
+    if (statusEl) { statusEl.textContent = `✅ Верно! +${xpBonus} XP (ячейка ${diceLastRoll})` ; statusEl.className = 'dice-status ok'; }
     setTimeout(diceAdvance, 1000);
   } else {
     if (diceAttempt === 0) {
