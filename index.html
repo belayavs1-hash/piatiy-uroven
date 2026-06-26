@@ -4513,9 +4513,9 @@ function renderMap() {
         '<div class="map-topic-name">' + t.name + '</div>' +
         '<div class="map-topic-desc">' + t.desc + '</div>' +
         '<div class="map-topic-btns">' +
-        '<button class="map-btn-study" onclick="topicStudy(\'' + t.id + '\',\'' + ruleKey.replace(/'/g,"\\'") + '\')">📖 Повтори</button>' +
-        '<button class="map-btn-check" onclick="topicCheck(\'' + t.id + '\',\'' + ruleKey.replace(/'/g,"\\'") + '\')">✅ Закрепи</button>' +
-        '<button class="map-btn-train" onclick="topicTrain(\'' + t.id + '\')">⚡ Тренажёр</button>' +
+        '<button class="map-btn-study" onclick="topicStudyFromRow(this)">📖 Повтори</button>' +
+        '<button class="map-btn-check" onclick="topicStudyFromRow(this)">✅ Закрепи</button>' +
+        '<button class="map-btn-train" onclick="topicTrainFromRow(this)">⚡ Тренажёр</button>' +
         '</div>' +
         '<div class="map-topic-dots"><div class="' + d1 + '"></div><div class="' + d2 + '"></div><div class="' + d3 + '"></div></div>' +
         '</div>' +
@@ -4528,6 +4528,14 @@ function renderMap() {
   }).join('');
 }
 
+function topicStudyFromRow(btn) {
+  var row = btn.closest('.map-topic-row');
+  topicStudy(row.dataset.id, row.dataset.rule);
+}
+function topicTrainFromRow(btn) {
+  var row = btn.closest('.map-topic-row');
+  topicTrain(row.dataset.id);
+}
 function topicStudy(id, ruleKey) {
   var rule = TOPIC_RULES[ruleKey];
   ruleState = { topicId: id, ruleKey: ruleKey, quizzes: rule ? (rule.quizzes || []) : [], qIdx: 0, correct: 0 };
