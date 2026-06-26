@@ -1131,28 +1131,76 @@ body {
 }
 @keyframes pitGlow { from{opacity:.4} to{opacity:1} }
 
-/* Герой */
+/* Герой-человечек (SVG-подобный через CSS) */
 .tg-hero {
-  position:absolute; bottom:24px; font-size:30px; line-height:1;
-  transition:left .35s cubic-bezier(.34,1.56,.64,1);
-  filter:drop-shadow(0 2px 4px rgba(0,0,0,.5));
+  position:absolute; bottom:24px; width:22px; height:36px;
+  transition:left .38s cubic-bezier(.34,1.56,.64,1);
   z-index:10;
 }
-.tg-hero.jump {
-  animation:heroJump .45s cubic-bezier(.34,1.56,.64,1);
+/* Голова */
+.tg-hero::before {
+  content:''; position:absolute; top:0; left:50%; transform:translateX(-50%);
+  width:12px; height:12px; border-radius:50%;
+  background:radial-gradient(circle at 40% 35%,#fde68a,#f59e0b);
+  box-shadow:0 1px 3px rgba(0,0,0,.4);
 }
-.tg-hero.fall {
-  animation:heroFall .6s ease-in forwards;
+/* Тело + руки + ноги — один блок */
+.tg-hero-body {
+  position:absolute; top:13px; left:50%; transform:translateX(-50%);
+  width:8px; height:12px; border-radius:3px;
+  background:linear-gradient(180deg,#6366f1,#4338ca);
 }
+/* Руки */
+.tg-hero-body::before {
+  content:''; position:absolute; top:2px; left:-6px;
+  width:18px; height:4px; border-radius:2px;
+  background:linear-gradient(90deg,#f59e0b,#6366f1,#f59e0b);
+}
+/* Ноги */
+.tg-hero-body::after {
+  content:''; position:absolute; top:11px; left:-1px;
+  width:5px; height:9px; border-radius:2px 2px 3px 3px;
+  background:#4338ca;
+  box-shadow:6px 0 0 #4338ca;
+}
+
+/* Анимации героя */
+.tg-hero.jump { animation:heroJump .48s cubic-bezier(.34,1.56,.64,1); }
+.tg-hero.fall { animation:heroFall .65s ease-in forwards; }
+.tg-hero.appear { animation:heroAppear .35s ease-out; }
+
 @keyframes heroJump {
   0%  { transform:translateY(0) rotate(0deg); }
-  40% { transform:translateY(-48px) rotate(-15deg); }
+  38% { transform:translateY(-52px) rotate(-12deg); }
   100%{ transform:translateY(0) rotate(0deg); }
 }
 @keyframes heroFall {
   0%  { transform:translateY(0) rotate(0deg); opacity:1; }
-  30% { transform:translateY(-16px) rotate(-20deg); opacity:1; }
-  100%{ transform:translateY(80px) rotate(45deg); opacity:0; }
+  25% { transform:translateY(-14px) rotate(-18deg); opacity:1; }
+  100%{ transform:translateY(90px) rotate(50deg); opacity:0; }
+}
+@keyframes heroAppear {
+  0%  { transform:translateY(-20px); opacity:0; }
+  100%{ transform:translateY(0); opacity:1; }
+}
+
+/* Мишень на некоторых платформах */
+.tg-target {
+  position:absolute; top:-18px; left:50%; transform:translateX(-50%);
+  width:16px; height:16px; border-radius:50%;
+  background:radial-gradient(circle,#fff 25%,#ef4444 25%,#ef4444 50%,#fff 50%,#fff 65%,#ef4444 65%);
+  border:1px solid rgba(0,0,0,.3);
+  animation:targetBob .9s ease-in-out infinite alternate;
+  pointer-events:none;
+}
+@keyframes targetBob { from{transform:translateX(-50%) translateY(0)} to{transform:translateX(-50%) translateY(-4px)} }
+
+/* Сцена — горизонтальный скролл при нехватке места */
+.tg-scene { overflow-x:hidden; }
+.tg-platforms {
+  position:absolute; bottom:0; height:44px;
+  /* ширина устанавливается динамически из JS */
+  transition:transform .38s cubic-bezier(.34,1.56,.64,1);
 }
 /* XP-всплеск */
 .tg-xp-pop {
@@ -1217,6 +1265,19 @@ body {
 }
 .tg-status.ok  { color:#4ade80; }
 .tg-status.err { color:#f87171; }
+
+/* Упс-баннер при ошибке */
+.tg-oops {
+  background:rgba(239,68,68,.12); border:1.5px solid rgba(239,68,68,.35);
+  border-radius:14px; padding:12px 16px; margin-bottom:10px; text-align:center;
+}
+.tg-oops-title { font-size:17px; font-weight:900; color:#f87171; margin-bottom:4px; }
+.tg-oops-hint  { font-size:13px; color:rgba(255,255,255,.6); margin-bottom:10px; }
+.tg-retry-btn {
+  width:100%; padding:12px; border-radius:12px; border:none;
+  background:linear-gradient(135deg,#ef4444,#dc2626);
+  color:#fff; font-family:inherit; font-size:15px; font-weight:900; cursor:pointer;
+}
 
 /* Финальный экран */
 .tg-finish {
@@ -1971,7 +2032,7 @@ body {
         <!-- игровая сцена -->
         <div class="tg-scene" id="tg-scene">
           <div class="tg-platforms" id="tg-platforms"></div>
-          <div class="tg-hero" id="tg-hero">🧒</div>
+          <div class="tg-hero" id="tg-hero"><div class="tg-hero-body"></div></div>
         </div>
         <!-- блок вопроса -->
         <div class="tg-question-box">
@@ -1984,6 +2045,12 @@ body {
           </div>
           <!-- варианты выбора -->
           <div class="tg-choices" id="tg-choices" style="display:none"></div>
+          <!-- Упс! — 2-я попытка -->
+          <div class="tg-oops" id="tg-oops" style="display:none">
+            <div class="tg-oops-title">😵 Упс! Не угадал</div>
+            <div class="tg-oops-hint" id="tg-oops-hint"></div>
+            <button class="tg-retry-btn" onclick="tgRetry()">🔄 Попробую ещё раз</button>
+          </div>
           <div class="tg-status" id="tg-status"></div>
         </div>
       </div>
@@ -5172,6 +5239,7 @@ function startTrainer(id) {
   trTasks = generateTrainerTasks(id, 10);
   trIdx = 0;
   trCorrect = 0;
+  tgTrainerCount++;
   document.getElementById('tr-list-view').style.display = 'none';
   document.getElementById('tr-done-view').style.display = 'none';
   document.getElementById('tr-session-view').style.display = 'block';
@@ -5355,109 +5423,156 @@ function gcd(a,b){ return b===0?a:gcd(b,a%b); }
 
 // ===== GAME TRAINER ENGINE =====
 var tgAnswered = false;
+var tgAttempt = 0;       // 0 = первая, 1 = вторая попытка
+var tgTrainerCount = 0;  // сколько тренажёров запущено (для чередования режима)
+
+// Режим: чётный старт = ввод текста, нечётный = кнопки
+function tgMode() {
+  return (tgTrainerCount % 2 === 0) ? 'input' : 'choices';
+}
 
 function tgInit() {
   tgAnswered = false;
+  tgAttempt = 0;
   tgBuildScene();
   tgRenderProgress();
   tgRenderTask();
 }
 
+// ---- Сцена ----
 function tgBuildScene() {
-  // Строим платформы: герой + 9 целевых + шахта между ними
   const scene = document.getElementById('tg-scene');
   const plats = document.getElementById('tg-platforms');
   const total = trTasks.length; // 10
-  const sceneW = scene.offsetWidth || 360;
-  const platW = Math.max(36, Math.floor((sceneW - (total+1)*6) / (total+1)));
-  const pitW = 52;
+  const platW = 44;
+  const pitW  = 48;
+  const totalW = (total + 1) * platW + total * pitW + 8;
+
+  // Мишени: на каждой 3-й платформе (индексы 2,5,8)
+  const targetIdxs = new Set([2, 5, 8]);
 
   let html = '';
-  const positions = []; // left для каждой платформы (индекс = 0..total)
+  const positions = [];
   let x = 4;
   for (let i = 0; i <= total; i++) {
     positions.push(x);
-    html += `<div class="tg-platform" id="tg-plat-${i}" style="left:${x}px;width:${platW}px"></div>`;
+    const hasTgt = targetIdxs.has(i) && i > 0;
+    html += `<div class="tg-platform" id="tg-plat-${i}" style="left:${x}px;width:${platW}px">` +
+            (hasTgt ? '<div class="tg-target"></div>' : '') +
+            '</div>';
     x += platW;
     if (i < total) {
-      html += `<div class="tg-pit" style="left:${x}px;width:${pitW}px;height:${20+Math.floor(Math.random()*12)}px"></div>`;
+      html += `<div class="tg-pit" style="left:${x}px;width:${pitW}px;height:${22+Math.floor(Math.random()*10)}px"></div>`;
       x += pitW;
     }
   }
   plats.innerHTML = html;
-  // Запомним позиции
+  plats.style.width = totalW + 'px';
+  plats.style.transform = 'translateX(0)';
+
   scene._platPositions = positions;
   scene._platW = platW;
-  // Герой стартует на платформе 0, в центре
+  scene._sceneW = scene.offsetWidth || 340;
+
+  // Герой на платформе 0
   const hero = document.getElementById('tg-hero');
-  hero.style.left = (positions[0] + platW/2 - 15) + 'px';
+  hero.style.left = (positions[0] + platW/2 - 11) + 'px';
   hero.className = 'tg-hero';
 }
 
-function tgHeroLeft() {
+// Пересчёт смещения сцены чтобы герой был виден
+function tgScrollScene(platIdx) {
+  const scene = document.getElementById('tg-scene');
+  const plats = document.getElementById('tg-platforms');
+  const pos = scene._platPositions;
+  const platW = scene._platW;
+  const sceneW = scene._sceneW;
+  const heroCenter = pos[platIdx] + platW / 2;
+  // Держим героя в центре сцены, но не уходим левее 0
+  let offset = heroCenter - sceneW / 2;
+  if (offset < 0) offset = 0;
+  plats.style.transform = `translateX(${-offset}px)`;
+  // Герой тоже должен двигаться вместе с viewport
+  scene._scrollOffset = offset;
+}
+
+function tgHeroPx(platIdx) {
   const scene = document.getElementById('tg-scene');
   const pos = scene._platPositions;
   const platW = scene._platW;
-  const idx = Math.min(trIdx, pos.length - 1);
-  return pos[idx] + platW/2 - 15;
+  const offset = scene._scrollOffset || 0;
+  return pos[platIdx] + platW/2 - 11 - offset;
 }
 
+// ---- Прогресс ----
 function tgRenderProgress() {
   const bar = document.getElementById('tg-progress');
-  bar.innerHTML = trTasks.map(function(_, i) {
-    const cls = i < trIdx ? (trTasks[i]._result === 'ok' ? 'ok' : 'err') : (i === trIdx ? 'cur' : '');
+  bar.innerHTML = trTasks.map(function(t, i) {
+    const cls = i < trIdx ? (t._result === 'ok' ? 'ok' : 'err') : (i === trIdx ? 'cur' : '');
     return `<div class="tg-prog-dot ${cls}"></div>`;
   }).join('');
 }
 
+// ---- Вопрос ----
 function tgRenderTask() {
   const task = trTasks[trIdx];
   document.getElementById('tg-q-label').textContent = `Задание ${trIdx+1} из ${trTasks.length}`;
   document.getElementById('tg-q-text').textContent = task.q;
   document.getElementById('tg-status').textContent = '';
   document.getElementById('tg-status').className = 'tg-status';
+  document.getElementById('tg-oops').style.display = 'none';
   tgAnswered = false;
+  tgAttempt = 0;
 
-  // Выбираем режим: если у задачи есть choices — показываем кнопки, иначе ввод
-  const hasChoices = task.choices && task.choices.length;
+  tgShowInputMode();
+}
+
+function tgShowInputMode() {
+  const task = trTasks[trIdx];
+  const mode = tgMode();
   const inputWrap = document.getElementById('tg-input-wrap');
   const choicesEl = document.getElementById('tg-choices');
 
-  if (hasChoices) {
-    inputWrap.style.display = 'none';
-    choicesEl.style.display = 'grid';
-    choicesEl.innerHTML = task.choices.map(function(c, ci) {
-      return `<button class="tg-choice" onclick="tgChoose(this,'${c.replace(/'/g,"\\'")}',${ci})">${c}</button>`;
-    }).join('');
-  } else {
-    inputWrap.style.display = 'block';
-    choicesEl.style.display = 'none';
-    const inp = document.getElementById('tg-input');
-    inp.value = '';
-    inp.className = 'tg-input';
-    inp.disabled = false;
-    document.getElementById('tg-check-btn').disabled = false;
-    setTimeout(function(){ inp.focus(); }, 80);
+  if (mode === 'choices') {
+    // Кнопки: генерируем варианты если нет, или берём из task.choices
+    let opts = task.choices;
+    if (!opts || !opts.length) {
+      const w = genWrongNums(task.a, 3);
+      opts = w ? arrShuffle([task.a, ...w]) : null;
+    }
+    if (opts) {
+      inputWrap.style.display = 'none';
+      choicesEl.style.display = 'grid';
+      choicesEl.innerHTML = opts.map(function(c) {
+        return `<button class="tg-choice" onclick="tgChoose(this,'${c.replace(/'/g,"\\'")}')">${c}</button>`;
+      }).join('');
+      return;
+    }
+    // Если варианты не получились — fallback на ввод
   }
+  // Ввод текста
+  inputWrap.style.display = 'block';
+  choicesEl.style.display = 'none';
+  const inp = document.getElementById('tg-input');
+  inp.value = '';
+  inp.className = 'tg-input';
+  inp.disabled = false;
+  document.getElementById('tg-check-btn').disabled = false;
+  setTimeout(function(){ inp.focus(); }, 80);
 }
 
-function tgChoose(btn, val, idx) {
+// ---- Проверка ответа ----
+function tgChoose(btn, val) {
   if (tgAnswered) return;
   tgAnswered = true;
   const task = trTasks[trIdx];
   const correct = val.replace(/\s/g,'').toLowerCase() === task.a.replace(/\s/g,'').toLowerCase();
-  // Показываем все кнопки результат
-  const btns = document.getElementById('tg-choices').querySelectorAll('.tg-choice');
-  btns.forEach(function(b) { b.disabled = true; });
-  if (correct) {
-    btn.classList.add('ok');
-  } else {
-    btn.classList.add('err');
-    // подсветить правильный
-    btns.forEach(function(b) {
-      if (b.textContent.replace(/\s/g,'').toLowerCase() === task.a.replace(/\s/g,'').toLowerCase()) b.classList.add('reveal');
-    });
-  }
+  document.getElementById('tg-choices').querySelectorAll('.tg-choice').forEach(function(b) {
+    b.disabled = true;
+    if (b.textContent.replace(/\s/g,'').toLowerCase() === task.a.replace(/\s/g,'').toLowerCase()) b.classList.add('reveal');
+  });
+  if (correct) btn.classList.add('ok');
+  else btn.classList.add('err');
   tgResolve(correct, task.a);
 }
 
@@ -5475,76 +5590,127 @@ function tgCheck() {
   tgResolve(correct, task.a);
 }
 
+// ---- Результат ----
 function tgResolve(correct, rightAnswer) {
   const task = trTasks[trIdx];
-  task._result = correct ? 'ok' : 'err';
-  const statusEl = document.getElementById('tg-status');
 
   if (correct) {
+    task._result = 'ok';
     trCorrect++;
     addXP(10);
-    statusEl.textContent = '✅ Верно! +10 XP';
-    statusEl.className = 'tg-status ok';
+    document.getElementById('tg-status').textContent = '✅ Верно! +10 XP';
+    document.getElementById('tg-status').className = 'tg-status ok';
     tgHeroJump();
+    tgRenderProgress();
+    setTimeout(tgAdvance, 950);
   } else {
-    addMistake(currentTrainer.name, 'trainer_wrong');
-    statusEl.textContent = '❌ Правильно: ' + rightAnswer;
-    statusEl.className = 'tg-status err';
-    tgHeroFall();
+    // Первая ошибка — показываем «Упс! Перерешать»
+    if (tgAttempt === 0) {
+      tgAttempt = 1;
+      tgHeroFall();
+      tgRenderProgress();
+      // Показываем Упс-баннер через 800ms (после анимации падения)
+      setTimeout(function() {
+        document.getElementById('tg-oops-hint').textContent = 'Попробуй ещё раз — у тебя одна попытка осталась.';
+        document.getElementById('tg-oops').style.display = 'block';
+        document.getElementById('tg-status').textContent = '';
+        document.getElementById('tg-status').className = 'tg-status';
+      }, 850);
+    } else {
+      // Вторая ошибка — финал, правильный ответ, идём дальше
+      task._result = 'err';
+      addMistake(currentTrainer.name, 'trainer_wrong');
+      document.getElementById('tg-oops').style.display = 'none';
+      document.getElementById('tg-status').textContent = '❌ Правильно: ' + rightAnswer;
+      document.getElementById('tg-status').className = 'tg-status err';
+      tgHeroFall();
+      tgRenderProgress();
+      setTimeout(tgAdvance, 1300);
+    }
   }
-
-  tgRenderProgress();
-  setTimeout(function() { tgAdvance(); }, correct ? 900 : 1200);
 }
 
+// Кнопка «Перерешать»
+function tgRetry() {
+  document.getElementById('tg-oops').style.display = 'none';
+  tgAnswered = false;
+  // Сброс UI
+  const inp = document.getElementById('tg-input');
+  inp.value = '';
+  inp.className = 'tg-input';
+  inp.disabled = false;
+  document.getElementById('tg-check-btn').disabled = false;
+  // Choices — снять блокировку и классы
+  document.getElementById('tg-choices').querySelectorAll('.tg-choice').forEach(function(b) {
+    b.disabled = false;
+    b.className = 'tg-choice';
+  });
+  // Герой возвращается на ту же платформу
+  const hero = document.getElementById('tg-hero');
+  hero.classList.remove('fall', 'jump');
+  void hero.offsetWidth;
+  hero.classList.add('appear');
+  hero.style.opacity = '1';
+  hero.style.left = tgHeroPx(trIdx) + 'px';
+  setTimeout(function(){ inp.focus(); }, 100);
+}
+
+// ---- Анимации героя ----
 function tgHeroJump() {
   const hero = document.getElementById('tg-hero');
-  const scene = document.getElementById('tg-scene');
-  const pos = scene._platPositions;
-  const platW = scene._platW;
-  const nextIdx = Math.min(trIdx + 1, pos.length - 1);
-  const nextLeft = pos[nextIdx] + platW/2 - 15;
+  const nextIdx = Math.min(trIdx + 1, trTasks.length);
 
-  hero.classList.remove('jump', 'fall');
-  void hero.offsetWidth; // reflow
+  hero.classList.remove('jump', 'fall', 'appear');
+  void hero.offsetWidth;
   hero.classList.add('jump');
-  // через 250ms переставить hero на следующую платформу (в середине прыжка)
+
+  // В середине прыжка — сдвинуть сцену и переместить героя
   setTimeout(function() {
-    hero.style.left = nextLeft + 'px';
-  }, 220);
+    tgScrollScene(nextIdx);
+    hero.style.left = tgHeroPx(nextIdx) + 'px';
+  }, 230);
 
   // XP-всплеск
-  const scene2 = document.getElementById('tg-scene');
+  const scene = document.getElementById('tg-scene');
   const pop = document.createElement('div');
   pop.className = 'tg-xp-pop';
   pop.textContent = '+10 XP ⭐';
-  scene2.appendChild(pop);
-  setTimeout(function() { if(pop.parentNode) pop.parentNode.removeChild(pop); }, 700);
+  scene.appendChild(pop);
+  setTimeout(function() { if (pop.parentNode) pop.parentNode.removeChild(pop); }, 700);
 }
 
 function tgHeroFall() {
   const hero = document.getElementById('tg-hero');
   const platEl = document.getElementById('tg-plat-' + trIdx);
-  // Трясём платформу
-  if (platEl) { platEl.classList.add('shake'); setTimeout(function(){ platEl.classList.remove('shake'); }, 400); }
-  hero.classList.remove('jump', 'fall');
+  if (platEl) {
+    platEl.classList.add('shake');
+    setTimeout(function(){ platEl.classList.remove('shake'); }, 400);
+  }
+  hero.classList.remove('jump', 'fall', 'appear');
   void hero.offsetWidth;
   hero.classList.add('fall');
-  // Через 700ms вернуть героя на ту же платформу
+  // После падения герой появляется обратно на той же платформе (только если будет retry)
   setTimeout(function() {
-    hero.classList.remove('fall');
-    void hero.offsetWidth;
-    hero.style.left = tgHeroLeft() + 'px';
-    hero.style.opacity = '1';
-  }, 750);
+    if (tgAttempt === 1) { // ждём retry вручную
+      hero.style.opacity = '0';
+    } else {
+      // вторая ошибка — просто скрыть
+      hero.style.opacity = '0';
+    }
+  }, 700);
 }
 
+// ---- Следующий вопрос ----
 function tgAdvance() {
   trIdx++;
   if (trIdx >= trTasks.length) {
     endTrainer();
   } else {
     tgRenderTask();
+    // Герой уже на правильной платформе после прыжка; при ошибке — восстановим
+    const hero = document.getElementById('tg-hero');
+    hero.style.opacity = '1';
+    hero.style.left = tgHeroPx(trIdx) + 'px';
   }
 }
 
