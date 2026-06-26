@@ -5287,6 +5287,17 @@ function ruleShowQuestion() {
   var card = document.getElementById('rule-quiz-card');
   // Формат = индекс вопроса % 5
   var fmt = i % QUIZ_FORMATS.length;
+  // fmt=4 (найди пару) требует 2+ уникальных ответа — иначе заменяем на fmt=1
+  if (fmt === 4) {
+    var uniq4 = {};
+    ruleState.quizzes.forEach(function(q){ uniq4[q.a] = true; });
+    if (Object.keys(uniq4).length < 2) fmt = 1;
+  }
+  // fmt=2 (выбери лишнее) требует разных ответов с текущим — иначе заменяем на fmt=0
+  if (fmt === 2) {
+    var othersUniq = ruleState.quizzes.filter(function(q2){ return q2.a.toLowerCase() !== qz.a.toLowerCase(); });
+    if (othersUniq.length < 1) fmt = 0;
+  }
   ruleRenderFormat(card, qz, fmt, i);
 }
 
@@ -5442,8 +5453,17 @@ function ruleRenderFormat(card, qz, fmt, i) {
     document.getElementById('rule-check-btn').addEventListener('click', ruleNextQuestion);
 
   } else {
-    // fmt === 4: найди пару (match 2 пары)
-    var pairPool = ruleState.quizzes.slice(0, 4);
+    // fmt === 4: найди пару (match 2 пары с разными ответами)
+    // Берём квизы с уникальными ответами чтобы пара была осмысленной
+    var pairPool = [];
+    var usedAnswers = {};
+    for (var pi4 = 0; pi4 < ruleState.quizzes.length; pi4++) {
+      var q4 = ruleState.quizzes[pi4];
+      if (!usedAnswers[q4.a]) { usedAnswers[q4.a] = true; pairPool.push(q4); }
+      if (pairPool.length >= 2) break;
+    }
+    // Если не набрали 2 уникальных — берём просто первые два
+    if (pairPool.length < 2) pairPool = ruleState.quizzes.slice(0, 2);
     while (pairPool.length < 2) pairPool.push(qz);
     var pairs = pairPool.slice(0, 2);
     var leftItems = arrShuffle(pairs.map(function(p){ return p.q; }));
