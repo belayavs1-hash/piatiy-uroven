@@ -1184,6 +1184,60 @@ body {
   100%{ transform:translateY(0); opacity:1; }
 }
 
+/* ===== КОНСТРУКТОР GEO_T ===== */
+/* Экран выбора персонажа */
+.builder-pick { max-width:500px; margin:0 auto; padding:16px; text-align:center; }
+.builder-pick-title { font-size:20px; font-weight:900; color:#fff; margin-bottom:6px; }
+.builder-pick-sub   { font-size:13px; color:rgba(255,255,255,.5); margin-bottom:20px; }
+.builder-pick-cards { display:flex; gap:14px; justify-content:center; flex-wrap:wrap; }
+.builder-pick-card  {
+  width:110px; padding:12px 8px 10px; border-radius:18px; cursor:pointer;
+  border:2.5px solid rgba(255,255,255,.15); background:rgba(255,255,255,.06);
+  transition:transform .15s, border-color .15s;
+}
+.builder-pick-card:hover { transform:translateY(-4px); border-color:#818cf8; }
+.builder-pick-card svg { display:block; margin:0 auto 8px; }
+.builder-pick-card span { font-size:13px; font-weight:800; color:#fff; }
+
+/* Игровое поле конструктора */
+.builder-wrap { max-width:500px; margin:0 auto; padding:16px; }
+.builder-q-label { font-size:11px; font-weight:700; color:rgba(255,255,255,.4); text-transform:uppercase; letter-spacing:.08em; margin-bottom:6px; }
+.builder-q-text  { font-size:21px; font-weight:900; color:#fff; margin-bottom:16px; min-height:50px; line-height:1.4; }
+.builder-canvas-wrap {
+  background:linear-gradient(180deg,#0f172a,#1e293b);
+  border-radius:16px; margin-bottom:14px; overflow:hidden;
+  position:relative; height:180px;
+}
+.builder-canvas-wrap svg { display:block; width:100%; height:100%; }
+/* Детали появляются */
+.builder-part { transition:opacity .5s, transform .5s; }
+.builder-part.hidden { opacity:0; transform:scale(.5); }
+.builder-part.visible { opacity:1; transform:scale(1); }
+/* Прогресс деталей */
+.builder-parts-bar { display:flex; gap:5px; justify-content:center; margin-bottom:12px; }
+.builder-part-dot { width:14px; height:14px; border-radius:3px; background:rgba(255,255,255,.15); transition:background .3s; }
+.builder-part-dot.on { background:#818cf8; }
+/* Ввод / кнопки */
+.builder-inp {
+  width:100%; padding:13px 16px; border-radius:14px; border:2px solid rgba(255,255,255,.2);
+  background:rgba(255,255,255,.08); color:#fff; font-family:inherit;
+  font-size:22px; font-weight:900; text-align:center; outline:none; box-sizing:border-box;
+  transition:border-color .2s; margin-bottom:10px;
+}
+.builder-inp:focus { border-color:#818cf8; }
+.builder-inp.ok  { border-color:#22c55e !important; background:rgba(34,197,94,.12) !important; }
+.builder-inp.err { border-color:#ef4444 !important; background:rgba(239,68,68,.12) !important; }
+.builder-check-btn {
+  width:100%; padding:14px; border-radius:14px; border:none;
+  background:linear-gradient(135deg,#6366f1,#818cf8); color:#fff;
+  font-family:inherit; font-size:16px; font-weight:900; cursor:pointer;
+  transition:opacity .2s;
+}
+.builder-check-btn:disabled { opacity:.4; cursor:default; }
+.builder-status { text-align:center; font-size:14px; font-weight:700; min-height:20px; padding:5px 0; }
+.builder-status.ok  { color:#4ade80; }
+.builder-status.err { color:#f87171; }
+
 /* ===== ТРЕНАЖЁР СТРЕЛОК ===== */
 .archer-wrap { max-width:500px; margin:0 auto; padding:16px; }
 .archer-question { font-size:22px; font-weight:900; color:#fff; text-align:center; margin-bottom:20px; min-height:52px; line-height:1.35; }
@@ -5323,6 +5377,8 @@ function startTrainer(id) {
   document.getElementById('tr-back-btn').onclick = trainersBack;
   if (id === 'archer') {
     archerInit();
+  } else if (id === 'geo_t') {
+    builderInit();
   } else {
     tgInit();
   }
@@ -6015,6 +6071,282 @@ function archerAdvance() {
     endTrainer();
   } else {
     archerRender();
+  }
+}
+
+// ===== КОНСТРУКТОР GEO_T =====
+var builderChoice = null; // 'person' | 'house' | 'car'
+var builderAnswered = false;
+var builderAttempt = 0;
+
+// SVG-детали для каждого персонажа (10 штук, добавляются по очереди)
+// Каждая деталь — SVG-элемент с id="bp-N"
+const BUILDER_PARTS = {
+  person: [
+    // 0: голова
+    '<circle id="bp-0" cx="120" cy="38" r="22" fill="#fde68a" stroke="#f59e0b" stroke-width="2"/>',
+    // 1: глаза
+    '<circle id="bp-1" cx="113" cy="34" r="3" fill="#1e293b"/><circle cx="127" cy="34" r="3" fill="#1e293b"/>',
+    // 2: улыбка
+    '<path id="bp-2" d="M112 43 Q120 50 128 43" stroke="#92400e" stroke-width="2" fill="none" stroke-linecap="round"/>',
+    // 3: тело
+    '<rect id="bp-3" x="103" y="62" width="34" height="42" rx="8" fill="#6366f1"/>',
+    // 4: пуговицы
+    '<circle id="bp-4" cx="120" cy="72" r="3" fill="#fff"/><circle cx="120" cy="84" r="3" fill="#fff"/>',
+    // 5: левая рука
+    '<rect id="bp-5" x="74" y="65" width="28" height="10" rx="5" fill="#6366f1" transform="rotate(-15,88,70)"/>',
+    // 6: правая рука
+    '<rect id="bp-6" x="138" y="65" width="28" height="10" rx="5" fill="#6366f1" transform="rotate(15,152,70)"/>',
+    // 7: левая нога
+    '<rect id="bp-7" x="105" y="104" width="14" height="36" rx="6" fill="#1e40af"/>',
+    // 8: правая нога
+    '<rect id="bp-8" x="121" y="104" width="14" height="36" rx="6" fill="#1e40af"/>',
+    // 9: туфли
+    '<ellipse id="bp-9" cx="112" cy="140" rx="10" ry="5" fill="#1e293b"/><ellipse cx="128" cy="140" rx="10" ry="5" fill="#1e293b"/>'
+  ],
+  house: [
+    // 0: фундамент
+    '<rect id="bp-0" x="50" y="105" width="140" height="65" rx="4" fill="#92400e"/>',
+    // 1: стены
+    '<rect id="bp-1" x="58" y="88" width="124" height="80" rx="4" fill="#fde68a"/>',
+    // 2: крыша
+    '<polygon id="bp-2" points="40,92 120,30 200,92" fill="#ef4444"/>',
+    // 3: дверь
+    '<rect id="bp-3" x="101" y="120" width="38" height="48" rx="6" fill="#92400e"/>',
+    // 4: ручка двери
+    '<circle id="bp-4" cx="132" cy="144" r="4" fill="#fbbf24"/>',
+    // 5: левое окно
+    '<rect id="bp-5" x="66" y="100" width="26" height="26" rx="4" fill="#bae6fd" stroke="#60a5fa" stroke-width="2"/>',
+    // 6: правое окно
+    '<rect id="bp-6" x="148" y="100" width="26" height="26" rx="4" fill="#bae6fd" stroke="#60a5fa" stroke-width="2"/>',
+    // 7: крест окна левого
+    '<line id="bp-7" x1="79" y1="100" x2="79" y2="126" stroke="#60a5fa" stroke-width="1.5"/><line x1="66" y1="113" x2="92" y2="113" stroke="#60a5fa" stroke-width="1.5"/>',
+    // 8: труба
+    '<rect id="bp-8" x="148" y="34" width="18" height="34" rx="4" fill="#b45309"/>',
+    // 9: дым
+    '<circle id="bp-9" cx="157" cy="26" r="8" fill="rgba(255,255,255,.4)"/><circle cx="168" cy="18" r="6" fill="rgba(255,255,255,.3)"/><circle cx="175" cy="11" r="4" fill="rgba(255,255,255,.2)"/>'
+  ],
+  car: [
+    // 0: кузов низ
+    '<rect id="bp-0" x="20" y="108" width="200" height="46" rx="12" fill="#6366f1"/>',
+    // 1: кузов верх (кабина)
+    '<rect id="bp-1" x="55" y="70" width="120" height="45" rx="14" fill="#818cf8"/>',
+    // 2: лобовое стекло
+    '<rect id="bp-2" x="66" y="76" width="50" height="34" rx="8" fill="#bae6fd" opacity=".85"/>',
+    // 3: заднее стекло
+    '<rect id="bp-3" x="124" y="76" width="44" height="34" rx="8" fill="#bae6fd" opacity=".85"/>',
+    // 4: левое колесо
+    '<circle id="bp-4" cx="68" cy="152" r="24" fill="#1e293b"/><circle cx="68" cy="152" r="14" fill="#475569"/><circle cx="68" cy="152" r="5" fill="#94a3b8"/>',
+    // 5: правое колесо
+    '<circle id="bp-5" cx="172" cy="152" r="24" fill="#1e293b"/><circle cx="172" cy="152" r="14" fill="#475569"/><circle cx="172" cy="152" r="5" fill="#94a3b8"/>',
+    // 6: фара левая
+    '<ellipse id="bp-6" cx="26" cy="120" rx="8" ry="10" fill="#fbbf24"/>',
+    // 7: фара правая (зад)
+    '<ellipse id="bp-7" cx="214" cy="120" rx="8" ry="10" fill="#ef4444"/>',
+    // 8: дверь
+    '<rect id="bp-8" x="90" y="112" width="58" height="36" rx="6" fill="rgba(255,255,255,.12)" stroke="rgba(255,255,255,.25)" stroke-width="1.5"/>',
+    // 9: антенна + блеск
+    '<line id="bp-9" x1="160" y1="70" x2="160" y2="48" stroke="#cbd5e1" stroke-width="2"/><circle cx="160" cy="46" r="3" fill="#fbbf24"/><ellipse cx="90" cy="80" rx="12" ry="5" fill="rgba(255,255,255,.2)" transform="rotate(-20,90,80)"/>'
+  ]
+};
+
+function builderGetContainer() {
+  let el = document.getElementById('builder-container');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'builder-container';
+    document.getElementById('tr-session-view').appendChild(el);
+  }
+  return el;
+}
+
+function builderHideGame() {
+  const wrap = document.querySelector('#tr-session-view .tg-wrap');
+  if (wrap) wrap.style.display = 'none';
+}
+
+function builderShowGame() {
+  const wrap = document.querySelector('#tr-session-view .tg-wrap');
+  if (wrap) wrap.style.display = '';
+}
+
+// Запуск: показать экран выбора
+function builderInit() {
+  builderChoice = null;
+  builderAnswered = false;
+  builderAttempt = 0;
+  builderHideGame();
+  const el = builderGetContainer();
+  el.style.display = 'block';
+
+  const labels = { person:'Человечек', house:'Дом', car:'Машина' };
+  el.innerHTML = `
+    <div class="builder-pick">
+      <div class="builder-pick-title">Выбери, что будем строить</div>
+      <div class="builder-pick-sub">За каждый правильный ответ — новая деталь!</div>
+      <div class="builder-pick-cards">
+        ${['person','house','car'].map(k => `
+          <div class="builder-pick-card" onclick="builderStart('${k}')">
+            ${builderSilhouette(k)}
+            <span>${labels[k]}</span>
+          </div>`).join('')}
+      </div>
+    </div>`;
+}
+
+// Силуэт-превью для выбора
+function builderSilhouette(type) {
+  const svgs = {
+    person: `<svg width="70" height="90" viewBox="0 0 240 170">
+      <circle cx="120" cy="38" r="22" fill="rgba(255,255,255,.15)"/>
+      <rect x="103" y="62" width="34" height="42" rx="8" fill="rgba(255,255,255,.12)"/>
+      <rect x="74" y="65" width="28" height="10" rx="5" fill="rgba(255,255,255,.1)" transform="rotate(-15,88,70)"/>
+      <rect x="138" y="65" width="28" height="10" rx="5" fill="rgba(255,255,255,.1)" transform="rotate(15,152,70)"/>
+      <rect x="105" y="104" width="14" height="36" rx="6" fill="rgba(255,255,255,.12)"/>
+      <rect x="121" y="104" width="14" height="36" rx="6" fill="rgba(255,255,255,.12)"/>
+    </svg>`,
+    house: `<svg width="70" height="90" viewBox="0 0 240 170">
+      <polygon points="40,92 120,30 200,92" fill="rgba(255,255,255,.12)"/>
+      <rect x="58" y="88" width="124" height="80" rx="4" fill="rgba(255,255,255,.1)"/>
+      <rect x="101" y="120" width="38" height="48" rx="6" fill="rgba(255,255,255,.08)"/>
+    </svg>`,
+    car: `<svg width="70" height="90" viewBox="0 0 240 170">
+      <rect x="20" y="108" width="200" height="46" rx="12" fill="rgba(255,255,255,.12)"/>
+      <rect x="55" y="70" width="120" height="45" rx="14" fill="rgba(255,255,255,.1)"/>
+      <circle cx="68" cy="152" r="22" fill="rgba(255,255,255,.1)"/>
+      <circle cx="172" cy="152" r="22" fill="rgba(255,255,255,.1)"/>
+    </svg>`
+  };
+  return svgs[type] || '';
+}
+
+function builderStart(type) {
+  builderChoice = type;
+  builderRender();
+}
+
+function builderCurrentSVG() {
+  const parts = BUILDER_PARTS[builderChoice];
+  // Показываем детали с индексом < trIdx (уже правильно отвеченные)
+  return parts.map((p, i) => {
+    const vis = trTasks[i] && trTasks[i]._result === 'ok';
+    return `<g class="builder-part ${vis ? 'visible' : 'hidden'}" style="transition-delay:${i*0.05}s">${p}</g>`;
+  }).join('');
+}
+
+function builderRender() {
+  builderAnswered = false;
+  builderAttempt = 0;
+  const task = trTasks[trIdx];
+  const mode = (tgTrainerCount % 2 === 0) ? 'input' : 'choices';
+  const el = builderGetContainer();
+
+  // Прогресс деталей
+  const parts = BUILDER_PARTS[builderChoice];
+  const dotsHtml = parts.map((_, i) => {
+    const done = trTasks[i] && trTasks[i]._result === 'ok';
+    return `<div class="builder-part-dot ${done ? 'on' : ''}"></div>`;
+  }).join('');
+
+  // Варианты
+  let inputHtml = '';
+  if (mode === 'choices') {
+    const w = genWrongNums(task.a, 3);
+    const opts = w ? arrShuffle([task.a, ...w]) : [task.a];
+    inputHtml = `<div class="tg-choices">` +
+      opts.map(o => `<button class="tg-choice" onclick="builderChoose(this,'${o.replace(/'/g,"\\'")}')">${o}</button>`).join('') +
+      `</div>`;
+  } else {
+    inputHtml = `<input type="text" class="builder-inp" id="builder-inp" placeholder="Ответ..." autocomplete="off" onkeydown="if(event.key==='Enter')builderCheck()">
+    <button class="builder-check-btn" id="builder-check-btn" onclick="builderCheck()">✅ Проверить</button>`;
+  }
+
+  el.innerHTML = `
+    <div class="builder-wrap">
+      <div class="builder-q-label">Задание ${trIdx+1} из ${trTasks.length} — собираем ${builderChoice==='person'?'Человечка':builderChoice==='house'?'Дом':'Машину'}</div>
+      <div class="builder-q-text">${task.q}</div>
+      <div class="builder-canvas-wrap">
+        <svg viewBox="0 0 240 170" xmlns="http://www.w3.org/2000/svg">
+          ${builderCurrentSVG()}
+        </svg>
+      </div>
+      <div class="builder-parts-bar">${dotsHtml}</div>
+      ${inputHtml}
+      <div class="builder-status" id="builder-status"></div>
+    </div>`;
+
+  if (mode === 'input') setTimeout(() => { const i = document.getElementById('builder-inp'); if(i) i.focus(); }, 80);
+}
+
+function builderChoose(btn, val) {
+  if (builderAnswered) return;
+  builderAnswered = true;
+  document.getElementById('builder-container').querySelectorAll('.tg-choice').forEach(b => b.disabled = true);
+  const task = trTasks[trIdx];
+  const correct = val.replace(/\s/g,'').toLowerCase() === task.a.replace(/\s/g,'').toLowerCase();
+  if (correct) btn.classList.add('ok'); else btn.classList.add('err');
+  builderResolve(correct, task.a);
+}
+
+function builderCheck() {
+  if (builderAnswered) return;
+  const inp = document.getElementById('builder-inp');
+  if (!inp || !inp.value.trim()) return;
+  builderAnswered = true;
+  inp.disabled = true;
+  const btn = document.getElementById('builder-check-btn');
+  if (btn) btn.disabled = true;
+  const task = trTasks[trIdx];
+  const correct = inp.value.trim().replace(/\s/g,'').toLowerCase() === task.a.replace(/\s/g,'').toLowerCase();
+  inp.classList.add(correct ? 'ok' : 'err');
+  builderResolve(correct, task.a);
+}
+
+function builderResolve(correct, rightAnswer) {
+  const task = trTasks[trIdx];
+  const statusEl = document.getElementById('builder-status');
+
+  if (correct) {
+    task._result = 'ok';
+    trCorrect++;
+    addXP(10);
+    if (statusEl) { statusEl.textContent = '✅ Деталь добавлена! +10 XP 🎉'; statusEl.className = 'builder-status ok'; }
+    // Перерисовываем SVG с новой деталью
+    setTimeout(() => {
+      const svg = document.querySelector('#builder-container svg');
+      if (svg) svg.innerHTML = builderCurrentSVG();
+    }, 100);
+    setTimeout(builderAdvance, 1100);
+  } else {
+    if (builderAttempt === 0) {
+      builderAttempt = 1;
+      if (statusEl) { statusEl.textContent = '😬 Не угадал — попробуй ещё раз!'; statusEl.className = 'builder-status err'; }
+      setTimeout(() => {
+        builderAnswered = false;
+        const inp = document.getElementById('builder-inp');
+        if (inp) { inp.value = ''; inp.disabled = false; inp.className = 'builder-inp'; inp.focus(); }
+        const btn = document.getElementById('builder-check-btn');
+        if (btn) btn.disabled = false;
+        document.getElementById('builder-container').querySelectorAll('.tg-choice').forEach(b => { b.disabled = false; b.className = 'tg-choice'; });
+        if (statusEl) { statusEl.textContent = 'Вторая попытка!'; statusEl.className = 'builder-status'; }
+      }, 900);
+    } else {
+      task._result = 'err';
+      addMistake(currentTrainer.name, 'trainer_wrong');
+      if (statusEl) { statusEl.textContent = '❌ Правильно: ' + rightAnswer + ' — деталь потеряна'; statusEl.className = 'builder-status err'; }
+      setTimeout(builderAdvance, 1300);
+    }
+  }
+}
+
+function builderAdvance() {
+  trIdx++;
+  if (trIdx >= trTasks.length) {
+    document.getElementById('builder-container').style.display = 'none';
+    builderShowGame();
+    endTrainer();
+  } else {
+    builderRender();
   }
 }
 
