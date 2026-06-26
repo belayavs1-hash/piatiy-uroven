@@ -3908,17 +3908,16 @@ const TRAINERS_DEF = [
   {id:"perim",  icon:"📐", name:"Периметр",            desc:"Прямоугольник"},
   {id:"area",   icon:"⬛", name:"Площадь",             desc:"Прямоугольник"},
   {id:"speed",  icon:"🚂", name:"Задачи на движение",  desc:"Скорость × время"},
-  {id:"pow",    icon:"🔺", name:"Степень числа",       desc:"Квадрат и куб", url:"https://obrazavr.ru/trenazhyory/matematika/5-klass/vozvedenie-v-stepen/vozvedenie-v-kvadrat-chisel-do-10/"},
-  {id:"pow2",   icon:"💥", name:"Квадраты до 20",      desc:"Возведение в квадрат", url:"https://obrazavr.ru/trenazhyory/matematika/5-klass/vozvedenie-v-stepen/vozvedenie-v-kvadrat-chisel-do-20/"},
-  {id:"pow3",   icon:"🎲", name:"Кубы до 10",          desc:"Возведение в куб", url:"https://obrazavr.ru/trenazhyory/matematika/5-klass/vozvedenie-v-stepen/vozvedenie-v-kub-chisel-do-10/"},
-  {id:"fradd2", icon:"🔵", name:"Сложение дробей ★",   desc:"Любые знаменатели", url:"https://obrazavr.ru/trenazhyory/matematika/5-klass/dejstviya-s-obyknovennymi-drobyami/slozhenie-obyknovennyh-drobej/"},
-  {id:"frsub2", icon:"🟠", name:"Вычитание дробей ★",  desc:"Любые знаменатели", url:"https://obrazavr.ru/trenazhyory/matematika/5-klass/dejstviya-s-obyknovennymi-drobyami/vychitanie-obyknovennyh-drobej/"},
-  {id:"decadd", icon:"🔹", name:"Десят. дроби: + −",   desc:"Сложение и вычитание", url:"https://obrazavr.ru/trenazhyory/matematika/5-klass/dejstviya-s-desyatichnymi-drobyami/slozhenie-desyatichnyh-drobej/"},
-  {id:"decmul", icon:"🔸", name:"Десят. дроби: × ÷",   desc:"Умножение и деление", url:"https://obrazavr.ru/trenazhyory/matematika/5-klass/dejstviya-s-desyatichnymi-drobyami/umnozhenie-desyatichnyh-drobej-do-desyatyh/"},
-  {id:"tasknat",icon:"📝", name:"Задачи: натур. числа", desc:"Разные типы задач", url:"https://obrazavr.ru/trenazhyory/matematika/5-klass/zadachi/zadachi-s-naturalnymi-chislami/"},
-  {id:"taskfr", icon:"📊", name:"Задачи: дроби",        desc:"Обыкновенные дроби", url:"https://obrazavr.ru/trenazhyory/matematika/5-klass/zadachi/zadachi-s-obyknovennymi-drobyami/"},
-  {id:"taskdec",icon:"📈", name:"Задачи: дес. дроби",   desc:"Практические задачи", url:"https://obrazavr.ru/trenazhyory/matematika/5-klass/zadachi/zadachi-s-desyatichnymi-drobyami/"},
-  {id:"geo_t",  icon:"📐", name:"Геом. задачи",          desc:"Периметр, площадь, объём", url:"https://obrazavr.ru/trenazhyory/matematika/5-klass/zadachi/geometricheskie-zadachi/"}
+  {id:"pow",    icon:"🔺", name:"Квадрат числа",        desc:"Числа от 1 до 10"},
+  {id:"pow2",   icon:"💥", name:"Квадрат до 20",        desc:"Числа от 11 до 20"},
+  {id:"pow3",   icon:"🎲", name:"Куб числа",            desc:"Числа от 1 до 10"},
+  {id:"fradd2", icon:"🔵", name:"Сложение дробей ★",   desc:"Разные знаменатели"},
+  {id:"frsub2", icon:"🟠", name:"Вычитание дробей ★",  desc:"Разные знаменатели"},
+  {id:"decadd", icon:"🔹", name:"Десят. + −",           desc:"Сложение и вычитание"},
+  {id:"decmul", icon:"🔸", name:"Десят. × ÷",           desc:"Умножение и деление"},
+  {id:"tasknat",icon:"📝", name:"Задачи: числа",        desc:"Цена, время, части"},
+  {id:"taskfr", icon:"📊", name:"Задачи: дроби",        desc:"Часть от числа"},
+  {id:"geo_t",  icon:"📐", name:"Геом. задачи",          desc:"Периметр, площадь, объём"}
 ];
 
 const ACHIEVEMENTS = [
@@ -4765,14 +4764,10 @@ function renderTrainers(highlightId) {
   grid.innerHTML = TRAINERS_DEF.map(tr => {
     const stats = ST.trainerStats[tr.id] || {done:0};
     const isHighlight = tr.id === highlightId;
-    const click = tr.url
-      ? `window.open('${tr.url}','_blank')`
-      : `startTrainer('${tr.id}')`;
-    const badge = tr.url ? '<span class="tr-ext">🔗 сайт</span>' : '';
-    return `<div class="trainer-card${isHighlight ? ' trainer-card-highlight' : ''}" onclick="${click}">
+    return `<div class="trainer-card${isHighlight ? ' trainer-card-highlight' : ''}" onclick="startTrainer('${tr.id}')">
       <span class="tr-icon">${tr.icon}</span>
       <div class="tr-name">${tr.name}</div>
-      <div class="tr-count">${tr.desc}${stats.done ? ` · ${stats.done} сессий` : ''}${badge}</div>
+      <div class="tr-count">${tr.desc}${stats.done ? ` · ${stats.done} сессий` : ''}</div>
     </div>`;
   }).join('');
 }
@@ -4864,10 +4859,92 @@ function genOne(type) {
     case 'perim': { const w=rnd(3,20),h=rnd(3,15); q=`Периметр прямоугольника ${w}×${h} см`; a=String(2*(w+h)); break; }
     case 'area': { const w=rnd(3,20),h=rnd(3,15); q=`Площадь прямоугольника ${w}×${h} см`; a=String(w*h); break; }
     case 'speed': { const v=rnd(20,90),t=rnd(2,8); q=`Скорость ${v} км/ч, время ${t} ч. Расстояние?`; a=String(v*t); break; }
+
+    // Степени
+    case 'pow': { const n=rnd(1,10); q=`${n}² = ?`; a=String(n*n); break; }
+    case 'pow2': { const n=rnd(11,20); q=`${n}² = ?`; a=String(n*n); break; }
+    case 'pow3': { const n=rnd(1,10); q=`${n}³ = ?`; a=String(n*n*n); break; }
+
+    // Дроби с разными знаменателями
+    case 'fradd2': {
+      const denA=rnd(2,6), denB=rnd(2,6);
+      const lcm = denA*denB/gcd(denA,denB);
+      const numA=rnd(1,denA-1), numB=rnd(1,denB-1);
+      const rNum=numA*(lcm/denA)+numB*(lcm/denB), rDen=lcm;
+      const g=gcd(rNum,rDen);
+      if(rNum/rDen>=1 && rNum%rDen===0) { q=`${numA}/${denA} + ${numB}/${denB}`; a=String(Math.round(rNum/rDen)); }
+      else { q=`${numA}/${denA} + ${numB}/${denB}`; a=`${rNum/g}/${rDen/g}`; }
+      break;
+    }
+    case 'frsub2': {
+      const denA=rnd(2,8), denB=rnd(2,8);
+      const lcm = denA*denB/gcd(denA,denB);
+      let numA=rnd(1,denA), numB=rnd(1,denB);
+      const la=numA*(lcm/denA), lb=numB*(lcm/denB);
+      if(la<=lb){ numA=numB+rnd(1,3); }
+      const rNum2=numA*(lcm/denA)-numB*(lcm/denB), rDen2=lcm;
+      if(rNum2<=0){q=`${denA}/${denA+1} − ${1}/${denA+1}`; a=`${denA-1}/${denA+1}`; break;}
+      const g2=gcd(rNum2,rDen2);
+      q=`${numA}/${denA} − ${numB}/${denB}`; a=`${rNum2/g2}/${rDen2/g2}`;
+      break;
+    }
+
+    // Десятичные дроби
+    case 'decadd': {
+      const r=Math.random();
+      if(r<0.5){
+        const x=+(rnd(1,9)/10).toFixed(1), y=+(rnd(1,9)/10).toFixed(1);
+        const ans=+(x+y).toFixed(1);
+        q=`${x} + ${y}`; a=String(ans);
+      } else {
+        const x=+(rnd(10,90)/10).toFixed(1), y=+(rnd(1,Math.round(x*10)-1)/10).toFixed(1);
+        q=`${x} − ${y}`; a=String(+(x-y).toFixed(1));
+      }
+      break;
+    }
+    case 'decmul': {
+      const r=Math.random();
+      if(r<0.5){
+        const x=+(rnd(1,9)/10).toFixed(1), y=rnd(2,9);
+        q=`${x} × ${y}`; a=String(+(x*y).toFixed(1));
+      } else {
+        const y=rnd(2,9), x=+(y*rnd(1,9)/10).toFixed(1);
+        q=`${x} ÷ ${y}`; a=String(+(x/y).toFixed(1));
+      }
+      break;
+    }
+
+    // Задачи словесные
+    case 'tasknat': {
+      const tp=rnd(1,4);
+      if(tp===1){const c=rnd(10,50),n=rnd(2,8);q=`Цена товара ${c} р., купили ${n} шт. Стоимость?`;a=String(c*n);}
+      else if(tp===2){const v=rnd(30,80),t=rnd(2,6);q=`Скорость ${v} км/ч, ехали ${t} ч. Путь?`;a=String(v*t);}
+      else if(tp===3){const all=rnd(20,60),part=rnd(5,all-5);q=`Всего ${all} кг, израсходовали ${part} кг. Осталось?`;a=String(all-part);}
+      else{const n=rnd(4,10),k=rnd(2,n-1);q=`Разделили ${n*k} на ${n} равных частей. Одна часть?`;a=String(k);}
+      break;
+    }
+    case 'taskfr': {
+      const tp=rnd(1,3);
+      if(tp===1){const den=rnd(2,6),num=1,all=rnd(10,60);const part=Math.round(all*num/den);if(all%den!==0){q=`1/${den} числа ${den*Math.round(all/den)}`; a=String(Math.round(all/den));}else{q=`1/${den} числа ${all}`;a=String(all/den);}}
+      else if(tp===2){const den=rnd(2,8),n=rnd(2,5);const total=den*n;q=`В коробке ${total} конфет. Съели 1/${den}. Сколько съели?`;a=String(n);}
+      else{const den=rnd(3,8),k=rnd(1,den-1);const total=den*rnd(3,8);q=`Из ${total} задач решили ${k}/${den}. Сколько задач?`;a=String(total*k/den);}
+      break;
+    }
+    case 'geo_t': {
+      const tp=rnd(1,4);
+      if(tp===1){const w=rnd(3,20),h=rnd(3,15);q=`Периметр прямоугольника ${w}×${h} см?`;a=String(2*(w+h));}
+      else if(tp===2){const w=rnd(3,20),h=rnd(3,15);q=`Площадь прямоугольника ${w}×${h} см?`;a=String(w*h);}
+      else if(tp===3){const a2=rnd(2,10);q=`Объём куба со стороной ${a2} см?`;a=String(a2*a2*a2);}
+      else{const w=rnd(2,10),h=rnd(2,10),d=rnd(2,8);q=`Объём параллелепипеда ${w}×${h}×${d} см?`;a=String(w*h*d);}
+      break;
+    }
+
     default: { const x=rnd(1,100),y=rnd(1,100); q=`${x} + ${y}`; a=String(x+y); }
   }
   return {q, a};
 }
+
+function gcd(a,b){ return b===0?a:gcd(b,a%b); }
 
 function renderTrainerTask() {
   const task = trTasks[trIdx];
