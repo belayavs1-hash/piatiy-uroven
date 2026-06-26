@@ -1068,8 +1068,12 @@ body {
 .trainer-card-highlight {
   background: linear-gradient(135deg, #fef3c7, #fde68a) !important;
   border: 2.5px solid #f59e0b !important;
-  box-shadow: 0 0 20px rgba(245,158,11,.4) !important;
-  transform: scale(1.04);
+  box-shadow: 0 0 0 4px rgba(245,158,11,.3) !important;
+  animation: trainerPulse 1.2s ease-in-out 3;
+}
+@keyframes trainerPulse {
+  0%,100% { box-shadow: 0 0 0 4px rgba(245,158,11,.3); transform: scale(1.04); }
+  50%      { box-shadow: 0 0 0 10px rgba(245,158,11,.0); transform: scale(1.06); }
 }
 .trainer-card-highlight .tr-name { color: #92400e !important; }
 .trainer-card-highlight .tr-count { color: #b45309 !important; }
@@ -1237,6 +1241,98 @@ body {
 .builder-status { text-align:center; font-size:14px; font-weight:700; min-height:20px; padding:5px 0; }
 .builder-status.ok  { color:#4ade80; }
 .builder-status.err { color:#f87171; }
+
+/* ===== ТРЕНАЖЁР ПИРАТ ===== */
+.pirate-wrap { max-width:500px; margin:0 auto; padding:16px; }
+.pirate-scene {
+  position:relative; height:200px; border-radius:16px; overflow:hidden; margin-bottom:14px;
+  background:linear-gradient(180deg,#0c1a3a 0%,#1a3a6b 55%,#1a2a1a 100%);
+}
+/* Звёзды */
+.pirate-scene::before {
+  content:''; position:absolute; inset:0; pointer-events:none;
+  background:
+    radial-gradient(1.5px 1.5px at 15% 18%,rgba(255,255,255,.7) 0%,transparent 100%),
+    radial-gradient(1px 1px at 35% 12%,rgba(255,255,255,.5) 0%,transparent 100%),
+    radial-gradient(2px 2px at 60% 22%,rgba(255,255,255,.6) 0%,transparent 100%),
+    radial-gradient(1px 1px at 78% 8%,rgba(255,255,255,.5) 0%,transparent 100%),
+    radial-gradient(1.5px 1.5px at 88% 20%,rgba(255,255,255,.7) 0%,transparent 100%),
+    radial-gradient(1px 1px at 50% 5%,rgba(255,255,255,.4) 0%,transparent 100%);
+}
+/* Пират */
+.pirate-hero {
+  position:absolute; left:16px; bottom:36px; font-size:52px; line-height:1;
+  filter:drop-shadow(2px 2px 4px rgba(0,0,0,.6));
+  transition:transform .3s;
+}
+.pirate-hero.happy { animation:pirateHappy .5s ease; }
+.pirate-hero.sad   { animation:pirateSad .5s ease; }
+@keyframes pirateHappy { 0%,100%{transform:translateY(0)} 40%{transform:translateY(-18px) rotate(-10deg)} }
+@keyframes pirateSad   { 0%,100%{transform:translateY(0) rotate(0deg)} 30%{transform:rotate(-20deg)} 60%{transform:rotate(15deg)} }
+/* Сундук */
+.pirate-chest {
+  position:absolute; right:16px; bottom:30px; width:74px; height:60px;
+}
+/* Монеты в сундуке */
+.pirate-coins-stack {
+  position:absolute; bottom:0; left:4px; right:4px;
+  display:flex; flex-wrap:wrap; gap:2px; align-items:flex-end; justify-content:center;
+  padding-bottom:4px; max-height:50px; overflow:hidden;
+}
+.pirate-coin-in {
+  width:12px; height:12px; border-radius:50%;
+  background:radial-gradient(circle at 35% 35%,#fde68a,#d97706);
+  border:1px solid #92400e; flex-shrink:0;
+}
+/* Летящая монета */
+.pirate-coin-fly {
+  position:absolute; width:18px; height:18px; border-radius:50%;
+  background:radial-gradient(circle at 35% 35%,#fde68a,#f59e0b);
+  border:2px solid #d97706;
+  box-shadow:0 0 6px rgba(251,191,36,.8);
+  font-size:10px; display:flex; align-items:center; justify-content:center;
+  color:#92400e; font-weight:900; pointer-events:none; z-index:20;
+}
+.pirate-coin-fly.fly { animation:coinFly .7s cubic-bezier(.4,0,.2,1) forwards; }
+@keyframes coinFly {
+  0%   { left:60px; bottom:60px; opacity:1; transform:scale(1) rotate(0deg); }
+  60%  { opacity:1; transform:scale(1.2) rotate(180deg); }
+  100% { left:calc(100% - 80px); bottom:50px; opacity:0; transform:scale(.4) rotate(360deg); }
+}
+/* Череп над сундуком при ошибке */
+.pirate-skull {
+  position:absolute; right:16px; bottom:95px; font-size:28px;
+  opacity:0; pointer-events:none;
+}
+.pirate-skull.show { animation:skullPop .8s ease forwards; }
+@keyframes skullPop { 0%{opacity:0;transform:translateY(10px) scale(.5)} 30%{opacity:1;transform:translateY(-8px) scale(1.2)} 70%{opacity:1;transform:translateY(-12px) scale(1)} 100%{opacity:0;transform:translateY(-20px)} }
+/* Вопрос */
+.pirate-q-label { font-size:11px;font-weight:700;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px; }
+.pirate-q-text  { font-size:21px;font-weight:900;color:#fff;margin-bottom:14px;min-height:50px;line-height:1.4; }
+/* Прогресс монет */
+.pirate-progress { display:flex; gap:5px; justify-content:center; margin-bottom:12px; }
+.pirate-prog-coin { width:16px;height:16px;border-radius:50%;background:rgba(255,255,255,.15);transition:background .3s; }
+.pirate-prog-coin.got  { background:radial-gradient(circle at 35% 35%,#fde68a,#d97706); }
+.pirate-prog-coin.miss { background:#ef4444; }
+/* Ввод */
+.pirate-inp {
+  width:100%;padding:13px 16px;border-radius:14px;border:2px solid rgba(255,255,255,.2);
+  background:rgba(255,255,255,.08);color:#fff;font-family:inherit;
+  font-size:22px;font-weight:900;text-align:center;outline:none;box-sizing:border-box;
+  transition:border-color .2s; margin-bottom:10px;
+}
+.pirate-inp:focus { border-color:#818cf8; }
+.pirate-inp.ok  { border-color:#22c55e !important; background:rgba(34,197,94,.12) !important; }
+.pirate-inp.err { border-color:#ef4444 !important; background:rgba(239,68,68,.12) !important; }
+.pirate-check-btn {
+  width:100%;padding:14px;border-radius:14px;border:none;
+  background:linear-gradient(135deg,#d97706,#f59e0b);color:#fff;
+  font-family:inherit;font-size:16px;font-weight:900;cursor:pointer;
+}
+.pirate-check-btn:disabled { opacity:.4;cursor:default; }
+.pirate-status { text-align:center;font-size:14px;font-weight:700;min-height:20px;padding:5px 0; }
+.pirate-status.ok  { color:#4ade80; }
+.pirate-status.err { color:#f87171; }
 
 /* ===== ТРЕНАЖЁР СТРЕЛОК ===== */
 .archer-wrap { max-width:500px; margin:0 auto; padding:16px; }
@@ -4281,7 +4377,8 @@ const TRAINERS_DEF = [
   {id:"tasknat",icon:"📝", name:"Задачи: числа",        desc:"Цена, время, части"},
   {id:"taskfr", icon:"📊", name:"Задачи: дроби",        desc:"Часть от числа"},
   {id:"geo_t",  icon:"📐", name:"Геом. задачи",          desc:"Периметр, площадь, объём"},
-  {id:"archer", icon:"🎯", name:"Стрелок",               desc:"Попади в десятку!"}
+  {id:"archer", icon:"🎯", name:"Стрелок",               desc:"Попади в десятку!"},
+  {id:"pirate", icon:"🏴‍☠️", name:"Пират",                desc:"Собери клад в сундук!"}
 ];
 
 const ACHIEVEMENTS = [
@@ -5345,13 +5442,15 @@ function showTrainerList(highlightId) {
   document.getElementById('tr-done-view').style.display = 'none';
   document.getElementById('tr-title').textContent = '⚡ Тренажёры';
   document.getElementById('tr-back-btn').onclick = () => showScreen('screen-home');
-  renderTrainers(highlightId || currentTopicTrainerId);
-  if (highlightId || currentTopicTrainerId) {
-    // Прокрутить к нужному тренажёру
-    setTimeout(function() {
-      var cards = document.querySelectorAll('.trainer-card-highlight');
-      if (cards.length) cards[0].scrollIntoView({behavior:'smooth', block:'center'});
-    }, 100);
+  var hid = highlightId || currentTopicTrainerId;
+  renderTrainers(hid);
+  if (hid) {
+    requestAnimationFrame(function() {
+      requestAnimationFrame(function() {
+        var card = document.querySelector('.trainer-card-highlight');
+        if (card) card.scrollIntoView({behavior:'smooth', block:'center'});
+      });
+    });
   }
 }
 
@@ -5379,6 +5478,8 @@ function startTrainer(id) {
     archerInit();
   } else if (id === 'geo_t') {
     builderInit();
+  } else if (id === 'pirate') {
+    pirateInit();
   } else {
     tgInit();
   }
@@ -5545,8 +5646,9 @@ function genOne(type) {
       break;
     }
 
+    case 'pirate':
     case 'archer': {
-      // Смешанные задачи из разных тем — стрелок решает всё
+      // Смешанные задачи из разных тем
       const tp = rnd(1,5);
       if(tp===1){ const x=rnd(10,99),y=rnd(10,99); q=`${x} + ${y} = ?`; a=String(x+y); }
       else if(tp===2){ const x=rnd(20,99),y=rnd(10,x); q=`${x} − ${y} = ?`; a=String(x-y); }
@@ -6347,6 +6449,196 @@ function builderAdvance() {
     endTrainer();
   } else {
     builderRender();
+  }
+}
+
+// ===== ТРЕНАЖЁР ПИРАТ =====
+var pirateAnswered = false;
+var pirateAttempt  = 0;
+
+function pirateGetContainer() {
+  let el = document.getElementById('pirate-container');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'pirate-container';
+    document.getElementById('tr-session-view').appendChild(el);
+  }
+  return el;
+}
+
+function pirateInit() {
+  pirateAnswered = false;
+  pirateAttempt  = 0;
+  const wrap = document.querySelector('#tr-session-view .tg-wrap');
+  if (wrap) wrap.style.display = 'none';
+  const el = pirateGetContainer();
+  el.style.display = 'block';
+  pirateRender();
+}
+
+// SVG сундука: закрытый / открытый
+function pirateCHEST(open, coins) {
+  const coinRows = [];
+  for (let i = 0; i < coins; i++) {
+    const x = 8 + (i % 4) * 14;
+    const y = 42 - Math.floor(i / 4) * 12;
+    coinRows.push(`<circle cx="${x}" cy="${y}" r="5" fill="#fde68a" stroke="#d97706" stroke-width="1"/>`);
+  }
+  return `<svg viewBox="0 0 74 60" xmlns="http://www.w3.org/2000/svg" width="74" height="60">
+    <!-- дно сундука -->
+    <rect x="2" y="30" width="70" height="28" rx="5" fill="#92400e"/>
+    <rect x="6" y="34" width="62" height="20" rx="3" fill="#7f1d1d"/>
+    <!-- монеты внутри -->
+    ${open ? coinRows.join('') : ''}
+    <!-- полоса -->
+    <rect x="2" y="27" width="70" height="6" rx="2" fill="#d97706"/>
+    <!-- крышка -->
+    <rect x="2" y="${open ? 2 : 10}" width="70" height="22" rx="5"
+      fill="#b45309" transform="${open ? 'rotate(-35,37,30)' : ''}"/>
+    <rect x="6" y="${open ? 5 : 13}" width="62" height="16" rx="3"
+      fill="#92400e" transform="${open ? 'rotate(-35,37,30)' : ''}"/>
+    <!-- замок -->
+    ${!open ? '<rect x="29" y="24" width="16" height="12" rx="3" fill="#d97706"/><circle cx="37" cy="28" r="3" fill="#92400e"/>' : '<text x="20" y="52" font-size="22">✨</text>'}
+  </svg>`;
+}
+
+function pirateRender() {
+  pirateAnswered = false;
+  pirateAttempt  = 0;
+  const task = trTasks[trIdx];
+  const mode = (tgTrainerCount % 2 === 0) ? 'input' : 'choices';
+  const el = pirateGetContainer();
+
+  const coinsGot = trTasks.filter((t, i) => i < trIdx && t._result === 'ok').length;
+  const isLast   = trIdx === trTasks.length - 1;
+
+  // Прогресс монет
+  const progHtml = trTasks.map((t, i) => {
+    const cls = i < trIdx ? (t._result === 'ok' ? 'got' : 'miss') : '';
+    return `<div class="pirate-prog-coin ${cls}"></div>`;
+  }).join('');
+
+  // Варианты
+  let inputHtml = '';
+  if (mode === 'choices') {
+    const w = genWrongNums(task.a, 3);
+    const opts = w ? arrShuffle([task.a, ...w]) : [task.a];
+    inputHtml = `<div class="tg-choices">` +
+      opts.map(o => `<button class="tg-choice" onclick="pirateChoose(this,'${o.replace(/'/g,"\\'")}')">${o}</button>`).join('') +
+      `</div>`;
+  } else {
+    inputHtml = `<input type="text" class="pirate-inp" id="pirate-inp" placeholder="Ответ..." autocomplete="off" onkeydown="if(event.key==='Enter')pirateCheck()">
+      <button class="pirate-check-btn" id="pirate-check-btn" onclick="pirateCheck()">⚓ Проверить!</button>`;
+  }
+
+  el.innerHTML = `
+    <div class="pirate-wrap">
+      <div class="pirate-q-label">Задание ${trIdx+1} из ${trTasks.length}</div>
+      <div class="pirate-q-text">${task.q}</div>
+      <div class="pirate-scene" id="pirate-scene">
+        <div class="pirate-hero" id="pirate-hero">🏴‍☠️</div>
+        <div class="pirate-chest" id="pirate-chest">${pirateCHEST(false, coinsGot)}</div>
+        <div class="pirate-skull" id="pirate-skull">💀</div>
+      </div>
+      <div class="pirate-progress">${progHtml}</div>
+      ${inputHtml}
+      <div class="pirate-status" id="pirate-status"></div>
+    </div>`;
+
+  if (mode === 'input') setTimeout(() => { const i = document.getElementById('pirate-inp'); if(i) i.focus(); }, 80);
+}
+
+function pirateChoose(btn, val) {
+  if (pirateAnswered) return;
+  pirateAnswered = true;
+  document.getElementById('pirate-container').querySelectorAll('.tg-choice').forEach(b => b.disabled = true);
+  const task = trTasks[trIdx];
+  const correct = val.replace(/\s/g,'').toLowerCase() === task.a.replace(/\s/g,'').toLowerCase();
+  if (correct) btn.classList.add('ok'); else btn.classList.add('err');
+  pirateResolve(correct, task.a);
+}
+
+function pirateCheck() {
+  if (pirateAnswered) return;
+  const inp = document.getElementById('pirate-inp');
+  if (!inp || !inp.value.trim()) return;
+  pirateAnswered = true;
+  inp.disabled = true;
+  const btn = document.getElementById('pirate-check-btn');
+  if (btn) btn.disabled = true;
+  const task = trTasks[trIdx];
+  const correct = inp.value.trim().replace(/\s/g,'').toLowerCase() === task.a.replace(/\s/g,'').toLowerCase();
+  inp.classList.add(correct ? 'ok' : 'err');
+  pirateResolve(correct, task.a);
+}
+
+function pirateResolve(correct, rightAnswer) {
+  const task = trTasks[trIdx];
+  const statusEl = document.getElementById('pirate-status');
+  const hero = document.getElementById('pirate-hero');
+  const scene = document.getElementById('pirate-scene');
+
+  if (correct) {
+    task._result = 'ok';
+    trCorrect++;
+    addXP(10);
+    // Анимация монеты
+    const coin = document.createElement('div');
+    coin.className = 'pirate-coin-fly fly';
+    coin.textContent = '🪙';
+    scene.appendChild(coin);
+    setTimeout(() => { if (coin.parentNode) coin.parentNode.removeChild(coin); }, 750);
+    // Пират прыгает
+    hero.classList.remove('happy','sad');
+    void hero.offsetWidth;
+    hero.classList.add('happy');
+    if (statusEl) { statusEl.textContent = '🪙 Монета в сундук! +10 XP'; statusEl.className = 'pirate-status ok'; }
+    setTimeout(pirateAdvance, 1000);
+  } else {
+    if (pirateAttempt === 0) {
+      pirateAttempt = 1;
+      hero.classList.remove('happy','sad');
+      void hero.offsetWidth;
+      hero.classList.add('sad');
+      const skull = document.getElementById('pirate-skull');
+      if (skull) { skull.classList.add('show'); setTimeout(() => skull.classList.remove('show'), 900); }
+      if (statusEl) { statusEl.textContent = '😬 Упс! Ещё одна попытка'; statusEl.className = 'pirate-status err'; }
+      setTimeout(() => {
+        pirateAnswered = false;
+        const inp = document.getElementById('pirate-inp');
+        if (inp) { inp.value = ''; inp.disabled = false; inp.className = 'pirate-inp'; inp.focus(); }
+        const btn = document.getElementById('pirate-check-btn');
+        if (btn) btn.disabled = false;
+        document.getElementById('pirate-container').querySelectorAll('.tg-choice').forEach(b => { b.disabled = false; b.className = 'tg-choice'; });
+        if (statusEl) { statusEl.textContent = ''; statusEl.className = 'pirate-status'; }
+      }, 950);
+    } else {
+      task._result = 'err';
+      addMistake(currentTrainer.name, 'trainer_wrong');
+      hero.classList.add('sad');
+      if (statusEl) { statusEl.textContent = '❌ Правильно: ' + rightAnswer; statusEl.className = 'pirate-status err'; }
+      setTimeout(pirateAdvance, 1200);
+    }
+  }
+}
+
+function pirateAdvance() {
+  trIdx++;
+  if (trIdx >= trTasks.length) {
+    // Финал — открыть сундук
+    const coinsGot = trTasks.filter(t => t._result === 'ok').length;
+    const chest = document.getElementById('pirate-chest');
+    if (chest) chest.innerHTML = pirateCHEST(true, coinsGot);
+    const hero = document.getElementById('pirate-hero');
+    if (hero) { hero.textContent = '🏴‍☠️'; hero.classList.add('happy'); }
+    setTimeout(() => {
+      document.getElementById('pirate-container').style.display = 'none';
+      const wrap = document.querySelector('#tr-session-view .tg-wrap');
+      if (wrap) wrap.style.display = '';
+      endTrainer();
+    }, 1500);
+  } else {
+    pirateRender();
   }
 }
 
