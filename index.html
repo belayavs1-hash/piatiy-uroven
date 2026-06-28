@@ -169,27 +169,52 @@ body {
   box-shadow:inset 0 8px 0 rgba(255,255,255,.08);
   z-index:3;
 }
-/* Боковые столбики-кирпичи через отдельные элементы */
+/* Боковые кирпичные стены */
 .login-pillar-left,.login-pillar-right{
   position:fixed;bottom:64px;z-index:2;
-  width:80px;
-  display:flex;flex-direction:column;align-items:stretch;
+  width:96px;
+  display:flex;flex-direction:column-reverse;
+  align-items:stretch;
+  height:calc(100vh - 64px);
 }
-.login-pillar-left{left:24px;}
-.login-pillar-right{right:24px;}
+.login-pillar-left{left:0;}
+.login-pillar-right{right:0;}
 .pillar-block{
-  height:40px;
-  border:2px solid rgba(0,0,0,.18);
-  box-sizing:border-box;
+  height:48px;flex-shrink:0;
   position:relative;
+  box-sizing:border-box;
+  border-top:3px solid rgba(255,255,255,.12);
+  border-bottom:3px solid rgba(0,0,0,.25);
 }
-/* чередуем цвета кирпичей */
-.pillar-block:nth-child(odd){background:linear-gradient(135deg,#e8954a,#c2681c)}
-.pillar-block:nth-child(even){background:linear-gradient(135deg,#d4802a,#a85010)}
-/* блик на каждом кирпиче */
-.pillar-block::after{content:'';position:absolute;inset:2px 2px auto 2px;height:6px;background:rgba(255,255,255,.18);border-radius:2px}
-/* верхний кирпич зелёный (трава) */
-.pillar-block.top{background:linear-gradient(180deg,#4de07a 0 10px,#2daa52 10px 100%);border-top:2px solid #7af59a}
+/* Кирпичная текстура — чередуем через nth-child */
+.pillar-block:nth-child(odd){
+  background:linear-gradient(135deg,#c8762a 0%,#a85820 60%,#8a4318 100%);
+}
+.pillar-block:nth-child(even){
+  background:linear-gradient(135deg,#b86820,#945014 60%,#7a3c10 100%);
+}
+/* Горизонтальные линии-швы внутри блока */
+.pillar-block::before{
+  content:'';position:absolute;
+  left:0;right:0;top:50%;
+  height:2px;background:rgba(0,0,0,.2);
+}
+/* Вертикальный шов — смещён в шахматном порядке */
+.pillar-block:nth-child(odd)::after{
+  content:'';position:absolute;
+  left:48px;top:0;bottom:0;
+  width:2px;background:rgba(0,0,0,.2);
+}
+.pillar-block:nth-child(even)::after{
+  content:'';position:absolute;
+  left:24px;top:0;bottom:0;
+  width:2px;background:rgba(0,0,0,.2);
+}
+/* Верхний блок — зелёная трава */
+.pillar-block.top{
+  background:linear-gradient(180deg,#5de07a 0 12px,#3ab55a 12px 22px,#c8762a 22px 100%);
+  border-top:3px solid #8fffaa;
+}
 
 /* ─── ГЛАВНАЯ КАРТОЧКА ─── */
 .login-wrap{
@@ -287,30 +312,40 @@ body {
   z-index:2;
 }
 
-/* Фото */
+/* Карточка роли — фото на весь блок, плашка поверх */
 .role-photo{
-  width:100%;height:270px;
-  overflow:hidden;background:#dbeafe;
+  width:100%;
+  height:420px;
+  overflow:hidden;
+  background:#dbeafe;
+  position:relative;
+  display:block;
 }
-.role-photo img{width:100%;height:100%;object-fit:cover;object-position:center top;display:block}
-
-/* Нижняя подпись */
+.role-photo img{
+  width:100%;height:100%;
+  object-fit:cover;object-position:center top;
+  display:block;
+}
+/* Белая плашка поверх фото снизу */
 .role-info{
-  height:142px;
+  position:absolute;
+  bottom:0;left:0;right:0;
   display:grid;grid-template-columns:72px 1fr;
-  align-items:center;gap:18px;
-  padding:26px 28px;
+  align-items:center;gap:16px;
+  padding:20px 24px 24px;
   background:#fff;
+  border-radius:0 0 24px 24px;
+  box-shadow:0 -4px 20px rgba(0,0,0,.08);
 }
 .role-icon-row{display:contents}
 .role-icon-circle{
-  width:66px;height:66px;flex-shrink:0;
+  width:62px;height:62px;flex-shrink:0;
   border-radius:50%;
   display:flex;align-items:center;justify-content:center;
-  font-size:34px;
+  font-size:32px;
 }
-.role-label-name{font-size:28px;font-weight:900;color:#071b52;line-height:1.2;margin-bottom:6px}
-.role-hint{font-size:20px;font-weight:400;color:#6c789c;line-height:1.25;margin:0}
+.role-label-name{font-size:26px;font-weight:900;color:#071b52;line-height:1.2;margin-bottom:4px}
+.role-hint{font-size:18px;font-weight:400;color:#6c789c;line-height:1.25;margin:0}
 .role-btn.selected .role-label-name{color:#071b52}
 
 /* ─── ВЫБОР СПОСОБА ВВОДА ─── */
@@ -1845,15 +1880,48 @@ body {
   </div>
   <div class="home-ambient" id="home-ambient"></div>
 
-  <!-- Боковые столбики-кирпичи -->
+  <!-- Боковые кирпичные стены -->
   <div class="login-pillar-left">
     <div class="pillar-block top"></div>
+    <div class="pillar-block"></div>
+    <div class="pillar-block"></div>
+    <div class="pillar-block"></div>
+    <div class="pillar-block"></div>
+    <div class="pillar-block"></div>
+    <div class="pillar-block"></div>
+    <div class="pillar-block"></div>
+    <div class="pillar-block"></div>
+    <div class="pillar-block"></div>
+    <div class="pillar-block"></div>
+    <div class="pillar-block"></div>
+    <div class="pillar-block"></div>
+    <div class="pillar-block"></div>
+    <div class="pillar-block"></div>
+    <div class="pillar-block"></div>
+    <div class="pillar-block"></div>
     <div class="pillar-block"></div>
     <div class="pillar-block"></div>
     <div class="pillar-block"></div>
   </div>
   <div class="login-pillar-right">
     <div class="pillar-block top"></div>
+    <div class="pillar-block"></div>
+    <div class="pillar-block"></div>
+    <div class="pillar-block"></div>
+    <div class="pillar-block"></div>
+    <div class="pillar-block"></div>
+    <div class="pillar-block"></div>
+    <div class="pillar-block"></div>
+    <div class="pillar-block"></div>
+    <div class="pillar-block"></div>
+    <div class="pillar-block"></div>
+    <div class="pillar-block"></div>
+    <div class="pillar-block"></div>
+    <div class="pillar-block"></div>
+    <div class="pillar-block"></div>
+    <div class="pillar-block"></div>
+    <div class="pillar-block"></div>
+    <div class="pillar-block"></div>
     <div class="pillar-block"></div>
     <div class="pillar-block"></div>
   </div>
@@ -1884,12 +1952,12 @@ body {
         <button class="role-btn selected" data-role="student" onclick="selectRole(this)">
           <div class="role-photo">
             <img src="student.png" alt="Ученик">
-          </div>
-          <div class="role-info">
-            <div class="role-icon-circle" style="background:#edf4ff">🎓</div>
-            <div>
-              <div class="role-label-name">Ученик</div>
-              <p class="role-hint">Учусь сам</p>
+            <div class="role-info">
+              <div class="role-icon-circle" style="background:#edf4ff">🎓</div>
+              <div>
+                <div class="role-label-name">Ученик</div>
+                <p class="role-hint">Учусь сам</p>
+              </div>
             </div>
           </div>
         </button>
@@ -1897,12 +1965,12 @@ body {
         <button class="role-btn" data-role="parent" onclick="selectRole(this)">
           <div class="role-photo">
             <img src="parent.png" alt="Родитель">
-          </div>
-          <div class="role-info">
-            <div class="role-icon-circle" style="background:#fff1d9">👥</div>
-            <div>
-              <div class="role-label-name">Родитель</div>
-              <p class="role-hint">Помогаю и слежу за успехами</p>
+            <div class="role-info">
+              <div class="role-icon-circle" style="background:#fff1d9">👥</div>
+              <div>
+                <div class="role-label-name">Родитель</div>
+                <p class="role-hint">Помогаю и слежу за успехами</p>
+              </div>
             </div>
           </div>
         </button>
