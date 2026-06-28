@@ -210,14 +210,15 @@ body {
 }
 @keyframes cardReveal{from{opacity:0;transform:translateY(40px) scale(.95)}to{opacity:1;transform:none}}
 
-/* Шапка — фоновая картинка, обрезана по скруглению */
+/* Шапка — фоновая картинка, край в край */
 .login-card-header{
   width:100%;
-  height:220px;
+  height:200px;
   background:url('header.png') center/cover no-repeat;
   border-radius:38px 38px 0 0;
   overflow:hidden;
   flex-shrink:0;
+  margin:0;
 }
 .login-header-img{display:none}
 
@@ -260,50 +261,49 @@ body {
 @keyframes micPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
 
 /* ─── КАРТОЧКИ РОЛИ ─── */
-.role-row{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px}
+.role-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px}
 .role-btn{
-  border:0;padding:0;background:transparent;
+  border:1.5px solid #d9e4ff;padding:0;background:#fff;
   cursor:pointer;
   border-radius:24px;
-  transition:transform .18s ease,filter .18s ease;
-  position:relative;overflow:visible;
+  overflow:hidden;
+  transition:transform .18s ease,box-shadow .18s ease,border-color .18s;
+  position:relative;
   font-family:inherit;
+  box-shadow:0 4px 16px rgba(19,46,141,.10);
 }
-.role-btn:hover{transform:translateY(-3px);filter:saturate(1.04)}
+.role-btn:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(19,46,141,.18);border-color:#a5b4fc}
+.role-btn.selected{
+  border-color:rgba(76,121,255,.5);
+  box-shadow:0 0 0 4px rgba(76,121,255,.12),0 8px 24px rgba(19,46,141,.15);
+}
 .role-btn.selected::after{
   content:"✓";
   position:absolute;top:10px;right:10px;
-  width:32px;height:32px;border-radius:50%;
+  width:30px;height:30px;border-radius:50%;
   display:grid;place-items:center;
   background:linear-gradient(135deg,#35c981,#2bb46f);
-  color:#fff;font-weight:900;font-size:15px;
-  box-shadow:0 6px 16px rgba(53,201,129,.35);
+  color:#fff;font-weight:900;font-size:14px;
+  box-shadow:0 4px 12px rgba(53,201,129,.4);
+  z-index:2;
 }
 
-/* Фото — сама карточка */
+/* Фото */
 .role-photo{
-  width:100%;
-  overflow:hidden;
-  border-radius:24px;
-  box-shadow:0 16px 40px rgba(19,46,141,.18);
-  background:#f3f4f6;
+  width:100%;height:160px;
+  overflow:hidden;background:#f3f4f6;
 }
-.role-photo img{width:100%;display:block;border-radius:24px}
-.role-btn.selected .role-photo img{
-  outline:4px solid rgba(76,121,255,.35);
-  box-shadow:0 0 0 8px rgba(76,121,255,.10);
-  border-radius:24px;
-}
+.role-photo img{width:100%;height:100%;object-fit:cover;object-position:center top;display:block}
 
-/* Нижняя подпись под фото */
-.role-info{padding:10px 4px 0;text-align:left}
+/* Нижняя подпись — внутри карточки */
+.role-info{padding:12px 14px 14px;text-align:left;background:#fff}
 .role-icon-row{display:flex;align-items:center;gap:10px}
 .role-icon-circle{
   width:36px;height:36px;flex-shrink:0;
   border-radius:10px;
   display:flex;align-items:center;justify-content:center;
 }
-.role-label-name{font-size:16px;font-weight:800;color:#10205c;line-height:1.2}
+.role-label-name{font-size:15px;font-weight:800;color:#10205c;line-height:1.2}
 .role-hint{font-size:12px;font-weight:500;color:#7f8cb4;line-height:1.4;margin-top:2px}
 .role-btn.selected .role-label-name{color:#3d69ff}
 
