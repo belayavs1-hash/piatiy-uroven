@@ -200,179 +200,123 @@ body {
 /* ─── ГЛАВНАЯ КАРТОЧКА ─── */
 .login-wrap{
   width:100%;max-width:420px;
-  background:rgba(10,25,100,0.45);
-  backdrop-filter:blur(22px);
-  -webkit-backdrop-filter:blur(22px);
+  background:#fff;
   border-radius:28px;
-  border:1.5px solid rgba(255,255,255,0.18);
+  border:none;
   overflow:hidden;
   position:relative;z-index:10;
-  box-shadow:0 32px 80px rgba(0,0,0,.55),0 0 0 1px rgba(255,255,255,0.08);
+  box-shadow:0 32px 80px rgba(0,0,0,.45);
   animation:cardReveal .6s cubic-bezier(.34,1.56,.64,1) both;
 }
 @keyframes cardReveal{from{opacity:0;transform:translateY(40px) scale(.95)}to{opacity:1;transform:none}}
 
-/* Шапка карточки */
+/* Шапка — картинка */
 .login-card-header{
-  background:linear-gradient(160deg,#1e3a8a 0%,#3730a3 45%,#6d28d9 100%);
-  padding:26px 24px 20px;
-  text-align:center;
-  position:relative;
-  overflow:visible;
-}
-.login-card-header::before{
-  content:'';position:absolute;inset:0;
-  background:radial-gradient(ellipse at 50% 0%,rgba(255,255,255,.15) 0%,transparent 65%);
-  border-radius:28px 28px 0 0;
-}
-
-/* ── СИНИЙ 3D-КУБИК ── */
-.login-badge{
-  display:flex;align-items:center;justify-content:center;gap:12px;
   width:100%;
-  background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);
-  border-radius:24px;padding:12px 20px 12px 14px;margin-bottom:12px;
-  backdrop-filter:blur(8px);
-  position:relative;z-index:1;
-  box-sizing:border-box;
+  overflow:hidden;
+  line-height:0;
 }
-
-/* Кубик-обёртка */
-.login-cube{
-  width:76px;height:84px;
-  position:relative;
-  flex-shrink:0;
+.login-header-img{
+  width:100%;
+  display:block;
+  max-height:180px;
+  object-fit:cover;
+  object-position:center top;
 }
-.login-cube svg { display:block; filter: drop-shadow(0 4px 12px rgba(29,63,191,.7)); animation:bob 3s ease-in-out infinite; }
-@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
-/* Звёздочки над кубиком */
-.cube-stars{
-  position:absolute;
-  top:-16px;left:50%;transform:translateX(-50%);
-  font-size:13px;color:#facc15;
-  white-space:nowrap;
-  text-shadow:0 0 8px rgba(250,204,21,.9);
-  animation:starsBlink 1.8s ease-in-out infinite;
-  pointer-events:none;
-}
-@keyframes starsBlink{0%,100%{opacity:1;transform:translateX(-50%) scale(1)}50%{opacity:.4;transform:translateX(-50%) scale(.8)}}
-
-.login-badge-text{font-size:18px;font-weight:900;color:#fff;letter-spacing:1px}
-.login-title{font-size:13px;font-weight:700;color:rgba(255,255,255,.75);line-height:1.5;margin-top:2px}
 
 /* Тело карточки */
-.login-body{padding:24px 28px 28px}
+.login-body{padding:22px 24px 26px;background:#fff}
 .login-label{
-  font-size:13px;font-weight:800;color:rgba(255,255,255,.75);
+  font-size:12px;font-weight:800;color:#6b7280;
   text-transform:uppercase;letter-spacing:.7px;
-  display:block;text-align:left;margin-bottom:10px;
+  display:block;text-align:left;margin-bottom:8px;
 }
 
 /* Поле имени + микрофон */
-.login-name-row{display:flex;gap:8px;margin-bottom:20px;align-items:center}
+.login-name-row{display:flex;gap:8px;margin-bottom:18px;align-items:center}
 .login-input{
   flex:1;padding:13px 16px;
-  border-radius:14px;border:2px solid rgba(255,255,255,.25);
-  background:rgba(255,255,255,.15);color:#fff;
+  border-radius:14px;border:2px solid #e5e7eb;
+  background:#f9fafb;color:#111827;
   font-family:inherit;font-size:16px;font-weight:700;
   outline:none;transition:border-color .2s,background .2s,box-shadow .2s;
   min-width:0;
 }
-.login-input:focus{border-color:rgba(255,255,255,.6);background:rgba(255,255,255,.22);box-shadow:0 0 0 4px rgba(255,255,255,.1)}
-.login-input::placeholder{color:rgba(255,255,255,.45);font-weight:600}
-.login-input.listening{border-color:#ef4444;background:rgba(239,68,68,.2);animation:listenPulse 1s ease-in-out infinite}
+.login-input:focus{border-color:#6366f1;background:#fff;box-shadow:0 0 0 4px rgba(99,102,241,.1)}
+.login-input::placeholder{color:#9ca3af;font-weight:500}
+.login-input.listening{border-color:#ef4444;background:rgba(239,68,68,.06);animation:listenPulse 1s ease-in-out infinite}
 @keyframes listenPulse{0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,.35)}50%{box-shadow:0 0 0 10px rgba(239,68,68,0)}}
 
 .btn-mic{
   width:48px;height:48px;flex-shrink:0;
-  border-radius:14px;border:2px solid rgba(255,255,255,.25);
-  background:rgba(255,255,255,.15);color:rgba(255,255,255,.8);font-size:18px;
+  border-radius:14px;border:2px solid #e5e7eb;
+  background:#f3f4f6;color:#6b7280;font-size:18px;
   cursor:pointer;transition:all .2s;
   display:flex;align-items:center;justify-content:center;
 }
-.btn-mic:hover{background:rgba(239,68,68,.25);border-color:#f87171;color:#fca5a5;transform:scale(1.05)}
-.btn-mic.active{background:rgba(239,68,68,.35);border-color:#ef4444;color:#ef4444;animation:micPulse .8s ease-in-out infinite}
+.btn-mic:hover{background:rgba(239,68,68,.1);border-color:#fca5a5;color:#ef4444;transform:scale(1.05)}
+.btn-mic.active{background:rgba(239,68,68,.15);border-color:#ef4444;color:#ef4444;animation:micPulse .8s ease-in-out infinite}
 @keyframes micPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
 
-/* ─── КАРТОЧКИ РОЛИ — ЭКРАН ВЫБОРА ПЕРСОНАЖА ─── */
-.role-row{display:flex;gap:14px;margin-bottom:22px}
+/* ─── КАРТОЧКИ РОЛИ ─── */
+.role-row{display:flex;gap:12px;margin-bottom:18px}
 .role-btn{
   flex:1;
-  border-radius:22px;
-  border:2px solid rgba(255,255,255,.2);
-  background:rgba(255,255,255,.1);
-  backdrop-filter:blur(8px);
+  border-radius:18px;
+  border:2px solid #e5e7eb;
+  background:#fff;
   cursor:pointer;
   transition:transform .3s cubic-bezier(.34,1.56,.64,1),box-shadow .3s,border-color .2s;
   overflow:hidden;
   padding:0;
   position:relative;
   font-family:inherit;
-  box-shadow:0 4px 20px rgba(0,0,0,.25);
+  box-shadow:0 2px 8px rgba(0,0,0,.07);
 }
-.role-btn:hover{box-shadow:0 20px 48px rgba(0,0,0,.4);border-color:rgba(255,255,255,.4)}
-/* Обе выбранные — одинаковая яркая синяя рамка, без scale */
+.role-btn:hover{box-shadow:0 8px 24px rgba(0,0,0,.12);border-color:#c7d2fe;transform:translateY(-2px)}
 .role-btn.selected{
-  border-color:rgba(99,102,241,.8);
-  box-shadow:0 0 0 3px rgba(79,70,229,.35),0 8px 24px rgba(79,70,229,.4);
-  transform:none;
+  border-color:#6366f1;
+  box-shadow:0 0 0 3px rgba(99,102,241,.2),0 4px 16px rgba(99,102,241,.2);
 }
 
 /* Фото-зона */
 .role-photo{
   width:100%;
-  height:155px;
-  position:relative;
+  height:140px;
   overflow:hidden;
+  background:#f3f4f6;
 }
-.role-photo-bg{
-  width:100%;height:100%;
-  display:flex;align-items:center;justify-content:center;
-  font-size:70px;
-  position:relative;
-}
-/* Плашка поверх фото — одинакова для обоих */
-.role-photo-overlay{
-  position:absolute;bottom:0;left:0;right:0;
-  padding:10px 14px;
-  background:linear-gradient(0deg,rgba(0,0,0,.72) 0%,rgba(0,0,0,.2) 60%,transparent 100%);
-  display:flex;align-items:center;justify-content:space-between;
-}
-.role-photo-name{font-size:14px;font-weight:900;color:#fff;letter-spacing:.3px;text-shadow:0 1px 4px rgba(0,0,0,.4)}
-.role-check{
-  width:24px;height:24px;
-  border-radius:50%;border:2px solid rgba(255,255,255,.6);
-  background:transparent;
-  display:flex;align-items:center;justify-content:center;
-  font-size:12px;color:#fff;
-  transition:all .25s;
-  flex-shrink:0;
-}
-.role-btn.selected .role-check{background:#4f46e5;border-color:#4f46e5;box-shadow:0 0 8px rgba(79,70,229,.6)}
 
-/* Нижняя часть */
-.role-info{padding:13px 16px 16px;text-align:left}
-.role-label-name{font-size:15px;font-weight:900;color:#fff;margin-bottom:4px}
-.role-hint{font-size:12px;font-weight:600;color:rgba(255,255,255,.6);line-height:1.4}
-.role-btn.selected .role-label-name{color:#a5b4fc}
-.role-btn.selected .role-hint{color:#c7d2fe}
-
-/* Иконки «ученик» и «родитель» — рисуем SVG-аватарки через CSS */
-.avatar-student{background:linear-gradient(145deg,#dbeafe 0%,#bfdbfe 100%)}
-.avatar-parent{background:linear-gradient(145deg,#dcfce7 0%,#bbf7d0 100%)}
-.avatar-student .av-figure{position:relative;width:100%;height:100%;display:flex;align-items:flex-end;justify-content:center;gap:6px;padding-bottom:4px}
-.avatar-parent .av-figure{position:relative;width:100%;height:100%;display:flex;align-items:flex-end;justify-content:center;gap:4px;padding-bottom:4px}
-.av-kid{
-  display:flex;flex-direction:column;align-items:center;
-  animation:avBob ease-in-out infinite;
+/* Нижняя часть карточки */
+.role-info{padding:10px 12px 12px;text-align:left;background:#fff}
+.role-icon-row{display:flex;align-items:center;gap:10px}
+.role-icon-circle{
+  width:36px;height:36px;flex-shrink:0;
+  border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
 }
-.av-kid:nth-child(2){animation-delay:.3s}
-@keyframes avBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
-.av-head{border-radius:50%;border:3px solid rgba(255,255,255,.8);box-shadow:0 4px 12px rgba(0,0,0,.12)}
-.av-body{border-radius:8px 8px 0 0;margin-top:3px;box-shadow:0 4px 8px rgba(0,0,0,.1)}
-.av-bag{position:absolute;right:calc(50% - 28px);top:28px;width:16px;height:18px;border-radius:5px;background:#f59e0b;box-shadow:0 2px 6px rgba(0,0,0,.15)}
-/* звёздочки над учеником */
-.av-stars{position:absolute;top:6px;left:50%;transform:translateX(-50%);display:flex;gap:4px;font-size:14px}
+.role-label-name{font-size:14px;font-weight:900;color:#111827;line-height:1.2}
+.role-hint{font-size:11px;font-weight:500;color:#6b7280;line-height:1.4;margin-top:1px}
+.role-btn.selected .role-label-name{color:#4f46e5}
+
+/* ─── ВЫБОР СПОСОБА ВВОДА ─── */
+.input-mode-row{display:flex;gap:8px;margin-bottom:18px}
+.input-mode-btn{
+  flex:1;
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+  padding:10px 8px;
+  border-radius:14px;border:2px solid #e5e7eb;
+  background:#f9fafb;
+  cursor:pointer;font-family:inherit;
+  transition:all .2s;
+}
+.input-mode-btn:hover{border-color:#c7d2fe;background:#eff6ff}
+.input-mode-btn.selected{border-color:#6366f1;background:#eef2ff;box-shadow:0 0 0 3px rgba(99,102,241,.15)}
+.input-mode-icon{font-size:22px;line-height:1}
+.input-mode-name{font-size:12px;font-weight:800;color:#374151;letter-spacing:.3px}
+.input-mode-btn.selected .input-mode-name{color:#4f46e5}
+
+/* убираем старые стили аватарок */
 .btn-primary {
   width: 100%;
   padding: 16px;
@@ -1853,15 +1797,12 @@ body {
 <!-- ===== LOGIN ===== -->
 <div id="screen-login" class="screen active">
   <div class="login-sky"></div>
-
   <div class="login-stars" id="login-stars"></div>
-
   <div class="login-clouds">
     <div class="cloud cloud-1"></div>
     <div class="cloud cloud-2"></div>
     <div class="cloud cloud-3"></div>
   </div>
-
   <div class="login-blocks">
     <div class="mc-block">5</div>
     <div class="mc-block">½</div>
@@ -1870,46 +1811,18 @@ body {
     <div class="mc-block">π</div>
     <div class="mc-block">×</div>
   </div>
-
-  <!-- Облака с формулами на экране входа -->
   <div class="home-ambient" id="home-ambient"></div>
 
   <div class="login-wrap">
-    <!-- Шапка -->
+
+    <!-- Шапка — картинка пятый.png -->
     <div class="login-card-header">
-      <div class="login-badge">
-        <div class="login-cube">
-          <svg width="76" height="84" viewBox="0 0 76 84" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <linearGradient id="topGrad" x1="4" y1="22" x2="72" y2="22" gradientUnits="userSpaceOnUse">
-                <stop offset="0" stop-color="rgba(255,255,255,0.25)"/>
-                <stop offset="1" stop-color="rgba(0,0,0,0.1)"/>
-              </linearGradient>
-            </defs>
-            <!-- Верхняя грань -->
-            <polygon points="38,4 72,22 38,40 4,22" fill="#4d7ef5"/>
-            <polygon points="38,4 72,22 38,40 4,22" fill="url(#topGrad)"/>
-            <!-- Левая грань (передняя) -->
-            <polygon points="4,22 38,40 38,76 4,58" fill="#2251d0"/>
-            <!-- Правая грань -->
-            <polygon points="72,22 38,40 38,76 72,58" fill="#0f2580"/>
-            <!-- 5 на верхней грани (повёрнута -20deg, центр грани ~38,22) -->
-            <text transform="translate(38,24) rotate(-20)" font-family="Arial Black,sans-serif" font-size="13" font-weight="900" fill="#facc15" text-anchor="middle" dominant-baseline="middle" style="filter:drop-shadow(0 1px 3px rgba(0,0,0,.5))">5</text>
-            <!-- 5 на левой грани (повёрнута -30deg, центр ~21,49) -->
-            <text transform="translate(21,50) rotate(-30)" font-family="Arial Black,sans-serif" font-size="20" font-weight="900" fill="#fb923c" text-anchor="middle" dominant-baseline="middle" style="filter:drop-shadow(0 1px 4px rgba(0,0,0,.4))">5</text>
-            <!-- 5 на правой грани (повёрнута 30deg, центр ~55,49) -->
-            <text transform="translate(55,50) rotate(30)" font-family="Arial Black,sans-serif" font-size="16" font-weight="900" fill="#fbbf24" text-anchor="middle" dominant-baseline="middle" opacity="0.85" style="filter:drop-shadow(0 1px 3px rgba(0,0,0,.5))">5</text>
-          </svg>
-          <!-- Звёздочки -->
-          <span class="cube-stars">✦ ✦</span>
-        </div>
-        <div style="width:10px;flex-shrink:0"></div>
-        <div class="login-badge-text">ПЯТЫЙ УРОВЕНЬ</div>
-      </div>
-      <div class="login-title">ИИ-репетитор по математике · 5 класс</div>
+      <img src="пятый.png" alt="Пятый уровень" class="login-header-img">
     </div>
 
+    <!-- Белое тело карточки -->
     <div class="login-body">
+
       <!-- Имя -->
       <label class="login-label">Как тебя зовут?</label>
       <div class="login-name-row">
@@ -1919,56 +1832,67 @@ body {
         <button class="btn-mic" id="login-mic-btn" onclick="toggleLoginMic()" title="Назвать имя голосом">🎤</button>
       </div>
 
-      <!-- Выбор роли — карточки-персонажи -->
-      <label class="login-label">КТО ТЫ?</label>
+      <!-- Кто ты? -->
+      <label class="login-label">Кто ты?</label>
       <div class="role-row">
 
-        <!-- Ученик — мальчик (19_40_01) -->
         <button class="role-btn selected" data-role="student" onclick="selectRole(this)">
           <div class="role-photo">
-            <div class="role-photo-bg" style="padding:0;overflow:hidden;background:#dbeafe">
-              <img src="ChatGPT Image 22 июн. 2026 г., 19_40_01.png"
-                   alt="Ученик"
-                   style="width:100%;height:100%;object-fit:cover;object-position:center top;display:block"
-                   onerror="this.style.display='none'">
-            </div>
-            <div class="role-photo-overlay">
-              <span class="role-photo-name">🎒 Ученик</span>
-              <div class="role-check">✓</div>
-            </div>
+            <img src="ученик.png" alt="Ученик" style="width:100%;height:100%;object-fit:cover;object-position:center top;display:block">
           </div>
           <div class="role-info">
-            <div class="role-label-name">Я решаю</div>
-            <div class="role-hint">Домашка, тренажёры,<br>разбор с Умником</div>
+            <div class="role-icon-row">
+              <div class="role-icon-circle" style="background:#eff6ff">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 2L2 7l10 5 10-5-10-5z" stroke="#2563eb" stroke-width="2" stroke-linejoin="round"/><path d="M2 17l10 5 10-5" stroke="#2563eb" stroke-width="2" stroke-linejoin="round"/><path d="M2 12l10 5 10-5" stroke="#2563eb" stroke-width="2" stroke-linejoin="round"/></svg>
+              </div>
+              <div>
+                <div class="role-label-name">Ученик</div>
+                <div class="role-hint">Учусь сам</div>
+              </div>
+            </div>
           </div>
         </button>
 
-        <!-- Родитель — мама с учеником (19_39_36) -->
         <button class="role-btn" data-role="parent" onclick="selectRole(this)">
           <div class="role-photo">
-            <div class="role-photo-bg" style="padding:0;overflow:hidden;background:#dcfce7">
-              <img src="ChatGPT Image 22 июн. 2026 г., 19_39_36.png"
-                   alt="Родитель"
-                   style="width:100%;height:100%;object-fit:cover;object-position:center top;display:block"
-                   onerror="this.style.display='none'">
-            </div>
-            <div class="role-photo-overlay">
-              <span class="role-photo-name">👨‍👩‍👧 Родитель</span>
-              <div class="role-check">✓</div>
-            </div>
+            <img src="родитель.png" alt="Родитель" style="width:100%;height:100%;object-fit:cover;object-position:center top;display:block">
           </div>
           <div class="role-info">
-            <div class="role-label-name">Я смотрю</div>
-            <div class="role-hint">Прогресс, ошибки,<br>рекомендации</div>
+            <div class="role-icon-row">
+              <div class="role-icon-circle" style="background:#fff7ed">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="9" cy="7" r="3" stroke="#f97316" stroke-width="2"/><circle cx="17" cy="9" r="2.5" stroke="#f97316" stroke-width="2"/><path d="M2 20c0-3.314 3.134-6 7-6s7 2.686 7 6" stroke="#f97316" stroke-width="2" stroke-linecap="round"/><path d="M17 14c2.21 0 4 1.567 4 3.5" stroke="#f97316" stroke-width="2" stroke-linecap="round"/></svg>
+              </div>
+              <div>
+                <div class="role-label-name">Родитель</div>
+                <div class="role-hint">Помогаю и слежу<br>за успехами</div>
+              </div>
+            </div>
           </div>
         </button>
 
       </div>
 
+      <!-- Как отвечать? -->
+      <label class="login-label">Как будешь отвечать?</label>
+      <div class="input-mode-row">
+        <button class="input-mode-btn selected" data-mode="text" onclick="selectInputMode(this)">
+          <span class="input-mode-icon">⌨️</span>
+          <span class="input-mode-name">Текст</span>
+        </button>
+        <button class="input-mode-btn" data-mode="voice" onclick="selectInputMode(this)">
+          <span class="input-mode-icon">🎤</span>
+          <span class="input-mode-name">Голос</span>
+        </button>
+        <button class="input-mode-btn" data-mode="both" onclick="selectInputMode(this)">
+          <span class="input-mode-icon">✨</span>
+          <span class="input-mode-name">Оба</span>
+        </button>
+      </div>
+
       <button class="btn-primary" onclick="doLogin()"
         style="font-size:18px;padding:18px;letter-spacing:.4px;border-radius:18px;
                background:linear-gradient(135deg,#2563eb,#7c3aed);
-               box-shadow:0 8px 28px rgba(79,70,229,.5)">
+               box-shadow:0 8px 28px rgba(79,70,229,.5);margin-top:4px">
         Поехали! 🚀
       </button>
     </div>
@@ -4711,13 +4635,18 @@ function updateAllXP() {
 function selectRole(btn) {
   document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('selected'));
   btn.classList.add('selected');
-  btn.style.transform = '';
+}
+function selectInputMode(btn) {
+  document.querySelectorAll('.input-mode-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
 }
 function doLogin() {
   const name = document.getElementById('login-name').value.trim() || 'Маша';
   const roleBtn = document.querySelector('.role-btn.selected');
   const role = roleBtn ? roleBtn.dataset.role : 'student';
-  ST.user = { name, role };
+  const modeBtn = document.querySelector('.input-mode-btn.selected');
+  const inputMode = modeBtn ? modeBtn.dataset.mode : 'text';
+  ST.user = { name, role, inputMode };
   lsSave();
   renderHome();
   showScreen('screen-home');
