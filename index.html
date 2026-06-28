@@ -98,11 +98,14 @@ body {
   min-height: 100vh;
 }
 
-/* Фон — картинка */
+/* Фон — тёмно-синий космос */
 .login-sky {
   position: fixed;
   inset: 0;
-  background: url('bg1.png') center/cover no-repeat;
+  background:
+    radial-gradient(circle at 20% 10%, rgba(60,120,255,.35), transparent 22%),
+    radial-gradient(circle at 80% 20%, rgba(90,50,255,.25), transparent 25%),
+    linear-gradient(180deg, #050d36 0%, #06288f 58%, #0b43c8 100%);
   z-index: 0;
 }
 
@@ -165,52 +168,6 @@ body {
   background:linear-gradient(180deg,#38c96d 0 18px,#269b52 18px 28px,#5b351d 28px 100%);
   box-shadow:inset 0 8px 0 rgba(255,255,255,.08);
   z-index:3;
-}
-/* Боковые кирпичные стены */
-.login-pillar-left,.login-pillar-right{
-  position:fixed;bottom:64px;z-index:2;
-  width:96px;
-  display:flex;flex-direction:column-reverse;
-  align-items:stretch;
-  height:calc(100vh - 64px);
-}
-.login-pillar-left{left:0;}
-.login-pillar-right{right:0;}
-.pillar-block{
-  height:48px;flex-shrink:0;
-  position:relative;
-  box-sizing:border-box;
-  border-top:3px solid rgba(255,255,255,.12);
-  border-bottom:3px solid rgba(0,0,0,.25);
-}
-/* Кирпичная текстура — чередуем через nth-child */
-.pillar-block:nth-child(odd){
-  background:linear-gradient(135deg,#c8762a 0%,#a85820 60%,#8a4318 100%);
-}
-.pillar-block:nth-child(even){
-  background:linear-gradient(135deg,#b86820,#945014 60%,#7a3c10 100%);
-}
-/* Горизонтальные линии-швы внутри блока */
-.pillar-block::before{
-  content:'';position:absolute;
-  left:0;right:0;top:50%;
-  height:2px;background:rgba(0,0,0,.2);
-}
-/* Вертикальный шов — смещён в шахматном порядке */
-.pillar-block:nth-child(odd)::after{
-  content:'';position:absolute;
-  left:48px;top:0;bottom:0;
-  width:2px;background:rgba(0,0,0,.2);
-}
-.pillar-block:nth-child(even)::after{
-  content:'';position:absolute;
-  left:24px;top:0;bottom:0;
-  width:2px;background:rgba(0,0,0,.2);
-}
-/* Верхний блок — зелёная трава */
-.pillar-block.top{
-  background:linear-gradient(180deg,#5de07a 0 12px,#3ab55a 12px 22px,#c8762a 22px 100%);
-  border-top:3px solid #8fffaa;
 }
 
 /* ─── ГЛАВНАЯ КАРТОЧКА ─── */
@@ -1877,51 +1834,6 @@ body {
   </div>
   <div class="home-ambient" id="home-ambient"></div>
 
-  <!-- Боковые кирпичные стены -->
-  <div class="login-pillar-left">
-    <div class="pillar-block top"></div>
-    <div class="pillar-block"></div>
-    <div class="pillar-block"></div>
-    <div class="pillar-block"></div>
-    <div class="pillar-block"></div>
-    <div class="pillar-block"></div>
-    <div class="pillar-block"></div>
-    <div class="pillar-block"></div>
-    <div class="pillar-block"></div>
-    <div class="pillar-block"></div>
-    <div class="pillar-block"></div>
-    <div class="pillar-block"></div>
-    <div class="pillar-block"></div>
-    <div class="pillar-block"></div>
-    <div class="pillar-block"></div>
-    <div class="pillar-block"></div>
-    <div class="pillar-block"></div>
-    <div class="pillar-block"></div>
-    <div class="pillar-block"></div>
-    <div class="pillar-block"></div>
-  </div>
-  <div class="login-pillar-right">
-    <div class="pillar-block top"></div>
-    <div class="pillar-block"></div>
-    <div class="pillar-block"></div>
-    <div class="pillar-block"></div>
-    <div class="pillar-block"></div>
-    <div class="pillar-block"></div>
-    <div class="pillar-block"></div>
-    <div class="pillar-block"></div>
-    <div class="pillar-block"></div>
-    <div class="pillar-block"></div>
-    <div class="pillar-block"></div>
-    <div class="pillar-block"></div>
-    <div class="pillar-block"></div>
-    <div class="pillar-block"></div>
-    <div class="pillar-block"></div>
-    <div class="pillar-block"></div>
-    <div class="pillar-block"></div>
-    <div class="pillar-block"></div>
-    <div class="pillar-block"></div>
-    <div class="pillar-block"></div>
-  </div>
 
   <div class="login-wrap">
 
