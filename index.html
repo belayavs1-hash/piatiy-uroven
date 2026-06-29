@@ -92,7 +92,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0 0 90px;
+  padding: 24px 20px 80px;
   position: relative;
   overflow: hidden;
   min-height: 100vh;
@@ -173,9 +173,10 @@ body {
 /* ─── ГЛАВНАЯ КАРТОЧКА ─── */
 .login-wrap{
   width:100%;
-  max-width:100%;
+  max-width:900px;
+  margin:0 auto;
   background:transparent;
-  border-radius:0;
+  border-radius:32px;
   overflow:hidden;
   position:relative;z-index:10;
   animation:cardReveal .6s cubic-bezier(.34,1.56,.64,1) both;
@@ -185,8 +186,9 @@ body {
 /* Шапка — прямая сверху, скруглена снизу */
 .login-card-header{
   width:100%;
-  height:270px;
+  height:200px;
   background:url('header.png') center/cover no-repeat;
+  border-radius:32px 32px 0 0;
   flex-shrink:0;
 }
 .login-header-img{display:none}
@@ -199,9 +201,9 @@ body {
 }
 
 /* Тело карточки */
-.login-body{padding:48px 56px 52px;background:#fff}
+.login-body{padding:32px 48px 40px;background:#fff}
 .login-label{
-  font-size:26px;font-weight:900;color:#071b52;
+  font-size:20px;font-weight:900;color:#071b52;
   display:block;text-align:left;margin-bottom:18px;
   letter-spacing:0;text-transform:none;
 }
@@ -212,7 +214,7 @@ body {
   gap:14px;margin-bottom:34px;align-items:stretch;
 }
 .login-input{
-  width:100%;height:78px;
+  width:100%;height:64px;
   border-radius:20px;border:2px solid #d9e3ff;
   background:#fff;color:#071b52;
   font-family:inherit;font-size:24px;font-weight:500;
@@ -225,7 +227,7 @@ body {
 @keyframes listenPulse{0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,.35)}50%{box-shadow:0 0 0 10px rgba(239,68,68,0)}}
 
 .btn-mic{
-  height:78px;width:100%;
+  height:64px;width:100%;
   border-radius:20px;border:2px solid #d9e3ff;
   background:#fbfcff;color:#2f66ff;font-size:32px;
   cursor:pointer;transition:all .18s;
@@ -267,7 +269,7 @@ body {
 /* Карточка роли — фото на весь блок, плашка поверх */
 .role-photo{
   width:100%;
-  height:420px;
+  height:260px;
   overflow:hidden;
   background:#dbeafe;
   display:block;
@@ -295,7 +297,7 @@ body {
   display:flex;align-items:center;justify-content:center;
   font-size:32px;
 }
-.role-label-name{font-size:26px;font-weight:900;color:#071b52;line-height:1.2;margin-bottom:4px}
+.role-label-name{font-size:20px;font-weight:900;color:#071b52;line-height:1.2;margin-bottom:4px}
 .role-hint{font-size:18px;font-weight:400;color:#6c789c;line-height:1.25;margin:0}
 .role-btn.selected .role-label-name{color:#071b52}
 
@@ -320,7 +322,7 @@ body {
   display:block;
   width: 100%;
   margin-top: 38px;
-  height: 88px;
+  height: 72px;
   padding: 0;
   border-radius: 26px;
   border: none;
