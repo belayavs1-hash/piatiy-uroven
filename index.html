@@ -245,60 +245,55 @@ body {
   border-radius:28px;
   overflow:hidden;
   transition:transform .2s ease,box-shadow .2s ease,border-color .2s;
-  position:relative;
   font-family:inherit;
   box-shadow:0 18px 35px rgba(55,95,220,.18);
   text-align:left;
+  display:flex;
+  flex-direction:column;
+  position:relative;
 }
-.role-btn:hover{transform:translateY(-4px);box-shadow:0 24px 45px rgba(55,95,220,.26)}
+.role-btn:hover{transform:translateY(-3px);box-shadow:0 24px 45px rgba(55,95,220,.26)}
 .role-btn.selected{
   border-color:#35c981;
-  box-shadow:0 0 0 6px rgba(53,201,129,.16),0 24px 45px rgba(55,95,220,.24);
+  box-shadow:0 0 0 5px rgba(53,201,129,.2),0 18px 35px rgba(55,95,220,.2);
 }
 .role-btn.selected::after{
   content:"✓";
-  position:absolute;top:14px;right:14px;
-  width:36px;height:36px;border-radius:50%;
+  position:absolute;top:12px;right:12px;
+  width:34px;height:34px;border-radius:50%;
   display:grid;place-items:center;
   background:linear-gradient(135deg,#35c981,#2bb46f);
   color:#fff;font-weight:900;font-size:16px;
-  box-shadow:0 6px 16px rgba(53,201,129,.4);
+  box-shadow:0 4px 12px rgba(53,201,129,.4);
   z-index:2;
 }
-
-/* Карточка роли — фото на весь блок, плашка поверх */
+/* Фото — верхняя часть карточки */
 .role-photo{
-  width:100%;
-  height:260px;
-  overflow:hidden;
-  background:#dbeafe;
-  display:block;
+  width:100%;height:200px;
+  overflow:hidden;background:#dbeafe;
+  flex-shrink:0;
 }
 .role-photo img{
   width:100%;height:100%;
-  object-fit:cover;object-position:center 20%;
+  object-fit:cover;object-position:center 15%;
   display:block;
 }
-/* Белая плашка поверх фото снизу */
+/* Белая плашка — нижняя часть карточки, в потоке */
 .role-info{
-  position:absolute;
-  bottom:0;left:0;right:0;
-  display:grid;grid-template-columns:72px 1fr;
-  align-items:center;gap:16px;
-  padding:20px 24px 24px;
+  display:flex;align-items:center;gap:16px;
+  padding:16px 20px 18px;
   background:#fff;
-  border-radius:0 0 24px 24px;
-  box-shadow:0 -4px 20px rgba(0,0,0,.08);
+  flex-shrink:0;
 }
 .role-icon-row{display:contents}
 .role-icon-circle{
-  width:62px;height:62px;flex-shrink:0;
+  width:54px;height:54px;flex-shrink:0;
   border-radius:50%;
   display:flex;align-items:center;justify-content:center;
-  font-size:32px;
+  font-size:28px;
 }
-.role-label-name{font-size:20px;font-weight:900;color:#071b52;line-height:1.2;margin-bottom:4px}
-.role-hint{font-size:18px;font-weight:400;color:#6c789c;line-height:1.25;margin:0}
+.role-label-name{font-size:18px;font-weight:900;color:#071b52;line-height:1.2;margin-bottom:2px}
+.role-hint{font-size:14px;font-weight:400;color:#6c789c;line-height:1.3;margin:0}
 .role-btn.selected .role-label-name{color:#071b52}
 
 /* ─── ВЫБОР СПОСОБА ВВОДА ─── */
