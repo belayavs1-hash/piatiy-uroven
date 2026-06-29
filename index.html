@@ -88,83 +88,23 @@ body {
 .bottom-nav a:hover, .bottom-nav a.active { color: var(--gold); }
 
 /* ===== LOGIN ===== */
-
-/* Фон — тёмно-синий космос */
-.login-sky {
-  position: fixed; inset: 0;
-  background:
-    radial-gradient(circle at 20% 10%, rgba(60,120,255,.35), transparent 22%),
-    radial-gradient(circle at 80% 20%, rgba(90,50,255,.25), transparent 25%),
-    linear-gradient(180deg, #050d36 0%, #06288f 58%, #0b43c8 100%);
-  z-index: 0;
-}
-.login-stars {
-  position: fixed; inset: 0; pointer-events: none;
-  background-image:
-    radial-gradient(circle, rgba(255,255,255,.9) 0 1px, transparent 1.5px),
-    radial-gradient(circle, rgba(255,255,255,.7) 0 1px, transparent 1.5px);
-  background-size: 130px 130px, 190px 190px;
-  background-position: 0 0, 70px 40px;
-  opacity: .5; z-index: 0;
-}
-.star { display: none; }
-.login-clouds { position:fixed; inset:0; pointer-events:none; overflow:hidden; z-index:1; }
-.cloud { position:absolute; background:rgba(255,255,255,.18); border-radius:50px; animation:cloudDrift linear infinite; }
-.cloud::before,.cloud::after{content:'';position:absolute;background:rgba(255,255,255,.18);border-radius:50%}
-.cloud-1{width:140px;height:38px;top:38%;left:-160px;animation-duration:22s}
-.cloud-1::before{width:58px;height:58px;top:-28px;left:18px}
-.cloud-1::after{width:40px;height:40px;top:-20px;left:68px}
-.cloud-2{width:100px;height:28px;top:55%;left:-120px;animation-duration:30s;animation-delay:9s}
-.cloud-2::before{width:42px;height:42px;top:-20px;left:12px}
-.cloud-2::after{width:30px;height:30px;top:-15px;left:48px}
-.cloud-3{width:160px;height:44px;top:22%;left:-180px;animation-duration:38s;animation-delay:16s}
-.cloud-3::before{width:70px;height:70px;top:-36px;left:20px}
-.cloud-3::after{width:48px;height:48px;top:-26px;left:80px}
-@keyframes cloudDrift{from{transform:translateX(0)}to{transform:translateX(calc(100vw + 200px))}}
-.login-blocks{position:fixed;inset:0;pointer-events:none;z-index:2;}
-.mc-block{position:absolute;border-radius:14px;font-size:22px;font-weight:900;color:#fff;display:flex;align-items:center;justify-content:center;animation:mcFloat ease-in-out infinite;box-shadow:0 8px 24px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.3);}
-.mc-block:nth-child(1){width:52px;height:52px;background:linear-gradient(145deg,#7C3AED,#5b21b6);top:5%;left:3%;animation-duration:3.8s}
-.mc-block:nth-child(2){width:46px;height:46px;background:linear-gradient(145deg,#FACC15,#d97706);top:5%;right:3%;animation-duration:4.3s;animation-delay:.9s}
-.mc-block:nth-child(3){width:42px;height:42px;background:linear-gradient(145deg,#22C55E,#15803d);top:28%;left:2%;animation-duration:5.1s;animation-delay:1.6s}
-.mc-block:nth-child(4){width:48px;height:48px;background:linear-gradient(145deg,#EF4444,#b91c1c);top:18%;right:2%;animation-duration:4s;animation-delay:2.4s}
-.mc-block:nth-child(5){width:40px;height:40px;background:linear-gradient(145deg,#06b6d4,#0e7490);top:50%;left:2%;animation-duration:4.7s;animation-delay:.5s}
-.mc-block:nth-child(6){width:44px;height:44px;background:linear-gradient(145deg,#f97316,#c2410c);top:40%;right:2%;animation-duration:3.5s;animation-delay:2s}
-@keyframes mcFloat{0%,100%{transform:translateY(0) rotate(-5deg) scale(1)}50%{transform:translateY(-20px) rotate(5deg) scale(1.06)}}
-
-/* Экран входа */
 #screen-login {
-  display: block !important;
-  position: relative;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
   min-height: 100vh;
-  background: linear-gradient(180deg, #050d36 0%, #06288f 55%, #0b43c8 100%);
+  background: url('fon2.png') center/cover no-repeat fixed;
+  padding: 40px 20px;
 }
 
-/* Баннер-обёртка: img тегом чтобы aspect-ratio сохранялся */
-.login-banner {
-  width: 100%;
-  display: block;
-  line-height: 0;
-  position: relative;
-  z-index: 5;
-}
-.login-banner img {
-  width: 100%;
-  display: block;
-  max-height: 280px;
-  object-fit: cover;
-  object-position: center top;
-}
-
-/* Белая карточка */
+/* Белая карточка по центру */
 .login-card {
-  position: relative;
-  z-index: 20;
-  background: #fff;
-  border-radius: 36px 36px 0 0;
-  box-shadow: 0 -16px 50px rgba(0,15,80,.35);
-  margin-top: -36px;
-  padding: 32px 40px 100px;
-  min-height: calc(100vh - 200px);
+  width: 100%;
+  max-width: 560px;
+  background: rgba(255,255,255,0.97);
+  border-radius: 32px;
+  box-shadow: 0 24px 80px rgba(0,15,80,.4);
+  padding: 40px 40px 48px;
   animation: cardReveal .5s ease both;
 }
 @keyframes cardReveal{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
@@ -181,19 +121,29 @@ body {
 .btn-mic.active{background:rgba(239,68,68,.08);border-color:#ef4444;color:#ef4444;animation:micPulse .8s ease-in-out infinite}
 @keyframes micPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
 
-.role-row{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:0}
-.role-btn{border:3px solid #6d86ff;padding:0;background:#fff;cursor:pointer;border-radius:28px;overflow:hidden;transition:transform .2s ease,box-shadow .2s ease,border-color .2s;font-family:inherit;box-shadow:0 18px 35px rgba(55,95,220,.18);text-align:left;display:flex;flex-direction:column;position:relative;}
-.role-btn:hover{transform:translateY(-3px);box-shadow:0 24px 45px rgba(55,95,220,.26)}
-.role-btn.selected{border-color:#35c981;box-shadow:0 0 0 5px rgba(53,201,129,.2),0 18px 35px rgba(55,95,220,.2);}
-.role-btn.selected::after{content:"\2713";position:absolute;top:12px;right:12px;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,#35c981,#2bb46f);color:#fff;font-weight:900;font-size:16px;box-shadow:0 4px 12px rgba(53,201,129,.4);z-index:2;}
-.role-photo{width:100%;height:160px;overflow:hidden;background:#dbeafe;flex-shrink:0;}
-.role-photo img{width:100%;height:100%;object-fit:cover;object-position:center 5%;display:block;}
-.role-info{display:flex;align-items:center;gap:12px;padding:12px 16px 14px;background:#fff;flex-shrink:0;}
-.role-icon-row{display:contents}
-.role-icon-circle{width:44px;height:44px;flex-shrink:0;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;}
-.role-label-name{font-size:18px;font-weight:900;color:#071b52;line-height:1.2;margin-bottom:2px}
-.role-hint{font-size:14px;font-weight:400;color:#6c789c;line-height:1.3;margin:0}
-.role-btn.selected .role-label-name{color:#071b52}
+.role-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:0}
+.role-btn{
+  border:2px solid #d9e3ff;
+  padding:20px 16px 22px;
+  background:#fff;
+  cursor:pointer;
+  border-radius:20px;
+  transition:transform .2s ease,box-shadow .2s ease,border-color .2s;
+  font-family:inherit;
+  box-shadow:0 4px 16px rgba(55,95,220,.1);
+  text-align:center;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:10px;
+  position:relative;
+}
+.role-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(55,95,220,.18)}
+.role-btn.selected{border-color:#35c981;background:#f0fff7;box-shadow:0 0 0 3px rgba(53,201,129,.2);}
+.role-btn.selected::after{content:"✓";position:absolute;top:10px;right:10px;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,#35c981,#2bb46f);color:#fff;font-weight:900;font-size:13px;box-shadow:0 2px 8px rgba(53,201,129,.4);z-index:2;}
+.role-icon-circle{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0;}
+.role-label-name{font-size:17px;font-weight:900;color:#071b52;line-height:1.2}
+.role-hint{font-size:13px;font-weight:500;color:#6c789c;line-height:1.3;margin:0}
 
 .input-mode-row{display:flex;gap:12px;margin:28px 0 0}
 .input-mode-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px 8px;border-radius:18px;border:2px solid #d9e3ff;background:#fbfcff;cursor:pointer;font-family:inherit;transition:all .18s ease;}
@@ -207,19 +157,12 @@ body {
 .btn-primary:hover{transform:translateY(-3px);box-shadow:0 26px 45px rgba(91,70,255,.4)}
 .btn-primary:active{transform:translateY(0)}
 
-@media (max-width: 760px) {
-  .login-banner img { max-height: 200px; }
-  .login-card { margin-top: -28px; padding: 28px 20px 80px; border-radius:32px 32px 0 0; }
-  .login-label { font-size: 18px; margin-bottom: 12px; }
-  .login-input { height: 56px; font-size: 18px; padding: 0 18px; }
-  .btn-mic { height: 56px; font-size: 24px; }
-  .login-name-row { margin-bottom: 24px; }
-  .role-row { grid-template-columns: 1fr; }
-  .role-photo { height: 180px; }
-  .role-info { height: auto; padding: 14px 18px; }
-  .role-label-name { font-size: 18px; }
-  .role-hint { font-size: 14px; }
-  .btn-primary { height: 64px; font-size: 22px; margin-top: 24px; }
+@media (max-width: 600px) {
+  .login-card { padding: 28px 20px 40px; border-radius: 24px; }
+  .role-row { grid-template-columns: 1fr 1fr; gap: 12px; }
+  .role-btn { padding: 16px 10px 18px; }
+  .role-icon-circle { width: 46px; height: 46px; font-size: 22px; }
+  .role-label-name { font-size: 15px; }
 }
 
 /* ===== HOME ===== */
@@ -1684,26 +1627,8 @@ body {
 
 <!-- ===== LOGIN ===== -->
 <div id="screen-login" class="screen active">
-  <div class="login-clouds">
-    <div class="cloud cloud-1"></div>
-    <div class="cloud cloud-2"></div>
-    <div class="cloud cloud-3"></div>
-  </div>
-  <div class="login-blocks">
-    <div class="mc-block">5</div>
-    <div class="mc-block">½</div>
-    <div class="mc-block">Σ</div>
-    <div class="mc-block">+</div>
-    <div class="mc-block">π</div>
-    <div class="mc-block">×</div>
-  </div>
 
-  <!-- Баннер с роботом — в потоке, img тегом -->
-  <div class="login-banner">
-    <img src="header.png" alt="Пятый уровень">
-  </div>
-
-  <!-- Белая карточка — наезжает на баннер -->
+  <!-- Белая карточка по центру -->
   <div class="login-card">
 
     <!-- Имя -->
@@ -1720,29 +1645,15 @@ body {
     <div class="role-row">
 
       <button class="role-btn selected" data-role="student" onclick="selectRole(this)">
-        <div class="role-photo">
-          <img src="student.png" alt="Ученик">
-        </div>
-        <div class="role-info">
-          <div class="role-icon-circle" style="background:#edf4ff">🎓</div>
-          <div>
-            <div class="role-label-name">Ученик</div>
-            <p class="role-hint">Учусь сам</p>
-          </div>
-        </div>
+        <div class="role-icon-circle" style="background:#edf4ff">🎓</div>
+        <div class="role-label-name">Ученик</div>
+        <p class="role-hint">Учусь сам</p>
       </button>
 
       <button class="role-btn" data-role="parent" onclick="selectRole(this)">
-        <div class="role-photo">
-          <img src="parent.png" alt="Родитель">
-        </div>
-        <div class="role-info">
-          <div class="role-icon-circle" style="background:#fff1d9">👥</div>
-          <div>
-            <div class="role-label-name">Родитель</div>
-            <p class="role-hint">Помогаю и слежу за успехами</p>
-          </div>
-        </div>
+        <div class="role-icon-circle" style="background:#fff1d9">👥</div>
+        <div class="role-label-name">Родитель</div>
+        <p class="role-hint">Помогаю и слежу за успехами</p>
       </button>
 
     </div>
