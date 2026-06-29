@@ -88,50 +88,28 @@ body {
 .bottom-nav a:hover, .bottom-nav a.active { color: var(--gold); }
 
 /* ===== LOGIN ===== */
-#screen-login {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 24px 20px 80px;
-  position: relative;
-  overflow: hidden;
-  min-height: 100vh;
-}
 
 /* Фон — тёмно-синий космос */
 .login-sky {
-  position: fixed;
-  inset: 0;
+  position: fixed; inset: 0;
   background:
     radial-gradient(circle at 20% 10%, rgba(60,120,255,.35), transparent 22%),
     radial-gradient(circle at 80% 20%, rgba(90,50,255,.25), transparent 25%),
     linear-gradient(180deg, #050d36 0%, #06288f 58%, #0b43c8 100%);
   z-index: 0;
 }
-
-/* Звёзды */
 .login-stars {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
+  position: fixed; inset: 0; pointer-events: none;
   background-image:
     radial-gradient(circle, rgba(255,255,255,.9) 0 1px, transparent 1.5px),
     radial-gradient(circle, rgba(255,255,255,.7) 0 1px, transparent 1.5px);
   background-size: 130px 130px, 190px 190px;
   background-position: 0 0, 70px 40px;
-  opacity: .5;
-  z-index: 0;
+  opacity: .5; z-index: 0;
 }
 .star { display: none; }
-
-/* Облака */
 .login-clouds { position:fixed; inset:0; pointer-events:none; overflow:hidden; z-index:1; }
-.cloud {
-  position: absolute;
-  background: rgba(255,255,255,.18);
-  border-radius: 50px;
-  animation: cloudDrift linear infinite;
-}
+.cloud { position:absolute; background:rgba(255,255,255,.18); border-radius:50px; animation:cloudDrift linear infinite; }
 .cloud::before,.cloud::after{content:'';position:absolute;background:rgba(255,255,255,.18);border-radius:50%}
 .cloud-1{width:140px;height:38px;top:38%;left:-160px;animation-duration:22s}
 .cloud-1::before{width:58px;height:58px;top:-28px;left:18px}
@@ -143,17 +121,8 @@ body {
 .cloud-3::before{width:70px;height:70px;top:-36px;left:20px}
 .cloud-3::after{width:48px;height:48px;top:-26px;left:80px}
 @keyframes cloudDrift{from{transform:translateX(0)}to{transform:translateX(calc(100vw + 200px))}}
-
-/* Анимированные матем-блоки (кубики) */
 .login-blocks{position:fixed;inset:0;pointer-events:none;z-index:2;}
-.mc-block{
-  position:absolute;
-  border-radius:14px;
-  font-size:22px;font-weight:900;color:#fff;
-  display:flex;align-items:center;justify-content:center;
-  animation:mcFloat ease-in-out infinite;
-  box-shadow:0 8px 24px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.3);
-}
+.mc-block{position:absolute;border-radius:14px;font-size:22px;font-weight:900;color:#fff;display:flex;align-items:center;justify-content:center;animation:mcFloat ease-in-out infinite;box-shadow:0 8px 24px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.3);}
 .mc-block:nth-child(1){width:58px;height:58px;background:linear-gradient(145deg,#7C3AED,#5b21b6);top:8%;left:4%;animation-duration:3.8s}
 .mc-block:nth-child(2){width:50px;height:50px;background:linear-gradient(145deg,#FACC15,#d97706);top:14%;right:6%;animation-duration:4.3s;animation-delay:.9s}
 .mc-block:nth-child(3){width:46px;height:46px;background:linear-gradient(145deg,#22C55E,#15803d);top:42%;left:3%;animation-duration:5.1s;animation-delay:1.6s}
@@ -162,191 +131,78 @@ body {
 .mc-block:nth-child(6){width:48px;height:48px;background:linear-gradient(145deg,#f97316,#c2410c);top:34%;right:3%;animation-duration:3.5s;animation-delay:2s}
 @keyframes mcFloat{0%,100%{transform:translateY(0) rotate(-5deg) scale(1)}50%{transform:translateY(-20px) rotate(5deg) scale(1.06)}}
 
-/* Пиксельная земля снизу */
-.login-ground{
-  position:fixed;left:0;right:0;bottom:0;height:64px;
-  background:linear-gradient(180deg,#38c96d 0 18px,#269b52 18px 28px,#5b351d 28px 100%);
-  box-shadow:inset 0 8px 0 rgba(255,255,255,.08);
-  z-index:3;
-}
+/* Экран входа */
+#screen-login { display:flex; flex-direction:column; align-items:center; padding:0; position:relative; overflow-x:hidden; overflow-y:auto; min-height:100vh; }
 
-/* ─── ГЛАВНАЯ КАРТОЧКА ─── */
-.login-wrap{
-  width:100%;
-  max-width:900px;
-  margin:0 auto;
-  background:transparent;
-  border-radius:32px;
-  overflow:hidden;
-  position:relative;z-index:10;
+/* Баннер с роботом */
+.login-hero { width:100%; position:relative; z-index:10; flex-shrink:0; }
+.login-hero-img { width:100%; max-height:300px; object-fit:cover; object-position:center top; display:block; }
+
+/* Белая карточка наезжает на баннер */
+.login-card {
+  width:100%; max-width:900px;
+  margin:-48px auto 0;
+  background:#fff;
+  border-radius:40px 40px 0 0;
+  position:relative; z-index:20;
+  box-shadow:0 -8px 40px rgba(0,15,80,.25);
+  padding:40px 48px 100px;
+  flex-shrink:0; min-height:70vh;
   animation:cardReveal .6s cubic-bezier(.34,1.56,.64,1) both;
 }
-@keyframes cardReveal{from{opacity:0;transform:translateY(40px) scale(.95)}to{opacity:1;transform:none}}
+@keyframes cardReveal{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:none}}
 
-/* Шапка — прямая сверху, скруглена снизу */
-.login-card-header{
-  width:100%;
-  height:200px;
-  background:url('header.png') center/cover no-repeat;
-  border-radius:32px 32px 0 0;
-  flex-shrink:0;
-}
-.login-header-img{display:none}
-
-/* Белое тело — скруглено снизу, тень на всю карточку */
-.login-body{
-  background:#fff;
-  border-radius:0 0 38px 38px;
-  box-shadow:0 30px 80px rgba(0,15,80,.35);
-}
-
-/* Тело карточки */
-.login-body{padding:32px 48px 40px;background:#fff}
-.login-label{
-  font-size:20px;font-weight:900;color:#071b52;
-  display:block;text-align:left;margin-bottom:18px;
-  letter-spacing:0;text-transform:none;
-}
-
-/* Поле имени + кнопка */
-.login-name-row{
-  display:grid;grid-template-columns:1fr 78px;
-  gap:14px;margin-bottom:34px;align-items:stretch;
-}
-.login-input{
-  width:100%;height:64px;
-  border-radius:20px;border:2px solid #d9e3ff;
-  background:#fff;color:#071b52;
-  font-family:inherit;font-size:24px;font-weight:500;
-  padding:0 28px;
-  outline:none;transition:border-color .18s,box-shadow .18s;
-}
+.login-label{font-size:20px;font-weight:900;color:#071b52;display:block;text-align:left;margin-bottom:18px;}
+.login-name-row{display:grid;grid-template-columns:1fr 78px;gap:14px;margin-bottom:34px;align-items:stretch;}
+.login-input{width:100%;height:64px;border-radius:20px;border:2px solid #d9e3ff;background:#fff;color:#071b52;font-family:inherit;font-size:24px;font-weight:500;padding:0 28px;outline:none;transition:border-color .18s,box-shadow .18s;}
 .login-input:focus{border-color:#7b93ff;box-shadow:0 0 0 4px rgba(77,113,255,.12)}
 .login-input::placeholder{color:#9aa7c8}
 .login-input.listening{border-color:#ef4444;animation:listenPulse 1s ease-in-out infinite}
 @keyframes listenPulse{0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,.35)}50%{box-shadow:0 0 0 10px rgba(239,68,68,0)}}
-
-.btn-mic{
-  height:64px;width:100%;
-  border-radius:20px;border:2px solid #d9e3ff;
-  background:#fbfcff;color:#2f66ff;font-size:32px;
-  cursor:pointer;transition:all .18s;
-  display:grid;place-items:center;
-}
+.btn-mic{height:64px;width:100%;border-radius:20px;border:2px solid #d9e3ff;background:#fbfcff;color:#2f66ff;font-size:32px;cursor:pointer;transition:all .18s;display:grid;place-items:center;}
 .btn-mic:hover{background:#f1f5ff;border-color:#a5b4fc}
 .btn-mic.active{background:rgba(239,68,68,.08);border-color:#ef4444;color:#ef4444;animation:micPulse .8s ease-in-out infinite}
 @keyframes micPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
 
-/* ─── КАРТОЧКИ РОЛИ ─── */
 .role-row{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:0}
-.role-btn{
-  border:3px solid #6d86ff;padding:0;background:#fff;
-  cursor:pointer;
-  border-radius:28px;
-  overflow:hidden;
-  transition:transform .2s ease,box-shadow .2s ease,border-color .2s;
-  font-family:inherit;
-  box-shadow:0 18px 35px rgba(55,95,220,.18);
-  text-align:left;
-  display:flex;
-  flex-direction:column;
-  position:relative;
-}
+.role-btn{border:3px solid #6d86ff;padding:0;background:#fff;cursor:pointer;border-radius:28px;overflow:hidden;transition:transform .2s ease,box-shadow .2s ease,border-color .2s;font-family:inherit;box-shadow:0 18px 35px rgba(55,95,220,.18);text-align:left;display:flex;flex-direction:column;position:relative;}
 .role-btn:hover{transform:translateY(-3px);box-shadow:0 24px 45px rgba(55,95,220,.26)}
-.role-btn.selected{
-  border-color:#35c981;
-  box-shadow:0 0 0 5px rgba(53,201,129,.2),0 18px 35px rgba(55,95,220,.2);
-}
-.role-btn.selected::after{
-  content:"✓";
-  position:absolute;top:12px;right:12px;
-  width:34px;height:34px;border-radius:50%;
-  display:grid;place-items:center;
-  background:linear-gradient(135deg,#35c981,#2bb46f);
-  color:#fff;font-weight:900;font-size:16px;
-  box-shadow:0 4px 12px rgba(53,201,129,.4);
-  z-index:2;
-}
-/* Фото — верхняя часть карточки */
-.role-photo{
-  width:100%;height:200px;
-  overflow:hidden;background:#dbeafe;
-  flex-shrink:0;
-}
-.role-photo img{
-  width:100%;height:100%;
-  object-fit:cover;object-position:center 15%;
-  display:block;
-}
-/* Белая плашка — нижняя часть карточки, в потоке */
-.role-info{
-  display:flex;align-items:center;gap:16px;
-  padding:16px 20px 18px;
-  background:#fff;
-  flex-shrink:0;
-}
+.role-btn.selected{border-color:#35c981;box-shadow:0 0 0 5px rgba(53,201,129,.2),0 18px 35px rgba(55,95,220,.2);}
+.role-btn.selected::after{content:"\2713";position:absolute;top:12px;right:12px;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,#35c981,#2bb46f);color:#fff;font-weight:900;font-size:16px;box-shadow:0 4px 12px rgba(53,201,129,.4);z-index:2;}
+.role-photo{width:100%;height:200px;overflow:hidden;background:#dbeafe;flex-shrink:0;}
+.role-photo img{width:100%;height:100%;object-fit:cover;object-position:center 15%;display:block;}
+.role-info{display:flex;align-items:center;gap:16px;padding:16px 20px 18px;background:#fff;flex-shrink:0;}
 .role-icon-row{display:contents}
-.role-icon-circle{
-  width:54px;height:54px;flex-shrink:0;
-  border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  font-size:28px;
-}
+.role-icon-circle{width:54px;height:54px;flex-shrink:0;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;}
 .role-label-name{font-size:18px;font-weight:900;color:#071b52;line-height:1.2;margin-bottom:2px}
 .role-hint{font-size:14px;font-weight:400;color:#6c789c;line-height:1.3;margin:0}
 .role-btn.selected .role-label-name{color:#071b52}
 
-/* ─── ВЫБОР СПОСОБА ВВОДА ─── */
 .input-mode-row{display:flex;gap:12px;margin:28px 0 0}
-.input-mode-btn{
-  flex:1;
-  display:flex;flex-direction:column;align-items:center;gap:6px;
-  padding:14px 8px;
-  border-radius:18px;border:2px solid #d9e3ff;
-  background:#fbfcff;
-  cursor:pointer;font-family:inherit;
-  transition:all .18s ease;
-}
+.input-mode-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px 8px;border-radius:18px;border:2px solid #d9e3ff;background:#fbfcff;cursor:pointer;font-family:inherit;transition:all .18s ease;}
 .input-mode-btn:hover{border-color:#a5b4fc;background:#eff6ff}
 .input-mode-btn.selected{border-color:#4d71ff;background:#eef2ff;box-shadow:0 0 0 4px rgba(77,113,255,.12)}
 .input-mode-icon{font-size:26px;line-height:1}
 .input-mode-name{font-size:14px;font-weight:700;color:#071b52;letter-spacing:.2px}
 .input-mode-btn.selected .input-mode-name{color:#376cff}
 
-.btn-primary {
-  display:block;
-  width: 100%;
-  margin-top: 38px;
-  height: 72px;
-  padding: 0;
-  border-radius: 26px;
-  border: none;
-  background: linear-gradient(90deg, #1e9bff 0%, #8a2cff 100%);
-  color: #fff;
-  font-family: inherit;
-  font-size: 32px;
-  font-weight: 900;
-  cursor: pointer;
-  transition: transform .2s ease, box-shadow .2s ease;
-  box-shadow: 0 18px 35px rgba(91,70,255,.32);
-}
-.btn-primary:hover { transform: translateY(-3px); box-shadow: 0 26px 45px rgba(91,70,255,.4); }
-.btn-primary:active { transform: translateY(0); }
+.btn-primary{display:block;width:100%;margin-top:38px;height:72px;padding:0;border-radius:26px;border:none;background:linear-gradient(90deg,#1e9bff 0%,#8a2cff 100%);color:#fff;font-family:inherit;font-size:32px;font-weight:900;cursor:pointer;transition:transform .2s ease,box-shadow .2s ease;box-shadow:0 18px 35px rgba(91,70,255,.32);}
+.btn-primary:hover{transform:translateY(-3px);box-shadow:0 26px 45px rgba(91,70,255,.4)}
+.btn-primary:active{transform:translateY(0)}
 
 @media (max-width: 760px) {
-  .login-wrap { border-radius: 28px; }
-  .login-card-header { height: 180px; }
-  .login-body { padding: 32px 22px 30px; }
-  .login-label { font-size: 20px; margin-bottom: 12px; }
-  .login-input { height: 62px; font-size: 18px; padding: 0 18px; }
-  .btn-mic { height: 62px; font-size: 24px; }
+  .login-hero-img { max-height: 220px; }
+  .login-card { margin:-32px auto 0; padding: 32px 22px 80px; border-radius:32px 32px 0 0; }
+  .login-label { font-size: 18px; margin-bottom: 12px; }
+  .login-input { height: 56px; font-size: 18px; padding: 0 18px; }
+  .btn-mic { height: 56px; font-size: 24px; }
   .login-name-row { margin-bottom: 24px; }
   .role-row { grid-template-columns: 1fr; }
-  .role-photo { height: 220px; }
-  .role-info { height: auto; padding: 18px 20px; }
-  .role-label-name { font-size: 22px; }
-  .role-hint { font-size: 16px; }
-  .btn-primary { height: 72px; font-size: 24px; margin-top: 28px; }
+  .role-photo { height: 180px; }
+  .role-info { height: auto; padding: 14px 18px; }
+  .role-label-name { font-size: 18px; }
+  .role-hint { font-size: 14px; }
+  .btn-primary { height: 64px; font-size: 22px; margin-top: 24px; }
 }
 
 /* ===== HOME ===== */
@@ -1829,79 +1685,74 @@ body {
   <div class="home-ambient" id="home-ambient"></div>
 
 
-  <div class="login-wrap">
-
-    <!-- Шапка — картинка пятый.png -->
-    <div class="login-card-header">
-      <img src="header.png" alt="Пятый уровень" class="login-header-img">
-    </div>
-
-    <!-- Белое тело карточки -->
-    <div class="login-body">
-
-      <!-- Имя -->
-      <label class="login-label">Как тебя зовут?</label>
-      <div class="login-name-row">
-        <input type="text" class="login-input" id="login-name"
-          placeholder="Например: Маша" maxlength="30"
-          onkeydown="if(event.key==='Enter')doLogin()">
-        <button class="btn-mic" id="login-mic-btn" onclick="toggleLoginMic()" title="Назвать имя голосом">🎤</button>
-      </div>
-
-      <!-- Кто ты? -->
-      <label class="login-label">Кто ты?</label>
-      <div class="role-row">
-
-        <button class="role-btn selected" data-role="student" onclick="selectRole(this)">
-          <div class="role-photo">
-            <img src="student.png" alt="Ученик">
-          </div>
-          <div class="role-info">
-            <div class="role-icon-circle" style="background:#edf4ff">🎓</div>
-            <div>
-              <div class="role-label-name">Ученик</div>
-              <p class="role-hint">Учусь сам</p>
-            </div>
-          </div>
-        </button>
-
-        <button class="role-btn" data-role="parent" onclick="selectRole(this)">
-          <div class="role-photo">
-            <img src="parent.png" alt="Родитель">
-          </div>
-          <div class="role-info">
-            <div class="role-icon-circle" style="background:#fff1d9">👥</div>
-            <div>
-              <div class="role-label-name">Родитель</div>
-              <p class="role-hint">Помогаю и слежу за успехами</p>
-            </div>
-          </div>
-        </button>
-
-      </div>
-
-      <!-- Как отвечать? -->
-      <label class="login-label">Как будешь отвечать?</label>
-      <div class="input-mode-row">
-        <button class="input-mode-btn selected" data-mode="text" onclick="selectInputMode(this)">
-          <span class="input-mode-icon">⌨️</span>
-          <span class="input-mode-name">Текст</span>
-        </button>
-        <button class="input-mode-btn" data-mode="voice" onclick="selectInputMode(this)">
-          <span class="input-mode-icon">🎤</span>
-          <span class="input-mode-name">Голос</span>
-        </button>
-        <button class="input-mode-btn" data-mode="both" onclick="selectInputMode(this)">
-          <span class="input-mode-icon">✨</span>
-          <span class="input-mode-name">Оба</span>
-        </button>
-      </div>
-
-      <button class="btn-primary" onclick="doLogin()">Поехали! 🚀</button>
-    </div>
+  <!-- Шапка с роботом — на синем фоне -->
+  <div class="login-hero">
+    <img src="header.png" alt="Пятый уровень" class="login-hero-img">
   </div>
 
-  <div class="login-ground"></div>
+  <!-- Белая карточка — наезжает на шапку, робот торчит над ней -->
+  <div class="login-card">
+
+    <!-- Имя -->
+    <label class="login-label">Как тебя зовут?</label>
+    <div class="login-name-row">
+      <input type="text" class="login-input" id="login-name"
+        placeholder="Например: Маша" maxlength="30"
+        onkeydown="if(event.key==='Enter')doLogin()">
+      <button class="btn-mic" id="login-mic-btn" onclick="toggleLoginMic()" title="Назвать имя голосом">🎤</button>
+    </div>
+
+    <!-- Кто ты? -->
+    <label class="login-label">Кто ты?</label>
+    <div class="role-row">
+
+      <button class="role-btn selected" data-role="student" onclick="selectRole(this)">
+        <div class="role-photo">
+          <img src="student.png" alt="Ученик">
+        </div>
+        <div class="role-info">
+          <div class="role-icon-circle" style="background:#edf4ff">🎓</div>
+          <div>
+            <div class="role-label-name">Ученик</div>
+            <p class="role-hint">Учусь сам</p>
+          </div>
+        </div>
+      </button>
+
+      <button class="role-btn" data-role="parent" onclick="selectRole(this)">
+        <div class="role-photo">
+          <img src="parent.png" alt="Родитель">
+        </div>
+        <div class="role-info">
+          <div class="role-icon-circle" style="background:#fff1d9">👥</div>
+          <div>
+            <div class="role-label-name">Родитель</div>
+            <p class="role-hint">Помогаю и слежу за успехами</p>
+          </div>
+        </div>
+      </button>
+
+    </div>
+
+    <!-- Как отвечать? -->
+    <label class="login-label">Как будешь отвечать?</label>
+    <div class="input-mode-row">
+      <button class="input-mode-btn selected" data-mode="text" onclick="selectInputMode(this)">
+        <span class="input-mode-icon">⌨️</span>
+        <span class="input-mode-name">Текст</span>
+      </button>
+      <button class="input-mode-btn" data-mode="voice" onclick="selectInputMode(this)">
+        <span class="input-mode-icon">🎤</span>
+        <span class="input-mode-name">Голос</span>
+      </button>
+      <button class="input-mode-btn" data-mode="both" onclick="selectInputMode(this)">
+        <span class="input-mode-icon">✨</span>
+        <span class="input-mode-name">Оба</span>
+      </button>
+    </div>
+
+    <button class="btn-primary" onclick="doLogin()">Поехали! 🚀</button>
+  </div>
 </div>
 
 <!-- ===== HOME ===== -->
