@@ -505,6 +505,7 @@ body.theme-dark .h-theme-switch::after { transform: translateX(18px); }
   box-shadow: var(--h-card-shadow);
   position: relative; overflow: hidden;
   transition: background .3s, border-color .3s;
+  display: flex; flex-direction: column;
 }
 .h-card::after {
   content: ''; position: absolute;
@@ -2188,11 +2189,12 @@ body.theme-dark .h-tile.pink { background: rgba(236,73,217,.08); }
     <nav class="h-nav">
       <button class="h-nav-item active" onclick="showScreen('screen-home')"><span class="h-nav-icon">🏠</span>Главная</button>
       <button class="h-nav-item" onclick="showScreen('screen-homework')"><span class="h-nav-icon">📚</span>Задания</button>
+      <button class="h-nav-item" onclick="showScreen('screen-map')"><span class="h-nav-icon">🗺️</span>Карта тем</button>
       <button class="h-nav-item" onclick="showScreen('screen-trainers')"><span class="h-nav-icon">⚡</span>Тренажёры</button>
       <button class="h-nav-item" onclick="showScreen('screen-self-check')"><span class="h-nav-icon">☑️</span>Проверочные</button>
-      <button class="h-nav-item" onclick="showScreen('screen-parent')"><span class="h-nav-icon">🧩</span>Ошибки</button>
-      <button class="h-nav-item" onclick="showScreen('screen-map')"><span class="h-nav-icon">🏆</span>Достижения</button>
-      <button class="h-nav-item" onclick="showScreen('screen-map')"><span class="h-nav-icon">📊</span>Рейтинг</button>
+      <button class="h-nav-item" onclick="showScreen('screen-funfacts')"><span class="h-nav-icon">🧩</span>Ошибки</button>
+      <button class="h-nav-item" onclick="showScreen('screen-cheatsheet')"><span class="h-nav-icon">🏆</span>Достижения</button>
+      <button class="h-nav-item" onclick="showScreen('screen-parent')"><span class="h-nav-icon">👪</span>Кабинет родителя</button>
       <button class="h-nav-item" onclick="doLogout()"><span class="h-nav-icon">👤</span>Профиль</button>
     </nav>
 
@@ -2249,7 +2251,7 @@ body.theme-dark .h-tile.pink { background: rgba(236,73,217,.08); }
         <div class="h-math-float h-mf4">5</div>
         <div class="h-math-float h-mf5">2</div>
         <div class="h-math-float h-mf6">+</div>
-        <div style="display:flex;align-items:center;justify-content:center;width:220px;height:260px;font-size:120px;animation:bobMascot 3.5s ease-in-out infinite;filter:drop-shadow(0 20px 30px rgba(0,97,194,.22))">🤖</div>
+        <img src="umnik.png" alt="Умник" class="h-mascot-img" onerror="this.style.fontSize='100px';this.style.width='220px';this.style.height='260px';this.outerHTML='<div style=\'font-size:100px;animation:bobMascot 3.5s ease-in-out infinite\'>🤖</div>'">
       </div>
     </div>
 
@@ -2260,7 +2262,8 @@ body.theme-dark .h-tile.pink { background: rgba(236,73,217,.08); }
         <div class="h-card-icon">📖</div>
         <div class="h-card-title">Домашка по номеру</div>
         <div class="h-card-desc"><b>Тема:</b> введи номер задания из учебника</div>
-        <div class="h-hw-form">
+        <div class="h-card-desc" style="margin-top:14px">Найди любое задание из учебника по номеру §1–§7</div>
+        <div class="h-hw-form" style="margin-top:auto;padding-top:22px">
           <input class="h-hw-input" id="home-hw-num" type="text" placeholder="Например: 1.5"
             oninput="homeHwInput(this)" onkeydown="if(event.key==='Enter')homeHwGo()">
           <button class="h-hw-btn" onclick="homeHwGo()">Найти →</button>
@@ -2274,16 +2277,14 @@ body.theme-dark .h-tile.pink { background: rgba(236,73,217,.08); }
         <div class="h-card-title">Проверь себя</div>
         <div class="h-card-desc"><b>Тема:</b> проверочные работы из учебника</div>
         <div class="h-card-desc" style="margin-top:14px">Тест по каждой теме §1–§7 с автопроверкой</div>
-        <button class="h-test-btn" onclick="showScreen('screen-self-check')">Начать тест →</button>
+        <button class="h-test-btn" onclick="showScreen('screen-self-check')" style="margin-top:auto">Начать тест →</button>
       </article>
 
       <!-- Учебник -->
       <article class="h-card">
         <div class="h-book-wrap">
-          <div class="h-book-cover">
-            <h4>Мате-<br>матика</h4>
-            <div class="h-book-5">5</div>
-            <div class="h-book-puzzle"></div>
+          <div class="h-book-cover" style="padding:0;overflow:hidden">
+            <img src="kniga.png" alt="Учебник" style="width:100%;height:100%;object-fit:cover;border-radius:12px;display:block">
           </div>
           <div class="h-book-info">
             <small>Твой учебник</small>
@@ -2297,6 +2298,16 @@ body.theme-dark .h-tile.pink { background: rgba(236,73,217,.08); }
           </div>
         </div>
       </article>
+    </div>
+
+    <!-- Инструкция -->
+    <div class="h-card" style="flex-direction:row;align-items:center;gap:20px;padding:20px 28px;background:linear-gradient(135deg,rgba(71,120,255,.08),rgba(118,80,255,.08));border-color:#c5b8ff;cursor:pointer" onclick="showScreen('screen-funfacts')">
+      <img src="umnik.png" alt="Умник" style="width:60px;height:60px;object-fit:contain;flex-shrink:0">
+      <div>
+        <div class="h-card-title" style="font-size:17px;margin-bottom:4px">Как работать с Умником?</div>
+        <div class="h-card-desc" style="font-size:13px">Введи номер задания → получи объяснение → реши → проверь ответ. Умник объясняет каждый шаг и не даёт ответ сразу!</div>
+      </div>
+      <div class="h-tile-arrow" style="flex-shrink:0;margin-left:auto">›</div>
     </div>
 
     <!-- 4 тайла -->
