@@ -476,6 +476,7 @@ body.theme-dark .h-logout-btn { border-color: rgba(255,100,100,.3); color: #ff70
   padding: 0 24px;
   display: flex; align-items: center; gap: 16px;
   transition: background .3s, border-color .3s;
+  margin-top: 8px;
 }
 .h-xp strong { font-size: 20px; font-weight: 900; color: var(--h-xp-text); white-space: nowrap; }
 .h-xp-line { flex: 1; height: 6px; background: var(--h-line); border-radius: 999px; overflow: hidden; }
@@ -531,9 +532,9 @@ body.theme-dark .h-logout-btn { border-color: rgba(255,100,100,.3); color: #ff70
 .h-card.purple { border-color: #cdbdff; }
 .h-card.purple::before { background: linear-gradient(90deg,#8c6bff,#42c8ff); }
 body.theme-dark .h-card.purple { border-color: rgba(180,150,255,.25); }
-.h-card.green { border-color: #4ac98a; background: linear-gradient(140deg,#eafff4,#d0f7e6); }
+.h-card.green { border-color: #4ac98a; background: var(--h-card); }
 .h-card.green::before { background: linear-gradient(90deg,#22c572,#0ea55e); }
-body.theme-dark .h-card.green { background: linear-gradient(140deg,rgba(53,201,129,.18),rgba(30,130,80,.22)); border-color: rgba(53,201,129,.4); }
+body.theme-dark .h-card.green { background: var(--h-card); border-color: rgba(53,201,129,.4); }
 .h-card-icon {
   width: 44px; height: 44px; border-radius: 12px;
   display: grid; place-items: center;
@@ -580,30 +581,26 @@ body.theme-dark .h-test-btn { background: #1f7a4a; color: #fff; }
 body.theme-dark .h-test-btn:hover { background: #165e38; }
 
 /* Учебник */
-.h-book-wrap { display: grid; grid-template-columns: 130px 1fr; gap: 18px; align-items: center; }
+.h-book-wrap { display: flex; flex-direction: row; gap: 16px; align-items: flex-start; height: 100%; }
 .h-book-cover {
-  height: 180px; border-radius: 12px;
-  background: #fff; border: 1px solid #e1e7fb;
-  box-shadow: 0 12px 22px rgba(70,90,150,.15);
-  padding: 14px 10px; position: relative; overflow: hidden;
-  flex-shrink: 0;
+  width: 110px; flex-shrink: 0;
+  border-radius: 10px;
+  background: transparent; border: none; box-shadow: none;
+  padding: 0; overflow: hidden;
 }
-.h-book-cover h4 { margin: 0; color: #2260aa; font-size: 20px; font-family: Georgia,serif; line-height: 1.1; }
-.h-book-5 { font-size: 52px; color: #b64e71; font-weight: 900; margin-top: 6px; }
-.h-book-cover::after { content:''; position:absolute; left:0; right:0; bottom:0; height:20px; background:linear-gradient(90deg,#bd496e 0 45%,#2e75c4 45% 100%); }
-.h-book-puzzle { position:absolute; right:8px; top:52px; width:60px; height:60px; border-radius:14px; transform:rotate(-14deg); background:linear-gradient(135deg,#ffd35d,#f3a4dc); opacity:.75; }
-.h-book-info small { font-size: 13px; color: var(--h-muted); font-weight: 700; }
-.h-book-info h3 { font-size: 22px; font-weight: 900; color: var(--h-ink); margin: 10px 0 8px; transition: color .3s; }
-.h-book-info p { font-size: 14px; color: var(--h-muted); margin: 0 0 14px; }
-.h-book-progress { display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 800; color: var(--h-ink); }
-.h-book-bar { flex: 1; height: 6px; background: var(--h-line); border-radius: 999px; overflow: hidden; }
+.h-book-cover::after { display: none; }
+.h-book-cover img { width: 100%; display: block; object-fit: contain; }
+.h-book-info { display: flex; flex-direction: column; gap: 6px; flex: 1; }
+.h-book-info small { font-size: 11px; color: var(--h-muted); font-weight: 700; text-transform: uppercase; letter-spacing:.04em; }
+.h-book-progress { display: flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 800; color: var(--h-ink); }
+.h-book-bar { flex: 1; height: 5px; background: var(--h-line); border-radius: 999px; overflow: hidden; }
 .h-book-bar span { display: block; height: 100%; background: #25a8ff; border-radius: 999px; }
 .h-steps-block { margin-top:16px; display:flex; flex-direction:column; gap:7px; border-top:1px solid var(--h-line); padding-top:14px; }
 .h-step { font-size:13px; color:var(--h-ink); opacity:.65; line-height:1.4; transition:color .3s, opacity .3s; }
 body.theme-dark .h-step { opacity:.85; color:#c8d8ff; }
 
 /* 4 нижних тайла */
-.h-tiles { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; }
+.h-tiles { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; margin-top: 8px; }
 .h-tile {
   background: var(--h-tile-bg);
   border: 1px solid var(--h-tile-border);
@@ -636,14 +633,15 @@ body.theme-dark .h-tile.pink { background: rgba(236,73,217,.08); }
 .h-tile-name { font-size: 16px; font-weight: 900; color: var(--h-ink); margin-bottom: 3px; transition: color .3s; }
 .h-tile-desc { font-size: 12px; color: var(--h-muted); line-height: 1.35; transition: color .3s; }
 .h-tile-arrow {
-  width: 42px; height: 42px; border-radius: 50%;
+  width: 38px; height: 38px; border-radius: 50%;
   display: grid; place-items: center;
-  font-size: 22px; font-weight: 900;
+  font-size: 26px; font-weight: 900; line-height: 1;
   background: var(--h-line); color: var(--blue);
   border: 1px solid var(--h-card-border);
-  transition: background .15s;
+  transition: background .15s, transform .15s;
+  align-self: flex-end;
 }
-.h-tile:hover .h-tile-arrow { background: var(--blue); color: #fff; }
+.h-tile:hover .h-tile-arrow { background: var(--blue); color: #fff; transform: translateX(3px); }
 
 /* Навигация главной — с аватаром (legacy, не используется в новом home) */
 .home-nav-logo {
@@ -2293,12 +2291,12 @@ body.theme-dark .h-tile.pink { background: rgba(236,73,217,.08); }
         <div class="h-card-icon">📖</div>
         <div class="h-card-title">Домашка по номеру</div>
         <div class="h-card-desc">Введи номер задания из учебника §1–§7</div>
-        <div class="h-hw-form" style="margin-top:auto;padding-top:22px">
+        <div style="margin-top:auto;display:flex;flex-direction:column;gap:10px">
           <input class="h-hw-input" id="home-hw-num" type="text" placeholder="Например: 1.5"
             oninput="homeHwInput(this)" onkeydown="if(event.key==='Enter')homeHwGo()">
+          <button class="h-hw-btn" onclick="homeHwGo()" style="width:100%;height:52px;font-size:16px">Найти →</button>
+          <div style="font-size:12px;color:var(--h-muted);min-height:16px" id="home-hw-hint"></div>
         </div>
-        <button class="h-hw-btn" onclick="homeHwGo()" style="margin-top:12px;width:100%;height:52px;font-size:16px">Найти →</button>
-        <div style="font-size:12px;color:var(--h-muted);margin-top:8px" id="home-hw-hint"></div>
       </article>
 
       <!-- Проверь себя -->
@@ -2311,18 +2309,18 @@ body.theme-dark .h-tile.pink { background: rgba(236,73,217,.08); }
 
       <!-- Учебник -->
       <article class="h-card">
-        <small style="font-size:12px;font-weight:700;color:var(--h-muted);text-transform:uppercase;letter-spacing:.05em">Твой учебник</small>
-        <div class="h-book-wrap" style="margin-top:10px">
-          <div class="h-book-cover" style="padding:0;overflow:visible;border:none;background:transparent;box-shadow:none">
-            <img src="kniga.png" alt="Учебник" style="width:100%;height:100%;object-fit:contain;display:block">
+        <div class="h-book-wrap">
+          <div class="h-book-cover">
+            <img src="kniga.png" alt="Учебник">
           </div>
-          <div class="h-book-info" style="display:flex;flex-direction:column;gap:8px">
+          <div class="h-book-info">
+            <small>Твой учебник</small>
             <div class="h-book-progress">
-              <span style="font-size:12px">Глава 1 · §2</span>
+              <span>Глава 1 · §2</span>
               <div class="h-book-bar"><span style="width:36%"></span></div>
-              <span style="font-size:12px">36%</span>
+              <span>36%</span>
             </div>
-            <div class="h-steps-block" style="border-top:none;padding-top:0;margin-top:0">
+            <div class="h-steps-block" style="border-top:none;padding-top:0;margin-top:4px">
               <div class="h-step">① Введи номер задания</div>
               <div class="h-step">② Читай объяснение Умника</div>
               <div class="h-step">③ Реши задачу сам</div>
