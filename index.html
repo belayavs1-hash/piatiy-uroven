@@ -173,8 +173,7 @@ body {
 /* Символы на небе */
 .login-sky-math { position:fixed; inset:0; pointer-events:none; z-index:1; }
 .sky-sym { position:absolute; font-weight:900; animation:symFloat ease-in-out infinite; user-select:none; }
-/* √25 — вплотную к левому краю карточки */
-.sky-sym-1{font-size:52px;color:rgba(120,180,255,.65);top:38%;left:calc(50% - 320px);animation-duration:5s}
+.sky-sym-1{font-size:52px;color:rgba(120,180,255,.65);top:3%;left:30%;animation-duration:5s}
 .sky-sym-2{font-size:44px;color:rgba(250,204,21,.65);top:6%;right:20%;animation-duration:6.5s;animation-delay:1s}
 .sky-sym-3{font-size:58px;color:rgba(100,200,255,.5);top:50%;left:10%;animation-duration:7s;animation-delay:2s}
 .sky-sym-4{font-size:46px;color:rgba(250,180,21,.6);top:62%;right:10%;animation-duration:5.5s;animation-delay:3s}
@@ -194,10 +193,10 @@ body {
 }
 /* кубики — хаотично, вплотную к карточке */
 .mc-block:nth-child(1){width:68px;height:68px;background:linear-gradient(145deg,#7C3AED,#5b21b6);top:14%;left:1%;animation-duration:3.8s}
-/* ½ — справа, уровень плашек «Родитель» (~55%) */
-.mc-block:nth-child(2){width:64px;height:64px;background:linear-gradient(145deg,#FACC15,#d97706);top:55%;right:1%;animation-duration:4.3s;animation-delay:.9s}
-/* ∑ — слева, уровень «Кто ты» (~47%) */
-.mc-block:nth-child(3){width:62px;height:62px;background:linear-gradient(145deg,#22C55E,#15803d);top:47%;left:1%;animation-duration:5.1s;animation-delay:1.6s}
+/* ½ — близко к правому краю карточки, уровень плашек «Родитель» */
+.mc-block:nth-child(2){width:64px;height:64px;background:linear-gradient(145deg,#FACC15,#d97706);top:55%;right:calc(50% - 390px);animation-duration:4.3s;animation-delay:.9s}
+/* ∑ — близко к левому краю карточки, уровень «Кто ты» */
+.mc-block:nth-child(3){width:62px;height:62px;background:linear-gradient(145deg,#22C55E,#15803d);top:47%;left:calc(50% - 385px);animation-duration:5.1s;animation-delay:1.6s}
 .mc-block:nth-child(4){width:66px;height:66px;background:linear-gradient(145deg,#EF4444,#b91c1c);top:35%;right:1%;animation-duration:4s;animation-delay:2.4s}
 .mc-block:nth-child(5){width:60px;height:60px;background:linear-gradient(145deg,#06b6d4,#0e7490);top:76%;left:1%;animation-duration:4.7s;animation-delay:.5s}
 .mc-block:nth-child(6){width:62px;height:62px;background:linear-gradient(145deg,#f97316,#c2410c);top:68%;right:1%;animation-duration:3.5s;animation-delay:2s}
