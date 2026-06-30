@@ -285,9 +285,337 @@ body {
 }
 
 /* ===== HOME ===== */
-#screen-home { padding-bottom: 0; }
 
-/* Навигация главной — с аватаром */
+/* Светлая тема (default) */
+body.theme-light {
+  --h-bg: #f4f8ff;
+  --h-sidebar: #ffffff;
+  --h-ink: #071b52;
+  --h-muted: #6f7fa8;
+  --h-line: #dfe8ff;
+  --h-card: #ffffff;
+  --h-card-border: #dfe8ff;
+  --h-card-shadow: 0 14px 35px rgba(77,118,215,.12);
+  --h-nav-active-bg: linear-gradient(135deg,#4778ff,#7650ff);
+  --h-nav-active-color: #fff;
+  --h-nav-color: #52628d;
+  --h-nav-hover: #eef5ff;
+  --h-greeting: #071b52;
+  --h-sub: #263a72;
+  --h-xp-bg: rgba(255,255,255,.9);
+  --h-xp-border: #dfe8ff;
+  --h-xp-text: #4267ff;
+  --h-tile-bg: rgba(255,255,255,.9);
+  --h-tile-border: #dce6ff;
+}
+/* Тёмная тема */
+body.theme-dark {
+  --h-bg: #0d1340;
+  --h-sidebar: rgba(255,255,255,.06);
+  --h-ink: #fff;
+  --h-muted: rgba(255,255,255,.45);
+  --h-line: rgba(255,255,255,.1);
+  --h-card: rgba(255,255,255,.07);
+  --h-card-border: rgba(255,255,255,.12);
+  --h-card-shadow: 0 14px 35px rgba(0,0,0,.35);
+  --h-nav-active-bg: linear-gradient(135deg,#4778ff,#7650ff);
+  --h-nav-active-color: #fff;
+  --h-nav-color: rgba(255,255,255,.6);
+  --h-nav-hover: rgba(255,255,255,.08);
+  --h-greeting: #fff;
+  --h-sub: rgba(255,255,255,.6);
+  --h-xp-bg: rgba(255,255,255,.07);
+  --h-xp-border: rgba(255,255,255,.12);
+  --h-xp-text: var(--gold);
+  --h-tile-bg: rgba(255,255,255,.07);
+  --h-tile-border: rgba(255,255,255,.12);
+}
+
+#screen-home {
+  display: grid !important;
+  grid-template-columns: 260px 1fr;
+  min-height: 100vh;
+  background: var(--h-bg);
+  transition: background .3s;
+}
+#screen-home.active { display: grid !important; }
+
+/* ===== SIDEBAR ===== */
+.h-sidebar {
+  background: var(--h-sidebar);
+  border-right: 1px solid var(--h-line);
+  display: flex;
+  flex-direction: column;
+  padding: 24px 18px;
+  gap: 8px;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  transition: background .3s, border-color .3s;
+}
+.h-brand {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 8px; padding-bottom: 18px;
+  border-bottom: 1px solid var(--h-line);
+}
+.h-logo {
+  width: 52px; height: 52px; border-radius: 16px;
+  background: linear-gradient(145deg,#18c9ff,#4c55ff);
+  box-shadow: 0 8px 20px rgba(47,107,255,.3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 24px; font-weight: 900; color: var(--gold);
+  flex-shrink: 0;
+}
+.h-brand-text { font-size: 18px; font-weight: 900; color: var(--h-ink); line-height: 1.1; }
+.h-brand-sub { font-size: 12px; color: var(--h-muted); margin-top: 2px; }
+
+.h-nav { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+.h-nav-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 14px; border-radius: 14px;
+  font-size: 15px; font-weight: 700;
+  color: var(--h-nav-color);
+  cursor: pointer; border: none; background: none;
+  font-family: inherit; text-align: left;
+  transition: background .15s, color .15s;
+  width: 100%;
+}
+.h-nav-item:hover { background: var(--h-nav-hover); color: var(--blue); }
+.h-nav-item.active { background: var(--h-nav-active-bg); color: var(--h-nav-active-color); box-shadow: 0 8px 20px rgba(83,92,255,.28); }
+.h-nav-icon { font-size: 19px; width: 22px; text-align: center; flex-shrink: 0; }
+
+.h-sidebar-bottom { margin-top: auto; display: flex; flex-direction: column; gap: 10px; }
+
+/* Серия дней */
+.h-streak {
+  background: var(--h-tile-bg);
+  border: 1px solid var(--h-tile-border);
+  border-radius: 16px; padding: 14px 16px;
+}
+.h-streak-title { font-size: 13px; font-weight: 800; color: var(--h-ink); margin-bottom: 10px; display: flex; justify-content: space-between; }
+.h-streak-dots { display: flex; gap: 6px; }
+.h-streak-dot { width: 12px; height: 12px; border-radius: 50%; background: var(--h-line); border: 1px solid var(--h-card-border); }
+.h-streak-dot.done { background: linear-gradient(135deg,#475cff,#8a5cff); border-color: transparent; }
+
+/* Уровень */
+.h-level {
+  background: var(--h-tile-bg);
+  border: 1px solid var(--h-tile-border);
+  border-radius: 16px; padding: 14px 16px;
+}
+.h-level-row { display: flex; gap: 12px; align-items: center; margin-bottom: 10px; }
+.h-level-hex {
+  width: 48px; height: 48px; flex-shrink: 0;
+  background: linear-gradient(145deg,#4c55ff,#7c3aed);
+  clip-path: polygon(25% 6%,75% 6%,100% 50%,75% 94%,25% 94%,0 50%);
+  display: grid; place-items: center;
+  font-size: 24px; font-weight: 900; color: #fff;
+}
+.h-level-label { font-size: 11px; color: var(--h-muted); font-weight: 700; }
+.h-level-xp { font-size: 17px; font-weight: 900; color: var(--h-ink); }
+.h-level-bar { height: 7px; border-radius: 999px; background: var(--h-line); overflow: hidden; }
+.h-level-bar-fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg,#366eff,#8c58ff); transition: width .6s; }
+
+/* Переключатель темы */
+.h-theme-toggle {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 14px;
+  background: var(--h-tile-bg);
+  border: 1px solid var(--h-tile-border);
+  border-radius: 14px;
+  font-size: 13px; font-weight: 700; color: var(--h-muted);
+  cursor: pointer;
+}
+.h-theme-switch {
+  width: 40px; height: 22px; border-radius: 999px;
+  background: var(--h-line); position: relative;
+  transition: background .2s; flex-shrink: 0;
+}
+.h-theme-switch::after {
+  content: ''; position: absolute;
+  width: 16px; height: 16px; border-radius: 50%;
+  background: #fff; top: 3px; left: 3px;
+  transition: transform .2s;
+  box-shadow: 0 2px 6px rgba(0,0,0,.2);
+}
+body.theme-dark .h-theme-switch { background: linear-gradient(135deg,#4778ff,#7650ff); }
+body.theme-dark .h-theme-switch::after { transform: translateX(18px); }
+
+/* ===== MAIN ===== */
+.h-main {
+  display: flex; flex-direction: column;
+  padding: 28px 32px 40px;
+  gap: 24px;
+  overflow-y: auto;
+  min-height: 100vh;
+}
+
+/* Hero */
+.h-hero { display: grid; grid-template-columns: 1fr 480px; gap: 24px; align-items: start; }
+.h-greeting { font-size: 42px; font-weight: 900; color: var(--h-greeting); line-height: 1.05; letter-spacing: -.03em; margin-bottom: 6px; transition: color .3s; }
+.h-sub { font-size: 20px; color: var(--h-sub); margin-bottom: 22px; transition: color .3s; }
+
+/* XP капсула */
+.h-xp {
+  height: 62px; border-radius: 999px;
+  background: var(--h-xp-bg);
+  border: 1px solid var(--h-xp-border);
+  box-shadow: var(--h-card-shadow);
+  padding: 0 24px;
+  display: flex; align-items: center; gap: 16px;
+  transition: background .3s, border-color .3s;
+}
+.h-xp strong { font-size: 20px; font-weight: 900; color: var(--h-xp-text); white-space: nowrap; }
+.h-xp-line { flex: 1; height: 6px; background: var(--h-line); border-radius: 999px; overflow: hidden; }
+.h-xp-line span { display: block; height: 100%; border-radius: 999px; background: linear-gradient(90deg,#ffbf27,#ffd84a); }
+.h-xp-sparkle { font-size: 20px; color: #9db4ff; }
+
+/* Mascot zone */
+.h-mascot {
+  position: relative; min-height: 300px;
+  display: flex; align-items: flex-end; justify-content: center;
+}
+.h-mascot-img {
+  width: 260px; height: 280px; object-fit: contain;
+  filter: drop-shadow(0 20px 30px rgba(0,97,194,.22));
+  animation: bobMascot 3.5s ease-in-out infinite;
+  position: relative; z-index: 2;
+}
+@keyframes bobMascot{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+.h-math-float {
+  position: absolute; font-weight: 900;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,.15));
+  user-select: none; animation: floatMf ease-in-out infinite;
+}
+@keyframes floatMf{0%,100%{transform:translateY(0) rotate(var(--r,0deg))}50%{transform:translateY(-10px) rotate(calc(var(--r,0deg) * -1))}}
+.h-mf1{left:20px;top:20px;font-size:22px;color:#2a84ff;--r:-12deg;animation-duration:4s}
+.h-mf2{right:20px;top:20px;font-size:22px;color:#2a84ff;--r:9deg;animation-duration:5s;animation-delay:.5s}
+.h-mf3{left:10px;top:90px;font-size:26px;color:#13c7b9;--r:-8deg;animation-duration:3.5s;animation-delay:1s}
+.h-mf4{left:40px;bottom:60px;font-size:54px;color:#2a84ff;--r:-5deg;animation-duration:4.5s;animation-delay:1.5s}
+.h-mf5{right:30px;bottom:80px;font-size:62px;color:#ffae25;--r:8deg;animation-duration:3.8s;animation-delay:.8s}
+.h-mf6{right:14px;top:80px;font-size:44px;color:#67d349;--r:6deg;animation-duration:4.2s;animation-delay:1.2s}
+
+/* 3-колоночный контент */
+.h-content { display: grid; grid-template-columns: 1fr 1fr 1.2fr; gap: 20px; }
+.h-card {
+  background: var(--h-card);
+  border: 1px solid var(--h-card-border);
+  border-radius: 24px; padding: 28px;
+  box-shadow: var(--h-card-shadow);
+  position: relative; overflow: hidden;
+  transition: background .3s, border-color .3s;
+}
+.h-card::after {
+  content: ''; position: absolute;
+  right: -60px; bottom: -80px;
+  width: 180px; height: 180px; border-radius: 50%;
+  background: radial-gradient(circle,rgba(76,121,255,.12),transparent 65%);
+}
+.h-card.purple { border-color: #cdbdff; }
+body.theme-dark .h-card.purple { border-color: rgba(180,150,255,.25); }
+.h-card.green { border-color: #bcefd7; background: linear-gradient(140deg,var(--h-card),rgba(240,255,248,.5)); }
+body.theme-dark .h-card.green { background: rgba(53,201,129,.08); border-color: rgba(53,201,129,.25); }
+.h-card-icon {
+  width: 52px; height: 52px; border-radius: 14px;
+  display: grid; place-items: center;
+  font-size: 26px; margin-bottom: 18px;
+  box-shadow: 0 8px 18px rgba(0,0,0,.12);
+}
+.h-card.purple .h-card-icon { background: linear-gradient(135deg,#8c6bff,#42c8ff); }
+.h-card.green .h-card-icon { background: linear-gradient(135deg,#37d07f,#72e49c); }
+.h-card-title { font-size: 22px; font-weight: 900; color: var(--h-ink); margin-bottom: 8px; transition: color .3s; }
+.h-card-desc { font-size: 15px; color: var(--h-muted); line-height: 1.5; margin-bottom: 0; transition: color .3s; }
+
+/* Домашка форма */
+.h-hw-form { display: flex; gap: 12px; margin-top: 22px; }
+.h-hw-input {
+  flex: 1; height: 58px; border-radius: 14px;
+  border: 1px solid var(--h-card-border);
+  background: var(--h-bg); color: var(--h-ink);
+  font-family: inherit; font-size: 20px; font-weight: 800;
+  padding: 0 18px; outline: none;
+  transition: border-color .2s;
+}
+.h-hw-input:focus { border-color: var(--blue); }
+.h-hw-input::placeholder { color: var(--h-muted); font-weight: 600; font-size: 15px; }
+.h-hw-btn {
+  height: 58px; padding: 0 24px; border: none; border-radius: 14px;
+  background: linear-gradient(135deg,#406fff,#8a4fff);
+  color: #fff; font-family: inherit; font-size: 17px; font-weight: 900;
+  cursor: pointer; white-space: nowrap;
+  box-shadow: 0 10px 22px rgba(98,80,255,.28);
+  transition: transform .15s, box-shadow .15s;
+}
+.h-hw-btn:hover { transform: translateY(-2px); box-shadow: 0 16px 30px rgba(98,80,255,.38); }
+
+/* Кнопка теста */
+.h-test-btn {
+  margin-top: 22px; height: 44px; padding: 0 20px;
+  border: 1px solid #bdeed6; background: #f3fff8;
+  color: #1f8a57; border-radius: 12px;
+  font-family: inherit; font-weight: 900; font-size: 15px;
+  cursor: pointer; transition: background .15s;
+}
+body.theme-dark .h-test-btn { background: rgba(53,201,129,.12); border-color: rgba(53,201,129,.3); color: #4ade80; }
+.h-test-btn:hover { background: #e0fff0; }
+body.theme-dark .h-test-btn:hover { background: rgba(53,201,129,.2); }
+
+/* Учебник */
+.h-book-wrap { display: grid; grid-template-columns: 130px 1fr; gap: 18px; align-items: center; }
+.h-book-cover {
+  height: 180px; border-radius: 12px;
+  background: #fff; border: 1px solid #e1e7fb;
+  box-shadow: 0 12px 22px rgba(70,90,150,.15);
+  padding: 14px 10px; position: relative; overflow: hidden;
+  flex-shrink: 0;
+}
+.h-book-cover h4 { margin: 0; color: #2260aa; font-size: 20px; font-family: Georgia,serif; line-height: 1.1; }
+.h-book-5 { font-size: 52px; color: #b64e71; font-weight: 900; margin-top: 6px; }
+.h-book-cover::after { content:''; position:absolute; left:0; right:0; bottom:0; height:20px; background:linear-gradient(90deg,#bd496e 0 45%,#2e75c4 45% 100%); }
+.h-book-puzzle { position:absolute; right:8px; top:52px; width:60px; height:60px; border-radius:14px; transform:rotate(-14deg); background:linear-gradient(135deg,#ffd35d,#f3a4dc); opacity:.75; }
+.h-book-info small { font-size: 13px; color: var(--h-muted); font-weight: 700; }
+.h-book-info h3 { font-size: 22px; font-weight: 900; color: var(--h-ink); margin: 10px 0 8px; transition: color .3s; }
+.h-book-info p { font-size: 14px; color: var(--h-muted); margin: 0 0 14px; }
+.h-book-progress { display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 800; color: var(--h-ink); }
+.h-book-bar { flex: 1; height: 6px; background: var(--h-line); border-radius: 999px; overflow: hidden; }
+.h-book-bar span { display: block; height: 100%; background: #25a8ff; border-radius: 999px; }
+
+/* 4 нижних тайла */
+.h-tiles { display: grid; grid-template-columns: repeat(4,1fr); gap: 18px; }
+.h-tile {
+  background: var(--h-tile-bg);
+  border: 1px solid var(--h-tile-border);
+  border-radius: 20px; padding: 24px;
+  cursor: pointer;
+  display: grid; grid-template-columns: 1fr 42px; gap: 8px; align-items: end;
+  box-shadow: var(--h-card-shadow);
+  transition: transform .2s, box-shadow .2s, background .3s;
+}
+.h-tile:hover { transform: translateY(-3px); box-shadow: 0 18px 40px rgba(77,118,215,.18); }
+.h-tile.orange { border-color: #ffdf94; }
+body.theme-light .h-tile.orange { background: linear-gradient(135deg,#fff,#fff9ec); }
+body.theme-dark .h-tile.orange { background: rgba(255,174,37,.08); }
+.h-tile.green2 { border-color: #bdeed7; }
+body.theme-light .h-tile.green2 { background: linear-gradient(135deg,#fff,#f3fff8); }
+body.theme-dark .h-tile.green2 { background: rgba(53,201,129,.08); }
+.h-tile.pink { border-color: #ffc7ed; }
+body.theme-light .h-tile.pink { background: linear-gradient(135deg,#fff,#fff5fc); }
+body.theme-dark .h-tile.pink { background: rgba(236,73,217,.08); }
+.h-tile-emoji { font-size: 34px; margin-bottom: 10px; display: block; }
+.h-tile-name { font-size: 18px; font-weight: 900; color: var(--h-ink); margin-bottom: 4px; transition: color .3s; }
+.h-tile-desc { font-size: 13px; color: var(--h-muted); line-height: 1.35; transition: color .3s; }
+.h-tile-arrow {
+  width: 42px; height: 42px; border-radius: 50%;
+  display: grid; place-items: center;
+  font-size: 22px; font-weight: 900;
+  background: var(--h-line); color: var(--blue);
+  border: 1px solid var(--h-card-border);
+  transition: background .15s;
+}
+.h-tile:hover .h-tile-arrow { background: var(--blue); color: #fff; }
+
+/* Навигация главной — с аватаром (legacy, не используется в новом home) */
 .home-nav-logo {
   display: flex;
   align-items: center;
@@ -1742,7 +2070,7 @@ body {
 .map-quiz-result { font-size:13px; min-height:16px; }
 </style>
 </head>
-<body class="on-login">
+<body class="on-login theme-light">
 
 <!-- ===== LOGIN ===== -->
 <div id="screen-login" class="screen active">
@@ -1845,102 +2173,168 @@ body {
 </div>
 
 <!-- ===== HOME ===== -->
-<div id="screen-home" class="screen">
+<div id="screen-home" class="screen theme-light">
 
-  <nav class="top-nav" style="position:relative;z-index:10">
-    <div class="home-nav-logo">
-      <div class="home-nav-logo-cube">5</div>
+  <!-- САЙДБАР -->
+  <aside class="h-sidebar">
+    <div class="h-brand">
+      <div class="h-logo">5★</div>
       <div>
-        <div class="home-nav-logo-text">Пятый уровень</div>
-        <div class="home-nav-logo-sub">ИИ-репетитор по математике</div>
+        <div class="h-brand-text">Пятый<br>уровень</div>
+        <div class="h-brand-sub">Учись. Понимай. Побеждай.</div>
       </div>
     </div>
-    <div class="nav-menu">
-      <a onclick="showScreen('screen-home')" class="active">Главная</a>
-      <a onclick="showScreen('screen-map')">Карта тем</a>
-      <a onclick="showScreen('screen-trainers')">Тренажёры</a>
-      <a onclick="showScreen('screen-parent')">Родителю</a>
-    </div>
-    <div class="home-nav-avatar" onclick="doLogout()">
-      <div class="home-nav-avatar-pic">🧑</div>
-      <div>
-        <div class="home-nav-avatar-name" id="home-nav-name">Маша • 5 класс</div>
-        <div class="home-nav-avatar-xp" id="nav-xp-home">⭐ 0 XP</div>
-      </div>
-    </div>
-  </nav>
 
-  <div class="home-body" style="position:relative;z-index:1">
-    <!-- Приветствие -->
-    <div class="home-greeting" id="home-greeting">Привет, Маша! 👋</div>
-    <div class="home-sub">Что будем делать сегодня?</div>
-    <div class="xp-pill" id="home-xp">⭐ 0 XP заработано</div>
+    <nav class="h-nav">
+      <button class="h-nav-item active" onclick="showScreen('screen-home')"><span class="h-nav-icon">🏠</span>Главная</button>
+      <button class="h-nav-item" onclick="showScreen('screen-homework')"><span class="h-nav-icon">📚</span>Задания</button>
+      <button class="h-nav-item" onclick="showScreen('screen-trainers')"><span class="h-nav-icon">⚡</span>Тренажёры</button>
+      <button class="h-nav-item" onclick="showScreen('screen-self-check')"><span class="h-nav-icon">☑️</span>Проверочные</button>
+      <button class="h-nav-item" onclick="showScreen('screen-parent')"><span class="h-nav-icon">🧩</span>Ошибки</button>
+      <button class="h-nav-item" onclick="showScreen('screen-map')"><span class="h-nav-icon">🏆</span>Достижения</button>
+      <button class="h-nav-item" onclick="showScreen('screen-map')"><span class="h-nav-icon">📊</span>Рейтинг</button>
+      <button class="h-nav-item" onclick="doLogout()"><span class="h-nav-icon">👤</span>Профиль</button>
+    </nav>
 
-    <!-- Две большие плашки: домашка + проверь себя -->
-    <div class="home-two-cards">
-      <div class="home-big-card">
-        <div class="home-big-card-icon">📖</div>
-        <div class="home-big-card-title">Домашка по номеру</div>
-        <div class="home-big-card-sub">Тема: введи номер задания из учебника</div>
-        <div class="home-hw-input-row">
-          <input class="home-hw-input" id="home-hw-num" type="text" placeholder="Например: 1.5" oninput="homeHwInput(this)" onkeydown="if(event.key==='Enter')homeHwGo()">
-          <button class="home-hw-btn" onclick="homeHwGo()">Найти →</button>
+    <div class="h-sidebar-bottom">
+      <!-- Серия -->
+      <div class="h-streak">
+        <div class="h-streak-title"><span>🔥 Серия: 7 дней</span><span>🎁</span></div>
+        <div class="h-streak-dots">
+          <span class="h-streak-dot done"></span>
+          <span class="h-streak-dot done"></span>
+          <span class="h-streak-dot done"></span>
+          <span class="h-streak-dot done"></span>
+          <span class="h-streak-dot done"></span>
+          <span class="h-streak-dot"></span>
         </div>
-        <div class="home-hw-hint" id="home-hw-hint" style="min-height:16px"></div>
       </div>
-      <div class="home-big-card home-big-card-green" onclick="showScreen('screen-self-check')">
-        <div class="home-big-card-icon">✅</div>
-        <div class="home-big-card-title">Проверь себя</div>
-        <div class="home-big-card-sub">Тема: проверочные работы из учебника</div>
-        <div class="home-big-card-desc">Тест по каждой теме §1–§7 с автопроверкой</div>
+      <!-- Уровень -->
+      <div class="h-level">
+        <div class="h-level-row">
+          <div class="h-level-hex">5</div>
+          <div>
+            <div class="h-level-label">До следующего уровня</div>
+            <div class="h-level-xp" id="home-level-xp">882 XP</div>
+          </div>
+        </div>
+        <div class="h-level-bar"><div class="h-level-bar-fill" style="width:48%"></div></div>
+      </div>
+      <!-- Переключатель темы -->
+      <div class="h-theme-toggle" onclick="toggleHomeTheme()">
+        <span id="home-theme-label">🌙 Тёмная тема</span>
+        <div class="h-theme-switch"></div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="h-main">
+
+    <!-- Hero: приветствие + робот -->
+    <div class="h-hero">
+      <div>
+        <div class="h-greeting" id="home-greeting">Привет, Маша! 👋</div>
+        <div class="h-sub">Что будем делать сегодня?</div>
+        <div class="h-xp">
+          <strong id="home-xp">⭐ 0 XP заработано</strong>
+          <div class="h-xp-line"><span style="width:58%"></span></div>
+          <span class="h-xp-sparkle">✦ ✨</span>
+        </div>
+      </div>
+      <div class="h-mascot">
+        <div class="h-math-float h-mf1">a²+b²=c²</div>
+        <div class="h-math-float h-mf2">5×7=35</div>
+        <div class="h-math-float h-mf3">√25</div>
+        <div class="h-math-float h-mf4">5</div>
+        <div class="h-math-float h-mf5">2</div>
+        <div class="h-math-float h-mf6">+</div>
+        <div style="display:flex;align-items:center;justify-content:center;width:220px;height:260px;font-size:120px;animation:bobMascot 3.5s ease-in-out infinite;filter:drop-shadow(0 20px 30px rgba(0,97,194,.22))">🤖</div>
       </div>
     </div>
 
-    <!-- Нижние карточки -->
-    <div class="home-cards-row">
-      <div class="section-card" style="--accent:#2563EB" onclick="showScreen('screen-map')">
-        <span class="sc-icon">🗺</span>
-        <div class="sc-name">Карта тем</div>
-        <div class="sc-desc">Повторить тему и закрыть пробелы.</div>
+    <!-- 3 карточки -->
+    <div class="h-content">
+      <!-- Домашка -->
+      <article class="h-card purple">
+        <div class="h-card-icon">📖</div>
+        <div class="h-card-title">Домашка по номеру</div>
+        <div class="h-card-desc"><b>Тема:</b> введи номер задания из учебника</div>
+        <div class="h-hw-form">
+          <input class="h-hw-input" id="home-hw-num" type="text" placeholder="Например: 1.5"
+            oninput="homeHwInput(this)" onkeydown="if(event.key==='Enter')homeHwGo()">
+          <button class="h-hw-btn" onclick="homeHwGo()">Найти →</button>
+        </div>
+        <div style="font-size:12px;color:var(--h-muted);margin-top:8px" id="home-hw-hint"></div>
+      </article>
+
+      <!-- Проверь себя -->
+      <article class="h-card green">
+        <div class="h-card-icon">✓</div>
+        <div class="h-card-title">Проверь себя</div>
+        <div class="h-card-desc"><b>Тема:</b> проверочные работы из учебника</div>
+        <div class="h-card-desc" style="margin-top:14px">Тест по каждой теме §1–§7 с автопроверкой</div>
+        <button class="h-test-btn" onclick="showScreen('screen-self-check')">Начать тест →</button>
+      </article>
+
+      <!-- Учебник -->
+      <article class="h-card">
+        <div class="h-book-wrap">
+          <div class="h-book-cover">
+            <h4>Мате-<br>матика</h4>
+            <div class="h-book-5">5</div>
+            <div class="h-book-puzzle"></div>
+          </div>
+          <div class="h-book-info">
+            <small>Твой учебник</small>
+            <h3>Математика<br>5 класс · Часть 1</h3>
+            <p>Продолжай изучение по учебнику</p>
+            <div class="h-book-progress">
+              <span>Глава 1 · §2</span>
+              <div class="h-book-bar"><span style="width:36%"></span></div>
+              <span>36%</span>
+            </div>
+          </div>
+        </div>
+      </article>
+    </div>
+
+    <!-- 4 тайла -->
+    <div class="h-tiles">
+      <div class="h-tile" onclick="showScreen('screen-map')">
+        <div>
+          <span class="h-tile-emoji">🌍</span>
+          <div class="h-tile-name">Карта тем</div>
+          <div class="h-tile-desc">Повторить тему и закрыть пробелы.</div>
+        </div>
+        <div class="h-tile-arrow">›</div>
       </div>
-      <div class="section-card" style="--accent:#F59E0B" onclick="showScreen('screen-trainers')">
-        <span class="sc-icon">⚡</span>
-        <div class="sc-name">Тренажёры</div>
-        <div class="sc-desc">Короткие тренировки на 5–7 минут.</div>
+      <div class="h-tile orange" onclick="showScreen('screen-trainers')">
+        <div>
+          <span class="h-tile-emoji">⚡</span>
+          <div class="h-tile-name">Тренажёры</div>
+          <div class="h-tile-desc">Короткие тренировки на 5–7 минут.</div>
+        </div>
+        <div class="h-tile-arrow" style="color:#f39b16">›</div>
       </div>
-      <div class="section-card" style="--accent:#EF4444" onclick="showScreen('screen-parent')">
-        <span class="sc-icon">🧩</span>
-        <div class="sc-name">Мои ошибки</div>
-        <div class="sc-desc">Разбери места, где чаще всего ошибаюсь.</div>
+      <div class="h-tile green2" onclick="showScreen('screen-parent')">
+        <div>
+          <span class="h-tile-emoji">🧩</span>
+          <div class="h-tile-name">Мои ошибки</div>
+          <div class="h-tile-desc">Разбери места, где чаще всего ошибаешься.</div>
+        </div>
+        <div class="h-tile-arrow" style="color:#22a465">›</div>
       </div>
-      <div class="section-card" style="--accent:#EC4899" onclick="showScreen('screen-parent')">
-        <span class="sc-icon">👨‍👩‍👧</span>
-        <div class="sc-name">Кабинет родителя</div>
-        <div class="sc-desc">Прогресс, рекомендации и достижения.</div>
+      <div class="h-tile pink" onclick="showScreen('screen-parent')">
+        <div>
+          <span class="h-tile-emoji">👪</span>
+          <div class="h-tile-name">Кабинет родителя</div>
+          <div class="h-tile-desc">Прогресс, рекомендации и достижения.</div>
+        </div>
+        <div class="h-tile-arrow" style="color:#dd4fc7">›</div>
       </div>
     </div>
 
-    <!-- Дополнительные рубрики -->
-    <div class="home-cards-row" style="margin-top:12px">
-      <div class="section-card" style="--accent:#8B5CF6" onclick="showScreen('screen-funfacts')">
-        <span class="sc-icon">💡</span>
-        <div class="sc-name">Хочу всё знать</div>
-        <div class="sc-desc">Интересные факты о математике.</div>
-      </div>
-      <div class="section-card" style="--accent:#0EA5E9" onclick="showScreen('screen-cheatsheet')">
-        <span class="sc-icon">📋</span>
-        <div class="sc-name">Шпаргалка</div>
-        <div class="sc-desc">Формулы и правила под рукой.</div>
-      </div>
-    </div>
-
-  </div>
-
-  <div class="bottom-nav" style="position:relative;z-index:10">
-    <a onclick="showScreen('screen-home')" class="active"><span class="icon">🏠</span>Главная</a>
-    <a onclick="showScreen('screen-map')"><span class="icon">🗺</span>Темы</a>
-    <a onclick="showScreen('screen-self-check')"><span class="icon">✅</span>Проверка</a>
-    <a onclick="showScreen('screen-parent')"><span class="icon">🏆</span>Прогресс</a>
   </div>
 </div>
 
@@ -4651,10 +5045,34 @@ function renderHome() {
   if(!ST.user) return;
   document.getElementById('home-greeting').textContent = `Привет, ${ST.user.name}! 👋`;
   document.getElementById('home-xp').textContent = `⭐ ${ST.xp} XP заработано`;
-  document.getElementById('nav-xp-home').textContent = `⭐ ${ST.xp} XP`;
+  const navXp = document.getElementById('nav-xp-home');
+  if(navXp) navXp.textContent = `⭐ ${ST.xp} XP`;
   const navName = document.getElementById('home-nav-name');
   if(navName) navName.textContent = `${ST.user.name} • 5 класс`;
+  // восстановить тему
+  const saved = localStorage.getItem('homeTheme') || 'light';
+  applyHomeTheme(saved);
   spawnAmbientClouds();
+}
+function applyHomeTheme(theme) {
+  const scr = document.getElementById('screen-home');
+  const lbl = document.getElementById('home-theme-label');
+  if(theme === 'dark') {
+    scr.classList.remove('theme-light'); scr.classList.add('theme-dark');
+    document.body.classList.remove('theme-light'); document.body.classList.add('theme-dark');
+    if(lbl) lbl.textContent = '☀️ Светлая тема';
+  } else {
+    scr.classList.remove('theme-dark'); scr.classList.add('theme-light');
+    document.body.classList.remove('theme-dark'); document.body.classList.add('theme-light');
+    if(lbl) lbl.textContent = '🌙 Тёмная тема';
+  }
+}
+function toggleHomeTheme() {
+  const scr = document.getElementById('screen-home');
+  const isDark = scr.classList.contains('theme-dark');
+  const next = isDark ? 'light' : 'dark';
+  localStorage.setItem('homeTheme', next);
+  applyHomeTheme(next);
 }
 
 // Поиск задания с главной страницы (единое поле)
