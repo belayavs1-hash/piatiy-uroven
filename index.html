@@ -481,6 +481,7 @@ body.theme-dark .h-theme-switch::after { transform: translateX(18px); }
   filter: drop-shadow(0 20px 30px rgba(0,97,194,.22));
   animation: bobMascot 3.5s ease-in-out infinite;
   position: relative; z-index: 2;
+  mix-blend-mode: multiply;
 }
 @keyframes bobMascot{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
 .h-math-float {
@@ -2297,17 +2298,13 @@ body.theme-dark .h-tile.pink { background: rgba(236,73,217,.08); }
             </div>
           </div>
         </div>
+        <div style="margin-top:18px;display:flex;flex-direction:column;gap:8px;border-top:1px solid rgba(0,0,0,.07);padding-top:16px">
+          <div style="font-size:13px;color:var(--h-muted)">① Введи номер задания из учебника</div>
+          <div style="font-size:13px;color:var(--h-muted)">② Читай объяснение шага от Умника</div>
+          <div style="font-size:13px;color:var(--h-muted)">③ Реши задачу сам</div>
+          <div style="font-size:13px;color:var(--h-muted)">④ Проверь ответ и получи XP</div>
+        </div>
       </article>
-    </div>
-
-    <!-- Инструкция -->
-    <div class="h-card" style="flex-direction:row;align-items:center;gap:20px;padding:20px 28px;background:linear-gradient(135deg,rgba(71,120,255,.08),rgba(118,80,255,.08));border-color:#c5b8ff;cursor:pointer" onclick="showScreen('screen-funfacts')">
-      <img src="umnik.png" alt="Умник" style="width:60px;height:60px;object-fit:contain;flex-shrink:0">
-      <div>
-        <div class="h-card-title" style="font-size:17px;margin-bottom:4px">Как работать с Умником?</div>
-        <div class="h-card-desc" style="font-size:13px">Введи номер задания → получи объяснение → реши → проверь ответ. Умник объясняет каждый шаг и не даёт ответ сразу!</div>
-      </div>
-      <div class="h-tile-arrow" style="flex-shrink:0;margin-left:auto">›</div>
     </div>
 
     <!-- 4 тайла -->
@@ -2328,7 +2325,7 @@ body.theme-dark .h-tile.pink { background: rgba(236,73,217,.08); }
         </div>
         <div class="h-tile-arrow" style="color:#f39b16">›</div>
       </div>
-      <div class="h-tile green2" onclick="showScreen('screen-parent')">
+      <div class="h-tile green2" onclick="showScreen('screen-funfacts')">
         <div>
           <span class="h-tile-emoji">🧩</span>
           <div class="h-tile-name">Мои ошибки</div>
