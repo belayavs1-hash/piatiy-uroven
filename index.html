@@ -442,12 +442,22 @@ body.theme-dark .h-brand-sub { color: #ffd166; font-weight: 800; }
 }
 body.theme-dark .h-theme-switch { background: linear-gradient(135deg,#4778ff,#7650ff); }
 body.theme-dark .h-theme-switch::after { transform: translateX(18px); }
+.h-logout-btn {
+  width: 100%; padding: 10px 14px; margin-top: 8px;
+  background: none; border: 1px solid rgba(255,80,80,.25);
+  border-radius: 12px; cursor: pointer;
+  font-family: inherit; font-size: 13px; font-weight: 700;
+  color: #e05555; text-align: left;
+  transition: background .15s, color .15s;
+}
+.h-logout-btn:hover { background: rgba(255,80,80,.08); }
+body.theme-dark .h-logout-btn { border-color: rgba(255,100,100,.3); color: #ff7070; }
 
 /* ===== MAIN ===== */
 .h-main {
   display: flex; flex-direction: column;
-  padding: 28px 32px 40px;
-  gap: 24px;
+  padding: 16px 32px 40px;
+  gap: 16px;
   overflow-y: auto;
   min-height: 100vh;
 }
@@ -478,11 +488,9 @@ body.theme-dark .h-theme-switch::after { transform: translateX(18px); }
   display: flex; align-items: flex-end; justify-content: center;
 }
 .h-mascot-img {
-  width: 260px; height: 280px; object-fit: contain;
-  filter: drop-shadow(0 20px 30px rgba(0,97,194,.22));
+  width: 280px; height: 300px; object-fit: contain;
   animation: bobMascot 3.5s ease-in-out infinite;
   position: relative; z-index: 2;
-  mix-blend-mode: multiply;
 }
 @keyframes bobMascot{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
 .h-math-float {
@@ -499,7 +507,7 @@ body.theme-dark .h-theme-switch::after { transform: translateX(18px); }
 .h-mf6{right:14px;top:80px;font-size:44px;color:#67d349;--r:6deg;animation-duration:4.2s;animation-delay:1.2s}
 
 /* 3-колоночный контент */
-.h-content { display: grid; grid-template-columns: 1fr 1fr 1.2fr; gap: 20px; }
+.h-content { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; align-items: stretch; }
 .h-card {
   background: var(--h-card);
   border: 1px solid var(--h-card-border);
@@ -2200,7 +2208,7 @@ body.theme-dark .h-tile.pink { background: rgba(236,73,217,.08); }
       <button class="h-nav-item" onclick="showScreen('screen-funfacts')"><span class="h-nav-icon">🧩</span>Ошибки</button>
       <button class="h-nav-item" onclick="showScreen('screen-cheatsheet')"><span class="h-nav-icon">🏆</span>Достижения</button>
       <button class="h-nav-item" onclick="showScreen('screen-parent')"><span class="h-nav-icon">👪</span>Кабинет родителя</button>
-      <button class="h-nav-item" onclick="doLogout()"><span class="h-nav-icon">👤</span>Профиль</button>
+      <button class="h-nav-item" onclick="showScreen('screen-profile')"><span class="h-nav-icon">👤</span>Профиль</button>
     </nav>
 
     <div class="h-sidebar-bottom">
@@ -2232,6 +2240,8 @@ body.theme-dark .h-tile.pink { background: rgba(236,73,217,.08); }
         <span id="home-theme-label">🌙 Тёмная тема</span>
         <div class="h-theme-switch"></div>
       </div>
+      <!-- Выйти -->
+      <button class="h-logout-btn" onclick="doLogout()">← Выйти из аккаунта</button>
     </div>
   </aside>
 
@@ -2346,6 +2356,15 @@ body.theme-dark .h-tile.pink { background: rgba(236,73,217,.08); }
     </div>
 
   </div>
+</div>
+
+<!-- ===== PROFILE ===== -->
+<div id="screen-profile" class="screen" style="background:var(--bg);min-height:100vh;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:20px;padding:40px">
+  <div style="font-size:64px">👤</div>
+  <div style="font-size:28px;font-weight:900;color:var(--ink)" id="profile-name-label">Привет!</div>
+  <div style="font-size:16px;color:var(--ink-muted);margin-top:-10px">Ты в приложении «Пятый уровень»</div>
+  <button onclick="showScreen('screen-home')" style="margin-top:8px;padding:14px 32px;border-radius:14px;background:linear-gradient(135deg,#406fff,#8a4fff);color:#fff;border:none;font-family:inherit;font-size:17px;font-weight:900;cursor:pointer">🏠 На главную</button>
+  <button onclick="doLogout()" style="padding:12px 32px;border-radius:14px;background:none;border:2px solid #e05555;color:#e05555;font-family:inherit;font-size:16px;font-weight:800;cursor:pointer">← Выйти из аккаунта</button>
 </div>
 
 <!-- ===== HOMEWORK ===== -->
@@ -4883,6 +4902,7 @@ function showScreen(id) {
   updateAllXP();
   if(id === 'screen-parent') renderParent();
   if(id === 'screen-homework') updateTopics();
+  if(id === 'screen-profile') { const el = document.getElementById('profile-name-label'); if(el && ST.user) el.textContent = ST.user; }
   if(id === 'screen-funfacts') renderFunFacts();
   if(id === 'screen-cheatsheet') renderCheatsheet();
   if(id === 'screen-already-solved') fillAlreadySolved();
