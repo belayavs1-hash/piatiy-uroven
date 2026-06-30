@@ -463,13 +463,13 @@ body.theme-dark .h-logout-btn { border-color: rgba(255,100,100,.3); color: #ff70
 }
 
 /* Hero */
-.h-hero { display: grid; grid-template-columns: 1fr 480px; gap: 24px; align-items: start; }
-.h-greeting { font-size: 42px; font-weight: 900; color: var(--h-greeting); line-height: 1.05; letter-spacing: -.03em; margin-bottom: 6px; transition: color .3s; }
-.h-sub { font-size: 20px; color: var(--h-sub); margin-bottom: 22px; transition: color .3s; }
+.h-hero { display: grid; grid-template-columns: 1fr 380px; gap: 16px; align-items: start; }
+.h-greeting { font-size: 34px; font-weight: 900; color: var(--h-greeting); line-height: 1.05; letter-spacing: -.03em; margin-bottom: 4px; transition: color .3s; }
+.h-sub { font-size: 16px; color: var(--h-sub); margin-bottom: 14px; transition: color .3s; }
 
 /* XP капсула */
 .h-xp {
-  height: 62px; border-radius: 999px;
+  height: 50px; border-radius: 999px;
   background: var(--h-xp-bg);
   border: 1px solid var(--h-xp-border);
   box-shadow: var(--h-card-shadow);
@@ -484,11 +484,11 @@ body.theme-dark .h-logout-btn { border-color: rgba(255,100,100,.3); color: #ff70
 
 /* Mascot zone */
 .h-mascot {
-  position: relative; min-height: 300px;
+  position: relative; min-height: 220px;
   display: flex; align-items: flex-end; justify-content: center;
 }
 .h-mascot-img {
-  width: 280px; height: 300px; object-fit: contain;
+  width: 220px; height: 240px; object-fit: contain;
   animation: bobMascot 3.5s ease-in-out infinite;
   position: relative; z-index: 2;
 }
@@ -507,15 +507,20 @@ body.theme-dark .h-logout-btn { border-color: rgba(255,100,100,.3); color: #ff70
 .h-mf6{right:14px;top:80px;font-size:44px;color:#67d349;--r:6deg;animation-duration:4.2s;animation-delay:1.2s}
 
 /* 3-колоночный контент */
-.h-content { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; align-items: stretch; }
+.h-content { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; align-items: stretch; }
 .h-card {
   background: var(--h-card);
   border: 1px solid var(--h-card-border);
-  border-radius: 24px; padding: 28px;
+  border-radius: 24px; padding: 22px;
   box-shadow: var(--h-card-shadow);
   position: relative; overflow: hidden;
   transition: background .3s, border-color .3s;
   display: flex; flex-direction: column;
+}
+.h-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+  border-radius: 24px 24px 0 0;
+  background: linear-gradient(90deg,#cdbdff,#9b7dff);
 }
 .h-card::after {
   content: ''; position: absolute;
@@ -524,19 +529,21 @@ body.theme-dark .h-logout-btn { border-color: rgba(255,100,100,.3); color: #ff70
   background: radial-gradient(circle,rgba(76,121,255,.12),transparent 65%);
 }
 .h-card.purple { border-color: #cdbdff; }
+.h-card.purple::before { background: linear-gradient(90deg,#8c6bff,#42c8ff); }
 body.theme-dark .h-card.purple { border-color: rgba(180,150,255,.25); }
-.h-card.green { border-color: #bcefd7; background: linear-gradient(140deg,var(--h-card),rgba(240,255,248,.5)); }
-body.theme-dark .h-card.green { background: rgba(53,201,129,.08); border-color: rgba(53,201,129,.25); }
+.h-card.green { border-color: #4ac98a; background: linear-gradient(140deg,#eafff4,#d0f7e6); }
+.h-card.green::before { background: linear-gradient(90deg,#22c572,#0ea55e); }
+body.theme-dark .h-card.green { background: linear-gradient(140deg,rgba(53,201,129,.18),rgba(30,130,80,.22)); border-color: rgba(53,201,129,.4); }
 .h-card-icon {
-  width: 52px; height: 52px; border-radius: 14px;
+  width: 44px; height: 44px; border-radius: 12px;
   display: grid; place-items: center;
-  font-size: 26px; margin-bottom: 18px;
-  box-shadow: 0 8px 18px rgba(0,0,0,.12);
+  font-size: 22px; margin-bottom: 12px;
+  box-shadow: 0 6px 14px rgba(0,0,0,.12);
 }
 .h-card.purple .h-card-icon { background: linear-gradient(135deg,#8c6bff,#42c8ff); }
 .h-card.green .h-card-icon { background: linear-gradient(135deg,#37d07f,#72e49c); }
-.h-card-title { font-size: 22px; font-weight: 900; color: var(--h-ink); margin-bottom: 8px; transition: color .3s; }
-.h-card-desc { font-size: 15px; color: var(--h-muted); line-height: 1.5; margin-bottom: 0; transition: color .3s; }
+.h-card-title { font-size: 19px; font-weight: 900; color: var(--h-ink); margin-bottom: 6px; transition: color .3s; }
+.h-card-desc { font-size: 14px; color: var(--h-muted); line-height: 1.45; margin-bottom: 0; transition: color .3s; }
 
 /* Домашка форма */
 .h-hw-form { display: flex; gap: 12px; margin-top: 22px; }
@@ -562,15 +569,15 @@ body.theme-dark .h-card.green { background: rgba(53,201,129,.08); border-color: 
 
 /* Кнопка теста */
 .h-test-btn {
-  margin-top: 22px; height: 52px; padding: 0 20px;
-  border: 1px solid #bdeed6; background: #f3fff8;
-  color: #1f8a57; border-radius: 12px; width: 100%;
+  margin-top: auto; height: 52px; padding: 0 20px;
+  border: none; background: #1a8a52;
+  color: #fff; border-radius: 12px; width: 100%;
   font-family: inherit; font-weight: 900; font-size: 16px;
   cursor: pointer; transition: background .15s;
 }
-body.theme-dark .h-test-btn { background: rgba(53,201,129,.12); border-color: rgba(53,201,129,.3); color: #4ade80; }
-.h-test-btn:hover { background: #e0fff0; }
-body.theme-dark .h-test-btn:hover { background: rgba(53,201,129,.2); }
+body.theme-dark .h-test-btn { background: #1f7a4a; color: #fff; }
+.h-test-btn:hover { background: #166b40; }
+body.theme-dark .h-test-btn:hover { background: #165e38; }
 
 /* Учебник */
 .h-book-wrap { display: grid; grid-template-columns: 130px 1fr; gap: 18px; align-items: center; }
@@ -596,29 +603,38 @@ body.theme-dark .h-test-btn:hover { background: rgba(53,201,129,.2); }
 body.theme-dark .h-step { opacity:.85; color:#c8d8ff; }
 
 /* 4 нижних тайла */
-.h-tiles { display: grid; grid-template-columns: repeat(4,1fr); gap: 18px; }
+.h-tiles { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; }
 .h-tile {
   background: var(--h-tile-bg);
   border: 1px solid var(--h-tile-border);
-  border-radius: 20px; padding: 24px;
+  border-radius: 20px; padding: 18px 18px 16px;
   cursor: pointer;
   display: grid; grid-template-columns: 1fr 42px; gap: 8px; align-items: end;
   box-shadow: var(--h-card-shadow);
   transition: transform .2s, box-shadow .2s, background .3s;
+  position: relative; overflow: hidden;
+}
+.h-tile::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+  border-radius: 20px 20px 0 0;
+  background: linear-gradient(90deg,#4778ff,#8c58ff);
 }
 .h-tile:hover { transform: translateY(-3px); box-shadow: 0 18px 40px rgba(77,118,215,.18); }
 .h-tile.orange { border-color: #ffdf94; }
+.h-tile.orange::before { background: linear-gradient(90deg,#ffae25,#ff7c00); }
 body.theme-light .h-tile.orange { background: linear-gradient(135deg,#fff,#fff9ec); }
 body.theme-dark .h-tile.orange { background: rgba(255,174,37,.08); }
 .h-tile.green2 { border-color: #bdeed7; }
+.h-tile.green2::before { background: linear-gradient(90deg,#22c572,#0ea55e); }
 body.theme-light .h-tile.green2 { background: linear-gradient(135deg,#fff,#f3fff8); }
 body.theme-dark .h-tile.green2 { background: rgba(53,201,129,.08); }
 .h-tile.pink { border-color: #ffc7ed; }
+.h-tile.pink::before { background: linear-gradient(90deg,#ec49d9,#b020b0); }
 body.theme-light .h-tile.pink { background: linear-gradient(135deg,#fff,#fff5fc); }
 body.theme-dark .h-tile.pink { background: rgba(236,73,217,.08); }
-.h-tile-emoji { font-size: 34px; margin-bottom: 10px; display: block; }
-.h-tile-name { font-size: 18px; font-weight: 900; color: var(--h-ink); margin-bottom: 4px; transition: color .3s; }
-.h-tile-desc { font-size: 13px; color: var(--h-muted); line-height: 1.35; transition: color .3s; }
+.h-tile-emoji { font-size: 28px; margin-bottom: 8px; display: block; }
+.h-tile-name { font-size: 16px; font-weight: 900; color: var(--h-ink); margin-bottom: 3px; transition: color .3s; }
+.h-tile-desc { font-size: 12px; color: var(--h-muted); line-height: 1.35; transition: color .3s; }
 .h-tile-arrow {
   width: 42px; height: 42px; border-radius: 50%;
   display: grid; place-items: center;
@@ -2201,10 +2217,10 @@ body.theme-dark .h-tile.pink { background: rgba(236,73,217,.08); }
 
     <nav class="h-nav">
       <button class="h-nav-item active" onclick="showScreen('screen-home')"><span class="h-nav-icon">🏠</span>Главная</button>
-      <button class="h-nav-item" onclick="showScreen('screen-homework')"><span class="h-nav-icon">📚</span>Задания</button>
-      <button class="h-nav-item" onclick="showScreen('screen-map')"><span class="h-nav-icon">🗺️</span>Карта тем</button>
+      <button class="h-nav-item" onclick="showScreen('screen-homework')"><span class="h-nav-icon">📖</span>Домашка</button>
+      <button class="h-nav-item" onclick="showScreen('screen-map')"><span class="h-nav-icon">🌍</span>Карта тем</button>
       <button class="h-nav-item" onclick="showScreen('screen-trainers')"><span class="h-nav-icon">⚡</span>Тренажёры</button>
-      <button class="h-nav-item" onclick="showScreen('screen-self-check')"><span class="h-nav-icon">☑️</span>Проверочные</button>
+      <button class="h-nav-item" onclick="showScreen('screen-self-check')"><span class="h-nav-icon">✅</span>Проверочные</button>
       <button class="h-nav-item" onclick="showScreen('screen-funfacts')"><span class="h-nav-icon">🧩</span>Ошибки</button>
       <button class="h-nav-item" onclick="showScreen('screen-cheatsheet')"><span class="h-nav-icon">🏆</span>Достижения</button>
       <button class="h-nav-item" onclick="showScreen('screen-parent')"><span class="h-nav-icon">👪</span>Кабинет родителя</button>
@@ -2295,26 +2311,24 @@ body.theme-dark .h-tile.pink { background: rgba(236,73,217,.08); }
 
       <!-- Учебник -->
       <article class="h-card">
-        <div class="h-book-wrap">
-          <div class="h-book-cover" style="padding:0;overflow:visible">
-            <img src="kniga.png" alt="Учебник" style="width:100%;height:100%;object-fit:contain;border-radius:12px;display:block">
+        <small style="font-size:12px;font-weight:700;color:var(--h-muted);text-transform:uppercase;letter-spacing:.05em">Твой учебник</small>
+        <div class="h-book-wrap" style="margin-top:10px">
+          <div class="h-book-cover" style="padding:0;overflow:visible;border:none;background:transparent;box-shadow:none">
+            <img src="kniga.png" alt="Учебник" style="width:100%;height:100%;object-fit:contain;display:block">
           </div>
-          <div class="h-book-info">
-            <small>Твой учебник</small>
-            <h3>Математика<br>5 класс · Часть 1</h3>
-            <p>Продолжай изучение по учебнику</p>
+          <div class="h-book-info" style="display:flex;flex-direction:column;gap:8px">
             <div class="h-book-progress">
-              <span>Глава 1 · §2</span>
+              <span style="font-size:12px">Глава 1 · §2</span>
               <div class="h-book-bar"><span style="width:36%"></span></div>
-              <span>36%</span>
+              <span style="font-size:12px">36%</span>
+            </div>
+            <div class="h-steps-block" style="border-top:none;padding-top:0;margin-top:0">
+              <div class="h-step">① Введи номер задания</div>
+              <div class="h-step">② Читай объяснение Умника</div>
+              <div class="h-step">③ Реши задачу сам</div>
+              <div class="h-step">④ Проверь и получи XP</div>
             </div>
           </div>
-        </div>
-        <div class="h-steps-block">
-          <div class="h-step">① Введи номер задания из учебника</div>
-          <div class="h-step">② Читай объяснение шага от Умника</div>
-          <div class="h-step">③ Реши задачу сам</div>
-          <div class="h-step">④ Проверь ответ и получи XP</div>
         </div>
       </article>
     </div>
