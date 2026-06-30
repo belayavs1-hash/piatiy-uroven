@@ -89,54 +89,65 @@ body {
 
 /* ===== LOGIN ===== */
 
-/* 1. Синий анимированный фон */
+/* 1. Тёмное ночное небо */
 #screen-login {
   display: flex !important;
   align-items: center;
   justify-content: center;
   min-height: 100vh;
   position: relative;
-  background: radial-gradient(ellipse 80% 50% at 50% 0%, #0a2a80 0%, transparent 70%),
-              linear-gradient(180deg, #050d36 0%, #06288f 58%, #0b43c8 100%);
+  background:
+    radial-gradient(ellipse 60% 40% at 20% 20%, rgba(30,60,180,.45) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 40% at 80% 70%, rgba(80,20,180,.3) 0%, transparent 55%),
+    linear-gradient(180deg, #020818 0%, #040f2e 30%, #071640 60%, #050d30 100%);
   overflow: hidden;
   padding: 20px;
 }
 
-/* Звёзды */
+/* Звёзды — гуще и ярче */
 .login-stars {
   position: fixed; inset: 0; pointer-events: none; z-index: 0;
-  background-image: radial-gradient(circle, rgba(255,255,255,.9) 0 1px, transparent 1.5px),
-                    radial-gradient(circle, rgba(255,255,255,.5) 0 1px, transparent 1.5px);
-  background-size: 130px 130px, 190px 190px;
-  background-position: 0 0, 70px 40px;
-  opacity: .5;
+  background-image:
+    radial-gradient(circle, rgba(255,255,255,1) 0 1px, transparent 1.5px),
+    radial-gradient(circle, rgba(255,255,255,.7) 0 1px, transparent 1.5px),
+    radial-gradient(circle, rgba(255,255,255,.4) 0 1px, transparent 1.5px);
+  background-size: 80px 80px, 130px 130px, 200px 200px;
+  background-position: 0 0, 40px 40px, 90px 20px;
+  opacity: .7;
 }
 
 /* Облака */
 .login-clouds { position:fixed; inset:0; pointer-events:none; overflow:hidden; z-index:1; }
-.cloud { position:absolute; background:rgba(255,255,255,.12); border-radius:50px; animation:cloudDrift linear infinite; }
-.cloud::before,.cloud::after { content:''; position:absolute; background:rgba(255,255,255,.12); border-radius:50%; }
-.cloud-1{width:140px;height:38px;top:15%;left:-160px;animation-duration:22s}
-.cloud-1::before{width:58px;height:58px;top:-28px;left:18px}
-.cloud-1::after{width:40px;height:40px;top:-20px;left:68px}
-.cloud-2{width:100px;height:28px;top:60%;left:-120px;animation-duration:30s;animation-delay:9s}
-.cloud-2::before{width:42px;height:42px;top:-20px;left:12px}
-.cloud-2::after{width:30px;height:30px;top:-15px;left:48px}
-.cloud-3{width:160px;height:44px;top:40%;left:-180px;animation-duration:38s;animation-delay:16s}
-.cloud-3::before{width:70px;height:70px;top:-36px;left:20px}
-.cloud-3::after{width:48px;height:48px;top:-26px;left:80px}
-@keyframes cloudDrift{from{transform:translateX(0)}to{transform:translateX(calc(100vw + 200px))}}
+.cloud { position:absolute; background:rgba(255,255,255,.10); border-radius:50px; animation:cloudDrift linear infinite; filter:blur(2px); }
+.cloud::before,.cloud::after { content:''; position:absolute; background:rgba(255,255,255,.10); border-radius:50%; }
+.cloud-1{width:180px;height:48px;top:18%;left:-200px;animation-duration:26s}
+.cloud-1::before{width:72px;height:72px;top:-36px;left:22px}
+.cloud-1::after{width:52px;height:52px;top:-26px;left:88px}
+.cloud-2{width:130px;height:36px;top:62%;left:-160px;animation-duration:34s;animation-delay:8s}
+.cloud-2::before{width:54px;height:54px;top:-26px;left:14px}
+.cloud-2::after{width:38px;height:38px;top:-18px;left:60px}
+.cloud-3{width:210px;height:56px;top:38%;left:-240px;animation-duration:44s;animation-delay:18s}
+.cloud-3::before{width:88px;height:88px;top:-44px;left:24px}
+.cloud-3::after{width:62px;height:62px;top:-32px;left:100px}
+@keyframes cloudDrift{from{transform:translateX(0)}to{transform:translateX(calc(100vw + 280px))}}
 
-/* Кубики */
+/* Кубики с формулами — крупнее */
 .login-blocks { position:fixed; inset:0; pointer-events:none; z-index:2; }
-.mc-block { position:absolute; border-radius:14px; font-size:22px; font-weight:900; color:#fff; display:flex; align-items:center; justify-content:center; animation:mcFloat ease-in-out infinite; box-shadow:0 8px 24px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.3); }
-.mc-block:nth-child(1){width:52px;height:52px;background:linear-gradient(145deg,#7C3AED,#5b21b6);top:8%;left:3%;animation-duration:3.8s}
-.mc-block:nth-child(2){width:46px;height:46px;background:linear-gradient(145deg,#FACC15,#d97706);top:12%;right:4%;animation-duration:4.3s;animation-delay:.9s}
-.mc-block:nth-child(3){width:42px;height:42px;background:linear-gradient(145deg,#22C55E,#15803d);top:55%;left:2%;animation-duration:5.1s;animation-delay:1.6s}
-.mc-block:nth-child(4){width:48px;height:48px;background:linear-gradient(145deg,#EF4444,#b91c1c);top:70%;right:3%;animation-duration:4s;animation-delay:2.4s}
-.mc-block:nth-child(5){width:40px;height:40px;background:linear-gradient(145deg,#06b6d4,#0e7490);top:80%;left:4%;animation-duration:4.7s;animation-delay:.5s}
-.mc-block:nth-child(6){width:44px;height:44px;background:linear-gradient(145deg,#f97316,#c2410c);top:75%;right:5%;animation-duration:3.5s;animation-delay:2s}
-@keyframes mcFloat{0%,100%{transform:translateY(0) rotate(-5deg) scale(1)}50%{transform:translateY(-20px) rotate(5deg) scale(1.06)}}
+.mc-block {
+  position:absolute; border-radius:16px;
+  font-size:26px; font-weight:900; color:#fff;
+  display:flex; align-items:center; justify-content:center;
+  animation:mcFloat ease-in-out infinite;
+  box-shadow:0 10px 30px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.35);
+  text-shadow:0 1px 3px rgba(0,0,0,.4);
+}
+.mc-block:nth-child(1){width:70px;height:70px;background:linear-gradient(145deg,#7C3AED,#5b21b6);top:7%;left:3%;animation-duration:3.8s}
+.mc-block:nth-child(2){width:64px;height:64px;background:linear-gradient(145deg,#FACC15,#d97706);top:10%;right:4%;animation-duration:4.3s;animation-delay:.9s}
+.mc-block:nth-child(3){width:60px;height:60px;background:linear-gradient(145deg,#22C55E,#15803d);top:52%;left:2%;animation-duration:5.1s;animation-delay:1.6s}
+.mc-block:nth-child(4){width:68px;height:68px;background:linear-gradient(145deg,#EF4444,#b91c1c);top:68%;right:3%;animation-duration:4s;animation-delay:2.4s}
+.mc-block:nth-child(5){width:58px;height:58px;background:linear-gradient(145deg,#06b6d4,#0e7490);top:78%;left:4%;animation-duration:4.7s;animation-delay:.5s}
+.mc-block:nth-child(6){width:62px;height:62px;background:linear-gradient(145deg,#f97316,#c2410c);top:72%;right:5%;animation-duration:3.5s;animation-delay:2s}
+@keyframes mcFloat{0%,100%{transform:translateY(0) rotate(-5deg) scale(1)}50%{transform:translateY(-22px) rotate(5deg) scale(1.08)}}
 
 /* 2. fon2.png — карточка поверх синего фона */
 .login-fon2 {
@@ -152,8 +163,8 @@ body {
 }
 @keyframes cardReveal{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
 
-/* Отступ сверху под баннер fon2 (синяя часть ≈ 28% высоты изображения 1122×1402) */
-.login-fon2-spacer { height: 28%; min-height: 140px; }
+/* Отступ под синюю шапку fon3 */
+.login-fon2-spacer { height: 200px; }
 
 /* 3. Белое поле fon2 — контент поверх */
 .login-fon2-body {
@@ -1685,12 +1696,12 @@ body {
     <div class="cloud cloud-3"></div>
   </div>
   <div class="login-blocks">
-    <div class="mc-block">5</div>
-    <div class="mc-block">½</div>
-    <div class="mc-block">Σ</div>
-    <div class="mc-block">+</div>
     <div class="mc-block">π</div>
-    <div class="mc-block">×</div>
+    <div class="mc-block">½</div>
+    <div class="mc-block">∑</div>
+    <div class="mc-block">x²</div>
+    <div class="mc-block">√</div>
+    <div class="mc-block">∞</div>
   </div>
 
   <!-- fon2 — карточка поверх синего фона -->
