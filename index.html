@@ -97,10 +97,11 @@ body {
   min-height: 100vh;
   position: relative;
   background:
-    radial-gradient(ellipse 60% 40% at 20% 20%, rgba(30,60,180,.45) 0%, transparent 60%),
-    radial-gradient(ellipse 50% 40% at 80% 70%, rgba(80,20,180,.3) 0%, transparent 55%),
-    linear-gradient(180deg, #020818 0%, #040f2e 30%, #071640 60%, #050d30 100%);
-  overflow: hidden;
+    radial-gradient(ellipse 70% 50% at 15% 15%, rgba(30,80,220,.55) 0%, transparent 55%),
+    radial-gradient(ellipse 60% 50% at 85% 75%, rgba(100,30,220,.4) 0%, transparent 50%),
+    linear-gradient(180deg, #03083a 0%, #060f4a 35%, #0c1a6b 65%, #040c3a 100%);
+  overflow-y: auto;
+  overflow-x: hidden;
   padding: 20px;
 }
 
@@ -108,12 +109,12 @@ body {
 .login-stars {
   position: fixed; inset: 0; pointer-events: none; z-index: 0;
   background-image:
-    radial-gradient(circle, rgba(255,255,255,1) 0 1px, transparent 1.5px),
-    radial-gradient(circle, rgba(255,255,255,.7) 0 1px, transparent 1.5px),
-    radial-gradient(circle, rgba(255,255,255,.4) 0 1px, transparent 1.5px);
-  background-size: 80px 80px, 130px 130px, 200px 200px;
-  background-position: 0 0, 40px 40px, 90px 20px;
-  opacity: .7;
+    radial-gradient(circle, rgba(255,255,255,1) 0 1.5px, transparent 2px),
+    radial-gradient(circle, rgba(255,255,255,.8) 0 1px, transparent 1.5px),
+    radial-gradient(circle, rgba(255,255,255,.5) 0 1px, transparent 1.5px);
+  background-size: 70px 70px, 110px 110px, 160px 160px;
+  background-position: 0 0, 35px 35px, 80px 15px;
+  opacity: .85;
 }
 
 /* Облака */
@@ -154,10 +155,10 @@ body {
   position: relative;
   z-index: 10;
   width: 100%;
-  max-width: 560px;
+  max-width: 540px;
   background: url('fon3.png') top center / 100% auto no-repeat;
   border-radius: 32px;
-  overflow: hidden;
+  overflow: visible;
   box-shadow: 0 24px 80px rgba(0,0,15,.6);
   animation: cardReveal .5s ease both;
 }
@@ -168,7 +169,11 @@ body {
 
 /* 3. Белое поле fon2 — контент поверх */
 .login-fon2-body {
+  background: #fff;
+  border-radius: 0 0 32px 32px;
   padding: 0 28px 36px;
+  position: relative;
+  z-index: 1;
 }
 
 /* Заголовки */
@@ -205,12 +210,12 @@ body {
 .role-hint { font-size:12px; font-weight:500; color:#6c789c; margin:0; }
 
 /* Способ ответа */
-.input-mode-row { display:flex; gap:8px; margin:0; }
-.input-mode-btn { flex:1; display:flex; flex-direction:column; align-items:center; gap:4px; padding:10px 6px; border-radius:12px; border:2px solid #d9e3ff; background:#f8faff; cursor:pointer; font-family:inherit; transition:all .18s; }
+.input-mode-row { display:flex; gap:6px; margin:0; }
+.input-mode-btn { flex:1; display:flex; flex-direction:row; align-items:center; justify-content:center; gap:5px; padding:7px 4px; border-radius:10px; border:2px solid #d9e3ff; background:#f8faff; cursor:pointer; font-family:inherit; transition:all .18s; }
 .input-mode-btn:hover { border-color:#a5b4fc; background:#eff4ff; }
 .input-mode-btn.selected { border-color:#4d71ff; background:#eef2ff; box-shadow:0 0 0 3px rgba(77,113,255,.12); }
-.input-mode-icon { font-size:20px; line-height:1; }
-.input-mode-name { font-size:12px; font-weight:700; color:#071b52; }
+.input-mode-icon { font-size:16px; line-height:1; }
+.input-mode-name { font-size:11px; font-weight:700; color:#071b52; }
 .input-mode-btn.selected .input-mode-name { color:#376cff; }
 
 /* Кнопка */
@@ -1724,14 +1729,14 @@ body {
       <label class="login-label">Кто ты?</label>
       <div class="role-row">
         <button class="role-btn selected" data-role="student" onclick="selectRole(this)">
-          <div class="role-photo"><img src="uchenik.png" alt="Ученик"></div>
+          <div class="role-photo"><img src="uchenik.png" alt="Ученик" loading="eager" decoding="sync" style="object-position:center 10%"></div>
           <div class="role-info-block">
             <div class="role-label-name">Ученик</div>
             <p class="role-hint">Учусь сам</p>
           </div>
         </button>
         <button class="role-btn" data-role="parent" onclick="selectRole(this)">
-          <div class="role-photo"><img src="mama.png" alt="Родитель"></div>
+          <div class="role-photo"><img src="mama.png" alt="Родитель" loading="eager" decoding="sync" style="object-position:center 10%"></div>
           <div class="role-info-block">
             <div class="role-label-name">Родитель</div>
             <p class="role-hint">Помогаю и слежу за успехами</p>
