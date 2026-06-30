@@ -258,7 +258,7 @@ body {
 .role-btn.selected { border-color:#35c981; box-shadow:0 0 0 3px rgba(53,201,129,.3),0 4px 16px rgba(55,95,220,.15); }
 .role-btn.selected::after { content:"✓"; position:absolute; top:8px; right:8px; width:26px; height:26px; border-radius:50%; display:grid; place-items:center; background:linear-gradient(135deg,#35c981,#2bb46f); color:#fff; font-weight:900; font-size:13px; z-index:2; }
 .role-photo { width:100%; height:230px; overflow:hidden; flex-shrink:0; background:#dbeafe; }
-.role-photo img { width:100%; height:100%; object-fit:contain; object-position:center center; display:block; background:#dbeafe; }
+.role-photo img { width:100%; height:100%; object-fit:cover; display:block; }
 .role-info-block { padding:8px 10px 12px; }
 .role-label-name { font-size:15px; font-weight:900; color:#071b52; margin-bottom:2px; }
 .role-hint { font-size:12px; font-weight:500; color:#6c789c; margin:0; }
@@ -2165,14 +2165,14 @@ body.theme-dark .h-tile.pink { background: rgba(236,73,217,.08); }
       <label class="login-label">Кто ты?</label>
       <div class="role-row">
         <button class="role-btn selected" data-role="student" onclick="selectRole(this)">
-          <div class="role-photo"><img src="uchenik.png" alt="Ученик" loading="eager" decoding="sync" style="object-position:center 10%"></div>
+          <div class="role-photo"><img src="uchenik.png" alt="Ученик" loading="eager" decoding="sync" style="object-position:center 65%"></div>
           <div class="role-info-block">
             <div class="role-label-name">Ученик</div>
             <p class="role-hint">Учусь сам</p>
           </div>
         </button>
         <button class="role-btn" data-role="parent" onclick="selectRole(this)">
-          <div class="role-photo"><img src="mama.png" alt="Родитель" loading="eager" decoding="sync" style="object-position:center 10%"></div>
+          <div class="role-photo"><img src="mama.png" alt="Родитель" loading="eager" decoding="sync" style="object-position:center 15%"></div>
           <div class="role-info-block">
             <div class="role-label-name">Родитель</div>
             <p class="role-hint">Помогаю и слежу за успехами</p>
