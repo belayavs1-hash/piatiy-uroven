@@ -105,34 +105,61 @@ body {
   padding: 20px;
 }
 
-/* Звёзды — гуще и ярче */
+/* Звёзды — только верхняя половина */
 .login-stars {
   position: fixed; inset: 0; pointer-events: none; z-index: 0;
   background-image:
     radial-gradient(circle, rgba(255,255,255,1) 0 1.5px, transparent 2px),
-    radial-gradient(circle, rgba(255,255,255,.8) 0 1px, transparent 1.5px),
-    radial-gradient(circle, rgba(255,255,255,.5) 0 1px, transparent 1.5px);
-  background-size: 70px 70px, 110px 110px, 160px 160px;
-  background-position: 0 0, 35px 35px, 80px 15px;
-  opacity: .85;
+    radial-gradient(circle, rgba(255,255,255,.75) 0 1px, transparent 1.5px),
+    radial-gradient(circle, rgba(255,255,255,.45) 0 1px, transparent 1.5px);
+  background-size: 75px 75px, 120px 120px, 170px 170px;
+  background-position: 10px 5px, 45px 30px, 85px 12px;
+  /* маска: яркие сверху, затухают к середине */
+  -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 40%, transparent 75%);
+  mask-image: linear-gradient(180deg, #000 0%, #000 40%, transparent 75%);
+  opacity: .9;
 }
 
-/* Облака */
-.login-clouds { position:fixed; inset:0; pointer-events:none; overflow:hidden; z-index:1; }
-.cloud { position:absolute; background:rgba(255,255,255,.10); border-radius:50px; animation:cloudDrift linear infinite; filter:blur(2px); }
-.cloud::before,.cloud::after { content:''; position:absolute; background:rgba(255,255,255,.10); border-radius:50%; }
-.cloud-1{width:180px;height:48px;top:18%;left:-200px;animation-duration:26s}
-.cloud-1::before{width:72px;height:72px;top:-36px;left:22px}
-.cloud-1::after{width:52px;height:52px;top:-26px;left:88px}
-.cloud-2{width:130px;height:36px;top:62%;left:-160px;animation-duration:34s;animation-delay:8s}
-.cloud-2::before{width:54px;height:54px;top:-26px;left:14px}
-.cloud-2::after{width:38px;height:38px;top:-18px;left:60px}
-.cloud-3{width:210px;height:56px;top:38%;left:-240px;animation-duration:44s;animation-delay:18s}
-.cloud-3::before{width:88px;height:88px;top:-44px;left:24px}
-.cloud-3::after{width:62px;height:62px;top:-32px;left:100px}
-@keyframes cloudDrift{from{transform:translateX(0)}to{transform:translateX(calc(100vw + 280px))}}
+/* Планеты на небе */
+.login-planets { position:fixed; inset:0; pointer-events:none; z-index:1; }
+.planet {
+  position:absolute;
+  border-radius:50%;
+  animation:planetFloat ease-in-out infinite;
+}
+.planet-1 {
+  width:52px; height:52px;
+  background: radial-gradient(circle at 35% 30%, #1a2a6c, #090d2e);
+  box-shadow: 0 0 20px rgba(40,80,200,.4), inset -8px -8px 20px rgba(0,0,0,.7);
+  top:6%; left:8%;
+  animation-duration:7s;
+}
+.planet-2 {
+  width:36px; height:36px;
+  background: radial-gradient(circle at 35% 30%, #2d1b6e, #0d0620);
+  box-shadow: 0 0 14px rgba(100,40,200,.4), inset -5px -5px 14px rgba(0,0,0,.7);
+  top:14%; right:12%;
+  animation-duration:9s; animation-delay:2s;
+}
+@keyframes planetFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
 
-/* Кубики с формулами — крупнее */
+/* Математические символы на небе */
+.login-sky-math { position:fixed; inset:0; pointer-events:none; z-index:1; }
+.sky-sym {
+  position:absolute;
+  font-weight:900;
+  animation:symFloat ease-in-out infinite;
+  user-select:none;
+}
+.sky-sym-1{font-size:36px;color:rgba(100,160,255,.55);top:8%;left:5%;animation-duration:5s}
+.sky-sym-2{font-size:28px;color:rgba(250,204,21,.5);top:5%;right:18%;animation-duration:6.5s;animation-delay:1s}
+.sky-sym-3{font-size:44px;color:rgba(120,180,255,.45);top:72%;left:5%;animation-duration:7s;animation-delay:2s}
+.sky-sym-4{font-size:32px;color:rgba(250,204,21,.55);top:78%;right:6%;animation-duration:5.5s;animation-delay:3s}
+.sky-sym-5{font-size:30px;color:rgba(160,200,255,.4);top:60%;right:9%;animation-duration:6s;animation-delay:.5s}
+.sky-sym-6{font-size:38px;color:rgba(100,200,255,.4);top:40%;left:4%;animation-duration:8s;animation-delay:1.5s}
+@keyframes symFloat{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-14px) rotate(3deg)}}
+
+/* Кубики с формулами */
 .login-blocks { position:fixed; inset:0; pointer-events:none; z-index:2; }
 .mc-block {
   position:absolute; border-radius:16px;
@@ -203,8 +230,8 @@ body {
 .role-btn:hover { transform:translateY(-2px); box-shadow:0 10px 28px rgba(55,95,220,.25); }
 .role-btn.selected { border-color:#35c981; box-shadow:0 0 0 3px rgba(53,201,129,.3),0 4px 16px rgba(55,95,220,.15); }
 .role-btn.selected::after { content:"✓"; position:absolute; top:8px; right:8px; width:26px; height:26px; border-radius:50%; display:grid; place-items:center; background:linear-gradient(135deg,#35c981,#2bb46f); color:#fff; font-weight:900; font-size:13px; z-index:2; }
-.role-photo { width:100%; height:150px; overflow:hidden; flex-shrink:0; }
-.role-photo img { width:100%; height:100%; object-fit:cover; object-position:center top; display:block; }
+.role-photo { width:100%; height:190px; overflow:hidden; flex-shrink:0; }
+.role-photo img { width:100%; height:100%; object-fit:cover; object-position:center 5%; display:block; }
 .role-info-block { padding:8px 10px 12px; }
 .role-label-name { font-size:15px; font-weight:900; color:#071b52; margin-bottom:2px; }
 .role-hint { font-size:12px; font-weight:500; color:#6c789c; margin:0; }
@@ -1693,13 +1720,26 @@ body {
 <!-- ===== LOGIN ===== -->
 <div id="screen-login" class="screen active">
 
-  <!-- Звёзды, облака, кубики -->
+  <!-- Звёзды (сверху) -->
   <div class="login-stars"></div>
-  <div class="login-clouds">
-    <div class="cloud cloud-1"></div>
-    <div class="cloud cloud-2"></div>
-    <div class="cloud cloud-3"></div>
+
+  <!-- Планеты -->
+  <div class="login-planets">
+    <div class="planet planet-1"></div>
+    <div class="planet planet-2"></div>
   </div>
+
+  <!-- Математические символы на небе -->
+  <div class="login-sky-math">
+    <span class="sky-sym sky-sym-1">√25</span>
+    <span class="sky-sym sky-sym-2">5</span>
+    <span class="sky-sym sky-sym-3">+</span>
+    <span class="sky-sym sky-sym-4">×</span>
+    <span class="sky-sym sky-sym-5">∞</span>
+    <span class="sky-sym sky-sym-6">π</span>
+  </div>
+
+  <!-- Кубики -->
   <div class="login-blocks">
     <div class="mc-block">π</div>
     <div class="mc-block">½</div>
