@@ -4214,7 +4214,9 @@ const TOPIC_RULES = {
       { q: "Сколько всего цифр в математике?", a: "10" },
       { q: "Какой разряд у цифры 7 в числе 370?", a: "десятки" },
       { q: "Число 5 048 — сколько в нём разрядов?", a: "4" },
-      { q: "Назови разряд цифры 2 в числе 1 200.", a: "сотни" }
+      { q: "Назови разряд цифры 2 в числе 1 200.", a: "сотни" },
+      { type:"odd", q: "Выбери лишнее — что НЕ является разрядом числа?", opts:["единицы","десятки","класс","сотни"], a: "класс" },
+      { type:"match", q: "Соотнеси цифру в числе 4 352 с её разрядом", pairs:[{q:"4",a:"тысячи"},{q:"3",a:"сотни"},{q:"5",a:"десятки"},{q:"2",a:"единицы"}] }
     ]
   },
   "Отрезок. Ломаная. Многоугольник": {
@@ -4286,7 +4288,9 @@ const TOPIC_RULES = {
       { q: "Как называется результат сложения?", a: "сумма" },
       { q: "Как называются числа, которые складывают?", a: "слагаемые" },
       { q: "По сочетательному закону: (3 + 4) + 6 = 3 + (4 + ?). Найди пропущенное число.", a: "6" },
-      { q: "Вычисли удобным способом: 38 + 47 + 62 = ?", a: "147" }
+      { q: "Вычисли удобным способом: 38 + 47 + 62 = ?", a: "147" },
+      { type:"odd", q: "Выбери лишнее — что НЕ относится к сложению?", opts:["слагаемое","сумма","делитель","переместительный закон"], a: "делитель" },
+      { type:"match", q: "Соотнеси термин с его определением", pairs:[{q:"слагаемое",a:"число, которое складывают"},{q:"сумма",a:"результат сложения"},{q:"переместительный закон",a:"a+b = b+a"}] }
     ]
   },
   "Числовые и буквенные выражения": {
@@ -4310,7 +4314,9 @@ const TOPIC_RULES = {
       { q: "x − 3 = 9. Найди x.", a: "12" },
       { q: "Как называется значение x, при котором уравнение верно?", a: "корень" },
       { q: "Реши: 4 · x = 28.", a: "7" },
-      { q: "Реши: x ÷ 6 = 5.", a: "30" }
+      { q: "Реши: x ÷ 6 = 5.", a: "30" },
+      { type:"odd", q: "Выбери лишнее — что НЕ является способом проверки уравнения?", opts:["подставить корень","вычислить обе части","сложить уравнения","сравнить результаты"], a: "сложить уравнения" },
+      { type:"match", q: "Соотнеси уравнение с его корнем", pairs:[{q:"x + 5 = 12",a:"7"},{q:"x − 3 = 9",a:"12"},{q:"4 · x = 28",a:"7"}] }
     ]
   },
   "Действие вычитания. Свойства": {
@@ -4418,7 +4424,9 @@ const TOPIC_RULES = {
       { q: "Запиши формулу площади прямоугольника.", a: "S = a × b" },
       { q: "Прямоугольник: длина 8 м, ширина 3 м. Площадь?", a: "24" },
       { q: "В каких единицах измеряют площадь?", a: "см² (или м², дм²...)" },
-      { q: "Квадрат со стороной 5 см. Площадь?", a: "25" }
+      { q: "Квадрат со стороной 5 см. Площадь?", a: "25" },
+      { type:"odd", q: "Выбери лишнее — что НЕ является единицей площади?", opts:["см²","дм²","км","м²"], a: "км" },
+      { type:"match", q: "Соотнеси фигуру с её формулой площади", pairs:[{q:"прямоугольник",a:"S = a × b"},{q:"квадрат",a:"S = a²"},{q:"параллелепипед",a:"V = a × b × c"}] }
     ]
   },
   "Единицы площади": {
@@ -4490,7 +4498,9 @@ const TOPIC_RULES = {
       { q: "В дроби 3/7: что такое 3?", a: "числитель" },
       { q: "Правильная дробь: числитель... знаменателя (больше/меньше)?", a: "меньше" },
       { q: "Является ли 4/9 правильной дробью? (да/нет)", a: "да" },
-      { q: "На сколько частей делили, если знаменатель 5?", a: "5" }
+      { q: "На сколько частей делили, если знаменатель 5?", a: "5" },
+      { type:"odd", q: "Выбери лишнее — что НЕ является частью дроби?", opts:["числитель","знаменатель","черта","показатель"], a: "показатель" },
+      { type:"match", q: "Соотнеси дробь с её типом", pairs:[{q:"3/7",a:"правильная"},{q:"9/4",a:"неправильная"},{q:"2 1/3",a:"смешанное число"}] }
     ]
   },
   "Сравнение дробей с одинаковым знаменателем": {
@@ -5713,6 +5723,11 @@ function ruleShowQuestion() {
   document.getElementById('rule-q-bar').style.width = Math.round((i/total)*100) + '%';
   var qz = quizzes[i];
   var card = document.getElementById('rule-quiz-card');
+
+  // Если у вопроса есть явный тип — используем его
+  if (qz.type === 'odd') { ruleRenderOdd(card, qz, i); return; }
+  if (qz.type === 'match') { ruleRenderMatch(card, qz, i); return; }
+
   // Формат = индекс вопроса % 5
   var fmt = i % QUIZ_FORMATS.length;
   // fmt=4 (найди пару) требует 2+ уникальных ответа — иначе заменяем на fmt=1
@@ -5727,6 +5742,96 @@ function ruleShowQuestion() {
     if (othersUniq.length < 1) fmt = 0;
   }
   ruleRenderFormat(card, qz, fmt, i);
+}
+
+function ruleRenderOdd(card, qz, i) {
+  // qz.opts = [лишнее, вар1, вар2, вар3], qz.a = лишнее
+  var isLast = (i + 1 >= ruleState.quizzes.length);
+  var nextLabel = isLast ? 'Завершить →' : 'Следующий →';
+  var opts = arrShuffle(qz.opts.slice());
+  card.innerHTML =
+    '<div class="rule-quiz-badge">🚫 Выбери лишнее</div>' +
+    '<div class="rule-quiz-q">' + qz.q + '</div>' +
+    '<div class="rq-choices">' +
+      opts.map(function(o){ return '<button class="rq-choice" data-val="' + o.replace(/"/g,'&quot;') + '">' + o + '</button>'; }).join('') +
+    '</div>' +
+    '<div class="rule-quiz-feedback" id="rule-feedback"></div>' +
+    '<button class="rule-quiz-check" id="rule-check-btn" style="display:none">' + nextLabel + '</button>';
+  card.querySelectorAll('.rq-choice').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var chosen = this.getAttribute('data-val');
+      var ok = chosen.toLowerCase() === qz.a.toLowerCase();
+      card.querySelectorAll('.rq-choice').forEach(function(b) {
+        b.disabled = true;
+        if (b.getAttribute('data-val').toLowerCase() === qz.a.toLowerCase()) b.classList.add('rq-correct');
+        else if (b === btn && !ok) b.classList.add('rq-wrong');
+      });
+      if (ok) ruleState.correct++;
+      document.getElementById('rule-feedback').innerHTML = ok
+        ? '<span style="color:#10b981;font-weight:800">✅ Верно!</span>'
+        : '<span style="color:#ef4444;font-weight:700">Лишнее: <b>' + qz.a + '</b></span>';
+      document.getElementById('rule-check-btn').style.display = 'block';
+    });
+  });
+  document.getElementById('rule-check-btn').addEventListener('click', ruleNextQuestion);
+}
+
+function ruleRenderMatch(card, qz, i) {
+  // qz.pairs = [{q,a},{q,a},...] — пары для соотнесения
+  var isLast = (i + 1 >= ruleState.quizzes.length);
+  var nextLabel = isLast ? 'Завершить →' : 'Следующий →';
+  var pairs = qz.pairs;
+  var leftItems = arrShuffle(pairs.map(function(p){ return p.q; }));
+  var rightItems = arrShuffle(pairs.map(function(p){ return p.a; }));
+  var pairMap = {};
+  pairs.forEach(function(p){ pairMap[p.q] = p.a; });
+  var selectedLeft = null;
+  var matched = 0;
+
+  card.innerHTML =
+    '<div class="rule-quiz-badge">🔗 Соотнеси</div>' +
+    '<div class="rule-quiz-q">' + qz.q + '</div>' +
+    '<div class="rq-match">' +
+      '<div class="rq-match-col" id="rq-left">' + leftItems.map(function(l){ return '<button class="rq-match-btn" data-val="' + l.replace(/"/g,'&quot;') + '" data-side="left">' + l + '</button>'; }).join('') + '</div>' +
+      '<div class="rq-match-col" id="rq-right">' + rightItems.map(function(r){ return '<button class="rq-match-btn" data-val="' + r.replace(/"/g,'&quot;') + '" data-side="right">' + r + '</button>'; }).join('') + '</div>' +
+    '</div>' +
+    '<div class="rule-quiz-feedback" id="rule-feedback"></div>' +
+    '<button class="rule-quiz-check" id="rule-check-btn" style="display:none">' + nextLabel + '</button>';
+
+  card.querySelectorAll('.rq-match-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var side = this.dataset.side;
+      var val = this.getAttribute('data-val');
+      if (side === 'left') {
+        card.querySelectorAll('.rq-match-btn[data-side="left"]').forEach(function(b){ b.classList.remove('rq-selected'); });
+        this.classList.add('rq-selected');
+        selectedLeft = val;
+      } else if (selectedLeft) {
+        var correctRight = pairMap[selectedLeft];
+        var ok = val === correctRight;
+        if (ok) {
+          matched++;
+          card.querySelectorAll('.rq-match-btn').forEach(function(b){
+            if ((b.dataset.side==='left' && b.getAttribute('data-val')===selectedLeft) ||
+                (b.dataset.side==='right' && b.getAttribute('data-val')===val)) {
+              b.classList.remove('rq-selected'); b.classList.add('rq-correct'); b.disabled = true;
+            }
+          });
+          selectedLeft = null;
+          if (matched >= pairs.length) {
+            ruleState.correct++;
+            document.getElementById('rule-feedback').innerHTML = '<span style="color:#10b981;font-weight:800">✅ Все пары найдены!</span>';
+            document.getElementById('rule-check-btn').style.display = 'block';
+          }
+        } else {
+          this.classList.add('rq-wrong');
+          setTimeout(function(){ card.querySelectorAll('.rq-wrong').forEach(function(b){ b.classList.remove('rq-wrong','rq-selected'); }); selectedLeft = null; }, 700);
+          document.getElementById('rule-feedback').innerHTML = '<span style="color:#ef4444;font-size:12px">Не та пара, попробуй ещё</span>';
+        }
+      }
+    });
+  });
+  document.getElementById('rule-check-btn').addEventListener('click', ruleNextQuestion);
 }
 
 function ruleRenderFormat(card, qz, fmt, i) {
