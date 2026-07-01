@@ -4898,8 +4898,8 @@ const TRAINERS_DEF = [
   {id:"sub",    icon:"➖", name:"Вычитание",           desc:"С переходом",                shell:"archer"},
   {id:"mul",    icon:"✖️", name:"Умножение",           desc:"Таблица умножения",          shell:"archer"},
   {id:"div",    icon:"➗", name:"Деление",             desc:"Без остатка",                shell:"archer"},
-  {id:"add3",   icon:"🔢", name:"Сложение 3 чисел",   desc:"Трёхзначные",                shell:"archer"},
-  {id:"chain",  icon:"🔗", name:"Цепочка",            desc:"Последовательные действия",  shell:"archer"},
+  {id:"add3",   icon:"🔢", name:"Сложение 3 чисел",   desc:"Трёхзначные",                shell:"pirate"},
+  {id:"chain",  icon:"🔗", name:"Цепочка",            desc:"Последовательные действия",  shell:"pirate"},
   {id:"cmp",    icon:"⚖️", name:"Сравнение дробей",   desc:"Одинаковые знаменатели",     shell:"umnik"},
   {id:"fradd",  icon:"½",  name:"Сложение дробей",    desc:"Равные знаменатели",         shell:"umnik"},
   {id:"frsub",  icon:"⅓",  name:"Вычитание дробей",   desc:"Равные знаменатели",         shell:"umnik"},
@@ -4914,8 +4914,8 @@ const TRAINERS_DEF = [
   {id:"decadd", icon:"🔹", name:"Десят. + −",           desc:"Сложение и вычитание",       shell:"archer"},
   {id:"decmul", icon:"🔸", name:"Десят. × ÷",           desc:"Умножение и деление",        shell:"archer"},
   {id:"tasknat",icon:"📝", name:"Задачи: числа",        desc:"Цена, время, части",         shell:"pirate"},
-  {id:"taskfr", icon:"📊", name:"Задачи: дроби",        desc:"Часть от числа",             shell:"umnik"},
-  {id:"geo_t",  icon:"📐", name:"Геом. задачи",          desc:"Периметр, площадь, объём",  shell:"umnik"},
+  {id:"taskfr", icon:"📊", name:"Задачи: дроби",        desc:"Часть от числа",             shell:"pirate"},
+  {id:"geo_t",  icon:"📐", name:"Геом. задачи",          desc:"Периметр, площадь, объём",  shell:"pirate"},
   {id:"archer", icon:"🎯", name:"Стрелок",               desc:"Попади в десятку!",          shell:"archer"},
   {id:"pirate", icon:"🏴‍☠️", name:"Пират",                desc:"Собери клад в сундук!",     shell:"pirate"},
   {id:"dice",   icon:"🎲",   name:"Игра в кости",        desc:"Бросай кубик и решай!",     shell:"dice"}
@@ -6240,14 +6240,15 @@ function launchTrainer() {
   document.getElementById('tr-session-view').style.display = 'block';
   document.getElementById('tr-back-btn').onclick = trainersBack;
   trUpdateStats();
-  if (id === 'archer') {
+  var shell = currentTrainer.shell || 'archer';
+  if (id === 'archer' || shell === 'archer') {
     archerInit();
-  } else if (id === 'geo_t') {
-    builderInit();
-  } else if (id === 'pirate') {
+  } else if (id === 'pirate' || shell === 'pirate') {
     pirateInit();
-  } else if (id === 'dice') {
+  } else if (id === 'dice' || shell === 'dice') {
     diceInit();
+  } else if (shell === 'umnik') {
+    tgInit(); // умник использует стандартную tg-оболочку
   } else {
     tgInit();
   }
@@ -6274,11 +6275,12 @@ function repeatErrors() {
   document.getElementById('tr-back-btn').onclick = trainersBack;
   trUpdateStats();
   const id = currentTrainer.id;
-  if (id === 'archer') {
+  var shell = currentTrainer.shell || 'archer';
+  if (id === 'archer' || shell === 'archer') {
     archerInit();
-  } else if (id === 'pirate') {
+  } else if (id === 'pirate' || shell === 'pirate') {
     pirateInit();
-  } else if (id === 'dice') {
+  } else if (id === 'dice' || shell === 'dice') {
     diceInit();
   } else {
     tgInit();
