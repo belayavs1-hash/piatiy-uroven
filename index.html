@@ -1849,14 +1849,26 @@ body.theme-dark .h-tile.pink { background: rgba(236,73,217,.08); }
 }
 
 /* Финальный экран */
-.tg-finish {
-  text-align:center; padding:32px 20px;
-}
-.tg-finish-emoji { font-size:64px; margin-bottom:12px; }
-.tg-finish-title { font-size:26px; font-weight:900; color:#fff; margin-bottom:6px; }
-.tg-finish-score { font-size:15px; color:rgba(255,255,255,.6); margin-bottom:6px; }
-.tg-finish-xp { font-size:22px; font-weight:900; color:#fbbf24; margin-bottom:28px; }
-.tg-finish-btn { display:block; width:100%; max-width:300px; margin:0 auto 12px; padding:15px; border-radius:16px; border:none; background:linear-gradient(135deg,#6366f1,#818cf8); color:#fff; font-family:inherit; font-size:17px; font-weight:900; cursor:pointer; }
+/* ===== Экран старта тренажёра ===== */
+.tg-start-card { text-align:center; padding:40px 24px; max-width:400px; margin:0 auto; }
+.tg-start-icon { font-size:64px; margin-bottom:12px; }
+.tg-start-title { font-size:28px; font-weight:900; color:#fff; margin-bottom:8px; }
+.tg-start-shell { font-size:14px; color:rgba(255,255,255,.6); margin-bottom:8px; min-height:40px; line-height:1.5; }
+.tg-start-rule { display:inline-block; background:rgba(255,255,255,.1); border-radius:12px; padding:8px 16px; font-size:13px; font-weight:700; color:rgba(255,255,255,.8); margin-bottom:4px; }
+/* ===== Мини-статистика в сессии ===== */
+.tg-session-stats { display:flex; justify-content:center; gap:16px; margin-bottom:8px; }
+.tg-session-stats span { font-size:14px; font-weight:800; color:rgba(255,255,255,.8); background:rgba(255,255,255,.1); border-radius:10px; padding:4px 12px; }
+/* ===== Экран результата ===== */
+.tg-finish { text-align:center; padding:28px 20px; }
+.tg-finish-emoji { font-size:64px; margin-bottom:8px; }
+.tg-finish-title { font-size:24px; font-weight:900; color:#fff; margin-bottom:16px; }
+.tg-finish-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; max-width:320px; margin:0 auto 16px; }
+.tg-finish-cell { background:rgba(255,255,255,.08); border-radius:14px; padding:12px 8px; }
+.tg-fc-val { font-size:22px; font-weight:900; color:#fbbf24; }
+.tg-fc-lbl { font-size:12px; color:rgba(255,255,255,.5); margin-top:2px; }
+.tg-finish-umnik { background:rgba(99,102,241,.2); border-radius:14px; padding:14px 16px; margin:0 auto 16px; max-width:360px; font-size:14px; color:rgba(255,255,255,.85); line-height:1.5; text-align:left; }
+.tg-finish-umnik::before { content:'🧑‍🏫 '; font-size:16px; }
+.tg-finish-btn { display:block; width:100%; max-width:300px; margin:0 auto 10px; padding:14px; border-radius:16px; border:none; background:linear-gradient(135deg,#6366f1,#818cf8); color:#fff; font-family:inherit; font-size:16px; font-weight:900; cursor:pointer; }
 .tg-finish-btn.sec { background:rgba(255,255,255,.1); }
 
 /* legacy: сохраняем sp-dot для других экранов */
@@ -2665,13 +2677,30 @@ body.theme-dark .h-tile.pink { background: rgba(236,73,217,.08); }
   <div class="screen-body">
     <div id="tr-list-view">
       <div class="screen-title">Тренажёры</div>
-      <div class="screen-subtitle">Выбери тип задания и прокачай навык</div>
+      <div class="screen-subtitle">Каждый тренажёр — 10 заданий. Решай, собирай XP, открывай предметы и повторяй ошибки с Умником.</div>
       <div class="trainers-grid" id="trainers-grid"></div>
+    </div>
+    <!-- Экран старта тренажёра -->
+    <div id="tr-start-view" style="display:none">
+      <div class="tg-start-card">
+        <div class="tg-start-icon" id="tr-start-icon">🎯</div>
+        <div class="tg-start-title" id="tr-start-title">Тренажёр</div>
+        <div class="tg-start-shell" id="tr-start-shell"></div>
+        <div class="tg-start-rule">10 заданий · XP · Серия · Ошибки</div>
+        <button class="tg-finish-btn" onclick="launchTrainer()" style="margin-top:20px">🚀 Начать!</button>
+        <button class="tg-finish-btn sec" onclick="showTrainerList()">← Назад</button>
+      </div>
     </div>
     <div id="tr-session-view" style="display:none">
       <div class="tg-wrap">
         <!-- прогресс-точки -->
         <div class="tg-progress-bar" id="tg-progress"></div>
+        <!-- Мини-статистика сессии -->
+        <div class="tg-session-stats">
+          <span id="tg-stat-xp">⭐ 0 XP</span>
+          <span id="tg-stat-streak">🔥 0</span>
+          <span id="tg-stat-err">❌ 0</span>
+        </div>
         <!-- игровая сцена -->
         <div class="tg-scene" id="tg-scene">
           <div class="tg-stars" id="tg-stars"></div>
@@ -2702,11 +2731,17 @@ body.theme-dark .h-tile.pink { background: rgba(236,73,217,.08); }
     <div id="tr-done-view" style="display:none">
       <div class="tg-finish">
         <div class="tg-finish-emoji" id="tg-finish-emoji">🏆</div>
-        <div class="tg-finish-title" id="tg-finish-title">Тренажёр пройден!</div>
-        <div class="tg-finish-score" id="tr-done-score"></div>
-        <div class="tg-finish-xp" id="tr-done-xp">+50 XP</div>
-        <button class="tg-finish-btn" onclick="showTrainerList()">⚡ Ещё тренажёр</button>
-        <button class="tg-finish-btn sec" onclick="showScreen('screen-map')">🗺 К темам</button>
+        <div class="tg-finish-title">Тренажёр пройден!</div>
+        <div class="tg-finish-grid">
+          <div class="tg-finish-cell"><div class="tg-fc-val" id="tr-done-correct">0/10</div><div class="tg-fc-lbl">Правильно</div></div>
+          <div class="tg-finish-cell"><div class="tg-fc-val" id="tr-done-errors">0</div><div class="tg-fc-lbl">Ошибок</div></div>
+          <div class="tg-finish-cell"><div class="tg-fc-val" id="tr-done-xp">+0 XP</div><div class="tg-fc-lbl">Заработано</div></div>
+          <div class="tg-finish-cell"><div class="tg-fc-val" id="tr-done-streak">0</div><div class="tg-fc-lbl">Лучшая серия</div></div>
+        </div>
+        <div class="tg-finish-umnik" id="tr-done-umnik"></div>
+        <button class="tg-finish-btn" onclick="repeatTrainer()">🔄 Ещё 10 заданий</button>
+        <button class="tg-finish-btn" id="tr-btn-retry-err" onclick="repeatErrors()" style="display:none;background:linear-gradient(135deg,#ef4444,#dc2626)">📝 Повторить ошибки</button>
+        <button class="tg-finish-btn sec" onclick="showTrainerList()">⚡ К тренажёрам</button>
       </div>
     </div>
   </div>
@@ -4857,33 +4892,41 @@ const CHEATSHEET = [
   }
 ];
 
+// shell: "archer"=Стрелок, "pirate"=Пират, "umnik"=Умник, "dice"=Кубик
 const TRAINERS_DEF = [
-  {id:"add",    icon:"➕", name:"Сложение",           desc:"Двузначные числа"},
-  {id:"sub",    icon:"➖", name:"Вычитание",           desc:"С переходом"},
-  {id:"mul",    icon:"✖️", name:"Умножение",           desc:"Таблица умножения"},
-  {id:"div",    icon:"➗", name:"Деление",             desc:"Без остатка"},
-  {id:"add3",   icon:"🔢", name:"Сложение 3 чисел",   desc:"Трёхзначные"},
-  {id:"chain",  icon:"🔗", name:"Цепочка",            desc:"Последовательные действия"},
-  {id:"cmp",    icon:"⚖️", name:"Сравнение дробей",   desc:"Одинаковые знаменатели"},
-  {id:"fradd",  icon:"½",  name:"Сложение дробей",    desc:"Равные знаменатели"},
-  {id:"frsub",  icon:"⅓",  name:"Вычитание дробей",   desc:"Равные знаменатели"},
-  {id:"perim",  icon:"📐", name:"Периметр",            desc:"Прямоугольник"},
-  {id:"area",   icon:"⬛", name:"Площадь",             desc:"Прямоугольник"},
-  {id:"speed",  icon:"🚂", name:"Задачи на движение",  desc:"Скорость × время"},
-  {id:"pow",    icon:"🔺", name:"Квадрат числа",        desc:"Числа от 1 до 10"},
-  {id:"pow2",   icon:"💥", name:"Квадрат до 20",        desc:"Числа от 11 до 20"},
-  {id:"pow3",   icon:"🎲", name:"Куб числа",            desc:"Числа от 1 до 10"},
-  {id:"fradd2", icon:"🔵", name:"Сложение дробей ★",   desc:"Разные знаменатели"},
-  {id:"frsub2", icon:"🟠", name:"Вычитание дробей ★",  desc:"Разные знаменатели"},
-  {id:"decadd", icon:"🔹", name:"Десят. + −",           desc:"Сложение и вычитание"},
-  {id:"decmul", icon:"🔸", name:"Десят. × ÷",           desc:"Умножение и деление"},
-  {id:"tasknat",icon:"📝", name:"Задачи: числа",        desc:"Цена, время, части"},
-  {id:"taskfr", icon:"📊", name:"Задачи: дроби",        desc:"Часть от числа"},
-  {id:"geo_t",  icon:"📐", name:"Геом. задачи",          desc:"Периметр, площадь, объём"},
-  {id:"archer", icon:"🎯", name:"Стрелок",               desc:"Попади в десятку!"},
-  {id:"pirate", icon:"🏴‍☠️", name:"Пират",                desc:"Собери клад в сундук!"},
-  {id:"dice",   icon:"🎲",   name:"Игра в кости",        desc:"Бросай кубик и решай!"}
+  {id:"add",    icon:"➕", name:"Сложение",           desc:"Двузначные числа",           shell:"archer"},
+  {id:"sub",    icon:"➖", name:"Вычитание",           desc:"С переходом",                shell:"archer"},
+  {id:"mul",    icon:"✖️", name:"Умножение",           desc:"Таблица умножения",          shell:"archer"},
+  {id:"div",    icon:"➗", name:"Деление",             desc:"Без остатка",                shell:"archer"},
+  {id:"add3",   icon:"🔢", name:"Сложение 3 чисел",   desc:"Трёхзначные",                shell:"pirate"},
+  {id:"chain",  icon:"🔗", name:"Цепочка",            desc:"Последовательные действия",  shell:"pirate"},
+  {id:"cmp",    icon:"⚖️", name:"Сравнение дробей",   desc:"Одинаковые знаменатели",     shell:"umnik"},
+  {id:"fradd",  icon:"½",  name:"Сложение дробей",    desc:"Равные знаменатели",         shell:"umnik"},
+  {id:"frsub",  icon:"⅓",  name:"Вычитание дробей",   desc:"Равные знаменатели",         shell:"umnik"},
+  {id:"perim",  icon:"📐", name:"Периметр",            desc:"Прямоугольник",              shell:"umnik"},
+  {id:"area",   icon:"⬛", name:"Площадь",             desc:"Прямоугольник",              shell:"umnik"},
+  {id:"speed",  icon:"🚂", name:"Задачи на движение",  desc:"Скорость × время",           shell:"pirate"},
+  {id:"pow",    icon:"🔺", name:"Квадрат числа",        desc:"Числа от 1 до 10",           shell:"archer"},
+  {id:"pow2",   icon:"💥", name:"Квадрат до 20",        desc:"Числа от 11 до 20",          shell:"archer"},
+  {id:"pow3",   icon:"🎲", name:"Куб числа",            desc:"Числа от 1 до 10",           shell:"archer"},
+  {id:"fradd2", icon:"🔵", name:"Сложение дробей ★",   desc:"Разные знаменатели",         shell:"umnik"},
+  {id:"frsub2", icon:"🟠", name:"Вычитание дробей ★",  desc:"Разные знаменатели",         shell:"umnik"},
+  {id:"decadd", icon:"🔹", name:"Десят. + −",           desc:"Сложение и вычитание",       shell:"archer"},
+  {id:"decmul", icon:"🔸", name:"Десят. × ÷",           desc:"Умножение и деление",        shell:"archer"},
+  {id:"tasknat",icon:"📝", name:"Задачи: числа",        desc:"Цена, время, части",         shell:"pirate"},
+  {id:"taskfr", icon:"📊", name:"Задачи: дроби",        desc:"Часть от числа",             shell:"pirate"},
+  {id:"geo_t",  icon:"📐", name:"Геом. задачи",          desc:"Периметр, площадь, объём",  shell:"pirate"},
+  {id:"archer", icon:"🎯", name:"Стрелок",               desc:"Попади в десятку!",          shell:"archer"},
+  {id:"pirate", icon:"🏴‍☠️", name:"Пират",                desc:"Собери клад в сундук!",     shell:"pirate"},
+  {id:"dice",   icon:"🎲",   name:"Игра в кости",        desc:"Бросай кубик и решай!",     shell:"dice"}
 ];
+
+const SHELL_DESC = {
+  archer: "🎯 Стрелок\n10 выстрелов по мишени. С первого раза — попадание в центр +10 XP. Со второй попытки — +6 XP. После подсказки — +3 XP.",
+  pirate: "🏴‍☠️ Пират\n10 шагов к сундуку с сокровищами. За каждый верный ответ получаешь монеты. Найди все — сундук откроется!",
+  umnik:  "🧑‍🏫 Умник\n10 шагов тренировки. Ошибся — Умник даст подсказку. Ошибся снова — покажет пошаговый разбор.",
+  dice:   "🎲 Кубик\n10 бросков кубика. Выпало 1–2: простое задание. 3–4: среднее. 5: сложное. 6: бонус +20 XP!"
+};
 
 const ACHIEVEMENTS = [
   {id:"solved_self", icon:"🏆", name:"Решил сам", desc:"Первое самостоятельное решение"},
@@ -4927,6 +4970,11 @@ let currentTrainer = null;
 let trTasks = [];
 let trIdx = 0;
 let trCorrect = 0;
+let trSessionXP = 0;       // XP заработанный в сессии
+let trStreak = 0;          // текущая серия правильных
+let trBestStreak = 0;      // лучшая серия
+let trErrors = 0;          // ошибок в сессии
+let trErrorTasks = [];     // задачи с ошибками для повтора
 
 // ===== INIT =====
 lsLoad();
@@ -6131,6 +6179,7 @@ var currentTopicTrainerId = null;
 
 function showTrainerList(highlightId) {
   document.getElementById('tr-list-view').style.display = 'block';
+  document.getElementById('tr-start-view').style.display = 'none';
   document.getElementById('tr-session-view').style.display = 'none';
   document.getElementById('tr-done-view').style.display = 'none';
   document.getElementById('tr-title').textContent = '⚡ Тренажёры';
@@ -6154,6 +6203,8 @@ function trainersBack() {
   if(document.getElementById('tr-session-view').style.display !== 'none') {
     if(!confirm('Выйти из тренажёра?')) return;
     showTrainerList();
+  } else if(document.getElementById('tr-start-view').style.display !== 'none') {
+    showTrainerList();
   } else {
     showScreen('screen-home');
   }
@@ -6161,15 +6212,34 @@ function trainersBack() {
 
 function startTrainer(id) {
   currentTrainer = TRAINERS_DEF.find(t => t.id === id);
+  document.getElementById('tr-list-view').style.display = 'none';
+  document.getElementById('tr-start-view').style.display = 'block';
+  document.getElementById('tr-done-view').style.display = 'none';
+  document.getElementById('tr-session-view').style.display = 'none';
+  document.getElementById('tr-start-icon').textContent = currentTrainer.icon;
+  document.getElementById('tr-start-title').textContent = currentTrainer.name;
+  var shellKey = currentTrainer.shell || 'archer';
+  document.getElementById('tr-start-shell').textContent = SHELL_DESC[shellKey] || '';
+  document.getElementById('tr-title').textContent = currentTrainer.icon + ' ' + currentTrainer.name;
+}
+
+function launchTrainer() {
+  if (!currentTrainer) return;
+  const id = currentTrainer.id;
   trTasks = generateTrainerTasks(id, 10);
   trIdx = 0;
   trCorrect = 0;
+  trSessionXP = 0;
+  trStreak = 0;
+  trBestStreak = 0;
+  trErrors = 0;
+  trErrorTasks = [];
   tgTrainerCount++;
-  document.getElementById('tr-list-view').style.display = 'none';
+  document.getElementById('tr-start-view').style.display = 'none';
   document.getElementById('tr-done-view').style.display = 'none';
   document.getElementById('tr-session-view').style.display = 'block';
-  document.getElementById('tr-title').textContent = currentTrainer.icon + ' ' + currentTrainer.name;
   document.getElementById('tr-back-btn').onclick = trainersBack;
+  trUpdateStats();
   if (id === 'archer') {
     archerInit();
   } else if (id === 'geo_t') {
@@ -6181,6 +6251,47 @@ function startTrainer(id) {
   } else {
     tgInit();
   }
+}
+
+function repeatTrainer() {
+  if (!currentTrainer) return;
+  startTrainer(currentTrainer.id);
+}
+
+function repeatErrors() {
+  if (!currentTrainer || trErrorTasks.length === 0) return;
+  trTasks = trErrorTasks.map(t => ({q: t.q, a: t.a, choices: t.choices}));
+  trIdx = 0;
+  trCorrect = 0;
+  trSessionXP = 0;
+  trStreak = 0;
+  trBestStreak = 0;
+  trErrors = 0;
+  trErrorTasks = [];
+  tgTrainerCount++;
+  document.getElementById('tr-done-view').style.display = 'none';
+  document.getElementById('tr-session-view').style.display = 'block';
+  document.getElementById('tr-back-btn').onclick = trainersBack;
+  trUpdateStats();
+  const id = currentTrainer.id;
+  if (id === 'archer') {
+    archerInit();
+  } else if (id === 'pirate') {
+    pirateInit();
+  } else if (id === 'dice') {
+    diceInit();
+  } else {
+    tgInit();
+  }
+}
+
+function trUpdateStats() {
+  var xpEl = document.getElementById('tg-stat-xp');
+  var strEl = document.getElementById('tg-stat-streak');
+  var errEl = document.getElementById('tg-stat-err');
+  if (xpEl) xpEl.textContent = '⭐ ' + trSessionXP + ' XP';
+  if (strEl) strEl.textContent = '🔥 ' + trStreak;
+  if (errEl) errEl.textContent = '❌ ' + trErrors;
 }
 
 // Пул для тренажёра: генерируем 30 задач заранее, выдаём без повторений
@@ -6568,8 +6679,14 @@ function tgResolve(correct, rightAnswer) {
   if (correct) {
     task._result = 'ok';
     trCorrect++;
-    addXP(10);
-    document.getElementById('tg-status').textContent = '✅ Верно! +10 XP';
+    // XP: 10 с первой попытки, 6 со второй, 3 после подсказки/повтора
+    var xpGain = tgAttempt === 0 ? 10 : tgAttempt === 1 ? 6 : 3;
+    addXP(xpGain);
+    trSessionXP += xpGain;
+    trStreak++;
+    if (trStreak > trBestStreak) trBestStreak = trStreak;
+    trUpdateStats();
+    document.getElementById('tg-status').textContent = '✅ Верно! +' + xpGain + ' XP';
     document.getElementById('tg-status').className = 'tg-status ok';
     tgHeroJump();
     tgRenderProgress();
@@ -6580,7 +6697,6 @@ function tgResolve(correct, rightAnswer) {
       tgAttempt = 1;
       tgHeroFall();
       tgRenderProgress();
-      // Показываем Упс-баннер через 800ms (после анимации падения)
       setTimeout(function() {
         document.getElementById('tg-oops-hint').textContent = 'Попробуй ещё раз — у тебя одна попытка осталась.';
         document.getElementById('tg-oops').style.display = 'block';
@@ -6588,9 +6704,13 @@ function tgResolve(correct, rightAnswer) {
         document.getElementById('tg-status').className = 'tg-status';
       }, 850);
     } else {
-      // Вторая ошибка — финал, правильный ответ, идём дальше
+      // Вторая ошибка — финал
       task._result = 'err';
+      trErrors++;
+      trStreak = 0;
+      trErrorTasks.push({q: task.q, a: task.a, choices: task.choices});
       addMistake(currentTrainer.name, 'trainer_wrong');
+      trUpdateStats();
       document.getElementById('tg-oops').style.display = 'none';
       document.getElementById('tg-status').textContent = '❌ Правильно: ' + rightAnswer;
       document.getElementById('tg-status').className = 'tg-status err';
@@ -6846,26 +6966,28 @@ function archerResolve(correct, rightAnswer) {
   const task = trTasks[trIdx];
 
   if (correct) {
-    // Стрела летит в центр (10-ка)
+    var xpGain = archerAttempt === 0 ? 10 : archerAttempt === 1 ? 6 : 3;
     archerAnimateArrow(100, 100, 500, () => {
-      if (scorePop) { scorePop.textContent = '🎯 10!'; scorePop.style.color = '#4ade80'; scorePop.classList.add('show'); }
+      if (scorePop) { scorePop.textContent = '🎯 +' + xpGain + ' XP'; scorePop.style.color = '#4ade80'; scorePop.classList.add('show'); }
     });
     task._result = 'ok';
     trCorrect++;
-    addXP(10);
-    if (statusEl) { statusEl.textContent = '✅ В десятку! +10 XP'; statusEl.className = 'tg-status ok'; }
+    addXP(xpGain);
+    trSessionXP += xpGain;
+    trStreak++;
+    if (trStreak > trBestStreak) trBestStreak = trStreak;
+    trUpdateStats();
+    if (statusEl) { statusEl.textContent = '✅ В десятку! +' + xpGain + ' XP'; statusEl.className = 'tg-status ok'; }
     setTimeout(archerAdvance, 1500);
   } else {
     if (archerAttempt === 0) {
       archerAttempt = 1;
-      // Стрела летит мимо — в угол мишени
       archerAnimateArrow(170, 170, 400, () => {
         if (scorePop) { scorePop.textContent = '💨 Мимо!'; scorePop.style.color = '#f87171'; scorePop.classList.add('show'); }
       });
       if (statusEl) { statusEl.textContent = '😵 Упс! Попробуй ещё раз'; statusEl.className = 'tg-status err'; }
       setTimeout(() => {
         archerAnswered = false;
-        // Убираем стрелу
         const arrowG = document.getElementById('archer-arrow-svg');
         if (arrowG) arrowG.style.display = 'none';
         if (scorePop) scorePop.classList.remove('show');
@@ -6877,10 +6999,13 @@ function archerResolve(correct, rightAnswer) {
         if (statusEl) { statusEl.textContent = '🏹 Вторая попытка!'; statusEl.className = 'tg-status'; }
       }, 1300);
     } else {
-      // Вторая ошибка — стрела падает ниже мишени
       archerAnimateArrow(100, 185, 400, null);
       task._result = 'err';
+      trErrors++;
+      trStreak = 0;
+      trErrorTasks.push({q: task.q, a: task.a, choices: task.choices});
       addMistake(currentTrainer.name, 'trainer_wrong');
+      trUpdateStats();
       if (statusEl) { statusEl.textContent = '❌ Правильно: ' + rightAnswer; statusEl.className = 'tg-status err'; }
       setTimeout(archerAdvance, 1400);
     }
@@ -7301,20 +7426,23 @@ function pirateResolve(correct, rightAnswer) {
   const scene = document.getElementById('pirate-scene');
 
   if (correct) {
+    var xpGain = pirateAttempt === 0 ? 10 : pirateAttempt === 1 ? 6 : 3;
     task._result = 'ok';
     trCorrect++;
-    addXP(10);
-    // Анимация монеты
+    addXP(xpGain);
+    trSessionXP += xpGain;
+    trStreak++;
+    if (trStreak > trBestStreak) trBestStreak = trStreak;
+    trUpdateStats();
     const coin = document.createElement('div');
     coin.className = 'pirate-coin-fly fly';
     coin.textContent = '🪙';
     scene.appendChild(coin);
     setTimeout(() => { if (coin.parentNode) coin.parentNode.removeChild(coin); }, 750);
-    // Пират прыгает
     hero.classList.remove('happy','sad');
     void hero.offsetWidth;
     hero.classList.add('happy');
-    if (statusEl) { statusEl.textContent = '🪙 Монета в сундук! +10 XP'; statusEl.className = 'pirate-status ok'; }
+    if (statusEl) { statusEl.textContent = '🪙 Монета в сундук! +' + xpGain + ' XP'; statusEl.className = 'pirate-status ok'; }
     setTimeout(pirateAdvance, 1000);
   } else {
     if (pirateAttempt === 0) {
@@ -7336,7 +7464,11 @@ function pirateResolve(correct, rightAnswer) {
       }, 950);
     } else {
       task._result = 'err';
+      trErrors++;
+      trStreak = 0;
+      trErrorTasks.push({q: task.q, a: task.a, choices: task.choices});
       addMistake(currentTrainer.name, 'trainer_wrong');
+      trUpdateStats();
       hero.classList.add('sad');
       if (statusEl) { statusEl.textContent = '❌ Правильно: ' + rightAnswer; statusEl.className = 'pirate-status err'; }
       setTimeout(pirateAdvance, 1200);
@@ -7523,25 +7655,27 @@ function diceCheck() {
 function diceResolve(correct, rightAnswer) {
   const task = trTasks[trIdx] || trTasks[trTasks.length - 1];
   const statusEl = document.getElementById('dice-status');
-  const xpBonus = 2 + diceLastRoll; // 3–8 XP
+  const xpBonus = 2 + diceLastRoll; // 3–8 XP (зависит от кубика)
 
   if (correct) {
     task._result = 'ok';
     trCorrect++;
     addXP(xpBonus);
+    trSessionXP += xpBonus;
+    trStreak++;
+    if (trStreak > trBestStreak) trBestStreak = trStreak;
+    trUpdateStats();
     const prevPos = dicePawnPos;
     dicePawnPos = Math.min(dicePawnPos + diceLastRoll, DICE_TOTAL_CELLS);
     if (statusEl) {
       statusEl.textContent = `✅ Верно! +${diceLastRoll} ходов, +${xpBonus} XP`;
       statusEl.className = 'dice-status ok';
     }
-    // Подсветить клетки, на которые пришли
     setTimeout(() => {
       const targetCell = document.getElementById('dcell-' + dicePawnPos);
       if (targetCell) { targetCell.classList.add('pop'); }
     }, 100);
     if (dicePawnPos >= DICE_TOTAL_CELLS) {
-      // Финиш!
       setTimeout(() => {
         diceRenderScene();
         const st = document.getElementById('dice-status');
@@ -7568,9 +7702,12 @@ function diceResolve(correct, rightAnswer) {
         if (statusEl) { statusEl.textContent = ''; statusEl.className = 'dice-status'; }
       }, 900);
     } else {
-      // 2-я попытка провалена → назад на diceLastRoll клеток
       task._result = 'err';
+      trErrors++;
+      trStreak = 0;
+      trErrorTasks.push({q: task.q, a: task.a, choices: task.choices});
       addMistake(currentTrainer.name, 'trainer_wrong');
+      trUpdateStats();
       dicePawnPos = Math.max(0, dicePawnPos - diceLastRoll);
       if (statusEl) {
         statusEl.textContent = `❌ ${rightAnswer} — откат на ${diceLastRoll} клеток назад`;
@@ -7602,10 +7739,45 @@ function endTrainer() {
   ST.trainerStats[currentTrainer.id].done++;
   ST.trainerStats[currentTrainer.id].correct = (ST.trainerStats[currentTrainer.id].correct || 0) + trCorrect;
   lsSave();
+
+  var total = trTasks.length;
+  var pct = Math.round(trCorrect / total * 100);
+
+  // Эмодзи и рекомендация Умника по результату
+  var emoji, umnikText;
+  if (pct === 100) {
+    emoji = '🏆';
+    umnikText = 'Превосходно! Все ' + total + ' заданий выполнены без единой ошибки. Ты настоящий математик — попробуй более сложный тренажёр!';
+  } else if (pct >= 80) {
+    emoji = '🥇';
+    umnikText = 'Отличный результат! Ошибки есть, но их мало. Нажми «Повторить ошибки» — и будет 100%.';
+  } else if (pct >= 60) {
+    emoji = '🥈';
+    umnikText = 'Хороший старт! Больше половины заданий выполнено верно. Повтори ошибки — прогресс уже виден.';
+  } else if (pct >= 40) {
+    emoji = '🥉';
+    umnikText = 'Тема требует тренировки. Не расстраивайся — правильно выполнено ' + trCorrect + ' из ' + total + '. Повтори ошибки и запусти тренажёр ещё раз.';
+  } else {
+    emoji = '💪';
+    umnikText = 'Тема пока сложная, но это нормально! Повтори правило в разделе «Правила», затем снова запусти этот тренажёр.';
+  }
+
+  document.getElementById('tg-finish-emoji').textContent = emoji;
+  document.getElementById('tr-done-correct').textContent = trCorrect + '/' + total;
+  document.getElementById('tr-done-errors').textContent = trErrors;
+  document.getElementById('tr-done-xp').textContent = '+' + trSessionXP + ' XP';
+  document.getElementById('tr-done-streak').textContent = trBestStreak;
+  document.getElementById('tr-done-umnik').textContent = umnikText;
+
+  // Кнопка «Повторить ошибки» — только если есть ошибки
+  var retryBtn = document.getElementById('tr-btn-retry-err');
+  if (retryBtn) retryBtn.style.display = trErrorTasks.length > 0 ? 'block' : 'none';
+
   document.getElementById('tr-session-view').style.display = 'none';
   document.getElementById('tr-done-view').style.display = 'block';
-  document.getElementById('tr-done-score').textContent = `${trCorrect} из ${trTasks.length} верно`;
-  document.getElementById('tr-done-xp').textContent = `+${trCorrect * 10} XP ⭐`;
+
+  // Конфетти при 100%
+  if (pct === 100) spawnConfetti();
 }
 
 // ===== FUN FACTS =====
