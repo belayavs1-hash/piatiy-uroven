@@ -6243,12 +6243,12 @@ function launchTrainer() {
   var shell = currentTrainer.shell || 'archer';
   if (id === 'archer' || shell === 'archer') {
     archerInit();
+  } else if (id === 'geo_t') {
+    builderInit();
   } else if (id === 'pirate' || shell === 'pirate') {
     pirateInit();
   } else if (id === 'dice' || shell === 'dice') {
     diceInit();
-  } else if (shell === 'umnik') {
-    tgInit(); // умник использует стандартную tg-оболочку
   } else {
     tgInit();
   }
@@ -6278,6 +6278,8 @@ function repeatErrors() {
   var shell = currentTrainer.shell || 'archer';
   if (id === 'archer' || shell === 'archer') {
     archerInit();
+  } else if (id === 'geo_t') {
+    builderInit();
   } else if (id === 'pirate' || shell === 'pirate') {
     pirateInit();
   } else if (id === 'dice' || shell === 'dice') {
