@@ -1886,6 +1886,15 @@ body.theme-dark .h-tile.pink { background: rgba(236,73,217,.08); }
 .tg-finish-umnik::before { content:'🧑‍🏫 '; font-size:16px; }
 .tg-finish-btn { display:block; width:100%; max-width:300px; margin:0 auto 10px; padding:14px; border-radius:16px; border:none; background:linear-gradient(135deg,#6366f1,#818cf8); color:#fff; font-family:inherit; font-size:16px; font-weight:900; cursor:pointer; }
 .tg-finish-btn.sec { background:rgba(255,255,255,.1); }
+/* ===== Анализ ошибок ===== */
+.tr-analysis { max-width:360px; margin:0 auto 18px; text-align:left; }
+.tr-analysis-title { font-size:13px; font-weight:900; color:rgba(255,255,255,.5); text-transform:uppercase; letter-spacing:.8px; margin-bottom:8px; text-align:center; }
+.tr-analysis-item { display:flex; align-items:flex-start; gap:10px; background:rgba(239,68,68,.1); border:1px solid rgba(239,68,68,.25); border-radius:12px; padding:10px 12px; margin-bottom:7px; }
+.tr-analysis-num { font-size:18px; font-weight:900; color:#f87171; min-width:22px; line-height:1.3; }
+.tr-analysis-body { flex:1; }
+.tr-analysis-q { font-size:14px; font-weight:700; color:rgba(255,255,255,.8); margin-bottom:3px; line-height:1.3; }
+.tr-analysis-a { font-size:13px; color:#4ade80; font-weight:800; }
+.tr-analysis-a::before { content:'✓ '; }
 
 /* legacy: сохраняем sp-dot для других экранов */
 .session-progress { display:flex; gap:8px; margin-bottom:24px; }
@@ -2756,6 +2765,10 @@ body.theme-dark .h-tile.pink { background: rgba(236,73,217,.08); }
           <div class="tg-finish-cell"><div class="tg-fc-val" id="tr-done-streak">0</div><div class="tg-fc-lbl">Лучшая серия</div></div>
         </div>
         <div class="tg-finish-umnik" id="tr-done-umnik"></div>
+        <div id="tr-analysis" class="tr-analysis" style="display:none">
+          <div class="tr-analysis-title">Разбор ошибок</div>
+          <div id="tr-analysis-list"></div>
+        </div>
         <button class="tg-finish-btn" onclick="repeatTrainer()">🔄 Ещё 10 заданий</button>
         <button class="tg-finish-btn" id="tr-btn-retry-err" onclick="repeatErrors()" style="display:none;background:linear-gradient(135deg,#ef4444,#dc2626)">📝 Повторить ошибки</button>
         <button class="tg-finish-btn sec" onclick="showTrainerList()">⚡ К тренажёрам</button>
@@ -7888,6 +7901,27 @@ function endTrainer() {
   // Кнопка «Повторить ошибки» — только если есть ошибки
   var retryBtn = document.getElementById('tr-btn-retry-err');
   if (retryBtn) retryBtn.style.display = trErrorTasks.length > 0 ? 'block' : 'none';
+
+  // Разбор ошибок
+  var analysisWrap = document.getElementById('tr-analysis');
+  var analysisList = document.getElementById('tr-analysis-list');
+  if (analysisWrap && analysisList) {
+    if (trErrorTasks.length > 0) {
+      analysisList.innerHTML = trErrorTasks.map(function(t, i) {
+        var qText = (t.q || '').replace(/ = \?$/, '');
+        var aText = t.a;
+        return '<div class="tr-analysis-item">'
+          + '<div class="tr-analysis-num">' + (i+1) + '</div>'
+          + '<div class="tr-analysis-body">'
+          + '<div class="tr-analysis-q">' + qText + ' = ?</div>'
+          + '<div class="tr-analysis-a">' + aText + '</div>'
+          + '</div></div>';
+      }).join('');
+      analysisWrap.style.display = 'block';
+    } else {
+      analysisWrap.style.display = 'none';
+    }
+  }
 
   document.getElementById('tr-session-view').style.display = 'none';
   document.getElementById('tr-done-view').style.display = 'block';
