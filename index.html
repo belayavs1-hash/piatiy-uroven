@@ -2295,7 +2295,7 @@ body.theme-dark .h-tile.pink { background: rgba(236,73,217,.08); }
         <div class="h-math-float h-mf4">5</div>
         <div class="h-math-float h-mf5">2</div>
         <div class="h-math-float h-mf6">+</div>
-        <img src="umnik.png" alt="Умник" class="h-mascot-img" onerror="this.style.fontSize='100px';this.style.width='220px';this.style.height='260px';this.outerHTML='<div style=\'font-size:100px;animation:bobMascot 3.5s ease-in-out infinite\'>🤖</div>'">
+        <img src="umnik_prygaet.png" alt="Умник" class="h-mascot-img" onerror="this.outerHTML='<div style=\'font-size:100px;animation:bobMascot 3.5s ease-in-out infinite\'>🤖</div>'">
       </div>
     </div>
 
@@ -6885,42 +6885,15 @@ function archerRender() {
     return `<div class="archer-shot ${cls}">${icon}</div>`;
   }).join('');
 
-  // SVG мишень — классические кольца
-  const cx = 100, cy = 100;
-  const rings = [
-    {r:96, fill:'#fff',     stroke:'#ccc'},
-    {r:80, fill:'#1e3a8a', stroke:'#1e40af'},
-    {r:64, fill:'#1e3a8a', stroke:'#1e40af'},
-    {r:48, fill:'#dc2626', stroke:'#b91c1c'},
-    {r:32, fill:'#dc2626', stroke:'#b91c1c'},
-    {r:16, fill:'#fbbf24', stroke:'#f59e0b'},
-  ];
-  const labels = ['1','2','3','4','5','6','7','8','9','10'];
-  const targetSvg = `<svg id="archer-svg" viewBox="0 0 200 200" width="200" height="200" style="display:block;margin:0 auto;filter:drop-shadow(0 4px 16px rgba(0,0,0,.5))">
-    ${rings.map((rg,i)=>`<circle cx="${cx}" cy="${cy}" r="${rg.r}" fill="${rg.fill}" stroke="${rg.stroke}" stroke-width="1.5"/>`).join('')}
-    <line x1="${cx}" y1="${cy-96}" x2="${cx}" y2="${cy+96}" stroke="rgba(0,0,0,.12)" stroke-width="1"/>
-    <line x1="${cx-96}" y1="${cy}" x2="${cx+96}" y2="${cy}" stroke="rgba(0,0,0,.12)" stroke-width="1"/>
-    <text x="${cx}" y="${cy-18}" text-anchor="middle" font-size="9" fill="rgba(255,255,255,.7)" font-weight="700">10</text>
-    <text x="${cx}" y="${cy+50}" text-anchor="middle" font-size="9" fill="rgba(255,255,255,.7)" font-weight="700">8</text>
-    <text x="${cx}" y="${cy+66}" text-anchor="middle" font-size="9" fill="rgba(0,0,0,.4)" font-weight="700">6</text>
-    <text x="${cx}" y="${cy+82}" text-anchor="middle" font-size="9" fill="rgba(0,0,0,.4)" font-weight="700">4</text>
-    <circle cx="${cx}" cy="${cy}" r="4" fill="#1a1a1a"/>
-    <!-- стрела (появляется при попадании) -->
-    <g id="archer-arrow-svg" style="display:none">
-      <line id="archer-arrow-line" x1="0" y1="${cy}" x2="${cx}" y2="${cy}" stroke="#92400e" stroke-width="3" stroke-linecap="round"/>
-      <polygon id="archer-arrow-tip" points="${cx},${cy-5} ${cx+12},${cy} ${cx},${cy+5}" fill="#d97706"/>
-    </g>
-    <circle id="archer-hit-circle" cx="${cx}" cy="${cy}" r="0" fill="rgba(251,191,36,0)" opacity="0"/>
-  </svg>`;
-
   document.getElementById('archer-container').innerHTML = `
     <div class="archer-wrap">
       <div style="font-size:11px;font-weight:700;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">Задание ${trIdx+1} из ${trTasks.length}</div>
       <div class="archer-progress">${progressHtml}</div>
-      <div style="display:flex;align-items:center;justify-content:center;gap:12px;margin:8px auto">
-        <img src="indian_archer_transparent.png" id="archer-indian" style="height:120px;object-fit:contain;flex-shrink:0" onerror="this.style.display='none'">
-        <div style="position:relative;width:200px;flex-shrink:0">
-          ${targetSvg}
+      <div style="display:flex;align-items:flex-end;justify-content:center;gap:8px;margin:8px auto">
+        <img src="indian_archer_transparent.png" id="archer-indian" style="height:130px;object-fit:contain;flex-shrink:0;transition:transform .3s;transform:scaleX(-1)" onerror="this.style.display='none'">
+        <div style="position:relative;flex-shrink:0">
+          <img src="target_10_transparent.png" id="archer-target-img" style="height:150px;object-fit:contain;display:block;filter:drop-shadow(0 4px 16px rgba(0,0,0,.4))">
+          <div id="archer-hit-overlay" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-60%);font-size:36px;display:none;pointer-events:none"></div>
           <div class="archer-score-pop" id="archer-score-pop"></div>
         </div>
       </div>
@@ -6962,29 +6935,29 @@ function archerShoot() {
 }
 
 function archerAnimateArrow(toX, toY, durationMs, onDone) {
-  const arrowG = document.getElementById('archer-arrow-svg');
-  const line   = document.getElementById('archer-arrow-line');
-  const tip    = document.getElementById('archer-arrow-tip');
-  if (!arrowG || !line || !tip) { if(onDone) onDone(); return; }
-  // Стрела летит из левого края (x=−10) до цели
-  const startX = -10, startY = 100;
-  arrowG.style.display = '';
-  const start = performance.now();
-  function step(now) {
-    const t = Math.min((now - start) / durationMs, 1);
-    const ease = t < 0.5 ? 2*t*t : -1+(4-2*t)*t;
-    const cx = startX + (toX - startX) * ease;
-    const cy2 = startY + (toY - startY) * ease;
-    line.setAttribute('x1', startX); line.setAttribute('y1', startY);
-    line.setAttribute('x2', cx); line.setAttribute('y2', cy2);
-    // наконечник стрелы
-    const ang = Math.atan2(toY - startY, toX - startX);
-    const dx = Math.cos(ang)*10, dy = Math.sin(ang)*10;
-    tip.setAttribute('points', `${cx+dx},${cy2-5} ${cx+dx+12*Math.cos(ang)},${cy2+12*Math.sin(ang)} ${cx+dx},${cy2+5}`);
-    if (t < 1) requestAnimationFrame(step);
-    else if (onDone) onDone();
+  // hit = центр (toX≈100,toY≈100), miss = угол (toX>150)
+  const isHit = toX < 130 && toY < 130;
+  const overlay = document.getElementById('archer-hit-overlay');
+  const indian = document.getElementById('archer-indian');
+
+  // Индеец делает выстрел — наклон вперёд
+  if (indian) {
+    indian.style.transform = 'rotate(-8deg) scaleX(-1)';
+    setTimeout(() => { if(indian) indian.style.transform = 'scaleX(-1)'; }, durationMs + 100);
   }
-  requestAnimationFrame(step);
+
+  setTimeout(function() {
+    if (overlay) {
+      overlay.textContent = isHit ? '🎯' : '💨';
+      overlay.style.display = 'block';
+      overlay.style.fontSize = isHit ? '40px' : '32px';
+      overlay.style.animation = 'none';
+      void overlay.offsetWidth;
+      overlay.style.animation = 'tgXpPop .5s ease-out forwards';
+    }
+    if (onDone) onDone();
+    setTimeout(() => { if(overlay) overlay.style.display = 'none'; }, 900);
+  }, durationMs);
 }
 
 function archerResolve(correct, rightAnswer) {
@@ -7015,8 +6988,6 @@ function archerResolve(correct, rightAnswer) {
       if (statusEl) { statusEl.textContent = '😵 Упс! Попробуй ещё раз'; statusEl.className = 'tg-status err'; }
       setTimeout(() => {
         archerAnswered = false;
-        const arrowG = document.getElementById('archer-arrow-svg');
-        if (arrowG) arrowG.style.display = 'none';
         if (scorePop) scorePop.classList.remove('show');
         const inp = document.getElementById('archer-inp');
         if (inp) { inp.value = ''; inp.disabled = false; inp.className = 'archer-inp'; inp.focus(); }
