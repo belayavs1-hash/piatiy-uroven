@@ -4898,8 +4898,8 @@ const TRAINERS_DEF = [
   {id:"sub",    icon:"➖", name:"Вычитание",           desc:"С переходом",                shell:"archer"},
   {id:"mul",    icon:"✖️", name:"Умножение",           desc:"Таблица умножения",          shell:"archer"},
   {id:"div",    icon:"➗", name:"Деление",             desc:"Без остатка",                shell:"archer"},
-  {id:"add3",   icon:"🔢", name:"Сложение 3 чисел",   desc:"Трёхзначные",                shell:"pirate"},
-  {id:"chain",  icon:"🔗", name:"Цепочка",            desc:"Последовательные действия",  shell:"pirate"},
+  {id:"add3",   icon:"🔢", name:"Сложение 3 чисел",   desc:"Трёхзначные",                shell:"archer"},
+  {id:"chain",  icon:"🔗", name:"Цепочка",            desc:"Последовательные действия",  shell:"archer"},
   {id:"cmp",    icon:"⚖️", name:"Сравнение дробей",   desc:"Одинаковые знаменатели",     shell:"umnik"},
   {id:"fradd",  icon:"½",  name:"Сложение дробей",    desc:"Равные знаменатели",         shell:"umnik"},
   {id:"frsub",  icon:"⅓",  name:"Вычитание дробей",   desc:"Равные знаменатели",         shell:"umnik"},
@@ -4914,8 +4914,8 @@ const TRAINERS_DEF = [
   {id:"decadd", icon:"🔹", name:"Десят. + −",           desc:"Сложение и вычитание",       shell:"archer"},
   {id:"decmul", icon:"🔸", name:"Десят. × ÷",           desc:"Умножение и деление",        shell:"archer"},
   {id:"tasknat",icon:"📝", name:"Задачи: числа",        desc:"Цена, время, части",         shell:"pirate"},
-  {id:"taskfr", icon:"📊", name:"Задачи: дроби",        desc:"Часть от числа",             shell:"pirate"},
-  {id:"geo_t",  icon:"📐", name:"Геом. задачи",          desc:"Периметр, площадь, объём",  shell:"pirate"},
+  {id:"taskfr", icon:"📊", name:"Задачи: дроби",        desc:"Часть от числа",             shell:"umnik"},
+  {id:"geo_t",  icon:"📐", name:"Геом. задачи",          desc:"Периметр, площадь, объём",  shell:"umnik"},
   {id:"archer", icon:"🎯", name:"Стрелок",               desc:"Попади в десятку!",          shell:"archer"},
   {id:"pirate", icon:"🏴‍☠️", name:"Пират",                desc:"Собери клад в сундук!",     shell:"pirate"},
   {id:"dice",   icon:"🎲",   name:"Игра в кости",        desc:"Бросай кубик и решай!",     shell:"dice"}
@@ -7257,11 +7257,15 @@ function builderResolve(correct, rightAnswer) {
   const statusEl = document.getElementById('builder-status');
 
   if (correct) {
+    var xpGain = builderAttempt === 0 ? 10 : builderAttempt === 1 ? 6 : 3;
     task._result = 'ok';
     trCorrect++;
-    addXP(10);
-    if (statusEl) { statusEl.textContent = '✅ Деталь добавлена! +10 XP 🎉'; statusEl.className = 'builder-status ok'; }
-    // Перерисовываем SVG с новой деталью
+    addXP(xpGain);
+    trSessionXP += xpGain;
+    trStreak++;
+    if (trStreak > trBestStreak) trBestStreak = trStreak;
+    trUpdateStats();
+    if (statusEl) { statusEl.textContent = '✅ Деталь добавлена! +' + xpGain + ' XP 🎉'; statusEl.className = 'builder-status ok'; }
     setTimeout(() => {
       const svg = document.querySelector('#builder-container svg');
       if (svg) svg.innerHTML = builderCurrentSVG();
@@ -7282,7 +7286,11 @@ function builderResolve(correct, rightAnswer) {
       }, 900);
     } else {
       task._result = 'err';
+      trErrors++;
+      trStreak = 0;
+      trErrorTasks.push({q: task.q, a: task.a, choices: task.choices});
       addMistake(currentTrainer.name, 'trainer_wrong');
+      trUpdateStats();
       if (statusEl) { statusEl.textContent = '❌ Правильно: ' + rightAnswer + ' — деталь потеряна'; statusEl.className = 'builder-status err'; }
       setTimeout(builderAdvance, 1300);
     }
