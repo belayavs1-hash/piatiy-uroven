@@ -346,8 +346,9 @@ body.theme-dark {
   border-right: 1px solid var(--h-line);
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   padding: 16px 14px;
-  gap: 4px;
+  gap: 0;
   position: sticky;
   top: 0;
   height: 100vh;
@@ -371,7 +372,7 @@ body.theme-dark {
 .h-brand-sub { font-size: 11px; color: var(--h-muted); margin-top: 2px; transition: color .3s; }
 body.theme-dark .h-brand-sub { color: #ffd166; font-weight: 800; }
 
-.h-nav { display: flex; flex-direction: column; gap: 2px; margin-top: 4px; }
+.h-nav { display: flex; flex-direction: column; gap: 2px; margin-top: 4px; margin-bottom: 12px; }
 .h-nav-item {
   display: flex; align-items: center; gap: 10px;
   padding: 8px 10px; border-radius: 12px;
@@ -386,7 +387,7 @@ body.theme-dark .h-brand-sub { color: #ffd166; font-weight: 800; }
 .h-nav-item.active { background: var(--h-nav-active-bg); color: var(--h-nav-active-color); box-shadow: 0 6px 16px rgba(83,92,255,.28); }
 .h-nav-icon { font-size: 17px; width: 20px; text-align: center; flex-shrink: 0; }
 
-.h-sidebar-bottom { margin-top: auto; display: flex; flex-direction: column; gap: 6px; }
+.h-sidebar-bottom { display: flex; flex-direction: column; gap: 6px; }
 
 /* Серия дней */
 .h-streak {
@@ -2208,6 +2209,7 @@ body.theme-dark .h-tile.pink { background: rgba(236,73,217,.08); }
 
   <!-- САЙДБАР -->
   <aside class="h-sidebar">
+    <div style="display:flex;flex-direction:column;gap:4px">
     <div class="h-brand">
       <div class="h-logo">5★</div>
       <div>
@@ -2227,6 +2229,7 @@ body.theme-dark .h-tile.pink { background: rgba(236,73,217,.08); }
       <button class="h-nav-item" onclick="showScreen('screen-parent')"><span class="h-nav-icon">👪</span>Кабинет родителя</button>
       <button class="h-nav-item" onclick="showScreen('screen-profile')"><span class="h-nav-icon">👤</span>Профиль</button>
     </nav>
+    </div>
 
     <div class="h-sidebar-bottom">
       <!-- Серия -->
