@@ -518,6 +518,7 @@ body.theme-dark .h-logout-btn { border-color: rgba(255,100,100,.3); color: #ff70
   position: relative; overflow: hidden;
   transition: background .3s, border-color .3s;
   display: flex; flex-direction: column;
+  display: flex; flex-direction: column;
 }
 .h-card::before {
   content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
@@ -2315,9 +2316,9 @@ body.theme-dark .h-tile.pink { background: rgba(236,73,217,.08); }
       <article class="h-card" style="display:flex;flex-direction:column">
         <small style="font-size:11px;font-weight:700;color:var(--h-muted);text-transform:uppercase;letter-spacing:.04em">Твой учебник</small>
         <!-- Обложка + шаги рядом -->
-        <div style="display:flex;gap:14px;align-items:flex-start;margin-top:10px;flex:1">
-          <img src="kniga.png" alt="Учебник" style="width:130px;flex-shrink:0;object-fit:contain;display:block;border-radius:8px">
-          <div class="h-steps-block" style="border-top:none;padding-top:0;margin-top:0;flex:1;align-self:center">
+        <div style="display:flex;gap:14px;align-items:center;margin-top:10px;flex:1">
+          <img src="kniga.png" alt="Учебник" style="width:130px;flex-shrink:0;object-fit:contain;display:block;border-radius:8px;align-self:flex-end">
+          <div class="h-steps-block" style="border-top:none;padding-top:0;margin-top:0;flex:1;align-self:flex-end">
             <div class="h-step">① Введи номер задания</div>
             <div class="h-step">② Читай объяснение Умника</div>
             <div class="h-step">③ Реши задачу сам</div>
