@@ -320,8 +320,8 @@ body.theme-dark {
   --h-card-shadow: 0 14px 35px rgba(0,0,0,.35);
   --h-nav-active-bg: linear-gradient(135deg,#4778ff,#7650ff);
   --h-nav-active-color: #fff;
-  --h-nav-color: rgba(255,255,255,.6);
-  --h-nav-hover: rgba(255,255,255,.08);
+  --h-nav-color: rgba(255,255,255,.85);
+  --h-nav-hover: rgba(255,255,255,.1);
   --h-greeting: #fff;
   --h-sub: rgba(255,255,255,.6);
   --h-xp-bg: rgba(255,255,255,.07);
@@ -385,6 +385,7 @@ body.theme-dark .h-brand-sub { color: #ffd166; font-weight: 800; }
 .h-nav-item:hover { background: var(--h-nav-hover); color: var(--blue); }
 .h-nav-item.active { background: var(--h-nav-active-bg); color: var(--h-nav-active-color); box-shadow: 0 6px 16px rgba(83,92,255,.28); }
 .h-nav-icon { font-size: 17px; width: 20px; text-align: center; flex-shrink: 0; }
+body.theme-dark .h-nav-icon { filter: brightness(1.4) saturate(1.2); }
 
 .h-sidebar-bottom { display: flex; flex-direction: column; gap: 6px; }
 
@@ -2319,7 +2320,9 @@ body.theme-dark .h-tile.pink { background: rgba(236,73,217,.08); }
         <div style="flex:1;display:flex;flex-direction:column">
           <small style="font-size:11px;font-weight:700;color:var(--h-muted);text-transform:uppercase;letter-spacing:.04em">Твой учебник</small>
           <div style="display:flex;gap:14px;margin-top:10px;flex:1">
-            <img src="kniga.png" alt="Учебник" style="width:140px;flex-shrink:0;object-fit:cover;display:block;border-radius:8px;align-self:stretch;object-position:top center;background:#fff;padding:4px">
+            <div style="width:140px;flex-shrink:0;align-self:stretch;border-radius:10px;overflow:hidden;position:relative;background:rgba(255,255,255,0.12);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)">
+              <img src="kniga.png" alt="Учебник" style="width:100%;height:100%;object-fit:contain;display:block;position:relative;z-index:1">
+            </div>
             <div style="flex:1;display:flex;flex-direction:column;justify-content:space-between">
               <div style="display:flex;align-items:center;gap:6px">
                 <span style="width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#8c6bff,#42c8ff);color:#fff;font-size:11px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0">1</span>
