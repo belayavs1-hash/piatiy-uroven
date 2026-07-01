@@ -6254,7 +6254,7 @@ function startTrainer(id) {
   document.getElementById('tr-start-shell').textContent = SHELL_DESC[shellKey] || '';
   document.getElementById('tr-title').textContent = currentTrainer.icon + ' ' + currentTrainer.name;
   var charImgs = {
-    archer: 'indian_archer_transparent.png',
+    archer: 'archer_target_true_transparent_no_squares1.png',
     pirate: 'pirate_true_transparent.png',
     umnik:  'umnik_stoit.png',
     dice:   ''
@@ -6955,7 +6955,7 @@ function archerRender() {
         <span id="archer-stat-err">❌ ${trErrors}</span>
       </div>
       <div style="display:flex;align-items:flex-end;justify-content:center;gap:16px;margin:8px auto;position:relative">
-        <img src="indian_archer_transparent.png" id="archer-indian" style="height:140px;object-fit:contain;flex-shrink:0;transition:transform .3s;transform:scaleX(-1);mix-blend-mode:normal;filter:drop-shadow(0 2px 8px rgba(0,0,0,.3))" onerror="this.style.display='none'">
+        <img src="archer_target_true_transparent_no_squares1.png" id="archer-indian" style="height:140px;object-fit:contain;flex-shrink:0;transition:transform .3s;transform:scaleX(-1);filter:drop-shadow(0 2px 8px rgba(0,0,0,.3))" onerror="this.style.display='none'">
         <!-- летящая стрела SVG -->
         <svg id="archer-arrow-flight" width="60" height="20" viewBox="0 0 60 20" style="flex-shrink:0;margin-bottom:40px;opacity:0;transition:opacity .1s">
           <line x1="0" y1="10" x2="48" y2="10" stroke="#92400e" stroke-width="3" stroke-linecap="round"/>
@@ -6964,7 +6964,7 @@ function archerRender() {
           <line x1="0" y1="13" x2="10" y2="10" stroke="#dc2626" stroke-width="2" stroke-linecap="round"/>
         </svg>
         <div style="position:relative;flex-shrink:0">
-          <img src="target_10_transparent.png" id="archer-target-img" style="height:150px;object-fit:contain;display:block;filter:drop-shadow(0 4px 16px rgba(0,0,0,.4));mix-blend-mode:normal">
+          <img src="archer_target_transparent2.png" id="archer-target-img" style="height:150px;object-fit:contain;display:block;filter:drop-shadow(0 4px 16px rgba(0,0,0,.4));mix-blend-mode:normal">
           <div id="archer-hit-overlay" style="position:absolute;top:38%;left:50%;transform:translate(-50%,-50%);font-size:40px;display:none;pointer-events:none"></div>
           <div class="archer-score-pop" id="archer-score-pop"></div>
         </div>
