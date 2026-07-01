@@ -1401,6 +1401,8 @@ body.theme-dark .h-tile.pink { background: rgba(236,73,217,.08); }
 }
 /* Голова CSS-человечка — скрыта когда внутри img */
 .tg-hero:has(img)::before { display:none; }
+/* Подсветка картинки Умника */
+.tg-hero img { filter: drop-shadow(0 0 8px rgba(99,180,255,.75)) brightness(1.18); }
 .tg-hero::before {
   content:''; position:absolute; top:0; left:50%; transform:translateX(-50%);
   width:12px; height:12px; border-radius:50%;
@@ -6254,7 +6256,7 @@ function startTrainer(id) {
   document.getElementById('tr-start-shell').textContent = SHELL_DESC[shellKey] || '';
   document.getElementById('tr-title').textContent = currentTrainer.icon + ' ' + currentTrainer.name;
   var charImgs = {
-    archer: 'archer_target_true_transparent_no_squares1.png',
+    archer: 'archer_target_transparent2.png',
     pirate: 'pirate_true_transparent.png',
     umnik:  'umnik_stoit.png',
     dice:   ''
@@ -6974,16 +6976,16 @@ function archerRender() {
         <span id="archer-stat-err">❌ ${trErrors}</span>
       </div>
       <div style="position:relative;margin:4px auto 8px;max-width:340px;height:130px;display:flex;align-items:flex-end;justify-content:center">
-        <img src="${document.body.classList.contains('theme-light') ? 'archer_target_true_transparent_no_squares1.png' : 'archer_target_transparent2.png'}" id="archer-target-img" style="height:130px;object-fit:contain;display:block;filter:drop-shadow(0 4px 16px rgba(0,0,0,.3))">
+        <img src="archer_target_transparent2.png" id="archer-target-img" style="height:130px;object-fit:contain;display:block;filter:drop-shadow(0 4px 16px rgba(0,0,0,.3))">
         <!-- скрытый элемент для совместимости с анимацией -->
         <div id="archer-indian" style="display:none"></div>
-        <!-- летящая стрела SVG поверх картинки -->
-        <svg id="archer-arrow-flight" width="90" height="20" viewBox="0 0 90 20"
-          style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);opacity:0;transition:opacity .15s;pointer-events:none">
-          <line x1="0" y1="10" x2="72" y2="10" stroke="#92400e" stroke-width="3" stroke-linecap="round"/>
-          <polygon points="72,4 90,10 72,16" fill="#d97706"/>
-          <line x1="0" y1="6" x2="14" y2="10" stroke="#dc2626" stroke-width="2" stroke-linecap="round"/>
-          <line x1="0" y1="14" x2="14" y2="10" stroke="#dc2626" stroke-width="2" stroke-linecap="round"/>
+        <!-- летящая стрела SVG: от индейца (лево) до мишени (право) -->
+        <svg id="archer-arrow-flight" width="55%" height="20" viewBox="0 0 200 20"
+          style="position:absolute;left:22%;top:38%;opacity:0;transition:opacity .15s;pointer-events:none">
+          <line x1="0" y1="10" x2="160" y2="10" stroke="#c2a060" stroke-width="3.5" stroke-linecap="round"/>
+          <polygon points="160,3 200,10 160,17" fill="#d97706"/>
+          <line x1="0" y1="5" x2="22" y2="10" stroke="#dc2626" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="0" y1="15" x2="22" y2="10" stroke="#dc2626" stroke-width="2.5" stroke-linecap="round"/>
         </svg>
         <div id="archer-hit-overlay" style="position:absolute;top:50%;right:12%;transform:translateY(-50%);font-size:40px;display:none;pointer-events:none"></div>
         <div class="archer-score-pop" id="archer-score-pop" style="position:absolute;top:10%;right:10%"></div>
