@@ -1394,7 +1394,7 @@ body.theme-dark .h-tile.pink { background: rgba(236,73,217,.08); }
 
 /* Герой-человечек (SVG-подобный через CSS) */
 .tg-hero {
-  position:absolute; bottom:24px; width:60px; height:60px;
+  position:absolute; bottom:16px; width:60px; height:60px;
   transition:left .38s cubic-bezier(.34,1.56,.64,1);
   z-index:10;
   display:flex; align-items:flex-end; justify-content:center;
@@ -1871,7 +1871,7 @@ body.theme-dark .h-tile.pink { background: rgba(236,73,217,.08); }
 /* Финальный экран */
 /* ===== Экран старта тренажёра ===== */
 .tg-start-card { text-align:center; padding:40px 24px; max-width:400px; margin:0 auto; }
-.tg-start-icon { font-size:64px; margin-bottom:12px; }
+.tg-start-icon { font-size:64px; margin-bottom:12px; color:#fff; filter:drop-shadow(0 2px 8px rgba(255,255,255,.3)); }
 .tg-start-title { font-size:28px; font-weight:900; color:#fff; margin-bottom:8px; }
 .tg-start-shell { font-size:14px; color:rgba(255,255,255,.6); margin-bottom:8px; min-height:40px; line-height:1.5; }
 .tg-start-rule { display:inline-block; background:rgba(255,255,255,.1); border-radius:12px; padding:8px 16px; font-size:13px; font-weight:700; color:rgba(255,255,255,.8); margin-bottom:4px; }
@@ -6658,7 +6658,7 @@ function tgHeroPx(platIdx) {
   const pos = scene._platPositions;
   const platW = scene._platW;
   const offset = scene._scrollOffset || 0;
-  return pos[platIdx] + platW/2 - 30 - offset;
+  return pos[platIdx] + platW/2 - 42 - offset;
 }
 
 // ---- Прогресс ----
@@ -6981,7 +6981,7 @@ function archerRender() {
         <div id="archer-indian" style="display:none"></div>
         <!-- летящая стрела SVG: от индейца (лево) до мишени (право) -->
         <svg id="archer-arrow-flight" width="55%" height="20" viewBox="0 0 200 20"
-          style="position:absolute;left:22%;top:38%;opacity:0;transition:opacity .15s;pointer-events:none">
+          style="position:absolute;left:22%;top:22%;opacity:0;transition:opacity .15s;pointer-events:none">
           <line x1="0" y1="10" x2="160" y2="10" stroke="#c2a060" stroke-width="3.5" stroke-linecap="round"/>
           <polygon points="160,3 200,10 160,17" fill="#d97706"/>
           <line x1="0" y1="5" x2="22" y2="10" stroke="#dc2626" stroke-width="2.5" stroke-linecap="round"/>
