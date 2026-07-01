@@ -2684,6 +2684,7 @@ body.theme-dark .h-tile.pink { background: rgba(236,73,217,.08); }
     <div id="tr-start-view" style="display:none">
       <div class="tg-start-card">
         <div class="tg-start-icon" id="tr-start-icon">🎯</div>
+        <img id="tr-start-char" src="" style="height:120px;object-fit:contain;margin:0 auto 8px;display:block" onerror="this.style.display='none'">
         <div class="tg-start-title" id="tr-start-title">Тренажёр</div>
         <div class="tg-start-shell" id="tr-start-shell"></div>
         <div class="tg-start-rule">10 заданий · XP · Серия · Ошибки</div>
@@ -2705,7 +2706,7 @@ body.theme-dark .h-tile.pink { background: rgba(236,73,217,.08); }
         <div class="tg-scene" id="tg-scene">
           <div class="tg-stars" id="tg-stars"></div>
           <div class="tg-platforms" id="tg-platforms"></div>
-          <div class="tg-hero" id="tg-hero"><div class="tg-hero-body"></div></div>
+          <div class="tg-hero" id="tg-hero"><img id="tg-hero-img" src="umnik_stoit.png" style="height:52px;object-fit:contain" onerror="this.outerHTML='<div class=tg-hero-body></div>'"></div>
         </div>
         <!-- блок вопроса -->
         <div class="tg-question-box">
@@ -6221,6 +6222,17 @@ function startTrainer(id) {
   var shellKey = currentTrainer.shell || 'archer';
   document.getElementById('tr-start-shell').textContent = SHELL_DESC[shellKey] || '';
   document.getElementById('tr-title').textContent = currentTrainer.icon + ' ' + currentTrainer.name;
+  var charImgs = {
+    archer: 'indian_archer_transparent.png',
+    pirate: 'pirate_true_transparent.png',
+    umnik:  'umnik_stoit.png',
+    dice:   ''
+  };
+  var charEl = document.getElementById('tr-start-char');
+  if (charEl) {
+    charEl.src = charImgs[shellKey] || '';
+    charEl.style.display = charImgs[shellKey] ? 'block' : 'none';
+  }
 }
 
 function launchTrainer() {
@@ -6747,7 +6759,13 @@ function tgRetry() {
   hero.classList.add('appear');
   hero.style.opacity = '1';
   hero.style.left = tgHeroPx(trIdx) + 'px';
+  tgHeroSetImg('umnik_stoit.png');
   setTimeout(function(){ inp.focus(); }, 100);
+}
+
+function tgHeroSetImg(src) {
+  var img = document.getElementById('tg-hero-img');
+  if (img) img.src = src;
 }
 
 // ---- Анимации героя ----
@@ -6755,17 +6773,18 @@ function tgHeroJump() {
   const hero = document.getElementById('tg-hero');
   const nextIdx = Math.min(trIdx + 1, trTasks.length);
 
+  tgHeroSetImg('umnik_prygaet.png');
   hero.classList.remove('jump', 'fall', 'appear');
   void hero.offsetWidth;
   hero.classList.add('jump');
 
-  // В середине прыжка — сдвинуть сцену и переместить героя
   setTimeout(function() {
     tgScrollScene(nextIdx);
     hero.style.left = tgHeroPx(nextIdx) + 'px';
   }, 230);
 
-  // XP-всплеск
+  setTimeout(function() { tgHeroSetImg('umnik_stoit.png'); }, 500);
+
   const scene = document.getElementById('tg-scene');
   const pop = document.createElement('div');
   pop.className = 'tg-xp-pop';
@@ -6781,6 +6800,7 @@ function tgHeroFall() {
     platEl.classList.add('shake');
     setTimeout(function(){ platEl.classList.remove('shake'); }, 400);
   }
+  tgHeroSetImg('umnik_obyasnyaet.png');
   hero.classList.remove('jump', 'fall', 'appear');
   void hero.offsetWidth;
   hero.classList.add('fall');
@@ -6897,9 +6917,12 @@ function archerRender() {
     <div class="archer-wrap">
       <div style="font-size:11px;font-weight:700;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">Задание ${trIdx+1} из ${trTasks.length}</div>
       <div class="archer-progress">${progressHtml}</div>
-      <div style="position:relative;width:200px;margin:8px auto">
-        ${targetSvg}
-        <div class="archer-score-pop" id="archer-score-pop"></div>
+      <div style="display:flex;align-items:center;justify-content:center;gap:12px;margin:8px auto">
+        <img src="indian_archer_transparent.png" id="archer-indian" style="height:120px;object-fit:contain;flex-shrink:0" onerror="this.style.display='none'">
+        <div style="position:relative;width:200px;flex-shrink:0">
+          ${targetSvg}
+          <div class="archer-score-pop" id="archer-score-pop"></div>
+        </div>
       </div>
       <div class="archer-question" id="archer-q">${task.q}</div>
       <div class="tg-status" id="archer-status"></div>
@@ -7395,7 +7418,7 @@ function pirateRender() {
       <div class="pirate-q-label">Задание ${trIdx+1} из ${trTasks.length}</div>
       <div class="pirate-q-text">${task.q}</div>
       <div class="pirate-scene" id="pirate-scene">
-        <div class="pirate-hero" id="pirate-hero">🏴‍☠️</div>
+        <div class="pirate-hero" id="pirate-hero"><img src="pirate_true_transparent.png" style="height:80px;object-fit:contain" onerror="this.outerHTML='🏴‍☠️'"></div>
         <div class="pirate-chest" id="pirate-chest">${pirateCHEST(false, coinsGot)}</div>
         <div class="pirate-skull" id="pirate-skull">💀</div>
       </div>
