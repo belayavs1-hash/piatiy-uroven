@@ -1592,7 +1592,17 @@ body.theme-dark .h-tile.pink { background: rgba(236,73,217,.08); }
 .pirate-status.err { color:#f87171; }
 
 /* ===== ТРЕНАЖЁР КУБИК-БРОДИЛКА ===== */
-.dice-wrap { max-width:500px; margin:0 auto; padding:16px; }
+.dice-wrap { max-width:500px; margin:0 auto; padding:16px; text-align:center; }
+.dice-progress-row { display:flex; justify-content:center; gap:5px; margin:8px 0 12px; }
+.dice-prog-cell { width:26px; height:26px; border-radius:7px; background:rgba(255,255,255,.1); font-size:11px; font-weight:800; color:rgba(255,255,255,.4); display:flex; align-items:center; justify-content:center; }
+.dice-prog-cell.current { background:rgba(99,102,241,.5); color:#fff; }
+.dice-prog-cell.done-ok  { background:rgba(34,197,94,.35); color:#4ade80; }
+.dice-prog-cell.done-err { background:rgba(239,68,68,.25); color:#f87171; }
+.dice-diff { display:inline-block; border-radius:10px; padding:4px 14px; font-size:13px; font-weight:900; margin-left:10px; }
+.dice-diff.easy   { background:rgba(34,197,94,.2); color:#4ade80; }
+.dice-diff.mid    { background:rgba(251,191,36,.2); color:#fbbf24; }
+.dice-diff.hard   { background:rgba(239,68,68,.2); color:#f87171; }
+.dice-diff.bonus  { background:rgba(99,102,241,.3); color:#a5b4fc; animation:pulse 1s ease-in-out infinite; }
 /* Лабиринт-бродилка */
 .dice-track {
   display:flex; flex-direction:column; gap:4px;
@@ -7508,7 +7518,39 @@ var diceAttempt   = 0;
 var dicePhase     = 'roll'; // 'roll' | 'answer'
 var dicePawnPos   = 0;
 var diceLastRoll  = 0;
-// XP по ячейке: 1=5XP, 2=5XP, ..., 10=15XP (XP растёт с номером ячейки)
+var diceCurrentTask = null; // задача, сгенерированная по грани кубика
+var diceIsBonus = false;    // грань 6 — бонус
+
+// Генерация задачи по грани: 1-2 простая, 3-4 средняя, 5 сложная, 6 бонус
+function diceGenTask(face) {
+  var q, a;
+  if (face <= 2) {
+    // Простая: однозначное умножение или сложение до 20
+    var tp = rnd(1,2);
+    if (tp === 1) { var x=rnd(2,9),y=rnd(2,9); q=`${x} × ${y} = ?`; a=String(x*y); }
+    else          { var x=rnd(10,30),y=rnd(1,10); q=`${x} + ${y} = ?`; a=String(x+y); }
+  } else if (face <= 4) {
+    // Средняя: двузначные +/−, деление
+    var tp = rnd(1,3);
+    if (tp === 1) { var x=rnd(20,99),y=rnd(10,50); q=`${x} + ${y} = ?`; a=String(x+y); }
+    else if (tp===2){ var x=rnd(30,99),y=rnd(10,x); q=`${x} − ${y} = ?`; a=String(x-y); }
+    else           { var y=rnd(2,9),x=y*rnd(2,9); q=`${x} ÷ ${y} = ?`; a=String(x/y); }
+  } else if (face === 5) {
+    // Сложная: трёхзначные, степени
+    var tp = rnd(1,3);
+    if (tp===1){ var x=rnd(100,499),y=rnd(10,99); q=`${x} + ${y} = ?`; a=String(x+y); }
+    else if (tp===2){ var n=rnd(2,12); q=`${n}² = ?`; a=String(n*n); }
+    else { var x=rnd(50,199),y=rnd(10,50); q=`${x} − ${y} = ?`; a=String(x-y); }
+  } else {
+    // Бонус (грань 6): смешанная, но +20 XP
+    var tp = rnd(1,4);
+    if (tp===1){ var x=rnd(10,99),y=rnd(10,99); q=`${x} + ${y} = ?`; a=String(x+y); }
+    else if (tp===2){ var x=rnd(2,12),y=rnd(2,12); q=`${x} × ${y} = ?`; a=String(x*y); }
+    else if (tp===3){ var n=rnd(1,10); q=`${n}³ = ?`; a=String(n*n*n); }
+    else { var y=rnd(2,9),x=y*rnd(2,12); q=`${x} ÷ ${y} = ?`; a=String(x/y); }
+  }
+  return {q, a};
+}
 
 function diceGetContainer() {
   let el = document.getElementById('dice-container');
@@ -7573,14 +7615,35 @@ function diceLabyrinthHtml() {
   </div>`;
 }
 
+// Прогресс-шкала 10 ячеек
+function diceProgressHtml() {
+  return `<div class="dice-progress-row">` +
+    Array.from({length: 10}, (_, i) => {
+      const t = trTasks[i];
+      const done = i < trIdx;
+      const cls = done ? (t && t._result === 'ok' ? 'done-ok' : 'done-err') : (i === trIdx ? 'current' : '');
+      const icon = done ? (t && t._result === 'ok' ? '✓' : '✗') : (i === trIdx ? '🎲' : '');
+      return `<div class="dice-prog-cell ${cls}">${icon || (i+1)}</div>`;
+    }).join('') +
+  `</div>`;
+}
+
+// Бейдж сложности по грани
+function diceDiffBadge(face) {
+  if (face === 6) return `<div class="dice-diff bonus">⭐ БОНУС +20 XP</div>`;
+  if (face === 5) return `<div class="dice-diff hard">🔥 Сложное</div>`;
+  if (face >= 3)  return `<div class="dice-diff mid">⚡ Среднее</div>`;
+  return `<div class="dice-diff easy">😊 Простое</div>`;
+}
+
 function diceRenderScene() {
   const el = diceGetContainer();
-  const task = trTasks[trIdx] || trTasks[trTasks.length - 1];
+  const task = diceCurrentTask;
   const mode = (tgTrainerCount % 2 === 0) ? 'input' : 'choices';
   const n = diceLastRoll || 1;
 
   let choicesHtml = '';
-  if (dicePhase === 'answer' && mode === 'choices') {
+  if (dicePhase === 'answer' && task && mode === 'choices') {
     const w = genWrongNums(task.a, 3);
     const opts = w ? arrShuffle([task.a, ...w]) : [task.a];
     choicesHtml = `<div class="tg-choices" id="dice-choices">` +
@@ -7590,13 +7653,13 @@ function diceRenderScene() {
 
   el.innerHTML = `
     <div class="dice-wrap">
-      <div class="dice-q-label">Позиция: ${dicePawnPos} / ${DICE_TOTAL_CELLS} &nbsp;·&nbsp; Задание ${trIdx+1}</div>
-      ${diceLabyrinthHtml()}
+      <div class="dice-q-label">Задание ${trIdx+1} из ${trTasks.length}</div>
+      ${diceProgressHtml()}
       <div class="dice-row">
-        <div class="dice-cube${dicePhase==='roll'?' roll-ready':''}" id="dice-cube" onclick="diceRoll()" title="Бросить!">${diceFaceHtml(n)}</div>
-        ${diceLastRoll ? `<div class="dice-rolled-num">+${diceLastRoll}</div>` : '<div class="dice-rolled-num" style="opacity:.2">?</div>'}
+        <div class="dice-cube${dicePhase==='roll'?' roll-ready':''}" id="dice-cube" onclick="${dicePhase==='roll'?'diceRoll()':''}" title="${dicePhase==='roll'?'Бросить!':''}">${diceFaceHtml(n)}</div>
+        ${dicePhase === 'answer' ? diceDiffBadge(n) : '<div class="dice-rolled-num" style="opacity:.3">?</div>'}
       </div>
-      <div class="dice-q-text" id="dice-q">${dicePhase === 'answer' ? task.q : 'Брось кубик!'}</div>
+      <div class="dice-q-text" id="dice-q">${dicePhase === 'answer' && task ? task.q : 'Брось кубик!'}</div>
       ${dicePhase === 'roll' ? `<button class="dice-roll-btn" id="dice-roll-btn" onclick="diceRoll()">🎲 Бросить кубик!</button>` : ''}
       ${dicePhase === 'answer' && mode === 'input' ? `
         <input type="text" class="dice-inp" id="dice-inp" placeholder="Ответ..." autocomplete="off"
@@ -7622,9 +7685,10 @@ function diceRoll() {
   setTimeout(() => {
     const n = rnd(1, 6);
     diceLastRoll = n;
+    diceIsBonus = (n === 6);
+    diceCurrentTask = diceGenTask(n);
     cube.classList.remove('rolling');
     cube.innerHTML = diceFaceHtml(n);
-    // Через 700ms — показать вопрос
     setTimeout(() => {
       dicePhase = 'answer';
       diceAnswered = false;
@@ -7638,7 +7702,7 @@ function diceChoose(btn, val) {
   if (diceAnswered) return;
   diceAnswered = true;
   document.getElementById('dice-container').querySelectorAll('.tg-choice').forEach(b => b.disabled = true);
-  const task = trTasks[trIdx];
+  const task = diceCurrentTask;
   const correct = val.replace(/\s/g,'').toLowerCase() === task.a.replace(/\s/g,'').toLowerCase();
   if (correct) btn.classList.add('ok'); else btn.classList.add('err');
   diceResolve(correct, task.a);
@@ -7652,48 +7716,38 @@ function diceCheck() {
   inp.disabled = true;
   const btn = document.getElementById('dice-check-btn');
   if (btn) btn.disabled = true;
-  const task = trTasks[trIdx];
+  const task = diceCurrentTask;
   const correct = inp.value.trim().replace(/\s/g,'').toLowerCase() === task.a.replace(/\s/g,'').toLowerCase();
   inp.classList.add(correct ? 'ok' : 'err');
   diceResolve(correct, task.a);
 }
 
+function diceXpForFace(face) {
+  if (face === 6) return 20;
+  if (face === 5) return 12;
+  if (face >= 3)  return 8;
+  return 5;
+}
+
 function diceResolve(correct, rightAnswer) {
-  const task = trTasks[trIdx] || trTasks[trTasks.length - 1];
+  const task = diceCurrentTask;
   const statusEl = document.getElementById('dice-status');
-  const xpBonus = 2 + diceLastRoll; // 3–8 XP (зависит от кубика)
+  const xp = diceXpForFace(diceLastRoll);
+
+  // Сохраняем результат в trTasks[trIdx] для прогресс-шкалы
+  if (trTasks[trIdx]) trTasks[trIdx]._result = correct ? 'ok' : null;
 
   if (correct) {
-    task._result = 'ok';
+    if (trTasks[trIdx]) trTasks[trIdx]._result = 'ok';
     trCorrect++;
-    addXP(xpBonus);
-    trSessionXP += xpBonus;
+    addXP(xp);
+    trSessionXP += xp;
     trStreak++;
     if (trStreak > trBestStreak) trBestStreak = trStreak;
     trUpdateStats();
-    const prevPos = dicePawnPos;
-    dicePawnPos = Math.min(dicePawnPos + diceLastRoll, DICE_TOTAL_CELLS);
-    if (statusEl) {
-      statusEl.textContent = `✅ Верно! +${diceLastRoll} ходов, +${xpBonus} XP`;
-      statusEl.className = 'dice-status ok';
-    }
-    setTimeout(() => {
-      const targetCell = document.getElementById('dcell-' + dicePawnPos);
-      if (targetCell) { targetCell.classList.add('pop'); }
-    }, 100);
-    if (dicePawnPos >= DICE_TOTAL_CELLS) {
-      setTimeout(() => {
-        diceRenderScene();
-        const st = document.getElementById('dice-status');
-        if (st) { st.textContent = '🏆 Финиш! Молодец!'; st.className = 'dice-status ok'; }
-        setTimeout(() => {
-          document.getElementById('dice-container').style.display = 'none';
-          endTrainer();
-        }, 1800);
-      }, 700);
-    } else {
-      setTimeout(diceAdvance, 1100);
-    }
+    const msg = diceIsBonus ? `⭐ БОНУС! +${xp} XP` : `✅ Верно! +${xp} XP`;
+    if (statusEl) { statusEl.textContent = msg; statusEl.className = 'dice-status ok'; }
+    setTimeout(diceAdvance, 1100);
   } else {
     if (diceAttempt === 0) {
       diceAttempt = 1;
@@ -7708,21 +7762,14 @@ function diceResolve(correct, rightAnswer) {
         if (statusEl) { statusEl.textContent = ''; statusEl.className = 'dice-status'; }
       }, 900);
     } else {
-      task._result = 'err';
+      if (trTasks[trIdx]) trTasks[trIdx]._result = 'err';
       trErrors++;
       trStreak = 0;
-      trErrorTasks.push({q: task.q, a: task.a, choices: task.choices});
+      trErrorTasks.push({q: task.q, a: task.a});
       addMistake(currentTrainer.name, 'trainer_wrong');
       trUpdateStats();
-      dicePawnPos = Math.max(0, dicePawnPos - diceLastRoll);
-      if (statusEl) {
-        statusEl.textContent = `❌ ${rightAnswer} — откат на ${diceLastRoll} клеток назад`;
-        statusEl.className = 'dice-status err';
-      }
-      setTimeout(() => {
-        diceRenderScene();
-        setTimeout(diceAdvance, 1000);
-      }, 700);
+      if (statusEl) { statusEl.textContent = `❌ Правильно: ${rightAnswer}`; statusEl.className = 'dice-status err'; }
+      setTimeout(diceAdvance, 1300);
     }
   }
 }
@@ -7730,12 +7777,13 @@ function diceResolve(correct, rightAnswer) {
 function diceAdvance() {
   trIdx++;
   if (trIdx >= trTasks.length) {
-    // Задания кончились — завершаем
     document.getElementById('dice-container').style.display = 'none';
     endTrainer();
   } else {
     dicePhase = 'roll';
     diceLastRoll = 0;
+    diceCurrentTask = null;
+    diceIsBonus = false;
     diceRenderScene();
   }
 }
