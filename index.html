@@ -1656,13 +1656,15 @@ body.theme-dark .h-tile.pink { background: rgba(236,73,217,.08); }
 .dice-dot  { width:13px; height:13px; border-radius:50%; background:#1e1b4b; margin:auto; }
 .dice-dot.e{ background:transparent; }
 /* Кубик — центровая строка */
-.dice-row { display:flex; align-items:center; justify-content:center; gap:16px; margin-bottom:12px; }
+.dice-row { display:flex; align-items:center; justify-content:center; gap:16px; margin:16px 0 12px; }
 .dice-rolled-num { font-size:48px; font-weight:900; color:#fbbf24; text-shadow:0 2px 12px rgba(0,0,0,.5); min-width:56px; text-align:center; }
 @keyframes rollReady { 0%,100%{transform:scale(1) rotate(0)} 50%{transform:scale(1.08) rotate(10deg)} }
 .dice-cube.roll-ready { animation:rollReady 1.6s ease-in-out infinite; cursor:pointer; }
 /* Статы кубика */
 .dice-stats { display:flex; justify-content:center; gap:10px; margin-bottom:10px; }
 .dice-stats span { font-size:13px; font-weight:800; color:rgba(255,255,255,.85); background:rgba(255,255,255,.1); border-radius:10px; padding:4px 12px; }
+.tr-stats-row { display:flex; justify-content:center; gap:10px; margin:6px 0 10px; }
+.tr-stats-row span { font-size:13px; font-weight:800; color:rgba(255,255,255,.85); background:rgba(255,255,255,.1); border-radius:10px; padding:4px 12px; }
 /* Вопрос */
 .dice-q-label { font-size:11px;font-weight:700;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px; }
 .dice-q-text  { font-size:21px;font-weight:900;color:#fff;margin-bottom:14px;min-height:50px;line-height:1.4; }
@@ -6316,14 +6318,12 @@ function repeatErrors() {
 }
 
 function trUpdateStats() {
-  ['tg-stat-xp','dice-stat-xp'].forEach(function(id) {
-    var el = document.getElementById(id); if (el) el.textContent = '⭐ ' + trSessionXP + ' XP';
-  });
-  ['tg-stat-streak','dice-stat-streak'].forEach(function(id) {
-    var el = document.getElementById(id); if (el) el.textContent = '🔥 ' + trStreak;
-  });
-  ['tg-stat-err','dice-stat-err'].forEach(function(id) {
-    var el = document.getElementById(id); if (el) el.textContent = '❌ ' + trErrors;
+  var pfxs = ['tg','dice','archer','pirate','builder'];
+  pfxs.forEach(function(p) {
+    var el;
+    el = document.getElementById(p+'-stat-xp');     if (el) el.textContent = '⭐ ' + trSessionXP + ' XP';
+    el = document.getElementById(p+'-stat-streak'); if (el) el.textContent = '🔥 ' + trStreak;
+    el = document.getElementById(p+'-stat-err');    if (el) el.textContent = '❌ ' + trErrors;
   });
 }
 
@@ -6906,6 +6906,11 @@ function archerRender() {
     <div class="archer-wrap">
       <div style="font-size:11px;font-weight:700;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">Задание ${trIdx+1} из ${trTasks.length}</div>
       <div class="archer-progress">${progressHtml}</div>
+      <div class="tr-stats-row">
+        <span id="archer-stat-xp">⭐ ${trSessionXP} XP</span>
+        <span id="archer-stat-streak">🔥 ${trStreak}</span>
+        <span id="archer-stat-err">❌ ${trErrors}</span>
+      </div>
       <div style="display:flex;align-items:flex-end;justify-content:center;gap:16px;margin:8px auto;position:relative">
         <img src="indian_archer_transparent.png" id="archer-indian" style="height:140px;object-fit:contain;flex-shrink:0;transition:transform .3s;transform:scaleX(-1);mix-blend-mode:normal;filter:drop-shadow(0 2px 8px rgba(0,0,0,.3))" onerror="this.style.display='none'">
         <!-- летящая стрела SVG -->
@@ -7258,6 +7263,11 @@ function builderRender() {
   el.innerHTML = `
     <div class="builder-wrap">
       <div class="builder-q-label">Задание ${trIdx+1} из ${trTasks.length} — собираем ${builderChoice==='person'?'Человечка':builderChoice==='house'?'Дом':'Машину'}</div>
+      <div class="tr-stats-row">
+        <span id="builder-stat-xp">⭐ ${trSessionXP} XP</span>
+        <span id="builder-stat-streak">🔥 ${trStreak}</span>
+        <span id="builder-stat-err">❌ ${trErrors}</span>
+      </div>
       <div class="builder-q-text">${task.q}</div>
       <div class="builder-canvas-wrap">
         <svg viewBox="0 0 240 170" xmlns="http://www.w3.org/2000/svg">
@@ -7433,6 +7443,11 @@ function pirateRender() {
   el.innerHTML = `
     <div class="pirate-wrap">
       <div class="pirate-q-label">Задание ${trIdx+1} из ${trTasks.length}</div>
+      <div class="tr-stats-row">
+        <span id="pirate-stat-xp">⭐ ${trSessionXP} XP</span>
+        <span id="pirate-stat-streak">🔥 ${trStreak}</span>
+        <span id="pirate-stat-err">❌ ${trErrors}</span>
+      </div>
       <div class="pirate-q-text">${task.q}</div>
       <div class="pirate-scene" id="pirate-scene">
         <div class="pirate-hero" id="pirate-hero"><img src="pirate_true_transparent.png" style="height:80px;object-fit:contain" onerror="this.outerHTML='🏴‍☠️'"></div>
@@ -7721,13 +7736,19 @@ function diceRoll() {
   if (!cube) return;
   const rollBtn = document.getElementById('dice-roll-btn');
   if (rollBtn) rollBtn.disabled = true;
+
+  const n = rnd(1, 6);
+  diceLastRoll = n;
+  diceIsBonus = (n === 6);
+  diceCurrentTask = diceGenTask(n);
+
+  // Запускаем анимацию
+  cube.classList.remove('rolling');
+  void cube.offsetWidth; // reflow чтобы анимация перезапустилась
   cube.classList.add('rolling');
 
+  // После полной анимации (750ms) — показываем грань и вопрос
   setTimeout(() => {
-    const n = rnd(1, 6);
-    diceLastRoll = n;
-    diceIsBonus = (n === 6);
-    diceCurrentTask = diceGenTask(n);
     cube.classList.remove('rolling');
     cube.innerHTML = diceFaceHtml(n);
     setTimeout(() => {
@@ -7735,8 +7756,8 @@ function diceRoll() {
       diceAnswered = false;
       diceAttempt = 0;
       diceRenderScene();
-    }, 700);
-  }, 700);
+    }, 400);
+  }, 750);
 }
 
 function diceChoose(btn, val) {
