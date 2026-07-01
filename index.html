@@ -469,16 +469,16 @@ body.theme-dark .h-logout-btn { border-color: rgba(255,100,100,.3); color: #ff70
 
 /* XP капсула */
 .h-xp {
-  height: 50px; border-radius: 999px;
+  height: 58px; border-radius: 999px;
   background: var(--h-xp-bg);
   border: 1px solid var(--h-xp-border);
   box-shadow: var(--h-card-shadow);
-  padding: 0 24px;
+  padding: 0 28px;
   display: flex; align-items: center; gap: 16px;
   transition: background .3s, border-color .3s;
-  margin-top: 8px;
+  margin-top: 16px;
 }
-.h-xp strong { font-size: 20px; font-weight: 900; color: var(--h-xp-text); white-space: nowrap; }
+.h-xp strong { font-size: 22px; font-weight: 900; color: var(--h-xp-text); white-space: nowrap; }
 .h-xp-line { flex: 1; height: 6px; background: var(--h-line); border-radius: 999px; overflow: hidden; }
 .h-xp-line span { display: block; height: 100%; border-radius: 999px; background: linear-gradient(90deg,#ffbf27,#ffd84a); }
 .h-xp-sparkle { font-size: 20px; color: #9db4ff; }
@@ -2295,9 +2295,9 @@ body.theme-dark .h-tile.pink { background: rgba(236,73,217,.08); }
           <div class="h-card-icon">📖</div>
           <div class="h-card-title">Домашка по номеру</div>
           <div class="h-card-desc">Введи номер задания из учебника §1–§7</div>
-          <div style="font-size:12px;color:var(--h-muted);min-height:14px;margin-top:10px" id="home-hw-hint"></div>
         </div>
         <div style="display:flex;flex-direction:column;gap:10px">
+          <div style="font-size:12px;color:var(--h-muted);min-height:14px" id="home-hw-hint"></div>
           <input class="h-hw-input" id="home-hw-num" type="text" placeholder="Например: 1.5"
             oninput="homeHwInput(this)" onkeydown="if(event.key==='Enter')homeHwGo()">
           <button class="h-hw-btn" onclick="homeHwGo()" style="width:100%;height:52px;font-size:16px">Найти →</button>
@@ -2319,7 +2319,7 @@ body.theme-dark .h-tile.pink { background: rgba(236,73,217,.08); }
         <div style="flex:1;display:flex;flex-direction:column">
           <small style="font-size:11px;font-weight:700;color:var(--h-muted);text-transform:uppercase;letter-spacing:.04em">Твой учебник</small>
           <div style="display:flex;gap:14px;margin-top:10px;flex:1">
-            <img src="kniga.png" alt="Учебник" style="width:140px;flex-shrink:0;object-fit:cover;display:block;border-radius:8px;align-self:stretch;object-position:top center">
+            <img src="kniga.png" alt="Учебник" style="width:140px;flex-shrink:0;object-fit:cover;display:block;border-radius:8px;align-self:stretch;object-position:top center;background:#fff;padding:4px">
             <div style="flex:1;display:flex;flex-direction:column;justify-content:space-between">
               <div style="display:flex;align-items:center;gap:6px">
                 <span style="width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#8c6bff,#42c8ff);color:#fff;font-size:11px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0">1</span>
