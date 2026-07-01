@@ -6656,7 +6656,7 @@ function tgHeroPx(platIdx) {
   const pos = scene._platPositions;
   const platW = scene._platW;
   const offset = scene._scrollOffset || 0;
-  return pos[platIdx] + platW/2 - 11 - offset;
+  return pos[platIdx] + platW/2 - 30 - offset;
 }
 
 // ---- Прогресс ----
@@ -6974,7 +6974,7 @@ function archerRender() {
         <span id="archer-stat-err">❌ ${trErrors}</span>
       </div>
       <div style="position:relative;margin:4px auto 8px;max-width:340px;height:130px;display:flex;align-items:flex-end;justify-content:center">
-        <img src="archer_target_transparent2.png" id="archer-target-img" style="height:130px;object-fit:contain;display:block;filter:drop-shadow(0 4px 16px rgba(0,0,0,.3))">
+        <img src="${document.body.classList.contains('theme-light') ? 'archer_target_true_transparent_no_squares1.png' : 'archer_target_transparent2.png'}" id="archer-target-img" style="height:130px;object-fit:contain;display:block;filter:drop-shadow(0 4px 16px rgba(0,0,0,.3))">
         <!-- скрытый элемент для совместимости с анимацией -->
         <div id="archer-indian" style="display:none"></div>
         <!-- летящая стрела SVG поверх картинки -->
