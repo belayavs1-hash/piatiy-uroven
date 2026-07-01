@@ -1351,7 +1351,7 @@ body.theme-dark .h-tile.pink { background: rgba(236,73,217,.08); }
 
 /* Сцена с героем */
 .tg-scene {
-  position:relative; height:130px; overflow:hidden;
+  position:relative; height:150px; overflow:hidden;
   background:linear-gradient(180deg,#0f172a 0%,#1e3a5f 60%,#1e293b 100%);
   border-radius:18px 18px 0 0;
 }
@@ -6692,8 +6692,27 @@ function tgShowInputMode() {
     // Кнопки: генерируем варианты если нет, или берём из task.choices
     let opts = task.choices;
     if (!opts || !opts.length) {
-      const w = genWrongNums(task.a, 3);
-      opts = w ? arrShuffle([task.a, ...w]) : null;
+      // Дробный ответ вида "3/10" — генерируем дробные дистракторы
+      const frMatch = task.a.match(/^(\d+)\/(\d+)$/);
+      if (frMatch) {
+        const num = parseInt(frMatch[1]), den = parseInt(frMatch[2]);
+        const wrongs = new Set();
+        const deltas = [-2,-1,1,2,3,-3,4,-4];
+        for (const d of deltas) {
+          const wn = num + d;
+          if (wn > 0 && wn !== num && wn < den) wrongs.add(`${wn}/${den}`);
+          if (wrongs.size >= 3) break;
+        }
+        // числитель >= знаменатель — добавляем другие варианты знаменателя
+        for (let d = 1; wrongs.size < 3; d++) {
+          const wn = num + d;
+          if (wn !== num && wn > 0) wrongs.add(`${wn}/${den}`);
+        }
+        opts = arrShuffle([task.a, ...Array.from(wrongs).slice(0,3)]);
+      } else {
+        const w = genWrongNums(task.a, 3);
+        opts = w ? arrShuffle([task.a, ...w]) : null;
+      }
     }
     if (opts) {
       inputWrap.style.display = 'none';
@@ -6954,20 +6973,20 @@ function archerRender() {
         <span id="archer-stat-streak">🔥 ${trStreak}</span>
         <span id="archer-stat-err">❌ ${trErrors}</span>
       </div>
-      <div style="display:flex;align-items:flex-end;justify-content:center;gap:16px;margin:8px auto;position:relative">
-        <img src="archer_target_true_transparent_no_squares1.png" id="archer-indian" style="height:140px;object-fit:contain;flex-shrink:0;transition:transform .3s;transform:scaleX(-1);filter:drop-shadow(0 2px 8px rgba(0,0,0,.3))" onerror="this.style.display='none'">
-        <!-- летящая стрела SVG -->
-        <svg id="archer-arrow-flight" width="60" height="20" viewBox="0 0 60 20" style="flex-shrink:0;margin-bottom:40px;opacity:0;transition:opacity .1s">
-          <line x1="0" y1="10" x2="48" y2="10" stroke="#92400e" stroke-width="3" stroke-linecap="round"/>
-          <polygon points="48,5 60,10 48,15" fill="#d97706"/>
-          <line x1="0" y1="7" x2="10" y2="10" stroke="#dc2626" stroke-width="2" stroke-linecap="round"/>
-          <line x1="0" y1="13" x2="10" y2="10" stroke="#dc2626" stroke-width="2" stroke-linecap="round"/>
+      <div style="position:relative;margin:4px auto 8px;max-width:340px;height:130px;display:flex;align-items:flex-end;justify-content:center">
+        <img src="archer_target_transparent2.png" id="archer-target-img" style="height:130px;object-fit:contain;display:block;filter:drop-shadow(0 4px 16px rgba(0,0,0,.3))">
+        <!-- скрытый элемент для совместимости с анимацией -->
+        <div id="archer-indian" style="display:none"></div>
+        <!-- летящая стрела SVG поверх картинки -->
+        <svg id="archer-arrow-flight" width="90" height="20" viewBox="0 0 90 20"
+          style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);opacity:0;transition:opacity .15s;pointer-events:none">
+          <line x1="0" y1="10" x2="72" y2="10" stroke="#92400e" stroke-width="3" stroke-linecap="round"/>
+          <polygon points="72,4 90,10 72,16" fill="#d97706"/>
+          <line x1="0" y1="6" x2="14" y2="10" stroke="#dc2626" stroke-width="2" stroke-linecap="round"/>
+          <line x1="0" y1="14" x2="14" y2="10" stroke="#dc2626" stroke-width="2" stroke-linecap="round"/>
         </svg>
-        <div style="position:relative;flex-shrink:0">
-          <img src="archer_target_transparent2.png" id="archer-target-img" style="height:150px;object-fit:contain;display:block;filter:drop-shadow(0 4px 16px rgba(0,0,0,.4));mix-blend-mode:normal">
-          <div id="archer-hit-overlay" style="position:absolute;top:38%;left:50%;transform:translate(-50%,-50%);font-size:40px;display:none;pointer-events:none"></div>
-          <div class="archer-score-pop" id="archer-score-pop"></div>
-        </div>
+        <div id="archer-hit-overlay" style="position:absolute;top:50%;right:12%;transform:translateY(-50%);font-size:40px;display:none;pointer-events:none"></div>
+        <div class="archer-score-pop" id="archer-score-pop" style="position:absolute;top:10%;right:10%"></div>
       </div>
       <div class="archer-question" id="archer-q">${task.q}</div>
       <div class="tg-status" id="archer-status"></div>
@@ -7013,13 +7032,7 @@ function archerAnimateArrow(attempt, durationMs, onDone) {
   const indian  = document.getElementById('archer-indian');
   const arrow   = document.getElementById('archer-arrow-flight');
 
-  // Индеец наклоняется при выстреле
-  if (indian) {
-    indian.style.transform = 'rotate(-12deg) scaleX(-1)';
-    setTimeout(() => { if(indian) indian.style.transform = 'scaleX(-1)'; }, durationMs + 150);
-  }
-
-  // Стрела летит
+  // Стрела летит (анимация прозрачности)
   if (arrow) {
     arrow.style.opacity = '1';
     arrow.style.transition = `opacity ${durationMs}ms linear`;
