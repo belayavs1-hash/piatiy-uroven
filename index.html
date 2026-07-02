@@ -2134,6 +2134,107 @@ body.theme-dark .h-tile.pink { background: rgba(236,73,217,.08); }
 .chat-xp { display:inline-block; background:rgba(250,204,21,.2); border:1px solid rgba(250,204,21,.4); border-radius:12px; padding:3px 10px; font-size:13px; font-weight:800; color:#fbbf24; margin-top:6px; }
 @keyframes bubbleIn { from { opacity:0; transform:translateY(8px) scale(.97); } to { opacity:1; transform:translateY(0) scale(1); } }
 
+/* ===== МОИ ОШИБКИ ===== */
+.err-body { max-width:680px; margin:0 auto; padding:16px 16px 100px; display:flex; flex-direction:column; gap:14px; }
+.err-card { background:#fff; border-radius:20px; padding:20px; box-shadow:0 2px 12px rgba(0,0,0,.08); }
+.err-card-title { font-size:13px; font-weight:900; color:#64748b; text-transform:uppercase; letter-spacing:.06em; margin-bottom:14px; }
+/* Итоговая карточка */
+.err-summary-hero { font-size:20px; font-weight:900; color:#1e293b; margin-bottom:4px; }
+.err-summary-sub { font-size:13px; color:#64748b; margin-bottom:16px; }
+.err-summary-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:16px; }
+.err-summary-cell { background:#f8faff; border-radius:14px; padding:12px 8px; text-align:center; }
+.err-summary-val { font-size:24px; font-weight:900; color:#2563eb; line-height:1; }
+.err-summary-lbl { font-size:10px; color:#64748b; font-weight:700; margin-top:3px; }
+.err-umnik-bubble { background:rgba(99,102,241,.07); border:1.5px solid rgba(99,102,241,.18); border-radius:14px; padding:12px 16px; font-size:14px; color:#312e81; line-height:1.5; margin-bottom:14px; font-style:italic; }
+.err-summary-btns { display:flex; flex-wrap:wrap; gap:8px; }
+.err-summary-btn { padding:9px 18px; border-radius:20px; border:none; font-family:inherit; font-size:13px; font-weight:800; cursor:pointer; transition:all .18s; }
+.err-summary-btn.primary { background:#2563eb; color:#fff; }
+.err-summary-btn.secondary { background:#f1f5f9; color:#2563eb; border:2px solid #e2e8f0; }
+.err-summary-btn:hover { opacity:.88; }
+/* Фильтры */
+.err-filters { display:flex; flex-wrap:wrap; gap:7px; }
+.err-filter { padding:6px 14px; border-radius:20px; border:2px solid #e2e8f0; background:#fff; font-family:inherit; font-size:12px; font-weight:800; color:#475569; cursor:pointer; transition:all .15s; white-space:nowrap; }
+.err-filter.active { background:#2563eb; color:#fff; border-color:#2563eb; }
+/* Блок по темам */
+.err-topic-row { display:flex; align-items:center; gap:10px; padding:10px 0; border-bottom:1px solid #f1f5f9; cursor:pointer; }
+.err-topic-row:last-child { border-bottom:none; }
+.err-topic-row:hover { opacity:.8; }
+.err-topic-icon { font-size:20px; flex-shrink:0; }
+.err-topic-info { flex:1; min-width:0; }
+.err-topic-name { font-size:13px; font-weight:800; color:#1e293b; }
+.err-topic-count { font-size:11px; color:#94a3b8; margin-top:1px; }
+.err-topic-bar-wrap { width:70px; height:6px; background:#e2e8f0; border-radius:3px; overflow:hidden; flex-shrink:0; }
+.err-topic-bar { height:100%; border-radius:3px; }
+/* Статусы ошибок */
+.err-status { display:inline-block; font-size:10px; font-weight:900; padding:2px 9px; border-radius:10px; text-transform:uppercase; letter-spacing:.04em; }
+.err-status.new    { background:rgba(239,68,68,.12);  color:#dc2626; }
+.err-status.repeat { background:rgba(249,115,22,.12); color:#ea580c; }
+.err-status.reviewed { background:rgba(59,130,246,.12); color:#2563eb; }
+.err-status.fixed  { background:rgba(34,197,94,.12);  color:#16a34a; }
+.err-status.closed { background:rgba(148,163,184,.12);color:#64748b; }
+/* Карточка ошибки */
+.err-item { border-radius:16px; background:#fff; box-shadow:0 1px 6px rgba(0,0,0,.06); overflow:hidden; margin-bottom:10px; border-left:4px solid #e2e8f0; }
+.err-item.new    { border-left-color:#ef4444; }
+.err-item.repeat { border-left-color:#f97316; }
+.err-item.reviewed { border-left-color:#3b82f6; }
+.err-item.fixed  { border-left-color:#22c55e; }
+.err-item.closed { border-left-color:#cbd5e1; opacity:.6; }
+.err-item-head { display:flex; align-items:center; justify-content:space-between; padding:12px 16px 6px; }
+.err-item-topic { font-size:13px; font-weight:900; color:#1e293b; }
+.err-item-date  { font-size:11px; color:#94a3b8; }
+.err-item-body  { padding:0 16px 8px; }
+.err-item-task  { font-size:15px; font-weight:700; color:#1e293b; margin-bottom:6px; }
+.err-item-answers { display:flex; gap:12px; margin-bottom:6px; }
+.err-answer-block { flex:1; padding:7px 12px; border-radius:10px; }
+.err-answer-block.wrong  { background:rgba(239,68,68,.07); }
+.err-answer-block.right  { background:rgba(34,197,94,.07); }
+.err-answer-lbl { font-size:10px; font-weight:900; color:#94a3b8; text-transform:uppercase; }
+.err-answer-val { font-size:16px; font-weight:900; margin-top:2px; }
+.err-answer-block.wrong .err-answer-val { color:#dc2626; }
+.err-answer-block.right .err-answer-val { color:#16a34a; }
+.err-item-type  { font-size:12px; color:#64748b; margin-bottom:8px; }
+.err-item-type span { font-weight:800; color:#475569; }
+.err-item-btns  { display:flex; gap:8px; padding:0 16px 12px; }
+.err-item-btn   { flex:1; padding:7px; border-radius:12px; border:none; font-family:inherit; font-size:12px; font-weight:800; cursor:pointer; transition:all .15s; }
+.err-item-btn.blue   { background:#2563eb; color:#fff; }
+.err-item-btn.outline { background:#f1f5f9; color:#2563eb; border:1.5px solid #e2e8f0; }
+.err-item-btn.ghost  { background:transparent; color:#94a3b8; border:1.5px solid #e2e8f0; }
+/* Разбор */
+.err-explain-task-card { background:#f8faff; border-radius:16px; padding:16px 18px; margin-bottom:12px; }
+.err-explain-task-lbl { font-size:11px; font-weight:900; color:#94a3b8; text-transform:uppercase; margin-bottom:6px; }
+.err-explain-task-q { font-size:20px; font-weight:900; color:#1e293b; margin-bottom:10px; }
+.err-explain-answers { display:flex; gap:10px; }
+.err-explain-step { display:flex; gap:12px; align-items:flex-start; padding:10px 0; border-bottom:1px solid #f1f5f9; }
+.err-explain-step:last-child { border-bottom:none; }
+.err-explain-step-num { width:26px; height:26px; border-radius:50%; background:#2563eb; color:#fff; font-size:12px; font-weight:900; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px; }
+.err-explain-step-text { font-size:14px; color:#1e293b; line-height:1.5; flex:1; }
+.err-explain-final { background:rgba(99,102,241,.07); border:1.5px solid rgba(99,102,241,.18); border-radius:14px; padding:12px 16px; font-size:14px; color:#312e81; line-height:1.5; margin:12px 0; font-style:italic; }
+/* Тренировка */
+.err-train-task-card { background:#fff; border-radius:18px; padding:20px; box-shadow:0 2px 10px rgba(0,0,0,.08); margin-bottom:14px; }
+.err-train-progress { display:flex; gap:6px; margin-bottom:16px; }
+.err-train-dot { flex:1; height:5px; border-radius:3px; background:#e2e8f0; transition:background .3s; }
+.err-train-dot.done { background:#22c55e; }
+.err-train-dot.active { background:#2563eb; }
+.err-train-q { font-size:18px; font-weight:800; color:#1e293b; margin-bottom:16px; line-height:1.4; }
+.err-train-opts { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.err-train-opt { padding:12px; border-radius:14px; border:2px solid #e2e8f0; background:#fff; font-family:inherit; font-size:16px; font-weight:800; color:#1e293b; cursor:pointer; text-align:center; transition:all .15s; }
+.err-train-opt:hover { border-color:#2563eb; color:#2563eb; }
+.err-train-opt.correct { border-color:#22c55e; background:rgba(34,197,94,.08); color:#16a34a; }
+.err-train-opt.wrong   { border-color:#ef4444; background:rgba(239,68,68,.08); color:#dc2626; }
+/* Пустое состояние */
+.err-empty { text-align:center; padding:40px 20px; }
+.err-empty-emoji { font-size:64px; margin-bottom:16px; }
+.err-empty-title { font-size:18px; font-weight:900; color:#1e293b; margin-bottom:8px; }
+.err-empty-text  { font-size:14px; color:#64748b; line-height:1.55; margin-bottom:20px; }
+/* Результат */
+.err-result-card { background:#fff; border-radius:20px; padding:24px; text-align:center; box-shadow:0 2px 12px rgba(0,0,0,.08); }
+.err-result-emoji { font-size:56px; margin-bottom:12px; }
+.err-result-title { font-size:20px; font-weight:900; color:#1e293b; margin-bottom:16px; }
+.err-result-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin-bottom:16px; }
+.err-result-cell { background:#f8faff; border-radius:14px; padding:12px; }
+.err-result-val  { font-size:22px; font-weight:900; color:#2563eb; }
+.err-result-lbl  { font-size:11px; color:#64748b; font-weight:700; margin-top:3px; }
+
 /* ===== FUN FACTS & CHEATSHEET ===== */
 .fact-card { background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.1); border-radius: 18px; padding: 18px 20px; margin-bottom: 14px; display: flex; gap: 14px; align-items: flex-start; }
 .fact-icon { font-size: 32px; flex-shrink: 0; line-height: 1; }
@@ -2885,13 +2986,34 @@ body.theme-dark .h-tile.pink { background: rgba(236,73,217,.08); }
 <div id="screen-funfacts" class="screen">
   <nav class="top-nav">
     <button class="nav-back" onclick="showScreen('screen-home')">← Назад</button>
-    <div class="nav-logo">💡 Хочу всё знать</div>
+    <div class="nav-logo">🔍 Мои ошибки</div>
     <div class="nav-xp" id="nav-xp-ff">⭐ 0 XP</div>
   </nav>
-  <div class="screen-body" style="max-width:600px">
-    <div class="screen-title">Хочу всё знать</div>
-    <div class="screen-subtitle">Интересные факты о математике</div>
-    <div id="ff-cards"></div>
+  <div class="err-body">
+    <div id="err-summary-card"></div>
+    <div id="err-filters-bar"></div>
+    <div id="err-by-topic-card"></div>
+    <div id="err-list-card"></div>
+    <div id="err-closed-card"></div>
+    <div id="err-recommend-card"></div>
+  </div>
+  <!-- Экран разбора ошибки -->
+  <div id="err-explain-overlay" style="display:none;position:fixed;inset:0;z-index:200;background:var(--bg);overflow-y:auto">
+    <nav class="top-nav">
+      <button class="nav-back" onclick="errCloseExplain()">← Назад</button>
+      <div class="nav-logo">🧑‍🏫 Разбор ошибки</div>
+      <div></div>
+    </nav>
+    <div class="err-body" id="err-explain-body"></div>
+  </div>
+  <!-- Экран тренировки по ошибкам -->
+  <div id="err-train-overlay" style="display:none;position:fixed;inset:0;z-index:200;background:var(--bg);overflow-y:auto">
+    <nav class="top-nav">
+      <button class="nav-back" onclick="errTrainBack()">← Назад</button>
+      <div class="nav-logo">⚡ Повтори ошибки</div>
+      <div class="nav-xp" id="nav-xp-errtrain">⭐ 0 XP</div>
+    </nav>
+    <div class="err-body" id="err-train-body"></div>
   </div>
   <div class="bottom-nav">
     <a onclick="showScreen('screen-home')"><span class="icon">🏠</span>Главная</a>
@@ -2915,7 +3037,7 @@ body.theme-dark .h-tile.pink { background: rgba(236,73,217,.08); }
   </div>
   <div class="bottom-nav">
     <a onclick="showScreen('screen-home')"><span class="icon">🏠</span>Главная</a>
-    <a onclick="showScreen('screen-funfacts')"><span class="icon">💡</span>Факты</a>
+    <a onclick="showScreen('screen-funfacts')"><span class="icon">🔍</span>Ошибки</a>
     <a onclick="showScreen('screen-trainers')"><span class="icon">⚡</span>Трени</a>
     <a onclick="showScreen('screen-parent')"><span class="icon">🏆</span>Прогресс</a>
   </div>
@@ -6923,7 +7045,7 @@ function tgResolve(correct, rightAnswer) {
       trErrors++;
       trStreak = 0;
       trErrorTasks.push({q: task.q, a: task.a, choices: task.choices});
-      addMistake(currentTrainer.name, 'trainer_wrong');
+      addMistake(currentTrainer.name, 'trainer_wrong', {task: task.q, correctAnswer: String(task.a), source: 'Тренажёр ' + (currentTrainer ? currentTrainer.icon||'' : '')});
       trUpdateStats();
       document.getElementById('tg-oops').style.display = 'none';
       document.getElementById('tg-status').textContent = '❌ Правильно: ' + rightAnswer;
@@ -7228,7 +7350,7 @@ function archerResolve(correct, rightAnswer) {
       trErrors++;
       trStreak = 0;
       trErrorTasks.push({q: task.q, a: task.a, choices: task.choices});
-      addMistake(currentTrainer.name, 'trainer_wrong');
+      addMistake(currentTrainer.name, 'trainer_wrong', {task: task.q, correctAnswer: String(task.a), source: 'Тренажёр ' + (currentTrainer ? currentTrainer.icon||'' : '')});
       trUpdateStats();
       if (statusEl) { statusEl.textContent = '❌ Правильно: ' + rightAnswer; statusEl.className = 'tg-status err'; }
       setTimeout(archerAdvance, 1400);
@@ -7518,7 +7640,7 @@ function builderResolve(correct, rightAnswer) {
       trErrors++;
       trStreak = 0;
       trErrorTasks.push({q: task.q, a: task.a, choices: task.choices});
-      addMistake(currentTrainer.name, 'trainer_wrong');
+      addMistake(currentTrainer.name, 'trainer_wrong', {task: task.q, correctAnswer: String(task.a), source: 'Тренажёр ' + (currentTrainer ? currentTrainer.icon||'' : '')});
       trUpdateStats();
       if (statusEl) { statusEl.textContent = '❌ Правильно: ' + rightAnswer + ' — деталь потеряна'; statusEl.className = 'builder-status err'; }
       setTimeout(builderAdvance, 1300);
@@ -7709,7 +7831,7 @@ function pirateResolve(correct, rightAnswer) {
       trErrors++;
       trStreak = 0;
       trErrorTasks.push({q: task.q, a: task.a, choices: task.choices});
-      addMistake(currentTrainer.name, 'trainer_wrong');
+      addMistake(currentTrainer.name, 'trainer_wrong', {task: task.q, correctAnswer: String(task.a), source: 'Тренажёр ' + (currentTrainer ? currentTrainer.icon||'' : '')});
       trUpdateStats();
       hero.classList.add('sad');
       if (statusEl) { statusEl.textContent = '❌ Правильно: ' + rightAnswer; statusEl.className = 'pirate-status err'; }
@@ -8106,18 +8228,507 @@ function endTrainer() {
 }
 
 // ===== FUN FACTS =====
+// ===== МОИ ОШИБКИ =====
+
+// Типы ошибок по теме
+const ERR_TYPES = {
+  add:    ['не перенёс десяток','ошибка в единицах','ошибка в десятках','перепутал действие','невнимательность'],
+  sub:    ['не занял десяток','ошибка в единицах','ошибка в десятках','перепутал порядок чисел','невнимательность'],
+  mul:    ['ошибка в таблице умножения','перепутал множители','ошибка с нулём','ошибка в порядке действий'],
+  div:    ['ошибка в таблице деления','деление не на то число','перепутал делимое и делитель','не проверил умножением'],
+  add3:   ['не перенёс десяток','пропустил слагаемое','ошибка в порядке действий'],
+  chain:  ['перепутал знак','пропустил шаг','ошибка порядка действий'],
+  cmp:    ['перепутал числитель и знаменатель','неправильно сравнил дроби','невнимательность'],
+  fradd:  ['сложил знаменатели','перепутал числитель','не упростил дробь'],
+  frsub:  ['вычел знаменатели','перепутал порядок','не упростил дробь'],
+  fradd2: ['не привёл к общему знаменателю','ошибка в НОК','ошибка при сложении числителей'],
+  frsub2: ['не привёл к общему знаменателю','ошибка в НОК','ошибка при вычитании числителей'],
+  perim:  ['забыл одну сторону','перепутал с площадью','забыл единицы измерения'],
+  area:   ['перепутал с периметром','использовал не ту формулу','забыл единицы'],
+  speed:  ['перепутал формулу','неверно выбрал действие','пропустил шаг'],
+  pow:    ['ошибка в умножении','не запомнил квадрат','перепутал с кубом'],
+  pow2:   ['ошибка в умножении','не запомнил квадрат большого числа'],
+  pow3:   ['перепутал с квадратом','ошибка при тройном умножении'],
+  decadd: ['не выровнял запятые','ошибка в переносе','неверно поставил запятую в ответе'],
+  decmul: ['неверно перенёс запятую','ошибка в умножении','не посчитал знаки'],
+  tasknat:['не понял условие','выбрал не то действие','пропустил шаг'],
+  taskfr: ['неверно нашёл часть от числа','перепутал дробь','не проверил ответ'],
+  geo_t:  ['использовал не ту формулу','перепутал периметр и площадь','забыл единицы']
+};
+
+// Объяснения по шагам для каждой темы
+const ERR_EXPLAIN = {
+  add: ['Складывай единицы: правый столбец.', 'Если сумма ≥ 10, запиши единицы и перенеси десяток.', 'Складывай десятки + перенос.', 'Запиши результат целиком.'],
+  sub: ['Вычитай единицы: нижний из верхнего.', 'Если нижнее больше — займи десяток у соседа слева.', 'Вычитай десятки (учитывая занятый).', 'Запиши результат.'],
+  mul: ['Вспомни строку таблицы умножения.', 'Первый множитель × второй = произведение.', 'Проверь: умножение — это быстрое сложение одинаковых чисел.'],
+  div: ['Спроси себя: на что умножить делитель, чтобы получить делимое?', 'Запиши частное.', 'Проверь: частное × делитель = делимое.'],
+  cmp: ['Дроби с одним знаменателем — сравни числители.', 'Больше та дробь, у которой числитель больше.', 'Расставь знак > или <.'],
+  fradd: ['Знаменатели одинаковые? Оставь его.', 'Сложи только числители.', 'Запиши результат: (а+b)/n.'],
+  frsub: ['Знаменатели одинаковые? Оставь его.', 'Вычти числители.', 'Запиши результат: (а−b)/n.'],
+  fradd2:['Найди НОК знаменателей.', 'Приведи обе дроби к общему знаменателю.', 'Сложи числители. Знаменатель не меняй.'],
+  frsub2:['Найди НОК знаменателей.', 'Приведи обе дроби к общему знаменателю.', 'Вычти числители. Знаменатель не меняй.'],
+  perim: ['Запиши все стороны фигуры.', 'Сложи все стороны.', 'Допиши единицу измерения (см, м, дм).'],
+  area:  ['Запиши длину и ширину.', 'S = длина × ширина.', 'Не забудь единицы: см², м².'],
+  speed: ['Запомни: S = v × t.', 'Выпиши что дано и что найти.', 'Подставь числа и вычисли.'],
+  pow:   ['n² = n × n.', 'Просто умножь число само на себя.', 'Например: 7² = 7 × 7 = 49.'],
+  pow3:  ['n³ = n × n × n.', 'Умножь три раза.', 'Например: 3³ = 3 × 3 × 3 = 27.'],
+  decadd:['Выровняй запятые в столбик.', 'Складывай/вычитай как целые числа.', 'Поставь запятую в ответе на то же место.'],
+  decmul:['Умножай как целые числа, без запятой.', 'Посчитай сумму знаков после запятой в обоих числах.', 'Отступи столько знаков от конца результата.'],
+  tasknat:['Прочитай задачу дважды.', 'Запиши: что дано? что найти?', 'Выбери действие и реши.', 'Запиши ответ с единицей.'],
+  taskfr:['Запиши дробь и число.', '1/n от числа = число ÷ n.', 'k/n от числа = (число ÷ n) × k.'],
+  geo_t: ['Нарисуй фигуру и подпиши стороны.', 'Периметр = сумма всех сторон.', 'Площадь = длина × ширина. Не перепутай!']
+};
+
+var errCurrentFilter = 'all';
+var errTrainTasks = [];
+var errTrainIdx = 0;
+var errTrainCorrect = 0;
+var errTrainFixed = [];
+
+function getErrList() {
+  return (ST.mistakes || []).filter(function(m){ return !m.closed; });
+}
+
+function errStatusLabel(s) {
+  var map = {new:'новая', repeat:'повторить', reviewed:'разобрано', fixed:'исправлено', closed:'закрыто'};
+  return map[s] || s;
+}
+
+function errTopicIcon(topic) {
+  var t = (TRAINERS_DEF || []).find(function(d){ return d.name === topic || d.id === topic; });
+  return t ? t.icon : '📝';
+}
+
+function errGuessType(m) {
+  var tr = (TRAINERS_DEF || []).find(function(d){ return d.name === m.topic; });
+  var id = tr ? tr.id : '';
+  var types = ERR_TYPES[id] || ['невнимательность'];
+  return m.errType || types[Math.floor(Math.random() * types.length)];
+}
+
+function errGuessExplain(m) {
+  var tr = (TRAINERS_DEF || []).find(function(d){ return d.name === m.topic; });
+  var id = tr ? tr.id : '';
+  return ERR_EXPLAIN[id] || ['Проверь каждый шаг решения.', 'Запиши условие и что нужно найти.', 'Подставь числа по формуле.'];
+}
+
 function renderFunFacts() {
-  const el = document.getElementById('ff-cards');
-  if (!el) return;
-  el.innerHTML = FUN_FACTS.map(f => `
-    <div class="fact-card">
-      <div class="fact-icon">${f.icon}</div>
-      <div>
-        <div class="fact-title">${f.title}</div>
-        <div class="fact-text">${f.text}</div>
-      </div>
-    </div>
-  `).join('');
+  var xpEl = document.getElementById('nav-xp-ff');
+  if (xpEl) xpEl.textContent = '⭐ ' + ST.xp + ' XP';
+
+  var all = getErrList();
+  var total = all.length;
+  var needRepeat = all.filter(function(m){ return m.status === 'new' || m.status === 'repeat'; }).length;
+  var fixed = all.filter(function(m){ return m.status === 'fixed'; }).length;
+  var closed = (ST.mistakes || []).filter(function(m){ return m.closed; }).length;
+
+  // Самая частая тема
+  var topicCount = {};
+  all.forEach(function(m){ topicCount[m.topic] = (topicCount[m.topic]||0)+1; });
+  var topTopic = Object.keys(topicCount).sort(function(a,b){ return topicCount[b]-topicCount[a]; })[0] || '';
+  var topCount = topTopic ? topicCount[topTopic] : 0;
+
+  // Серия без ошибок (из trainerHistory — последние без ошибок)
+  var streak = 0;
+  var hist = ST.trainerHistory || [];
+  for (var i = 0; i < hist.length; i++) {
+    if (hist[i].errors === 0) streak++; else break;
+  }
+
+  // Умник
+  var umnikMsg;
+  if (total === 0) {
+    umnikMsg = 'Ошибок пока нет — ты справляешься отлично! Продолжай в том же духе.';
+  } else if (topTopic && topCount >= 2) {
+    umnikMsg = 'Чаще всего трудности в теме «' + topTopic + '» — ' + topCount + ' раз' + (topCount>=5?'':'')+'. Давай разберём это отдельно!';
+  } else {
+    umnikMsg = 'Тут ' + total + ' задани' + (total===1?'е':total<5?'я':'й') + ', которые стоит повторить. Вместе разберёмся быстро!';
+  }
+
+  // ── 1. Итоговая карточка ──
+  if (total === 0) {
+    document.getElementById('err-summary-card').innerHTML =
+      '<div class="err-card"><div class="err-empty">'
+      + '<div class="err-empty-emoji">🏆</div>'
+      + '<div class="err-empty-title">Ошибок пока нет!</div>'
+      + '<div class="err-empty-text">Умник говорит: «Отлично! Сейчас список пустой. Когда появятся трудные задания, я сохраню их здесь и помогу разобраться».</div>'
+      + '<button class="err-summary-btn primary" onclick="showScreen(\'screen-trainers\')">Перейти к тренажёрам</button>'
+      + '</div></div>';
+    ['err-filters-bar','err-by-topic-card','err-list-card','err-closed-card','err-recommend-card'].forEach(function(id){
+      var el = document.getElementById(id); if(el) el.innerHTML = '';
+    });
+    return;
+  }
+
+  document.getElementById('err-summary-card').innerHTML =
+    '<div class="err-card">'
+    + '<div class="err-summary-hero">🔍 Мои ошибки</div>'
+    + '<div class="err-summary-sub">Здесь Умник собирает задания, где было трудно, и помогает разобраться</div>'
+    + '<div class="err-summary-grid">'
+    + '<div class="err-summary-cell"><div class="err-summary-val">' + total + '</div><div class="err-summary-lbl">всего ошибок</div></div>'
+    + '<div class="err-summary-cell"><div class="err-summary-val" style="color:#ea580c">' + needRepeat + '</div><div class="err-summary-lbl">нужно повторить</div></div>'
+    + '<div class="err-summary-cell"><div class="err-summary-val" style="color:#16a34a">' + fixed + '</div><div class="err-summary-lbl">исправлено</div></div>'
+    + (topTopic ? '<div class="err-summary-cell" style="grid-column:span 2"><div class="err-summary-val" style="font-size:16px">' + topTopic + '</div><div class="err-summary-lbl">самая частая тема (' + topCount + ' раз)</div></div>' : '')
+    + '<div class="err-summary-cell"><div class="err-summary-val">' + streak + '</div><div class="err-summary-lbl">серия без ошибок 🔥</div></div>'
+    + '</div>'
+    + '<div class="err-umnik-bubble">Умник заметил: «' + umnikMsg + '»</div>'
+    + '<div class="err-summary-btns">'
+    + (needRepeat > 0 ? '<button class="err-summary-btn primary" onclick="errStartTrain()">⚡ Повторить ошибки</button>' : '')
+    + '<button class="err-summary-btn secondary" onclick="errExplainFirst()">🧑‍🏫 Разобрать с Умником</button>'
+    + '<button class="err-summary-btn secondary" onclick="errFilterSet(\'repeat\')">🔴 Только сложные</button>'
+    + '</div>'
+    + '</div>';
+
+  // ── 2. Фильтры ──
+  var filters = [
+    {k:'all',lbl:'Все'},
+    {k:'new',lbl:'Новые'},
+    {k:'repeat',lbl:'Повторить'},
+    {k:'reviewed',lbl:'Разобрано'},
+    {k:'fixed',lbl:'Исправлено'}
+  ];
+  // + темы с ошибками
+  Object.keys(topicCount).sort(function(a,b){ return topicCount[b]-topicCount[a]; }).slice(0,5).forEach(function(t){
+    filters.push({k:'topic:'+t, lbl:errTopicIcon(t)+' '+t});
+  });
+  document.getElementById('err-filters-bar').innerHTML =
+    '<div class="err-card" style="padding:14px 16px">'
+    + '<div class="err-filters">'
+    + filters.map(function(f){
+        return '<button class="err-filter' + (errCurrentFilter===f.k?' active':'') + '" onclick="errFilterSet(\'' + f.k + '\')">' + f.lbl + '</button>';
+      }).join('')
+    + '</div></div>';
+
+  // ── 3. По темам ──
+  var topicRows = Object.keys(topicCount).sort(function(a,b){ return topicCount[b]-topicCount[a]; }).map(function(topic) {
+    var cnt = topicCount[topic];
+    var icon = errTopicIcon(topic);
+    var fixedInTopic = all.filter(function(m){ return m.topic===topic && m.status==='fixed'; }).length;
+    var pct = Math.round(fixedInTopic/cnt*100);
+    var barColor = cnt>=4?'#ef4444':cnt>=2?'#f97316':'#22c55e';
+    var statusText = cnt>=4?'повторить обязательно':cnt>=2?'нужно закрепить':'почти понял';
+    return '<div class="err-topic-row" onclick="errFilterSet(\'topic:' + topic + '\')">'
+      + '<div class="err-topic-icon">' + icon + '</div>'
+      + '<div class="err-topic-info"><div class="err-topic-name">' + topic + '</div><div class="err-topic-count">' + cnt + ' ошибок · ' + statusText + '</div></div>'
+      + '<div class="err-topic-bar-wrap"><div class="err-topic-bar" style="width:' + pct + '%;background:' + barColor + '"></div></div>'
+      + '<div style="font-size:11px;color:#94a3b8;margin-left:6px;flex-shrink:0">' + pct + '%</div>'
+      + '</div>';
+  }).join('');
+  document.getElementById('err-by-topic-card').innerHTML =
+    '<div class="err-card"><div class="err-card-title">📊 Где чаще всего ошибаюсь</div>' + topicRows + '</div>';
+
+  // ── 4. Список ошибок ──
+  errRenderList();
+
+  // ── 5. Закрытые ──
+  if (closed > 0) {
+    var closedTopics = {};
+    (ST.mistakes||[]).filter(function(m){ return m.closed; }).forEach(function(m){ closedTopics[m.topic] = (closedTopics[m.topic]||0)+1; });
+    var closedHtml = Object.keys(closedTopics).map(function(topic) {
+      var cnt = closedTopics[topic];
+      return '<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f1f5f9">'
+        + '<div><div style="font-size:13px;font-weight:800;color:#1e293b">' + errTopicIcon(topic) + ' ' + topic + '</div>'
+        + '<div style="font-size:11px;color:#94a3b8">было ошибок: ' + cnt + '</div></div>'
+        + '<span class="err-status closed">закрыто ✓</span>'
+        + '</div>';
+    }).join('');
+    document.getElementById('err-closed-card').innerHTML =
+      '<div class="err-card"><div class="err-card-title">✅ Исправленные ошибки</div>' + closedHtml + '</div>';
+  } else {
+    document.getElementById('err-closed-card').innerHTML = '';
+  }
+
+  // ── 6. Рекомендация дня ──
+  if (topTopic) {
+    var topTrainer = (TRAINERS_DEF||[]).find(function(d){ return d.name===topTopic; });
+    document.getElementById('err-recommend-card').innerHTML =
+      '<div class="err-card">'
+      + '<div class="err-card-title">🎯 Что повторить сегодня</div>'
+      + '<div style="font-size:15px;font-weight:800;color:#1e293b;margin-bottom:6px">' + errTopicIcon(topTopic) + ' ' + topTopic + '</div>'
+      + '<div style="font-size:13px;color:#64748b;margin-bottom:14px">В этой теме было ' + topCount + ' ошибок — давай закроем их сегодня!</div>'
+      + '<button class="err-summary-btn primary" onclick="errStartTrain()" style="width:100%">⚡ Начать 10 заданий</button>'
+      + '</div>';
+  } else {
+    document.getElementById('err-recommend-card').innerHTML = '';
+  }
+}
+
+function errRenderList() {
+  var all = getErrList();
+  var filtered;
+  if (errCurrentFilter === 'all') {
+    filtered = all;
+  } else if (errCurrentFilter.startsWith('topic:')) {
+    var t = errCurrentFilter.slice(6);
+    filtered = all.filter(function(m){ return m.topic === t; });
+  } else {
+    filtered = all.filter(function(m){ return m.status === errCurrentFilter; });
+  }
+
+  if (filtered.length === 0) {
+    document.getElementById('err-list-card').innerHTML =
+      '<div class="err-card"><div style="text-align:center;padding:20px;color:#94a3b8;font-size:14px">По этому фильтру ошибок нет 🎉</div></div>';
+    return;
+  }
+
+  var html = filtered.slice(0,15).map(function(m, idx) {
+    var realIdx = (ST.mistakes||[]).indexOf(m);
+    var errType = errGuessType(m);
+    var statusCls = m.status || 'new';
+    var statusText = errStatusLabel(statusCls);
+    var hasTask = m.task && m.studentAnswer && m.correctAnswer;
+    return '<div class="err-item ' + statusCls + '">'
+      + '<div class="err-item-head">'
+      + '<div><div class="err-item-topic">' + errTopicIcon(m.topic) + ' ' + m.topic + '</div>'
+      + (m.source ? '<div style="font-size:11px;color:#94a3b8">' + m.source + '</div>' : '') + '</div>'
+      + '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">'
+      + '<span class="err-status ' + statusCls + '">' + statusText + '</span>'
+      + '<div class="err-item-date">' + (m.date||'') + '</div>'
+      + '</div></div>'
+      + '<div class="err-item-body">'
+      + (hasTask
+        ? '<div class="err-item-task">Задание: ' + m.task + '</div>'
+          + '<div class="err-item-answers">'
+          + '<div class="err-answer-block wrong"><div class="err-answer-lbl">твой ответ</div><div class="err-answer-val">' + m.studentAnswer + '</div></div>'
+          + '<div class="err-answer-block right"><div class="err-answer-lbl">правильно</div><div class="err-answer-val">' + m.correctAnswer + '</div></div>'
+          + '</div>'
+        : '<div class="err-item-task" style="color:#64748b">Тема: ' + m.topic + '</div>')
+      + '<div class="err-item-type">Тип ошибки: <span>' + errType + '</span></div>'
+      + '</div>'
+      + '<div class="err-item-btns">'
+      + '<button class="err-item-btn blue" onclick="errExplain(' + realIdx + ')">🧑‍🏫 Разобрать</button>'
+      + '<button class="err-item-btn outline" onclick="errSimilarTask(' + realIdx + ')">🔁 Похожее задание</button>'
+      + (statusCls !== 'fixed' && statusCls !== 'closed'
+        ? '<button class="err-item-btn ghost" onclick="errMarkFixed(' + realIdx + ')">✓ Исправлено</button>'
+        : '<button class="err-item-btn ghost" onclick="errClose(' + realIdx + ')">Закрыть</button>')
+      + '</div>'
+      + '</div>';
+  }).join('');
+
+  document.getElementById('err-list-card').innerHTML =
+    '<div class="err-card"><div class="err-card-title">📋 Последние ошибки</div>' + html + '</div>';
+}
+
+function errFilterSet(f) {
+  errCurrentFilter = f;
+  renderFunFacts();
+}
+
+function errMarkFixed(idx) {
+  if (!ST.mistakes[idx]) return;
+  ST.mistakes[idx].status = 'fixed';
+  lsSave();
+  renderFunFacts();
+}
+
+function errMarkReviewed(idx) {
+  if (!ST.mistakes[idx]) return;
+  ST.mistakes[idx].status = 'reviewed';
+  lsSave();
+}
+
+function errClose(idx) {
+  if (!ST.mistakes[idx]) return;
+  ST.mistakes[idx].closed = true;
+  ST.mistakes[idx].status = 'closed';
+  lsSave();
+  renderFunFacts();
+}
+
+// ── Разбор ошибки ──
+function errExplainFirst() {
+  var all = getErrList();
+  var idx = (ST.mistakes||[]).indexOf(all[0]);
+  if (idx >= 0) errExplain(idx);
+}
+
+function errExplain(idx) {
+  var m = (ST.mistakes||[])[idx];
+  if (!m) return;
+  errMarkReviewed(idx);
+  var steps = errGuessExplain(m);
+  var errType = errGuessType(m);
+  var hasTask = m.task && m.studentAnswer && m.correctAnswer;
+
+  var html =
+    '<div class="err-card" style="margin-bottom:14px">'
+    + '<div class="err-explain-task-card">'
+    + '<div class="err-explain-task-lbl">Задание</div>'
+    + '<div class="err-explain-task-q">' + (m.task || m.topic) + '</div>'
+    + (hasTask
+      ? '<div class="err-explain-answers">'
+        + '<div class="err-answer-block wrong" style="flex:0 1 auto"><div class="err-answer-lbl">твой ответ</div><div class="err-answer-val">' + m.studentAnswer + '</div></div>'
+        + '<div style="font-size:22px;align-self:center;color:#94a3b8">→</div>'
+        + '<div class="err-answer-block right" style="flex:0 1 auto"><div class="err-answer-lbl">правильно</div><div class="err-answer-val">' + m.correctAnswer + '</div></div>'
+        + '</div>'
+      : '')
+    + '</div>'
+    + '<div class="err-card-title" style="margin-top:14px">Умник объясняет: <span style="color:#2563eb;font-weight:700">' + errType + '</span></div>'
+    + steps.map(function(s, i){
+        return '<div class="err-explain-step">'
+          + '<div class="err-explain-step-num">' + (i+1) + '</div>'
+          + '<div class="err-explain-step-text">' + s + '</div>'
+          + '</div>';
+      }).join('')
+    + '<div class="err-explain-final">«Ошибка была не в том, что ты не понял тему. Просто это место нужно чуть закрепить — и всё получится!»</div>'
+    + '<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px">'
+    + '<button class="err-summary-btn primary" onclick="errSimilarTask(' + idx + ')">🔁 Решить похожее</button>'
+    + '<button class="err-summary-btn secondary" onclick="errMarkFixed(' + idx + ');errCloseExplain()">✅ Понятно, закрыть</button>'
+    + '</div>'
+    + '</div>';
+
+  document.getElementById('err-explain-body').innerHTML = html;
+  document.getElementById('err-explain-overlay').style.display = 'block';
+}
+
+function errCloseExplain() {
+  document.getElementById('err-explain-overlay').style.display = 'none';
+  renderFunFacts();
+}
+
+// ── Похожее задание (запускаем тренажёр по теме) ──
+function errSimilarTask(idx) {
+  var m = (ST.mistakes||[])[idx];
+  if (!m) return;
+  var tr = (TRAINERS_DEF||[]).find(function(d){ return d.name===m.topic; });
+  if (tr) {
+    errCloseExplain();
+    startTrainer(tr.id);
+  } else {
+    errCloseExplain();
+    showScreen('screen-trainers');
+  }
+}
+
+// ── Тренировка по ошибкам ──
+function errStartTrain() {
+  var errItems = getErrList().filter(function(m){ return m.status==='new'||m.status==='repeat'; });
+  if (errItems.length === 0) { alert('Нет ошибок для повторения!'); return; }
+
+  errTrainTasks = [];
+  errTrainIdx = 0;
+  errTrainCorrect = 0;
+  errTrainFixed = [];
+
+  // Берём до 5 реальных ошибочных тем и генерируем задания
+  var usedTopics = [];
+  errItems.slice(0,5).forEach(function(m) {
+    var tr = (TRAINERS_DEF||[]).find(function(d){ return d.name===m.topic; });
+    if (tr) {
+      var tasks = generateTasks(tr.id, 2);
+      tasks.forEach(function(t){ errTrainTasks.push({task:t, trId:tr.id, mistakeRef:m, type:'mistake'}); });
+      if (!usedTopics.includes(tr.id)) usedTopics.push(tr.id);
+    }
+  });
+  // Добавляем до 10 заданий
+  while (errTrainTasks.length < 10 && usedTopics.length > 0) {
+    var trId = usedTopics[errTrainTasks.length % usedTopics.length];
+    var t2 = generateTasks(trId, 1);
+    if (t2.length) errTrainTasks.push({task:t2[0], trId:trId, type:'similar'});
+  }
+  errTrainTasks = errTrainTasks.slice(0,10);
+  if (errTrainTasks.length === 0) { alert('Нет заданий для тренировки.'); return; }
+
+  document.getElementById('err-train-overlay').style.display = 'block';
+  errTrainRender();
+}
+
+function errTrainBack() {
+  document.getElementById('err-train-overlay').style.display = 'none';
+}
+
+function errTrainRender() {
+  if (errTrainIdx >= errTrainTasks.length) { errTrainFinish(); return; }
+  var item = errTrainTasks[errTrainIdx];
+  var t = item.task;
+  var total = errTrainTasks.length;
+
+  var opts = t.opts || [];
+  if (!opts.length && t.a !== undefined) {
+    var nums = [parseInt(t.a)];
+    while(nums.length<4){ var r=parseInt(t.a)+Math.round((Math.random()-.5)*10); if(r>0&&!nums.includes(r))nums.push(r); }
+    opts = arrShuffle ? arrShuffle(nums.map(String)) : nums.map(String);
+  }
+
+  var dotsHtml = errTrainTasks.map(function(_,i){
+    return '<div class="err-train-dot' + (i<errTrainIdx?' done':i===errTrainIdx?' active':'') + '"></div>';
+  }).join('');
+
+  document.getElementById('err-train-body').innerHTML =
+    '<div class="err-card" style="margin-bottom:14px">'
+    + '<div class="err-train-progress">' + dotsHtml + '</div>'
+    + '<div style="font-size:11px;color:#94a3b8;margin-bottom:10px">Задание ' + (errTrainIdx+1) + ' из ' + total + '</div>'
+    + '<div class="err-train-q">' + (t.q || t.task || t.a) + '</div>'
+    + '<div class="err-train-opts">'
+    + opts.map(function(o){
+        return '<button class="err-train-opt" onclick="errTrainAnswer(\'' + o.toString().replace(/'/g,"\\'") + '\')">' + o + '</button>';
+      }).join('')
+    + '</div>'
+    + '</div>';
+}
+
+function errTrainAnswer(chosen) {
+  var item = errTrainTasks[errTrainIdx];
+  var correct = String(item.task.a);
+  var btns = document.querySelectorAll('#err-train-body .err-train-opt');
+  btns.forEach(function(b){
+    if (b.textContent === correct) b.classList.add('correct');
+    else if (b.textContent === chosen) b.classList.add('wrong');
+    b.disabled = true;
+  });
+  var isOk = chosen === correct;
+  if (isOk) {
+    errTrainCorrect++;
+    if (item.mistakeRef) {
+      item.mistakeRef.status = 'fixed';
+      if (!errTrainFixed.includes(item.mistakeRef)) errTrainFixed.push(item.mistakeRef);
+    }
+  }
+  lsSave();
+  setTimeout(function(){
+    errTrainIdx++;
+    errTrainRender();
+  }, 900);
+}
+
+function errTrainFinish() {
+  var total = errTrainTasks.length;
+  var fixedCount = errTrainFixed.length;
+  var xpGained = errTrainCorrect * 8;
+  addXP(xpGained);
+  lsSave();
+
+  var remaining = getErrList().filter(function(m){ return m.status==='new'||m.status==='repeat'; }).length;
+
+  var umnik;
+  if (errTrainCorrect === total) umnik = 'Великолепно! Ты прошёл все задания без ошибок. Ошибки исправлены — двигаемся дальше!';
+  else if (fixedCount > 0) umnik = 'Отлично! Ты исправил ' + fixedCount + ' ошибок. ' + (remaining>0?'Осталось ещё немного — не останавливайся!':'Все ошибки закрыты!');
+  else umnik = 'Почти получилось! Давай повторим ещё раз — с каждым разом становится легче.';
+
+  document.getElementById('err-train-body').innerHTML =
+    '<div class="err-result-card">'
+    + '<div class="err-result-emoji">' + (errTrainCorrect===total?'🏆':errTrainCorrect>=total/2?'🥇':'💪') + '</div>'
+    + '<div class="err-result-title">Ошибки разобраны!</div>'
+    + '<div class="err-result-grid">'
+    + '<div class="err-result-cell"><div class="err-result-val">' + errTrainCorrect + '/' + total + '</div><div class="err-result-lbl">правильно</div></div>'
+    + '<div class="err-result-cell"><div class="err-result-val" style="color:#16a34a">' + fixedCount + '</div><div class="err-result-lbl">исправлено ошибок</div></div>'
+    + '<div class="err-result-cell"><div class="err-result-val" style="color:#ea580c">' + remaining + '</div><div class="err-result-lbl">осталось повторить</div></div>'
+    + '<div class="err-result-cell"><div class="err-result-val" style="color:#f59e0b">+' + xpGained + '</div><div class="err-result-lbl">XP получено ⭐</div></div>'
+    + '</div>'
+    + '<div class="err-umnik-bubble" style="text-align:left;margin-bottom:16px">«' + umnik + '»</div>'
+    + '<div style="display:flex;flex-direction:column;gap:10px">'
+    + (remaining>0?'<button class="err-summary-btn primary" onclick="errTrainBack();errStartTrain()">🔄 Повторить оставшиеся</button>':'')
+    + '<button class="err-summary-btn secondary" onclick="errTrainBack()">🔍 К моим ошибкам</button>'
+    + '<button class="err-summary-btn secondary" onclick="errTrainBack();showScreen(\'screen-home\')">🏠 На главную</button>'
+    + '</div>'
+    + '</div>';
+}
+
+// Генерация заданий по id тренажёра для тренировки ошибок
+function generateTasks(trId, count) {
+  try {
+    return generateTrainerTasks(trId, count) || [];
+  } catch(e) { return []; }
 }
 
 // ===== CHEATSHEET =====
@@ -8436,9 +9047,26 @@ function markSolved(taskId, data) {
   lsSave();
 }
 
-function addMistake(topic, type) {
-  ST.mistakes.push({topic, type, date: new Date().toLocaleDateString('ru')});
-  if(ST.mistakes.length > 50) ST.mistakes = ST.mistakes.slice(-50);
+function addMistake(topic, type, extra) {
+  var entry = Object.assign({
+    topic: topic,
+    type: type,
+    date: new Date().toLocaleDateString('ru'),
+    status: 'new',
+    closed: false
+  }, extra || {});
+  // Обновляем статус если такая ошибка уже есть
+  var existing = ST.mistakes.find(function(m){ return m.topic===topic && !m.closed && (m.status==='new'||m.status==='repeat'); });
+  if (existing) {
+    existing.status = 'repeat';
+    existing.date = entry.date;
+    if (extra && extra.task) existing.task = extra.task;
+    if (extra && extra.studentAnswer) existing.studentAnswer = extra.studentAnswer;
+    if (extra && extra.correctAnswer) existing.correctAnswer = extra.correctAnswer;
+  } else {
+    ST.mistakes.push(entry);
+  }
+  if(ST.mistakes.length > 100) ST.mistakes = ST.mistakes.slice(-100);
   lsSave();
 }
 
