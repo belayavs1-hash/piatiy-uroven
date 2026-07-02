@@ -456,16 +456,17 @@ body.theme-dark .h-logout-btn { border-color: rgba(255,100,100,.3); color: #ff70
 /* ===== MAIN ===== */
 .h-main {
   display: flex; flex-direction: column;
-  padding: 16px 32px 40px;
-  gap: 16px;
+  padding: 16px 32px 24px;
+  gap: 12px;
   overflow-y: auto;
   min-height: 100vh;
 }
 
-/* Hero */
-.h-hero { display: grid; grid-template-columns: 1fr 380px; gap: 16px; align-items: start; }
+/* Hero — те же 3 колонки что и h-content, умник занимает третью */
+.h-hero { display: grid; grid-template-columns: 1fr 1fr 380px; gap: 16px; align-items: start; }
+.h-hero > div:first-child { grid-column: 1 / 3; } /* левая+средняя = под XP и плашки */
 .h-greeting { font-size: 34px; font-weight: 900; color: var(--h-greeting); line-height: 1.05; letter-spacing: -.03em; margin-bottom: 4px; transition: color .3s; }
-.h-sub { font-size: 16px; color: var(--h-sub); margin-bottom: 14px; transition: color .3s; }
+.h-sub { font-size: 16px; color: var(--h-sub); margin-bottom: 10px; transition: color .3s; }
 
 /* XP капсула */
 .h-xp {
@@ -485,11 +486,11 @@ body.theme-dark .h-logout-btn { border-color: rgba(255,100,100,.3); color: #ff70
 
 /* Mascot zone */
 .h-mascot {
-  position: relative; min-height: 220px;
+  position: relative; min-height: 260px;
   display: flex; align-items: flex-end; justify-content: center;
 }
 .h-mascot-img {
-  width: 290px; height: 310px; object-fit: contain;
+  width: 340px; height: 360px; object-fit: contain;
   animation: bobMascot 3.5s ease-in-out infinite;
   position: relative; z-index: 2;
 }
@@ -507,9 +508,9 @@ body.theme-dark .h-logout-btn { border-color: rgba(255,100,100,.3); color: #ff70
 .h-mf5{right:30px;bottom:80px;font-size:62px;color:#ffae25;--r:8deg;animation-duration:3.8s;animation-delay:.8s}
 .h-mf6{right:14px;top:80px;font-size:44px;color:#67d349;--r:6deg;animation-duration:4.2s;animation-delay:1.2s}
 
-/* 3-колоночный контент */
-.h-content { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; align-items: stretch; }
-.h-content > article { height: 340px; }
+/* 3-колоночный контент — те же пропорции что и h-hero */
+.h-content { display: grid; grid-template-columns: 1fr 1fr 380px; gap: 16px; align-items: stretch; }
+.h-content > article { height: 310px; }
 .h-card {
   background: var(--h-card);
   border: 1px solid var(--h-card-border);
@@ -646,8 +647,8 @@ body.theme-dark .h-tile.pink { background: rgba(236,73,217,.08); }
 }
 .h-tile:hover .h-tile-arrow { background: var(--blue); color: #fff; transform: translateX(3px); }
 
-/* Плашки под XP-шкалой */
-.h-banners { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
+/* Плашки под XP-шкалой — 2 колонки, ширина как первые 2 из 3 */
+.h-banners { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 12px; }
 .h-banner {
   display: flex; align-items: center; gap: 12px;
   padding: 12px 18px; border-radius: 18px; cursor: pointer;
@@ -2489,8 +2490,8 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: rgba(14,45,122,.4); }
       <button class="h-nav-item" onclick="showScreen('screen-map')"><span class="h-nav-icon">🌍</span>Карта тем</button>
       <button class="h-nav-item" onclick="showScreen('screen-trainers')"><span class="h-nav-icon">⚡</span>Тренажёры</button>
       <button class="h-nav-item" onclick="showScreen('screen-self-check')"><span class="h-nav-icon">✅</span>Проверочные</button>
-      <button class="h-nav-item" onclick="showScreen('screen-funfacts')"><span class="h-nav-icon">🧩</span>Ошибки</button>
-      <button class="h-nav-item" onclick="showScreen('screen-cheatsheet')"><span class="h-nav-icon">🏆</span>Достижения</button>
+      <button class="h-nav-item" onclick="showScreen('screen-funfacts')"><span class="h-nav-icon">💡</span>Хочу всё знать</button>
+      <button class="h-nav-item" onclick="showScreen('screen-cheatsheet')"><span class="h-nav-icon">📋</span>Шпаргалки</button>
       <button class="h-nav-item" onclick="showScreen('screen-parent')"><span class="h-nav-icon">👪</span>Кабинет родителя</button>
       <button class="h-nav-item" onclick="showScreen('screen-profile')"><span class="h-nav-icon">👤</span>Профиль</button>
     </nav>
@@ -2549,7 +2550,7 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: rgba(14,45,122,.4); }
             <span class="h-banner-emoji">💡</span>
             <div class="h-banner-text">
               <div class="h-banner-title">Хочу всё знать</div>
-              <div class="h-banner-sub">Мои ошибки · разбор с Умником</div>
+              <div class="h-banner-sub" id="banner-know-sub">Мои ошибки · разбор с Умником</div>
             </div>
           </button>
           <button class="h-banner h-banner-cheat" onclick="showScreen('screen-cheatsheet')">
@@ -5479,6 +5480,14 @@ function renderHome() {
   if(navXp) navXp.textContent = `⭐ ${ST.xp} XP`;
   const navName = document.getElementById('home-nav-name');
   if(navName) navName.textContent = `${ST.user.name} • 5 класс`;
+  // Плашка «Хочу всё знать» — показываем кол-во ошибок
+  var errSub = document.getElementById('banner-know-sub');
+  if (errSub) {
+    var errCount = (ST.mistakes || []).filter(function(m){ return !m.closed && (m.status==='new'||m.status==='repeat'); }).length;
+    errSub.textContent = errCount > 0
+      ? 'Ошибок к повторению: ' + errCount
+      : 'Мои ошибки · разбор с Умником';
+  }
   // восстановить тему
   const saved = localStorage.getItem('homeTheme') || 'light';
   applyHomeTheme(saved);
