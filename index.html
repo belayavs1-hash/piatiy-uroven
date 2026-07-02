@@ -477,7 +477,7 @@ body.theme-dark .h-logout-btn { border-color: rgba(255,100,100,.3); color: #ff70
   padding: 0 28px;
   display: flex; align-items: center; gap: 16px;
   transition: background .3s, border-color .3s;
-  margin-top: 0;
+  margin-top: 20px;
 }
 .h-xp strong { font-size: 22px; font-weight: 900; color: var(--h-xp-text); white-space: nowrap; }
 .h-xp-line { flex: 1; height: 6px; background: var(--h-line); border-radius: 999px; overflow: hidden; }
@@ -2491,6 +2491,7 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: rgba(14,45,122,.4); }
       <button class="h-nav-item" onclick="showScreen('screen-trainers')"><span class="h-nav-icon">⚡</span>Тренажёры</button>
       <button class="h-nav-item" onclick="showScreen('screen-self-check')"><span class="h-nav-icon">✅</span>Проверочные</button>
       <button class="h-nav-item" onclick="showScreen('screen-funfacts')"><span class="h-nav-icon">💡</span>Хочу всё знать</button>
+      <button class="h-nav-item" onclick="showScreen('screen-mistakes')"><span class="h-nav-icon">🔍</span>Мои ошибки</button>
       <button class="h-nav-item" onclick="showScreen('screen-cheatsheet')"><span class="h-nav-icon">📋</span>Шпаргалки</button>
       <button class="h-nav-item" onclick="showScreen('screen-parent')"><span class="h-nav-icon">👪</span>Кабинет родителя</button>
       <button class="h-nav-item" onclick="showScreen('screen-profile')"><span class="h-nav-icon">👤</span>Профиль</button>
@@ -2661,7 +2662,7 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: rgba(14,45,122,.4); }
         </div>
         <div class="h-tile-arrow" style="color:#f39b16">›</div>
       </div>
-      <div class="h-tile green2" onclick="showScreen('screen-funfacts')">
+      <div class="h-tile green2" onclick="showScreen('screen-mistakes')">
         <div>
           <span class="h-tile-emoji">🧩</span>
           <div class="h-tile-name">Мои ошибки</div>
@@ -3034,11 +3035,32 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: rgba(14,45,122,.4); }
 </div>
 
 <!-- ===== FUN FACTS ===== -->
+<!-- ===== ХОЧУ ВСЁ ЗНАТЬ ===== -->
 <div id="screen-funfacts" class="screen">
   <nav class="top-nav">
     <button class="nav-back" onclick="showScreen('screen-home')">← Назад</button>
-    <div class="nav-logo">🔍 Мои ошибки</div>
+    <div class="nav-logo">💡 Хочу всё знать</div>
     <div class="nav-xp" id="nav-xp-ff">⭐ 0 XP</div>
+  </nav>
+  <div class="screen-body" style="max-width:600px">
+    <div class="screen-title">Хочу всё знать</div>
+    <div class="screen-subtitle">Интересные факты о числах и математике</div>
+    <div id="ff-cards"></div>
+  </div>
+  <div class="bottom-nav">
+    <a onclick="showScreen('screen-home')"><span class="icon">🏠</span>Главная</a>
+    <a onclick="showScreen('screen-mistakes')"><span class="icon">🔍</span>Ошибки</a>
+    <a onclick="showScreen('screen-trainers')"><span class="icon">⚡</span>Трени</a>
+    <a onclick="showScreen('screen-parent')"><span class="icon">🏆</span>Прогресс</a>
+  </div>
+</div>
+
+<!-- ===== МОИ ОШИБКИ ===== -->
+<div id="screen-mistakes" class="screen">
+  <nav class="top-nav">
+    <button class="nav-back" onclick="showScreen('screen-home')">← Назад</button>
+    <div class="nav-logo">🔍 Мои ошибки</div>
+    <div class="nav-xp" id="nav-xp-mistakes">⭐ 0 XP</div>
   </nav>
   <div class="err-body">
     <div id="err-summary-card"></div>
@@ -5305,6 +5327,7 @@ function showScreen(id) {
   if(id === 'screen-homework') updateTopics();
   if(id === 'screen-profile') { const el = document.getElementById('profile-name-label'); if(el && ST.user) el.textContent = ST.user; }
   if(id === 'screen-funfacts') renderFunFacts();
+  if(id === 'screen-mistakes') renderMistakes();
   if(id === 'screen-cheatsheet') renderCheatsheet();
   if(id === 'screen-already-solved') fillAlreadySolved();
   if(id === 'screen-photo-check') fillPhotoCheck();
@@ -5483,10 +5506,7 @@ function renderHome() {
   // Плашка «Хочу всё знать» — показываем кол-во ошибок
   var errSub = document.getElementById('banner-know-sub');
   if (errSub) {
-    var errCount = (ST.mistakes || []).filter(function(m){ return !m.closed && (m.status==='new'||m.status==='repeat'); }).length;
-    errSub.textContent = errCount > 0
-      ? 'Ошибок к повторению: ' + errCount
-      : 'Мои ошибки · разбор с Умником';
+    errSub.textContent = 'Интересные факты о числах и математике';
   }
   // восстановить тему
   const saved = localStorage.getItem('homeTheme') || 'light';
@@ -8378,6 +8398,21 @@ function errGuessExplain(m) {
 function renderFunFacts() {
   var xpEl = document.getElementById('nav-xp-ff');
   if (xpEl) xpEl.textContent = '⭐ ' + ST.xp + ' XP';
+  var container = document.getElementById('ff-cards');
+  if (!container) return;
+  container.innerHTML = (FUN_FACTS || []).map(function(f, i) {
+    return '<div class="fact-card" style="animation-delay:' + (i * 0.06) + 's">'
+      + '<div class="fact-icon">' + f.icon + '</div>'
+      + '<div class="fact-content">'
+      + '<div class="fact-title">' + f.title + '</div>'
+      + '<div class="fact-text">' + f.text + '</div>'
+      + '</div></div>';
+  }).join('');
+}
+
+function renderMistakes() {
+  var xpEl = document.getElementById('nav-xp-mistakes');
+  if (xpEl) xpEl.textContent = '⭐ ' + ST.xp + ' XP';
 
   var all = getErrList();
   var total = all.length;
@@ -8574,14 +8609,14 @@ function errRenderList() {
 
 function errFilterSet(f) {
   errCurrentFilter = f;
-  renderFunFacts();
+  renderMistakes();
 }
 
 function errMarkFixed(idx) {
   if (!ST.mistakes[idx]) return;
   ST.mistakes[idx].status = 'fixed';
   lsSave();
-  renderFunFacts();
+  renderMistakes();
 }
 
 function errMarkReviewed(idx) {
@@ -8595,7 +8630,7 @@ function errClose(idx) {
   ST.mistakes[idx].closed = true;
   ST.mistakes[idx].status = 'closed';
   lsSave();
-  renderFunFacts();
+  renderMistakes();
 }
 
 // ── Разбор ошибки ──
@@ -8646,7 +8681,7 @@ function errExplain(idx) {
 
 function errCloseExplain() {
   document.getElementById('err-explain-overlay').style.display = 'none';
-  renderFunFacts();
+  renderMistakes();
 }
 
 // ── Похожее задание ──
@@ -9007,7 +9042,7 @@ function renderParent() {
     + '<div class="par-card-title">🧑‍🏫 Умник заметил</div>'
     + '<div class="par-umnik-text">«' + umnikMsg + '»</div>'
     + '<div class="par-umnik-btns">'
-    + (topMistake ? '<button class="par-umnik-btn" onclick="showScreen(\'screen-funfacts\')">🔁 Повторить ошибки</button>' : '')
+    + (topMistake ? '<button class="par-umnik-btn" onclick="showScreen(\'screen-mistakes\')">🔁 Повторить ошибки</button>' : '')
     + '<button class="par-umnik-btn" onclick="showScreen(\'screen-trainers\')">⚡ Назначить тренировку</button>'
     + '<button class="par-umnik-btn" onclick="showScreen(\'screen-cheatsheet\')">📋 Открыть шпаргалку</button>'
     + '</div>'
