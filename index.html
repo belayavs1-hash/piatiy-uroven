@@ -6632,7 +6632,7 @@ function tgBuildScene() {
 
   // Герой на платформе 0
   const hero = document.getElementById('tg-hero');
-  hero.style.left = (positions[0] + platW/2 - 11) + 'px';
+  hero.style.left = (positions[0] + platW/2 - 42) + 'px';
   hero.style.opacity = '1';
   hero.className = 'tg-hero';
 }
@@ -6980,10 +6980,10 @@ function archerRender() {
         <!-- скрытый элемент для совместимости с анимацией -->
         <div id="archer-indian" style="display:none"></div>
         <!-- летящая стрела SVG: от индейца (лево) до мишени (право) -->
-        <svg id="archer-arrow-flight" width="55%" height="20" viewBox="0 0 200 20"
-          style="position:absolute;left:22%;top:22%;opacity:0;transition:opacity .15s;pointer-events:none">
-          <line x1="0" y1="10" x2="160" y2="10" stroke="#c2a060" stroke-width="3.5" stroke-linecap="round"/>
-          <polygon points="160,3 200,10 160,17" fill="#d97706"/>
+        <svg id="archer-arrow-flight" viewBox="0 0 200 20"
+          style="position:absolute;left:18%;top:22%;width:64%;height:22px;opacity:0;transition:opacity .15s;pointer-events:none">
+          <line x1="0" y1="10" x2="168" y2="10" stroke="#c2a060" stroke-width="3.5" stroke-linecap="round"/>
+          <polygon points="168,3 200,10 168,17" fill="#d97706"/>
           <line x1="0" y1="5" x2="22" y2="10" stroke="#dc2626" stroke-width="2.5" stroke-linecap="round"/>
           <line x1="0" y1="15" x2="22" y2="10" stroke="#dc2626" stroke-width="2.5" stroke-linecap="round"/>
         </svg>
