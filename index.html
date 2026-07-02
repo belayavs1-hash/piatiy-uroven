@@ -6988,7 +6988,7 @@ function tgChoose(btn, val) {
   });
   if (correct) btn.classList.add('ok');
   else btn.classList.add('err');
-  tgResolve(correct, task.a);
+  tgResolve(correct, task.a, val);
 }
 
 function tgCheck() {
@@ -7002,11 +7002,11 @@ function tgCheck() {
   const task = trTasks[trIdx];
   const correct = val.replace(/\s/g,'').toLowerCase() === task.a.replace(/\s/g,'').toLowerCase();
   inp.classList.add(correct ? 'ok' : 'err');
-  tgResolve(correct, task.a);
+  tgResolve(correct, task.a, val);
 }
 
 // ---- Результат ----
-function tgResolve(correct, rightAnswer) {
+function tgResolve(correct, rightAnswer, studentAnswer) {
   const task = trTasks[trIdx];
 
   if (correct) {
@@ -7045,7 +7045,7 @@ function tgResolve(correct, rightAnswer) {
       trErrors++;
       trStreak = 0;
       trErrorTasks.push({q: task.q, a: task.a, choices: task.choices});
-      addMistake(currentTrainer.name, 'trainer_wrong', {task: task.q, correctAnswer: String(task.a), source: 'Тренажёр ' + (currentTrainer ? currentTrainer.icon||'' : '')});
+      addMistake(currentTrainer.name, 'trainer_wrong', {task: task.q, correctAnswer: String(task.a), studentAnswer: String(studentAnswer||''), source: 'Тренажёр ' + (currentTrainer ? currentTrainer.icon||'' : '')});
       trUpdateStats();
       document.getElementById('tg-oops').style.display = 'none';
       document.getElementById('tg-status').textContent = '❌ Правильно: ' + rightAnswer;
@@ -7249,7 +7249,7 @@ function archerChoose(btn, val) {
   const task = trTasks[trIdx];
   const correct = val.replace(/\s/g,'').toLowerCase() === task.a.replace(/\s/g,'').toLowerCase();
   if (correct) btn.classList.add('ok'); else btn.classList.add('err');
-  archerResolve(correct, task.a);
+  archerResolve(correct, task.a, val);
 }
 
 function archerShoot() {
@@ -7261,9 +7261,10 @@ function archerShoot() {
   const btn = document.getElementById('archer-shoot-btn');
   if (btn) btn.disabled = true;
   const task = trTasks[trIdx];
-  const correct = inp.value.trim().replace(/\s/g,'').toLowerCase() === task.a.replace(/\s/g,'').toLowerCase();
+  const val = inp.value.trim();
+  const correct = val.replace(/\s/g,'').toLowerCase() === task.a.replace(/\s/g,'').toLowerCase();
   inp.classList.add(correct ? 'ok' : 'err');
-  archerResolve(correct, task.a);
+  archerResolve(correct, task.a, val);
 }
 
 // attempt: 0=центр(+10), 1=кольцо(+6), 2=край(+3), -1=мимо
@@ -7307,7 +7308,7 @@ function archerAnimateArrow(attempt, durationMs, onDone) {
   }, durationMs);
 }
 
-function archerResolve(correct, rightAnswer) {
+function archerResolve(correct, rightAnswer, studentAnswer) {
   const scorePop = document.getElementById('archer-score-pop');
   const statusEl = document.getElementById('archer-status');
   const task = trTasks[trIdx];
@@ -7350,7 +7351,7 @@ function archerResolve(correct, rightAnswer) {
       trErrors++;
       trStreak = 0;
       trErrorTasks.push({q: task.q, a: task.a, choices: task.choices});
-      addMistake(currentTrainer.name, 'trainer_wrong', {task: task.q, correctAnswer: String(task.a), source: 'Тренажёр ' + (currentTrainer ? currentTrainer.icon||'' : '')});
+      addMistake(currentTrainer.name, 'trainer_wrong', {task: task.q, correctAnswer: String(task.a), studentAnswer: String(studentAnswer||''), source: 'Тренажёр ' + (currentTrainer ? currentTrainer.icon||'' : '')});
       trUpdateStats();
       if (statusEl) { statusEl.textContent = '❌ Правильно: ' + rightAnswer; statusEl.className = 'tg-status err'; }
       setTimeout(archerAdvance, 1400);
@@ -7586,7 +7587,7 @@ function builderChoose(btn, val) {
   const task = trTasks[trIdx];
   const correct = val.replace(/\s/g,'').toLowerCase() === task.a.replace(/\s/g,'').toLowerCase();
   if (correct) btn.classList.add('ok'); else btn.classList.add('err');
-  builderResolve(correct, task.a);
+  builderResolve(correct, task.a, val);
 }
 
 function builderCheck() {
@@ -7598,12 +7599,13 @@ function builderCheck() {
   const btn = document.getElementById('builder-check-btn');
   if (btn) btn.disabled = true;
   const task = trTasks[trIdx];
-  const correct = inp.value.trim().replace(/\s/g,'').toLowerCase() === task.a.replace(/\s/g,'').toLowerCase();
+  const val = inp.value.trim();
+  const correct = val.replace(/\s/g,'').toLowerCase() === task.a.replace(/\s/g,'').toLowerCase();
   inp.classList.add(correct ? 'ok' : 'err');
-  builderResolve(correct, task.a);
+  builderResolve(correct, task.a, val);
 }
 
-function builderResolve(correct, rightAnswer) {
+function builderResolve(correct, rightAnswer, studentAnswer) {
   const task = trTasks[trIdx];
   const statusEl = document.getElementById('builder-status');
 
@@ -7640,7 +7642,7 @@ function builderResolve(correct, rightAnswer) {
       trErrors++;
       trStreak = 0;
       trErrorTasks.push({q: task.q, a: task.a, choices: task.choices});
-      addMistake(currentTrainer.name, 'trainer_wrong', {task: task.q, correctAnswer: String(task.a), source: 'Тренажёр ' + (currentTrainer ? currentTrainer.icon||'' : '')});
+      addMistake(currentTrainer.name, 'trainer_wrong', {task: task.q, correctAnswer: String(task.a), studentAnswer: String(studentAnswer||''), source: 'Тренажёр ' + (currentTrainer ? currentTrainer.icon||'' : '')});
       trUpdateStats();
       if (statusEl) { statusEl.textContent = '❌ Правильно: ' + rightAnswer + ' — деталь потеряна'; statusEl.className = 'builder-status err'; }
       setTimeout(builderAdvance, 1300);
@@ -7766,7 +7768,7 @@ function pirateChoose(btn, val) {
   const task = trTasks[trIdx];
   const correct = val.replace(/\s/g,'').toLowerCase() === task.a.replace(/\s/g,'').toLowerCase();
   if (correct) btn.classList.add('ok'); else btn.classList.add('err');
-  pirateResolve(correct, task.a);
+  pirateResolve(correct, task.a, val);
 }
 
 function pirateCheck() {
@@ -7778,12 +7780,13 @@ function pirateCheck() {
   const btn = document.getElementById('pirate-check-btn');
   if (btn) btn.disabled = true;
   const task = trTasks[trIdx];
-  const correct = inp.value.trim().replace(/\s/g,'').toLowerCase() === task.a.replace(/\s/g,'').toLowerCase();
+  const val = inp.value.trim();
+  const correct = val.replace(/\s/g,'').toLowerCase() === task.a.replace(/\s/g,'').toLowerCase();
   inp.classList.add(correct ? 'ok' : 'err');
-  pirateResolve(correct, task.a);
+  pirateResolve(correct, task.a, val);
 }
 
-function pirateResolve(correct, rightAnswer) {
+function pirateResolve(correct, rightAnswer, studentAnswer) {
   const task = trTasks[trIdx];
   const statusEl = document.getElementById('pirate-status');
   const hero = document.getElementById('pirate-hero');
@@ -7831,7 +7834,7 @@ function pirateResolve(correct, rightAnswer) {
       trErrors++;
       trStreak = 0;
       trErrorTasks.push({q: task.q, a: task.a, choices: task.choices});
-      addMistake(currentTrainer.name, 'trainer_wrong', {task: task.q, correctAnswer: String(task.a), source: 'Тренажёр ' + (currentTrainer ? currentTrainer.icon||'' : '')});
+      addMistake(currentTrainer.name, 'trainer_wrong', {task: task.q, correctAnswer: String(task.a), studentAnswer: String(studentAnswer||''), source: 'Тренажёр ' + (currentTrainer ? currentTrainer.icon||'' : '')});
       trUpdateStats();
       hero.classList.add('sad');
       if (statusEl) { statusEl.textContent = '❌ Правильно: ' + rightAnswer; statusEl.className = 'pirate-status err'; }
@@ -8064,7 +8067,7 @@ function diceChoose(btn, val) {
   const task = diceCurrentTask;
   const correct = val.replace(/\s/g,'').toLowerCase() === task.a.replace(/\s/g,'').toLowerCase();
   if (correct) btn.classList.add('ok'); else btn.classList.add('err');
-  diceResolve(correct, task.a);
+  diceResolve(correct, task.a, val);
 }
 
 function diceCheck() {
@@ -8076,9 +8079,10 @@ function diceCheck() {
   const btn = document.getElementById('dice-check-btn');
   if (btn) btn.disabled = true;
   const task = diceCurrentTask;
-  const correct = inp.value.trim().replace(/\s/g,'').toLowerCase() === task.a.replace(/\s/g,'').toLowerCase();
+  const val = inp.value.trim();
+  const correct = val.replace(/\s/g,'').toLowerCase() === task.a.replace(/\s/g,'').toLowerCase();
   inp.classList.add(correct ? 'ok' : 'err');
-  diceResolve(correct, task.a);
+  diceResolve(correct, task.a, val);
 }
 
 function diceXpForFace(face) {
@@ -8088,7 +8092,7 @@ function diceXpForFace(face) {
   return 5;
 }
 
-function diceResolve(correct, rightAnswer) {
+function diceResolve(correct, rightAnswer, studentAnswer) {
   const task = diceCurrentTask;
   const statusEl = document.getElementById('dice-status');
   const xp = diceXpForFace(diceLastRoll);
@@ -8125,7 +8129,7 @@ function diceResolve(correct, rightAnswer) {
       trErrors++;
       trStreak = 0;
       trErrorTasks.push({q: task.q, a: task.a});
-      addMistake(currentTrainer.name, 'trainer_wrong');
+      addMistake(currentTrainer.name, 'trainer_wrong', {task: task.q, correctAnswer: String(task.a), studentAnswer: String(studentAnswer||''), source: 'Тренажёр ' + (currentTrainer ? currentTrainer.icon||'' : '')});
       trUpdateStats();
       if (statusEl) { statusEl.textContent = `❌ Правильно: ${rightAnswer}`; statusEl.className = 'dice-status err'; }
       setTimeout(diceAdvance, 1300);
@@ -8586,18 +8590,128 @@ function errCloseExplain() {
   renderFunFacts();
 }
 
-// ── Похожее задание (запускаем тренажёр по теме) ──
+// ── Похожее задание ──
+// Генерирует 3 похожих задания по теме ошибки и показывает их в overlay разбора
 function errSimilarTask(idx) {
   var m = (ST.mistakes||[])[idx];
   if (!m) return;
   var tr = (TRAINERS_DEF||[]).find(function(d){ return d.name===m.topic; });
-  if (tr) {
-    errCloseExplain();
-    startTrainer(tr.id);
-  } else {
-    errCloseExplain();
-    showScreen('screen-trainers');
+  if (!tr) { errCloseExplain(); showScreen('screen-trainers'); return; }
+
+  var tasks = [];
+  try { tasks = generateTrainerTasks(tr.id, 3); } catch(e){}
+  if (!tasks.length) { errCloseExplain(); startTrainer(tr.id); return; }
+
+  // Сохраняем idx чтобы при правильном ответе отметить ошибку исправленной
+  var similarCorrect = 0;
+  var similarTotal = tasks.length;
+
+  function renderSimilar(taskIdx) {
+    if (taskIdx >= tasks.length) {
+      // Показываем итог похожих заданий
+      var allOk = similarCorrect === similarTotal;
+      if (allOk) errMarkFixed(idx);
+      var body = document.getElementById('err-explain-body');
+      body.innerHTML =
+        '<div class="err-card">'
+        + '<div style="text-align:center;padding:20px 0">'
+        + '<div style="font-size:48px;margin-bottom:12px">' + (allOk?'🎯':'💪') + '</div>'
+        + '<div style="font-size:18px;font-weight:900;color:#1e293b;margin-bottom:8px">'
+          + (allOk ? 'Отлично! Похожие задания решены верно!' : 'Почти! ' + similarCorrect + ' из ' + similarTotal + ' верно') + '</div>'
+        + '<div class="err-umnik-bubble">'
+          + (allOk
+            ? '«Ты решил похожие задания правильно — ошибка исправлена! Двигаемся дальше.»'
+            : '«Не расстраивайся — это нормально. Давай попробуем ещё раз с другими числами.»')
+          + '</div>'
+        + '<div style="display:flex;flex-direction:column;gap:10px;margin-top:16px">'
+        + (allOk ? '' : '<button class="err-summary-btn primary" onclick="errSimilarTask(' + idx + ')">🔁 Ещё раз</button>')
+        + '<button class="err-summary-btn secondary" onclick="errCloseExplain()">← К ошибкам</button>'
+        + '</div></div></div>';
+      return;
+    }
+
+    var t = tasks[taskIdx];
+    var opts = t.opts || t.choices || [];
+    if (!opts.length && t.a !== undefined) {
+      var nums = [String(t.a)];
+      var base = parseInt(t.a);
+      var deltas = [-3,-2,-1,1,2,3,4,-4,5,-5];
+      for (var d of deltas) {
+        var w = base + d;
+        if (w > 0 && !nums.includes(String(w))) nums.push(String(w));
+        if (nums.length >= 4) break;
+      }
+      opts = typeof arrShuffle === 'function' ? arrShuffle(nums) : nums;
+    }
+
+    var body = document.getElementById('err-explain-body');
+    body.innerHTML =
+      '<div class="err-card">'
+      + '<div class="err-card-title">Похожее задание ' + (taskIdx+1) + ' из ' + similarTotal + '</div>'
+      + '<div class="err-explain-task-card">'
+      + '<div class="err-explain-task-lbl">Решите пример</div>'
+      + '<div class="err-explain-task-q">' + (t.q || t.task || '') + '</div>'
+      + '</div>'
+      + '<div class="err-train-opts" id="similar-opts">'
+      + opts.map(function(o){
+          return '<button class="err-train-opt" onclick="errSimilarAnswer(this,\'' + String(o).replace(/'/g,"\\'") + '\',' + String(t.a).replace(/'/g,"\\'") + ',' + idx + ',' + taskIdx + ')">' + o + '</button>';
+        }).join('')
+      + '</div>'
+      + '</div>';
+
+    // закрываем renderSimilar в замыкании для onclick
+    window._errSimilarRender = renderSimilar;
+    window._errSimilarCorrect = function(v) { similarCorrect = v; };
+    window._errSimilarGet = function() { return similarCorrect; };
   }
+
+  window._errSimilarRenderNext = function(taskIdx) { renderSimilar(taskIdx); };
+  window._errSimilarTotal = similarTotal;
+  window._errSimilarCorrectCount = 0;
+
+  // Показываем overlay разбора если закрыт
+  document.getElementById('err-explain-overlay').style.display = 'block';
+  renderSimilar(0);
+}
+
+function errSimilarAnswer(btn, chosen, correct, mistakeIdx, taskIdx) {
+  var isOk = String(chosen) === String(correct);
+  var opts = btn.parentElement.querySelectorAll('.err-train-opt');
+  opts.forEach(function(b) {
+    b.disabled = true;
+    if (String(b.textContent) === String(correct)) b.classList.add('correct');
+    else if (b === btn && !isOk) b.classList.add('wrong');
+  });
+  if (isOk) window._errSimilarCorrectCount = (window._errSimilarCorrectCount||0) + 1;
+  setTimeout(function() {
+    var nextIdx = taskIdx + 1;
+    if (nextIdx >= window._errSimilarTotal) {
+      // финиш — отмечаем исправленной если все верно
+      if (window._errSimilarCorrectCount >= window._errSimilarTotal) {
+        errMarkFixed(mistakeIdx);
+      }
+      // показываем итог
+      var allOk = window._errSimilarCorrectCount >= window._errSimilarTotal;
+      var body = document.getElementById('err-explain-body');
+      body.innerHTML =
+        '<div class="err-card">'
+        + '<div style="text-align:center;padding:20px 0">'
+        + '<div style="font-size:48px;margin-bottom:12px">' + (allOk?'🎯':'💪') + '</div>'
+        + '<div style="font-size:18px;font-weight:900;color:#1e293b;margin-bottom:8px">'
+          + (allOk ? 'Отлично! Ошибка исправлена!' : 'Хорошая попытка — ' + window._errSimilarCorrectCount + ' из ' + window._errSimilarTotal) + '</div>'
+        + '<div class="err-umnik-bubble">'
+          + (allOk
+            ? '«Ты решил все похожие задания правильно. Эта тема теперь закрыта — горжусь тобой!»'
+            : '«Почти получилось! Попробуй ещё раз — с каждым разом становится легче.»')
+          + '</div>'
+        + '<div style="display:flex;flex-direction:column;gap:10px;margin-top:16px">'
+        + (!allOk ? '<button class="err-summary-btn primary" onclick="window._errSimilarCorrectCount=0;errSimilarTask(' + mistakeIdx + ')">🔁 Ещё раз</button>' : '')
+        + '<button class="err-summary-btn secondary" onclick="errCloseExplain()">← К ошибкам</button>'
+        + '</div></div></div>';
+    } else {
+      window._errSimilarRenderNext(nextIdx);
+    }
+  }, 800);
 }
 
 // ── Тренировка по ошибкам ──
