@@ -1976,7 +1976,7 @@ body.theme-dark .h-tile.pink { background: rgba(236,73,217,.08); }
 .tr-hist-tag.xp { background:rgba(250,204,21,.15); color:#b45309; }
 .tr-hist-tag.expl { background:rgba(124,58,237,.1); color:#7c3aed; }
 /* ===== КАБИНЕТ РОДИТЕЛЯ ===== */
-.par-body { max-width:680px; margin:0 auto; padding:16px 16px 80px; display:flex; flex-direction:column; gap:14px; }
+.par-body { max-width:680px; margin:0 auto; padding:16px 16px 80px; display:flex; flex-direction:column; gap:14px; overflow-y:auto; }
 .par-card { background:#fff; border-radius:20px; padding:20px; box-shadow:0 2px 12px rgba(0,0,0,.07); }
 .par-card-title { font-size:13px; font-weight:900; color:#64748b; text-transform:uppercase; letter-spacing:.06em; margin-bottom:14px; display:flex; align-items:center; gap:6px; }
 /* Итог недели */
@@ -2941,6 +2941,7 @@ body.theme-dark .h-tile.pink { background: rgba(236,73,217,.08); }
     <div id="par-mistakes-card"></div>
     <div id="par-recommend-card"></div>
     <div id="par-trainer-hist-card"></div>
+    <div id="par-rule-hist-card"></div>
     <div id="par-hw-card"></div>
     <div id="par-ach-card"></div>
     <div id="par-settings-card"></div>
@@ -5079,6 +5080,9 @@ let ST = {
   selfSolved: 0,
   trainerStats: {},
   trainerHistory: [],
+  ruleHistory: [],
+  selfCheckResults: [],
+  parSettings: null,
   history: []
 };
 
@@ -5658,7 +5662,7 @@ function checkWalkthrough() {
     if(wtAttempts === 1) grantAchievement('solved_self');
     showDone('🤖', 'Разобрались!', 'С Умником · ' + wtAttempts + ' попытки', xp);
   } else {
-    addMistake(currentTask.topic, 'wrong_answer');
+    addMistake(currentTask.topic, 'check_wrong');
     const hints = currentTask.hints || [];
     setTimeout(() => {
       if(wtAttempts === 1) {
@@ -5730,7 +5734,7 @@ function checkSolution() {
       <div class="r-text">Ответ неверный</div>
       <div class="result-answer">Ожидался: <b>${currentTask.answer}</b></div>
     </div>`;
-    addMistake(currentTask.topic, 'self_check_wrong');
+    addMistake(currentTask.topic, 'check_wrong');
     grantAchievement('found_error');
     document.getElementById('chk-after').style.display = 'block';
   }
@@ -8136,6 +8140,8 @@ function renderCheatsheet() {
 // ===== PARENT =====
 function renderParent() {
   var name = (ST.user && ST.user.name) ? ST.user.name : 'Ученик';
+  var xpEl = document.getElementById('nav-xp-par');
+  if (xpEl) xpEl.textContent = '⭐ ' + ST.xp + ' XP';
 
   // ── Данные для расчётов ──────────────────────────────────────────────
   var totalSolved  = Object.keys(ST.solvedTasks).length;
@@ -8307,6 +8313,24 @@ function renderParent() {
   document.getElementById('par-trainer-hist-card').innerHTML =
     '<div class="par-card"><div class="par-card-title">⚡ История тренажёров</div>' + histHtml + '</div>';
 
+  // ── 6б. История мини-тестов ─────────────────────────────────────────
+  var ruleHistHtml = rHist.length === 0
+    ? '<div style="color:#94a3b8;font-size:14px">Мини-тесты по правилам пока не проходились.</div>'
+    : rHist.slice(0, 10).map(function(h) {
+        var pct = Math.round(h.correct / h.total * 100);
+        var medal = pct===100?'🏆':pct>=80?'🥇':pct>=60?'🥈':'💪';
+        return '<div class="par-hist-row">'
+          + '<div class="par-hist-head"><span class="par-hist-name">' + medal + ' ' + h.topic + '</span><span class="par-hist-date">' + h.date + '</span></div>'
+          + '<div class="par-hist-tags">'
+          + '<span class="par-hist-tag ok">✅ ' + h.correct + ' из ' + h.total + '</span>'
+          + (h.correct === h.total ? '<span class="par-hist-tag ok">🎯 без ошибок</span>' : '<span class="par-hist-tag err">❌ ' + (h.total - h.correct) + ' ошибок</span>')
+          + '<span class="par-hist-tag xp">⭐ +' + h.xp + ' XP</span>'
+          + '</div>'
+          + '</div>';
+      }).join('');
+  document.getElementById('par-rule-hist-card').innerHTML =
+    '<div class="par-card"><div class="par-card-title">📖 Мини-тесты (правила)</div>' + ruleHistHtml + '</div>';
+
   // ── 7. Домашка и проверочные ────────────────────────────────────────
   var hwSolved  = Object.keys(ST.solvedTasks).length;
   var hwCorrect = Object.values(ST.solvedTasks).filter(function(s){ return s.correct; }).length;
@@ -8413,7 +8437,7 @@ function markSolved(taskId, data) {
 }
 
 function addMistake(topic, type) {
-  ST.mistakes.push({topic, type, date: Date.now()});
+  ST.mistakes.push({topic, type, date: new Date().toLocaleDateString('ru')});
   if(ST.mistakes.length > 50) ST.mistakes = ST.mistakes.slice(-50);
   lsSave();
 }
