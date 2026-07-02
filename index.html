@@ -6632,7 +6632,7 @@ function tgBuildScene() {
 
   // Герой на платформе 0
   const hero = document.getElementById('tg-hero');
-  hero.style.left = (positions[0] + platW/2 - 42) + 'px';
+  hero.style.left = (positions[0] + platW/2 - 18) + 'px';
   hero.style.opacity = '1';
   hero.className = 'tg-hero';
 }
@@ -6658,7 +6658,7 @@ function tgHeroPx(platIdx) {
   const pos = scene._platPositions;
   const platW = scene._platW;
   const offset = scene._scrollOffset || 0;
-  return pos[platIdx] + platW/2 - 42 - offset;
+  return pos[platIdx] + platW/2 - 18 - offset;
 }
 
 // ---- Прогресс ----
