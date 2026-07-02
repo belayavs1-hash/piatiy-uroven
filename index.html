@@ -510,15 +510,9 @@ body.theme-dark .h-logout-btn { border-color: rgba(255,100,100,.3); color: #ff70
 /* 3-колоночный контент */
 .h-content { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; align-items: stretch; }
 .h-content > article { height: 340px; }
-/* Единый grid: плашки (ряд 1) + карточки (ряд 2) — колонки идеально совпадают */
-.h-main-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 16px;
-}
-.h-main-grid > article { height: 340px; }
-.h-banner-spacer { /* пустая 3-я ячейка ряда плашек */ }
-.h-banner { margin: 0; }
+/* Плашки — полная ширина как h-hero, два элемента рядом */
+.h-banners { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 0; }
+.h-banner   { margin: 0; }
 .h-card {
   background: var(--h-card);
   border: 1px solid var(--h-card-border);
@@ -2594,9 +2588,8 @@ body.theme-light .h-banner::after { color: rgba(80,40,180,.12); }
       </div>
     </div>
 
-    <!-- Единый grid: плашки (ряд 1, кол 1-2) + карточки (ряд 2, все 3) -->
-    <div class="h-main-grid">
-      <!-- Ряд 1: плашки над первыми двумя колонками -->
+    <!-- Плашки: полная ширина hero, два блока рядом -->
+    <div class="h-banners">
       <button class="h-banner h-banner-know" onclick="showScreen('screen-funfacts')">
         <div class="h-banner-glow"></div>
         <span class="h-banner-emoji">💡</span>
@@ -2613,10 +2606,10 @@ body.theme-light .h-banner::after { color: rgba(80,40,180,.12); }
           <div class="h-banner-sub">Правила и формулы §1–§7</div>
         </div>
       </button>
-      <!-- Пустая третья ячейка ряда 1 — держит колонку -->
-      <div class="h-banner-spacer"></div>
+    </div>
 
-      <!-- Ряд 2: три карточки -->
+    <!-- 3 карточки — без изменений -->
+    <div class="h-content">
       <!-- Домашка -->
       <article class="h-card purple" style="justify-content:space-between">
         <div>
@@ -2682,7 +2675,7 @@ body.theme-light .h-banner::after { color: rgba(80,40,180,.12); }
           </div>
         </div>
       </article>
-    </div><!-- /h-main-grid -->
+    </div>
 
     <!-- 4 тайла -->
     <div class="h-tiles">
