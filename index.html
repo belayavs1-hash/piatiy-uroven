@@ -508,8 +508,10 @@ body.theme-dark .h-logout-btn { border-color: rgba(255,100,100,.3); color: #ff70
 .h-mf6{right:14px;top:80px;font-size:44px;color:#67d349;--r:6deg;animation-duration:4.2s;animation-delay:1.2s}
 
 /* 3-колоночный контент */
-.h-content { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; align-items: stretch; }
+.h-content { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; align-items: start; }
 .h-content > article { height: 340px; }
+.h-col { display: flex; flex-direction: column; gap: 10px; }
+.h-col > article { height: 340px; flex-shrink: 0; }
 .h-card {
   background: var(--h-card);
   border: 1px solid var(--h-card-border);
@@ -2585,28 +2587,18 @@ body.theme-light .h-banner::after { color: rgba(80,40,180,.12); }
       </div>
     </div>
 
-    <!-- Плашки: Хочу всё знать + Шпаргалки -->
-    <div class="h-banners">
-      <button class="h-banner h-banner-know" onclick="showScreen('screen-funfacts')">
-        <div class="h-banner-glow"></div>
-        <span class="h-banner-emoji">💡</span>
-        <div class="h-banner-text">
-          <div class="h-banner-title">Хочу всё знать</div>
-          <div class="h-banner-sub">Мои ошибки и разбор с Умником</div>
-        </div>
-      </button>
-      <button class="h-banner h-banner-cheat" onclick="showScreen('screen-cheatsheet')">
-        <div class="h-banner-glow"></div>
-        <span class="h-banner-emoji">📋</span>
-        <div class="h-banner-text">
-          <div class="h-banner-title">Шпаргалки</div>
-          <div class="h-banner-sub">Правила и формулы §1–§7</div>
-        </div>
-      </button>
-    </div>
-
-    <!-- 3 карточки -->
+    <!-- 3 карточки + плашки над первыми двумя -->
     <div class="h-content">
+      <!-- Колонка 1: плашка + домашка -->
+      <div class="h-col">
+        <button class="h-banner h-banner-know" onclick="showScreen('screen-funfacts')">
+          <div class="h-banner-glow"></div>
+          <span class="h-banner-emoji">💡</span>
+          <div class="h-banner-text">
+            <div class="h-banner-title">Хочу всё знать</div>
+            <div class="h-banner-sub">Мои ошибки · разбор с Умником</div>
+          </div>
+        </button>
       <!-- Домашка -->
       <article class="h-card purple" style="justify-content:space-between">
         <div>
@@ -2621,7 +2613,18 @@ body.theme-light .h-banner::after { color: rgba(80,40,180,.12); }
           <button class="h-hw-btn" onclick="homeHwGo()" style="width:100%;height:52px;font-size:16px">Найти →</button>
         </div>
       </article>
+      </div><!-- /h-col 1 -->
 
+      <!-- Колонка 2: плашка + проверь себя -->
+      <div class="h-col">
+        <button class="h-banner h-banner-cheat" onclick="showScreen('screen-cheatsheet')">
+          <div class="h-banner-glow"></div>
+          <span class="h-banner-emoji">📋</span>
+          <div class="h-banner-text">
+            <div class="h-banner-title">Шпаргалки</div>
+            <div class="h-banner-sub">Правила и формулы §1–§7</div>
+          </div>
+        </button>
       <!-- Проверь себя -->
       <article class="h-card green" style="justify-content:space-between">
         <div>
@@ -2631,6 +2634,7 @@ body.theme-light .h-banner::after { color: rgba(80,40,180,.12); }
         </div>
         <button class="h-test-btn" onclick="showScreen('screen-self-check')" style="height:52px">Начать тест →</button>
       </article>
+      </div><!-- /h-col 2 -->
 
       <!-- Учебник -->
       <article class="h-card" style="justify-content:space-between">
