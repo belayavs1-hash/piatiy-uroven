@@ -1975,6 +1975,81 @@ body.theme-dark .h-tile.pink { background: rgba(236,73,217,.08); }
 .tr-hist-tag.err { background:rgba(239,68,68,.1); color:#dc2626; }
 .tr-hist-tag.xp { background:rgba(250,204,21,.15); color:#b45309; }
 .tr-hist-tag.expl { background:rgba(124,58,237,.1); color:#7c3aed; }
+/* ===== КАБИНЕТ РОДИТЕЛЯ ===== */
+.par-body { max-width:680px; margin:0 auto; padding:16px 16px 80px; display:flex; flex-direction:column; gap:14px; }
+.par-card { background:#fff; border-radius:20px; padding:20px; box-shadow:0 2px 12px rgba(0,0,0,.07); }
+.par-card-title { font-size:13px; font-weight:900; color:#64748b; text-transform:uppercase; letter-spacing:.06em; margin-bottom:14px; display:flex; align-items:center; gap:6px; }
+/* Итог недели */
+.par-week-name { font-size:22px; font-weight:900; color:var(--ink); margin-bottom:4px; }
+.par-week-sub  { font-size:13px; color:#64748b; margin-bottom:16px; }
+.par-week-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+.par-week-cell { background:#f8faff; border-radius:14px; padding:12px 10px; text-align:center; }
+.par-week-val  { font-size:26px; font-weight:900; color:#2563eb; line-height:1; }
+.par-week-lbl  { font-size:11px; color:#64748b; font-weight:700; margin-top:4px; }
+.par-week-status { display:flex; align-items:center; gap:8px; margin-top:14px; padding:10px 14px; border-radius:12px; font-size:14px; font-weight:800; }
+.par-week-status.great { background:rgba(34,197,94,.1); color:#16a34a; }
+.par-week-status.good  { background:rgba(37,99,235,.1);  color:#1d4ed8; }
+.par-week-status.warn  { background:rgba(250,204,21,.15); color:#b45309; }
+/* Умник заметил */
+.par-umnik-text { font-size:15px; color:var(--ink); line-height:1.55; margin-bottom:14px; font-style:italic; }
+.par-umnik-btns { display:flex; flex-wrap:wrap; gap:8px; }
+.par-umnik-btn { padding:8px 16px; border-radius:20px; border:2px solid #e2e8f0; background:#fff; font-family:inherit; font-size:13px; font-weight:800; color:#2563eb; cursor:pointer; transition:all .2s; }
+.par-umnik-btn:hover { background:#2563eb; color:#fff; border-color:#2563eb; }
+/* Темы */
+.par-topic-row { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
+.par-topic-name { font-size:13px; font-weight:700; color:var(--ink); flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.par-topic-bar-wrap { width:80px; height:8px; background:#e2e8f0; border-radius:4px; flex-shrink:0; overflow:hidden; }
+.par-topic-bar { height:100%; border-radius:4px; transition:width .4s; }
+.par-topic-status { font-size:11px; font-weight:800; padding:2px 8px; border-radius:10px; flex-shrink:0; white-space:nowrap; }
+.par-topic-status.done   { background:rgba(34,197,94,.12);  color:#16a34a; }
+.par-topic-status.going  { background:rgba(37,99,235,.1);   color:#1d4ed8; }
+.par-topic-status.repeat { background:rgba(239,68,68,.1);   color:#dc2626; }
+.par-topic-status.new    { background:rgba(100,116,139,.1); color:#64748b; }
+.par-topic-repeat-btn { font-size:11px; font-weight:800; padding:3px 10px; border-radius:10px; border:1.5px solid #e2e8f0; background:#fff; color:#2563eb; cursor:pointer; flex-shrink:0; }
+/* Ошибки */
+.par-err-item { border-left:3px solid #ef4444; padding:10px 14px; margin-bottom:10px; border-radius:0 12px 12px 0; background:#fef2f2; }
+.par-err-topic { font-size:14px; font-weight:900; color:#991b1b; margin-bottom:2px; }
+.par-err-desc  { font-size:13px; color:#7f1d1d; margin-bottom:4px; }
+.par-err-fix   { font-size:12px; color:#64748b; }
+.par-err-meta  { display:flex; align-items:center; justify-content:space-between; margin-top:6px; }
+.par-err-date  { font-size:11px; color:#94a3b8; }
+.par-err-btn   { font-size:11px; font-weight:800; padding:3px 10px; border-radius:10px; border:none; background:#2563eb; color:#fff; cursor:pointer; }
+/* Рекомендации */
+.par-rec-item  { display:flex; align-items:center; gap:12px; padding:12px; border-radius:14px; background:#f8faff; margin-bottom:8px; cursor:pointer; transition:background .2s; }
+.par-rec-item:hover { background:#eff6ff; }
+.par-rec-icon  { font-size:28px; flex-shrink:0; }
+.par-rec-body  { flex:1; }
+.par-rec-label { font-size:11px; font-weight:800; color:#94a3b8; text-transform:uppercase; letter-spacing:.06em; }
+.par-rec-name  { font-size:14px; font-weight:800; color:var(--ink); margin-top:2px; }
+.par-rec-arrow { color:#94a3b8; font-size:18px; flex-shrink:0; }
+/* История тренажёров */
+.par-hist-row  { display:flex; flex-direction:column; gap:4px; padding:12px; border-radius:14px; background:#f8faff; margin-bottom:8px; }
+.par-hist-head { display:flex; justify-content:space-between; align-items:center; }
+.par-hist-name { font-size:14px; font-weight:900; color:var(--ink); }
+.par-hist-date { font-size:11px; color:#94a3b8; }
+.par-hist-tags { display:flex; flex-wrap:wrap; gap:6px; margin-top:4px; }
+.par-hist-tag  { font-size:12px; font-weight:700; padding:2px 8px; border-radius:8px; background:#e2e8f0; color:#475569; }
+.par-hist-tag.ok  { background:rgba(34,197,94,.12); color:#16a34a; }
+.par-hist-tag.err { background:rgba(239,68,68,.1);  color:#dc2626; }
+.par-hist-tag.xp  { background:rgba(250,204,21,.18); color:#b45309; }
+/* Достижения */
+.par-ach-section { margin-bottom:16px; }
+.par-ach-section-title { font-size:12px; font-weight:900; color:#94a3b8; text-transform:uppercase; letter-spacing:.06em; margin-bottom:8px; }
+.par-ach-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(120px,1fr)); gap:8px; }
+.par-ach-item { display:flex; flex-direction:column; align-items:center; gap:4px; padding:12px 8px; border-radius:14px; background:#f8faff; text-align:center; }
+.par-ach-item.locked { opacity:.4; filter:grayscale(1); }
+.par-ach-item.next { background:#eff6ff; border:2px dashed #93c5fd; }
+.par-ach-emoji { font-size:24px; }
+.par-ach-name  { font-size:11px; font-weight:800; color:var(--ink); }
+.par-ach-desc  { font-size:10px; color:#94a3b8; line-height:1.3; }
+/* Настройки */
+.par-set-row { display:flex; align-items:center; justify-content:space-between; padding:12px 0; border-bottom:1px solid #f1f5f9; }
+.par-set-row:last-child { border-bottom:none; }
+.par-set-label { font-size:14px; font-weight:700; color:var(--ink); }
+.par-set-sub   { font-size:12px; color:#94a3b8; margin-top:2px; }
+.par-set-ctrl  { display:flex; align-items:center; gap:8px; }
+.par-set-btn   { padding:6px 14px; border-radius:10px; border:2px solid #e2e8f0; background:#fff; font-family:inherit; font-size:13px; font-weight:800; color:#2563eb; cursor:pointer; }
+.par-set-btn.active { background:#2563eb; color:#fff; border-color:#2563eb; }
 /* ===== ACHIEVEMENTS ===== */
 .ach-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
 .ach-card {
@@ -2859,18 +2934,16 @@ body.theme-dark .h-tile.pink { background: rgba(236,73,217,.08); }
       <a onclick="showScreen('screen-parent')" class="active">🏆 Прогресс</a>
     </div>
   </nav>
-  <div class="screen-body">
-    <div class="screen-title">Прогресс ученика</div>
-    <div class="screen-subtitle" id="par-student-name">Яся</div>
-    <div class="stats-row" id="par-stats"></div>
-    <div class="white-card" id="par-topics-block" style="margin-bottom:16px"></div>
-    <div class="white-card" id="par-mistakes-block" style="margin-bottom:16px"></div>
-    <div class="white-card" id="par-trainer-history-block" style="margin-bottom:16px"></div>
-    <div class="white-card" id="par-rule-history-block" style="margin-bottom:16px"></div>
-    <div class="white-card">
-      <div style="font-size:14px;font-weight:800;color:var(--ink);margin-bottom:12px">🏅 Достижения</div>
-      <div class="ach-grid" id="par-achievements"></div>
-    </div>
+  <div class="par-body">
+    <div id="par-week-card"></div>
+    <div id="par-umnik-card"></div>
+    <div id="par-topics-card"></div>
+    <div id="par-mistakes-card"></div>
+    <div id="par-recommend-card"></div>
+    <div id="par-trainer-hist-card"></div>
+    <div id="par-hw-card"></div>
+    <div id="par-ach-card"></div>
+    <div id="par-settings-card"></div>
   </div>
   <div class="bottom-nav">
     <a onclick="showScreen('screen-homework')"><span class="icon">📚</span>Домашка</a>
@@ -8062,95 +8135,231 @@ function renderCheatsheet() {
 
 // ===== PARENT =====
 function renderParent() {
-  if(ST.user) document.getElementById('par-student-name').textContent = ST.user.name;
-  const totalSolved = Object.keys(ST.solvedTasks).length;
-  const totalCorrect = Object.values(ST.solvedTasks).filter(s => s.correct).length;
-  document.getElementById('par-stats').innerHTML = `
-    <div class="stat-box"><span class="stat-val">${ST.xp}</span><div class="stat-lbl">XP заработано</div></div>
-    <div class="stat-box"><span class="stat-val" style="color:var(--green)">${totalCorrect}</span><div class="stat-lbl">Верных ответов</div></div>
-    <div class="stat-box"><span class="stat-val" style="color:var(--purple)">${ST.hintsUsed}</span><div class="stat-lbl">Подсказок использовано</div></div>
-  `;
+  var name = (ST.user && ST.user.name) ? ST.user.name : 'Ученик';
 
-  const topicsHtml = TOPICS_MAP.slice(0,3).map(block =>
-    block.topics.slice(0,3).map(t => {
-      const prog = ST.topicProgress[t.id] || 0;
-      return `<div style="margin-bottom:10px">
-        <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:700;color:var(--ink);margin-bottom:4px"><span>${t.name}</span><span>${prog}%</span></div>
-        <div class="prog-bar-wrap"><div class="prog-bar-fill" style="width:${prog}%"></div></div>
-      </div>`;
-    }).join('')
-  ).join('');
-  document.getElementById('par-topics-block').innerHTML = `
-    <div style="font-size:14px;font-weight:800;color:var(--ink);margin-bottom:14px">📊 Прогресс по темам</div>
-    ${topicsHtml}
-    ${topicsHtml ? '' : '<div style="color:var(--ink3);font-size:14px">Пока нет данных — начни занятия!</div>'}
-  `;
+  // ── Данные для расчётов ──────────────────────────────────────────────
+  var totalSolved  = Object.keys(ST.solvedTasks).length;
+  var totalCorrect = Object.values(ST.solvedTasks).filter(function(s){ return s.correct; }).length;
+  var hist = ST.trainerHistory || [];
+  var rHist = ST.ruleHistory || [];
 
-  const mistakesHtml = ST.mistakes.length
-    ? ST.mistakes.slice(-5).map(m => `<div style="font-size:13px;color:var(--red);padding:4px 0;border-bottom:1px solid #f1f5f9">❌ ${m.topic}</div>`).join('')
-    : '<div style="font-size:14px;color:var(--green)">🎉 Ошибок пока нет!</div>';
-  document.getElementById('par-mistakes-block').innerHTML = `
-    <div style="font-size:14px;font-weight:800;color:var(--ink);margin-bottom:12px">🔍 Последние ошибки</div>
-    ${mistakesHtml}
-  `;
+  // Занятия на этой неделе (по истории тренажёров)
+  var weekMs = 7 * 24 * 3600 * 1000;
+  var now = Date.now();
+  var weekSessions = hist.filter(function(h){
+    var d = new Date(h.date.split('.').reverse().join('-'));
+    return (now - d.getTime()) < weekMs;
+  }).length;
+  var weekXP = hist.filter(function(h){
+    var d = new Date(h.date.split('.').reverse().join('-'));
+    return (now - d.getTime()) < weekMs;
+  }).reduce(function(s,h){ return s + (h.xp||0); }, 0);
+  var weekCorrect = hist.filter(function(h){
+    var d = new Date(h.date.split('.').reverse().join('-'));
+    return (now - d.getTime()) < weekMs;
+  }).reduce(function(s,h){ return s + (h.correct||0); }, 0);
+  var weekTotal = hist.filter(function(h){
+    var d = new Date(h.date.split('.').reverse().join('-'));
+    return (now - d.getTime()) < weekMs;
+  }).reduce(function(s,h){ return s + (h.total||0); }, 0);
 
-  document.getElementById('par-achievements').innerHTML = ACHIEVEMENTS.map(ach => {
-    const locked = !ST.achievements.includes(ach.id);
-    return `<div class="ach-card${locked ? ' locked' : ''}">
-      <span class="ach-icon">${ach.icon}</span>
-      <div class="ach-name">${ach.name}</div>
-      <div class="ach-desc">${ach.desc}</div>
-    </div>`;
-  }).join('');
+  // Серия дней (из streak последних тренажёров)
+  var bestStreak = hist.reduce(function(m,h){ return Math.max(m, h.streak||0); }, 0);
 
-  // История тренажёров
-  var histBlock = document.getElementById('par-trainer-history-block');
-  if (histBlock) {
-    var hist = ST.trainerHistory || [];
-    if (hist.length === 0) {
-      histBlock.innerHTML = '<div style="font-size:14px;font-weight:800;color:var(--ink);margin-bottom:8px">⚡ История тренажёров</div><div style="font-size:14px;color:var(--ink3)">Пока не пройден ни один тренажёр.</div>';
-    } else {
-      var rows = hist.slice(0, 15).map(function(h) {
+  // Темы с ошибками и успехами для Умника
+  var mistakeTopics = {};
+  (ST.mistakes || []).forEach(function(m){ mistakeTopics[m.topic] = (mistakeTopics[m.topic]||0)+1; });
+  var topMistake = Object.keys(mistakeTopics).sort(function(a,b){ return mistakeTopics[b]-mistakeTopics[a]; })[0] || '';
+  var goodTopics = TOPICS_MAP.reduce(function(acc, block){
+    block.topics.forEach(function(t){
+      if ((ST.topicProgress[t.id]||0) >= 80) acc.push(t.name);
+    });
+    return acc;
+  }, []);
+
+  // Статус недели
+  var weekPct = weekTotal > 0 ? Math.round(weekCorrect/weekTotal*100) : 0;
+  var statusClass = weekPct >= 80 ? 'great' : weekPct >= 50 ? 'good' : 'warn';
+  var statusText  = weekPct >= 80 ? '🌟 Отличная неделя! Можно хвалить от души' :
+                    weekPct >= 50 ? '👍 Хороший прогресс — продолжаем' :
+                    weekSessions === 0 ? '💤 На этой неделе занятий пока не было' :
+                    '💪 Есть над чем поработать — всё получится';
+
+  // ── 1. Итог недели ──────────────────────────────────────────────────
+  document.getElementById('par-week-card').innerHTML =
+    '<div class="par-card">'
+    + '<div class="par-week-name">' + name + ' · 5 класс</div>'
+    + '<div class="par-week-sub">Кабинет родителя</div>'
+    + '<div class="par-week-grid">'
+    + '<div class="par-week-cell"><div class="par-week-val">' + weekSessions + '</div><div class="par-week-lbl">занятий на неделе</div></div>'
+    + '<div class="par-week-cell"><div class="par-week-val">' + weekTotal + '</div><div class="par-week-lbl">заданий решено</div></div>'
+    + '<div class="par-week-cell"><div class="par-week-val">' + weekCorrect + '</div><div class="par-week-lbl">правильных</div></div>'
+    + '<div class="par-week-cell"><div class="par-week-val">' + bestStreak + '</div><div class="par-week-lbl">серия дней 🔥</div></div>'
+    + '<div class="par-week-cell"><div class="par-week-val">' + ST.xp + '</div><div class="par-week-lbl">XP всего ⭐</div></div>'
+    + '<div class="par-week-cell"><div class="par-week-val">' + weekXP + '</div><div class="par-week-lbl">XP за неделю</div></div>'
+    + '</div>'
+    + '<div class="par-week-status ' + statusClass + '">' + statusText + '</div>'
+    + '</div>';
+
+  // ── 2. Умник заметил ────────────────────────────────────────────────
+  var umnikMsg;
+  if (goodTopics.length > 0 && topMistake) {
+    umnikMsg = name + ' хорошо разбирается в теме «' + goodTopics[0] + '», но чаще всего ошибается в разделе «' + topMistake + '». Рекомендую повторить это вместе.';
+  } else if (goodTopics.length > 0) {
+    umnikMsg = name + ' уверенно справляется с темой «' + goodTopics[0] + '». Ошибок почти нет — можно двигаться дальше!';
+  } else if (topMistake) {
+    umnikMsg = 'Чаще всего ошибки встречаются в теме «' + topMistake + '». Советую разобрать правило и пройти тренажёр ещё раз.';
+  } else {
+    umnikMsg = 'Занятия только начались. Пройдите первые темы — и я смогу дать точные рекомендации.';
+  }
+  document.getElementById('par-umnik-card').innerHTML =
+    '<div class="par-card">'
+    + '<div class="par-card-title">🧑‍🏫 Умник заметил</div>'
+    + '<div class="par-umnik-text">«' + umnikMsg + '»</div>'
+    + '<div class="par-umnik-btns">'
+    + (topMistake ? '<button class="par-umnik-btn" onclick="showScreen(\'screen-funfacts\')">🔁 Повторить ошибки</button>' : '')
+    + '<button class="par-umnik-btn" onclick="showScreen(\'screen-trainers\')">⚡ Назначить тренировку</button>'
+    + '<button class="par-umnik-btn" onclick="showScreen(\'screen-cheatsheet\')">📋 Открыть шпаргалку</button>'
+    + '</div>'
+    + '</div>';
+
+  // ── 3. Прогресс по темам ────────────────────────────────────────────
+  var topicsRows = TOPICS_MAP.map(function(block) {
+    var rows = block.topics.map(function(t) {
+      var prog = ST.topicProgress[t.id] || 0;
+      var errCount = mistakeTopics[t.name] || 0;
+      var statusCls, statusLbl, barColor;
+      if (prog === 0)         { statusCls='new';    statusLbl='ещё не проходили'; barColor='#e2e8f0'; }
+      else if (errCount > 1)  { statusCls='repeat'; statusLbl='нужно повторить'; barColor='#ef4444'; }
+      else if (prog >= 80)    { statusCls='done';   statusLbl='освоено ✓';       barColor='#22c55e'; }
+      else                    { statusCls='going';  statusLbl='в процессе';      barColor='#3b82f6'; }
+      return '<div class="par-topic-row">'
+        + '<div class="par-topic-name" title="' + t.name + '">' + t.name + '</div>'
+        + '<div class="par-topic-bar-wrap"><div class="par-topic-bar" style="width:' + prog + '%;background:' + barColor + '"></div></div>'
+        + '<div class="par-topic-status ' + statusCls + '">' + (prog===0?'—':prog+'% · ') + statusLbl + '</div>'
+        + (prog > 0 ? '<button class="par-topic-repeat-btn" onclick="showScreen(\'screen-map\')">↻</button>' : '')
+        + '</div>';
+    }).join('');
+    return '<div style="margin-bottom:6px;font-size:12px;font-weight:900;color:#94a3b8;text-transform:uppercase;letter-spacing:.06em">' + block.icon + ' ' + block.block + '</div>' + rows;
+  }).join('<div style="height:10px"></div>');
+  document.getElementById('par-topics-card').innerHTML =
+    '<div class="par-card"><div class="par-card-title">📊 Прогресс по темам</div>' + topicsRows + '</div>';
+
+  // ── 4. Последние ошибки ─────────────────────────────────────────────
+  var mistakes = (ST.mistakes || []).slice().reverse().slice(0, 5);
+  var errHtml = mistakes.length === 0
+    ? '<div style="color:#16a34a;font-size:15px;font-weight:700">🎉 Ошибок пока нет — ' + name + ' справляется отлично!</div>'
+    : mistakes.map(function(m) {
+        var fixMap = {
+          'trainer_wrong': 'Пройти тренажёр по этой теме ещё раз',
+          'check_wrong':   'Разобрать задание с Умником',
+          'hw_wrong':      'Повторить правило из шпаргалки'
+        };
+        return '<div class="par-err-item">'
+          + '<div class="par-err-topic">' + (m.topic||'Неизвестная тема') + '</div>'
+          + '<div class="par-err-desc">Тип: ' + (m.type==='trainer_wrong'?'тренажёр':m.type==='check_wrong'?'проверочная':'домашка') + '</div>'
+          + '<div class="par-err-fix">💡 ' + (fixMap[m.type]||'Повторить тему') + '</div>'
+          + '<div class="par-err-meta"><span class="par-err-date">' + (m.date||'') + '</span>'
+          + '<button class="par-err-btn" onclick="showScreen(\'screen-map\')">Разобрать с Умником</button></div>'
+          + '</div>';
+      }).join('');
+  document.getElementById('par-mistakes-card').innerHTML =
+    '<div class="par-card"><div class="par-card-title">🔍 Последние ошибки</div>' + errHtml + '</div>';
+
+  // ── 5. Что повторить сейчас ─────────────────────────────────────────
+  var needRepeat = TOPICS_MAP.reduce(function(acc, block) {
+    block.topics.forEach(function(t) {
+      var p = ST.topicProgress[t.id] || 0;
+      if (p > 0 && p < 80) acc.push(t);
+    });
+    return acc;
+  }, []);
+  var recTopic   = needRepeat[0] || TOPICS_MAP[0].topics[0];
+  var recTrainer = TRAINERS_DEF.find(function(t){ return t.shell==='umnik'; }) || TRAINERS_DEF[0];
+  document.getElementById('par-recommend-card').innerHTML =
+    '<div class="par-card"><div class="par-card-title">🎯 Что повторить сейчас</div>'
+    + '<div class="par-rec-item" onclick="showScreen(\'screen-map\')">'
+    + '<div class="par-rec-icon">📖</div><div class="par-rec-body"><div class="par-rec-label">Тема на сегодня</div><div class="par-rec-name">' + recTopic.name + '</div></div><div class="par-rec-arrow">›</div></div>'
+    + '<div class="par-rec-item" onclick="showScreen(\'screen-trainers\')">'
+    + '<div class="par-rec-icon">⚡</div><div class="par-rec-body"><div class="par-rec-label">Тренажёр</div><div class="par-rec-name">' + recTrainer.icon + ' ' + recTrainer.name + '</div></div><div class="par-rec-arrow">›</div></div>'
+    + '<div class="par-rec-item" onclick="showScreen(\'screen-cheatsheet\')">'
+    + '<div class="par-rec-icon">📋</div><div class="par-rec-body"><div class="par-rec-label">Шпаргалка</div><div class="par-rec-name">Правила и формулы §1–§7</div></div><div class="par-rec-arrow">›</div></div>'
+    + '</div>';
+
+  // ── 6. История тренажёров ───────────────────────────────────────────
+  var histHtml = hist.length === 0
+    ? '<div style="color:#94a3b8;font-size:14px">Пока не пройден ни один тренажёр.</div>'
+    : hist.slice(0, 10).map(function(h) {
         var pct = Math.round(h.correct / h.total * 100);
-        var medal = pct === 100 ? '🏆' : pct >= 80 ? '🥇' : pct >= 60 ? '🥈' : pct >= 40 ? '🥉' : '💪';
-        return '<div class="tr-hist-item">'
-          + '<div class="tr-hist-header"><span class="tr-hist-name">' + medal + ' ' + h.name + '</span><span class="tr-hist-date">' + h.date + '</span></div>'
-          + '<div class="tr-hist-stats">'
-          + '<span class="tr-hist-tag ok">✅ ' + h.correct + ' из ' + h.total + '</span>'
-          + (h.errors > 0 ? '<span class="tr-hist-tag err">❌ ' + h.errors + ' ошибок</span>' : '<span class="tr-hist-tag ok">🎯 Без ошибок</span>')
-          + '<span class="tr-hist-tag xp">⭐ +' + h.xp + ' XP</span>'
-          + '<span class="tr-hist-tag">🔥 серия ' + h.streak + '</span>'
-          + (h.explained ? '<span class="tr-hist-tag expl">💡 объяснение</span>' : '')
+        var medal = pct===100?'🏆':pct>=80?'🥇':pct>=60?'🥈':pct>=40?'🥉':'💪';
+        var comment = pct===100?'Идеально!':pct>=80?'Почти без ошибок':pct>=60?'Хороший результат':'Нужно повторить';
+        return '<div class="par-hist-row">'
+          + '<div class="par-hist-head"><span class="par-hist-name">' + medal + ' ' + h.name + '</span><span class="par-hist-date">' + h.date + '</span></div>'
+          + '<div class="par-hist-tags">'
+          + '<span class="par-hist-tag ok">✅ ' + h.correct + ' из ' + h.total + '</span>'
+          + (h.errors > 0 ? '<span class="par-hist-tag err">❌ ' + h.errors + ' ошибок</span>' : '<span class="par-hist-tag ok">🎯 без ошибок</span>')
+          + '<span class="par-hist-tag xp">⭐ +' + h.xp + ' XP</span>'
+          + '<span class="par-hist-tag">🔥 серия ' + h.streak + '</span>'
+          + '<span class="par-hist-tag">' + comment + '</span>'
           + '</div>'
           + '</div>';
       }).join('');
-      histBlock.innerHTML = '<div style="font-size:14px;font-weight:800;color:var(--ink);margin-bottom:12px">⚡ История тренажёров</div>' + rows;
-    }
-  }
+  document.getElementById('par-trainer-hist-card').innerHTML =
+    '<div class="par-card"><div class="par-card-title">⚡ История тренажёров</div>' + histHtml + '</div>';
 
-  // История мини-тестов (правила)
-  var ruleBlock = document.getElementById('par-rule-history-block');
-  if (ruleBlock) {
-    var rHist = ST.ruleHistory || [];
-    if (rHist.length === 0) {
-      ruleBlock.innerHTML = '<div style="font-size:14px;font-weight:800;color:var(--ink);margin-bottom:8px">📖 История мини-тестов</div><div style="font-size:14px;color:var(--ink3)">Пока не пройден ни один мини-тест.</div>';
-    } else {
-      var rRows = rHist.slice(0, 15).map(function(h) {
-        var pct = Math.round(h.correct / h.total * 100);
-        var medal = pct === 100 ? '🏆' : pct >= 80 ? '🥇' : pct >= 60 ? '🥈' : '💪';
-        return '<div class="tr-hist-item">'
-          + '<div class="tr-hist-header"><span class="tr-hist-name">' + medal + ' ' + h.topic + '</span><span class="tr-hist-date">' + h.date + '</span></div>'
-          + '<div class="tr-hist-stats">'
-          + '<span class="tr-hist-tag ok">✅ ' + h.correct + ' из ' + h.total + '</span>'
-          + (h.correct === h.total ? '<span class="tr-hist-tag ok">🎯 Без ошибок</span>' : '<span class="tr-hist-tag err">❌ ' + (h.total - h.correct) + ' ошибок</span>')
-          + '<span class="tr-hist-tag xp">⭐ +' + h.xp + ' XP</span>'
-          + '</div>'
-          + '</div>';
-      }).join('');
-      ruleBlock.innerHTML = '<div style="font-size:14px;font-weight:800;color:var(--ink);margin-bottom:12px">📖 История мини-тестов</div>' + rRows;
-    }
-  }
+  // ── 7. Домашка и проверочные ────────────────────────────────────────
+  var hwSolved  = Object.keys(ST.solvedTasks).length;
+  var hwCorrect = Object.values(ST.solvedTasks).filter(function(s){ return s.correct; }).length;
+  var hwErrors  = hwSolved - hwCorrect;
+  var scDone = (ST.selfCheckResults || []).length;
+  var scAvg  = scDone > 0 ? Math.round((ST.selfCheckResults||[]).reduce(function(s,r){ return s+(r.pct||0); },0)/scDone) : 0;
+  document.getElementById('par-hw-card').innerHTML =
+    '<div class="par-card"><div class="par-card-title">📚 Домашка и проверочные</div>'
+    + '<div class="par-week-grid">'
+    + '<div class="par-week-cell"><div class="par-week-val">' + hwSolved + '</div><div class="par-week-lbl">заданий решено</div></div>'
+    + '<div class="par-week-cell"><div class="par-week-val" style="color:#16a34a">' + hwCorrect + '</div><div class="par-week-lbl">правильных</div></div>'
+    + '<div class="par-week-cell"><div class="par-week-val" style="color:#dc2626">' + hwErrors + '</div><div class="par-week-lbl">с ошибками</div></div>'
+    + '<div class="par-week-cell"><div class="par-week-val">' + scDone + '</div><div class="par-week-lbl">проверочных</div></div>'
+    + '<div class="par-week-cell"><div class="par-week-val">' + (scAvg||'—') + (scDone?'%':'') + '</div><div class="par-week-lbl">средний балл</div></div>'
+    + '<div class="par-week-cell"><div class="par-week-val">' + (ST.hintsUsed||0) + '</div><div class="par-week-lbl">подсказок</div></div>'
+    + '</div></div>';
+
+  // ── 8. Достижения ───────────────────────────────────────────────────
+  var unlocked = ACHIEVEMENTS.filter(function(a){ return ST.achievements.includes(a.id); });
+  var locked   = ACHIEVEMENTS.filter(function(a){ return !ST.achievements.includes(a.id); });
+  var achHtml  = '<div class="par-card"><div class="par-card-title">🏅 Достижения</div>'
+    + (unlocked.length > 0
+      ? '<div class="par-ach-section"><div class="par-ach-section-title">Открыто · ' + unlocked.length + '</div><div class="par-ach-grid">'
+        + unlocked.map(function(a){ return '<div class="par-ach-item"><div class="par-ach-emoji">' + a.icon + '</div><div class="par-ach-name">' + a.name + '</div><div class="par-ach-desc">' + a.desc + '</div></div>'; }).join('')
+        + '</div></div>' : '')
+    + '<div class="par-ach-section"><div class="par-ach-section-title">Ближайшие цели</div><div class="par-ach-grid">'
+    + locked.slice(0, 4).map(function(a){ return '<div class="par-ach-item next"><div class="par-ach-emoji">' + a.icon + '</div><div class="par-ach-name">' + a.name + '</div><div class="par-ach-desc">' + a.desc + '</div></div>'; }).join('')
+    + '</div></div></div>';
+  document.getElementById('par-ach-card').innerHTML = achHtml;
+
+  // ── 9. Настройки родителя ───────────────────────────────────────────
+  if (!ST.parSettings) ST.parSettings = { weekGoal: 4, difficulty: 'normal', report: 'week' };
+  var ps = ST.parSettings;
+  document.getElementById('par-settings-card').innerHTML =
+    '<div class="par-card"><div class="par-card-title">⚙️ Настройки</div>'
+    + '<div class="par-set-row"><div><div class="par-set-label">Цель занятий в неделю</div><div class="par-set-sub">Сейчас: ' + weekSessions + ' из ' + ps.weekGoal + '</div></div>'
+    + '<div class="par-set-ctrl">'
+    + [3,4,5,7].map(function(n){ return '<button class="par-set-btn' + (ps.weekGoal===n?' active':'') + '" onclick="parSetWeekGoal(' + n + ')">' + n + '</button>'; }).join('')
+    + '</div></div>'
+    + '<div class="par-set-row"><div><div class="par-set-label">Уровень сложности</div><div class="par-set-sub">Влияет на генерацию заданий</div></div>'
+    + '<div class="par-set-ctrl">'
+    + ['easy','normal','hard'].map(function(d){ var lbl=d==='easy'?'Лёгкий':d==='normal'?'Средний':'Сложный'; return '<button class="par-set-btn' + (ps.difficulty===d?' active':'') + '" onclick="parSetDifficulty(\'' + d + '\')">' + lbl + '</button>'; }).join('')
+    + '</div></div>'
+    + '<div class="par-set-row"><div><div class="par-set-label">Отчёт родителю</div><div class="par-set-sub">Напоминание проверить прогресс</div></div>'
+    + '<div class="par-set-ctrl">'
+    + [['day','Каждый день'],['week','Раз в неделю']].map(function(r){ return '<button class="par-set-btn' + (ps.report===r[0]?' active':'') + '" onclick="parSetReport(\'' + r[0] + '\')">' + r[1] + '</button>'; }).join('')
+    + '</div></div>'
+    + '</div>';
 }
+
+function parSetWeekGoal(n) { if(!ST.parSettings)ST.parSettings={}; ST.parSettings.weekGoal=n; lsSave(); renderParent(); }
+function parSetDifficulty(d) { if(!ST.parSettings)ST.parSettings={}; ST.parSettings.difficulty=d; lsSave(); renderParent(); }
+function parSetReport(r) { if(!ST.parSettings)ST.parSettings={}; ST.parSettings.report=r; lsSave(); renderParent(); }
 
 // ===== DONE SCREEN =====
 function showDone(icon, title, sub, xp) {
