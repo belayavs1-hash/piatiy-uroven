@@ -2866,6 +2866,7 @@ body.theme-dark .h-tile.pink { background: rgba(236,73,217,.08); }
     <div class="white-card" id="par-topics-block" style="margin-bottom:16px"></div>
     <div class="white-card" id="par-mistakes-block" style="margin-bottom:16px"></div>
     <div class="white-card" id="par-trainer-history-block" style="margin-bottom:16px"></div>
+    <div class="white-card" id="par-rule-history-block" style="margin-bottom:16px"></div>
     <div class="white-card">
       <div style="font-size:14px;font-weight:800;color:var(--ink);margin-bottom:12px">🏅 Достижения</div>
       <div class="ach-grid" id="par-achievements"></div>
@@ -6181,15 +6182,33 @@ function ruleNextQuestion() {
 function ruleFinishQuiz() {
   if (!ST.mapProgress) ST.mapProgress = {};
   var id = ruleState.topicId;
-  if ((ST.mapProgress[id] || 0) < 2) { ST.mapProgress[id] = 2; lsSave(); }
-  addXP(ruleState.correct * 3);
+  if ((ST.mapProgress[id] || 0) < 2) { ST.mapProgress[id] = 2; }
+  var total = ruleState.quizzes.length;
+  var correct = ruleState.correct;
+  var xpGained = correct * 3;
+  addXP(xpGained);
+
+  // Сохраняем в историю
+  if (!ST.ruleHistory) ST.ruleHistory = [];
+  ST.ruleHistory.unshift({
+    date: new Date().toLocaleDateString('ru'),
+    topic: ruleState.ruleKey || id,
+    correct: correct,
+    total: total,
+    xp: xpGained
+  });
+  if (ST.ruleHistory.length > 50) ST.ruleHistory = ST.ruleHistory.slice(0, 50);
+  lsSave();
+
   document.getElementById('rule-phase-quiz').style.display = 'none';
   document.getElementById('rule-phase-done').style.display = 'block';
   document.getElementById('rule-step-2').className = 'rule-step rule-step-done';
   document.getElementById('rule-step-3').className = 'rule-step rule-step-active';
   document.getElementById('rule-q-bar').style.width = '100%';
-  document.getElementById('rule-done-score').textContent =
-    'Правильных ответов: ' + ruleState.correct + ' из ' + ruleState.quizzes.length;
+  var pct = Math.round(correct / total * 100);
+  var medal = pct === 100 ? '🏆' : pct >= 80 ? '🥇' : pct >= 60 ? '🥈' : '💪';
+  document.getElementById('rule-done-score').innerHTML =
+    medal + ' Правильных ответов: <b>' + correct + ' из ' + total + '</b> · +' + xpGained + ' XP ⭐';
 }
 
 function ruleDoneToTrain() {
@@ -8106,6 +8125,29 @@ function renderParent() {
           + '</div>';
       }).join('');
       histBlock.innerHTML = '<div style="font-size:14px;font-weight:800;color:var(--ink);margin-bottom:12px">⚡ История тренажёров</div>' + rows;
+    }
+  }
+
+  // История мини-тестов (правила)
+  var ruleBlock = document.getElementById('par-rule-history-block');
+  if (ruleBlock) {
+    var rHist = ST.ruleHistory || [];
+    if (rHist.length === 0) {
+      ruleBlock.innerHTML = '<div style="font-size:14px;font-weight:800;color:var(--ink);margin-bottom:8px">📖 История мини-тестов</div><div style="font-size:14px;color:var(--ink3)">Пока не пройден ни один мини-тест.</div>';
+    } else {
+      var rRows = rHist.slice(0, 15).map(function(h) {
+        var pct = Math.round(h.correct / h.total * 100);
+        var medal = pct === 100 ? '🏆' : pct >= 80 ? '🥇' : pct >= 60 ? '🥈' : '💪';
+        return '<div class="tr-hist-item">'
+          + '<div class="tr-hist-header"><span class="tr-hist-name">' + medal + ' ' + h.topic + '</span><span class="tr-hist-date">' + h.date + '</span></div>'
+          + '<div class="tr-hist-stats">'
+          + '<span class="tr-hist-tag ok">✅ ' + h.correct + ' из ' + h.total + '</span>'
+          + (h.correct === h.total ? '<span class="tr-hist-tag ok">🎯 Без ошибок</span>' : '<span class="tr-hist-tag err">❌ ' + (h.total - h.correct) + ' ошибок</span>')
+          + '<span class="tr-hist-tag xp">⭐ +' + h.xp + ' XP</span>'
+          + '</div>'
+          + '</div>';
+      }).join('');
+      ruleBlock.innerHTML = '<div style="font-size:14px;font-weight:800;color:var(--ink);margin-bottom:12px">📖 История мини-тестов</div>' + rRows;
     }
   }
 }
