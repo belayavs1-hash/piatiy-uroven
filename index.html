@@ -646,6 +646,68 @@ body.theme-dark .h-tile.pink { background: rgba(236,73,217,.08); }
 }
 .h-tile:hover .h-tile-arrow { background: var(--blue); color: #fff; transform: translateX(3px); }
 
+/* ── Плашки «Хочу всё знать» и «Шпаргалки» ── */
+.h-banners { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 14px 0 6px; }
+.h-banner {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 20px; border-radius: 20px; cursor: pointer;
+  border: none; font-family: inherit; text-align: left; width: 100%;
+  transition: transform .18s, box-shadow .18s;
+  position: relative; overflow: hidden;
+}
+.h-banner:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(0,0,0,.18); }
+.h-banner-know {
+  background: linear-gradient(130deg, #1a1060 0%, #2d0e8a 50%, #0e1e7a 100%);
+  border: 1.5px solid rgba(120,100,255,.4);
+  box-shadow: 0 4px 20px rgba(80,60,220,.25), inset 0 1px 0 rgba(255,255,255,.08);
+}
+.h-banner-cheat {
+  background: linear-gradient(130deg, #0a1a4a 0%, #0c2060 50%, #091840 100%);
+  border: 1.5px solid rgba(60,120,255,.35);
+  box-shadow: 0 4px 20px rgba(30,80,200,.2), inset 0 1px 0 rgba(255,255,255,.06);
+}
+/* Светлая тема */
+body.theme-light .h-banner-know {
+  background: linear-gradient(130deg, #f0edff 0%, #e4dcff 100%);
+  border-color: #c4b0ff;
+  box-shadow: 0 4px 16px rgba(120,80,220,.15);
+}
+body.theme-light .h-banner-cheat {
+  background: linear-gradient(130deg, #e8f0ff 0%, #dce8ff 100%);
+  border-color: #a8c0ff;
+  box-shadow: 0 4px 16px rgba(50,100,220,.12);
+}
+.h-banner-emoji { font-size: 36px; flex-shrink: 0; filter: drop-shadow(0 2px 8px rgba(0,0,0,.3)); }
+.h-banner-text { flex: 1; }
+.h-banner-title {
+  font-size: 17px; font-weight: 900; color: #fff;
+  text-shadow: 0 1px 8px rgba(0,0,0,.4);
+  letter-spacing: .01em;
+}
+body.theme-light .h-banner-title { color: #2d1a7a; text-shadow: none; }
+body.theme-light .h-banner-cheat .h-banner-title { color: #0e2d7a; }
+.h-banner-sub {
+  font-size: 11px; font-weight: 700; color: rgba(255,255,255,.55);
+  margin-top: 2px; letter-spacing: .02em;
+}
+body.theme-light .h-banner-sub { color: rgba(60,30,140,.5); }
+body.theme-light .h-banner-cheat .h-banner-sub { color: rgba(14,45,122,.45); }
+.h-banner-glow {
+  position: absolute; right: -10px; top: -10px;
+  width: 70px; height: 70px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(140,110,255,.35) 0%, transparent 70%);
+  pointer-events: none;
+}
+.h-banner-cheat .h-banner-glow { background: radial-gradient(circle, rgba(60,140,255,.3) 0%, transparent 70%); }
+/* Звёздочки-искры */
+.h-banner::after {
+  content: '✦ ✦';
+  position: absolute; right: 14px; bottom: 8px;
+  font-size: 10px; color: rgba(255,255,255,.2);
+  pointer-events: none; letter-spacing: 4px;
+}
+body.theme-light .h-banner::after { color: rgba(80,40,180,.12); }
+
 /* Навигация главной — с аватаром (legacy, не используется в новом home) */
 .home-nav-logo {
   display: flex;
@@ -2458,8 +2520,8 @@ body.theme-dark .h-tile.pink { background: rgba(236,73,217,.08); }
       <button class="h-nav-item" onclick="showScreen('screen-map')"><span class="h-nav-icon">🌍</span>Карта тем</button>
       <button class="h-nav-item" onclick="showScreen('screen-trainers')"><span class="h-nav-icon">⚡</span>Тренажёры</button>
       <button class="h-nav-item" onclick="showScreen('screen-self-check')"><span class="h-nav-icon">✅</span>Проверочные</button>
-      <button class="h-nav-item" onclick="showScreen('screen-funfacts')"><span class="h-nav-icon">🧩</span>Ошибки</button>
-      <button class="h-nav-item" onclick="showScreen('screen-cheatsheet')"><span class="h-nav-icon">🏆</span>Достижения</button>
+      <button class="h-nav-item" onclick="showScreen('screen-funfacts')"><span class="h-nav-icon">💡</span>Хочу всё знать</button>
+      <button class="h-nav-item" onclick="showScreen('screen-cheatsheet')"><span class="h-nav-icon">📋</span>Шпаргалки</button>
       <button class="h-nav-item" onclick="showScreen('screen-parent')"><span class="h-nav-icon">👪</span>Кабинет родителя</button>
       <button class="h-nav-item" onclick="showScreen('screen-profile')"><span class="h-nav-icon">👤</span>Профиль</button>
     </nav>
@@ -2521,6 +2583,26 @@ body.theme-dark .h-tile.pink { background: rgba(236,73,217,.08); }
         <div class="h-math-float h-mf6">+</div>
         <img src="umnik_prygaet.png" alt="Умник" class="h-mascot-img" onerror="this.outerHTML='<div style=\'font-size:100px;animation:bobMascot 3.5s ease-in-out infinite\'>🤖</div>'">
       </div>
+    </div>
+
+    <!-- Плашки: Хочу всё знать + Шпаргалки -->
+    <div class="h-banners">
+      <button class="h-banner h-banner-know" onclick="showScreen('screen-funfacts')">
+        <div class="h-banner-glow"></div>
+        <span class="h-banner-emoji">💡</span>
+        <div class="h-banner-text">
+          <div class="h-banner-title">Хочу всё знать</div>
+          <div class="h-banner-sub">Мои ошибки и разбор с Умником</div>
+        </div>
+      </button>
+      <button class="h-banner h-banner-cheat" onclick="showScreen('screen-cheatsheet')">
+        <div class="h-banner-glow"></div>
+        <span class="h-banner-emoji">📋</span>
+        <div class="h-banner-text">
+          <div class="h-banner-title">Шпаргалки</div>
+          <div class="h-banner-sub">Правила и формулы §1–§7</div>
+        </div>
+      </button>
     </div>
 
     <!-- 3 карточки -->
