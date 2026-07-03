@@ -2159,18 +2159,21 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
 @keyframes fadeInUp { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
 
 /* ===== ЧАТ УМНИКА ===== */
-.chat-msg { display:flex; gap:8px; margin-bottom:8px; align-items:flex-end; }
+.chat-msg { display:flex; gap:8px; margin-bottom:4px; align-items:flex-end; }
 .chat-msg.bot { flex-direction:row; }
 .chat-msg.user { flex-direction:row-reverse; }
+/* Группа сообщений одного отправителя — отступ между группами */
+.chat-msg.group-end { margin-bottom:12px; }
 
-/* Аватар — градиент, свечение, персонаж */
-.chat-avatar { width:48px; height:48px; border-radius:50%; background:linear-gradient(135deg,#2F6BFF,#7B3FF2); display:flex; align-items:center; justify-content:center; flex-shrink:0; overflow:hidden; box-shadow:0 0 0 2px rgba(100,160,255,.5), 0 0 14px rgba(47,107,255,.45); }
-.chat-avatar img { width:90%; height:90%; object-fit:contain; }
+/* Аватар — скрыт по умолчанию, показывается только у первого в группе */
+.chat-avatar { width:40px; height:40px; border-radius:50%; background:linear-gradient(145deg,#2563eb,#7c3aed); display:flex; align-items:center; justify-content:center; flex-shrink:0; overflow:hidden; box-shadow:0 0 0 2px rgba(99,160,255,.45), 0 0 10px rgba(47,107,255,.35); }
+.chat-avatar img { width:100%; height:100%; object-fit:cover; object-position:top center; }
+.chat-avatar.hidden { visibility:hidden; }
 
 /* Пузыри */
-.chat-bubble { max-width:78%; padding:11px 15px; border-radius:20px; font-size:15px; line-height:1.5; animation: bubbleIn .22s ease; }
-.chat-bubble.bot { background:#1e2d50; border:1px solid rgba(100,149,255,.2); color:#e8edf8; border-bottom-left-radius:5px; }
-.chat-bubble.user { background:linear-gradient(135deg,#4f46e5,#7c3aed); color:#fff; border-bottom-right-radius:5px; }
+.chat-bubble { max-width:80%; padding:9px 14px; border-radius:18px; font-size:14px; line-height:1.5; animation: bubbleIn .18s ease; }
+.chat-bubble.bot { background:#1a2845; border:1px solid rgba(100,149,255,.18); color:#dde4f5; border-bottom-left-radius:5px; }
+.chat-bubble.user { background:linear-gradient(135deg,#4338ca,#7c3aed); color:#fff; border-bottom-right-radius:5px; }
 .chat-bubble.correct { background:linear-gradient(135deg,#065f46,#059669); border:none; }
 .chat-bubble.wrong { background:rgba(239,68,68,.12); border:1px solid rgba(239,68,68,.28); }
 
@@ -5845,7 +5848,7 @@ function openWalkthrough(task, backScreen) {
 
   if (isNewTopic) {
     seenTopics.add(task.topic);
-    const ruleHtml = 'Сначала вспомним правило.<br><br>'
+    const ruleHtml = 'Привет! 👋 Помогу разобраться с этим заданием. Но сначала вспомним правило.<br><br>'
       + '<div class="chat-rule-card">'
       + '<div class="chat-rule-label">📚 ' + task.topic + '</div>'
       + '<div class="chat-rule-keys">🔑 ' + rule.keys + '</div>'
@@ -5901,7 +5904,7 @@ function wtShowTask() {
   setTimeout(() => {
     if (wtIsMultiPart && TASK_PARTS[task.id]) {
       // Многопунктовое — ведём по пунктам
-      chatAddBot('Я рядом. Разберём задание по пунктам, без спешки. В таблице слева — животные, справа — числа.', false);
+      chatAddBot('Молодец! Разберём задание по пунктам. В таблице слева — животные, справа — числа.', false);
       setTimeout(() => {
         wtGoToNextPart();
         wtUpdatePartsBar();
@@ -6018,16 +6021,39 @@ function umnikIntro(task) {
 // Добавить сообщение Умника
 function chatAddBot(html, animate, noAvatar) {
   const chat = document.getElementById('wt-chat');
+  // Пометить предыдущее bot-сообщение как конец группы если после него будет пауза
+  const prevMsgs = chat.querySelectorAll('.chat-msg.bot');
+  const lastBot = prevMsgs[prevMsgs.length - 1];
+
+  // Скрыть аватар у предыдущих bot-сообщений в той же серии (аватар только у последнего в группе)
+  if (lastBot && !noAvatar) {
+    const prevAvatar = lastBot.querySelector('.chat-avatar');
+    if (prevAvatar) prevAvatar.classList.add('hidden');
+  }
+
   const div = document.createElement('div');
   div.className = 'chat-msg bot';
-  const avatar = noAvatar ? '<div style="width:48px;flex-shrink:0"></div>' : '<div class="chat-avatar"><img src="umnik_obyasnyaet.png" alt="Умник"></div>';
-  div.innerHTML = avatar + '<div class="chat-bubble bot">' + html + '</div>';
+  let avatarHtml;
+  if (noAvatar) {
+    avatarHtml = '<div style="width:40px;flex-shrink:0"></div>';
+  } else {
+    avatarHtml = '<div class="chat-avatar"><img src="umnik_obyasnyaet.png" alt="Умник"></div>';
+  }
+  div.innerHTML = avatarHtml + '<div class="chat-bubble bot">' + html + '</div>';
   chat.appendChild(div);
   chat.scrollTop = chat.scrollHeight;
 }
 
 // Добавить сообщение ученика (статус встроен в пузырь)
 function chatAddUser(text, statusKey) {
+  // Группа bot-сообщений закончилась — последний бот получает отступ и видимый аватар
+  const chat2 = document.getElementById('wt-chat');
+  const lastBot2 = chat2.querySelector('.chat-msg.bot:last-of-type');
+  if (lastBot2) {
+    lastBot2.classList.add('group-end');
+    const av = lastBot2.querySelector('.chat-avatar');
+    if (av) av.classList.remove('hidden');
+  }
   const STATUSES = {
     ok:      { cls:'ok',      icon:'✅', label:'принято' },
     almost:  { cls:'almost',  icon:'🧩', label:'почти' },
