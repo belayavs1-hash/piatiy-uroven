@@ -5477,9 +5477,10 @@ async function checkPhotoSolution() {
       if(currentTask) addMistake(currentTask.topic, 'photo_wrong');
     }
   } catch(e) {
-    // Ошибка сети или API — переходим к разбору как раньше
-    res.innerHTML = `<div style="padding:14px;border-radius:14px;background:rgba(37,99,235,.1);border:2px solid rgba(37,99,235,.2);color:var(--ink2);font-weight:700;margin-top:14px;text-align:center">📸 Перехожу к разбору…</div>`;
-    setTimeout(() => { if(currentTask) openWalkthrough(currentTask, 'screen-photo-check', true); }, 800);
+    res.innerHTML = `<div style="padding:14px;border-radius:14px;background:rgba(220,38,38,.1);border:2px solid rgba(220,38,38,.3);color:#dc2626;font-weight:700;margin-top:14px;text-align:center">⚠️ Ошибка: ${e.message}<br><small style="font-weight:400;color:#6b7280">Попробуй ещё раз или разбери с Умником</small></div>
+    <button class="btn-find" style="margin-top:12px;width:100%;display:flex;align-items:center;justify-content:center;gap:10px" onclick="openWalkthrough(currentTask,'screen-photo-check',true)">
+      <img src="umnik_avatar2.png" style="width:28px;height:28px;object-fit:contain;filter:drop-shadow(0 0 4px rgba(147,197,253,.6))"> Разобрать с Умником
+    </button>`;
   }
 }
 
