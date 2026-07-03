@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="420" viewBox="0 0 900 420" role="img">
+<style>
+  .bg{fill:#ffffff}
+  .card{fill:#ffffff;stroke:#d5e3ee;stroke-width:2}
+  .head{fill:#eaf6ff;stroke:#b7d7ee;stroke-width:1.5}
+  .grid{stroke:#b7c7d4;stroke-width:1.4}
+  .axis{stroke:#37a6d6;stroke-width:4;stroke-linecap:round}
+  .line{stroke:#2aa879;stroke-width:4;stroke-linecap:round;fill:none}
+  .pink{stroke:#d66bb6;stroke-width:4;stroke-linecap:round;fill:none}
+  .thin{stroke:#73808c;stroke-width:2;fill:none}
+  .txt{font-family:Arial, sans-serif;font-size:26px;fill:#243040}
+  .small{font-family:Arial, sans-serif;font-size:20px;fill:#243040}
+  .tiny{font-family:Arial, sans-serif;font-size:16px;fill:#243040}
+  .title{font-family:Arial, sans-serif;font-size:32px;font-weight:700;fill:#1f3344}
+  .dot{fill:#243040}
+  .box{fill:#fef9db;stroke:#e8d17d;stroke-width:2}
+  .blank{fill:#fffdf0;stroke:#e8d17d;stroke-width:2}
+</style>
+<rect class="bg" width="100%" height="100%"/>
+<text x="450.0" y="48" text-anchor="middle" class="title">Задание 1.180</text><text x="450.0" y="78" text-anchor="middle" class="small">Деление</text><rect x="45" y="95" width="810" height="156" class="card"/><rect x="45" y="95" width="810" height="52" class="head"/><line x1="45.0" y1="95" x2="45.0" y2="251" class="grid"/><line x1="180.0" y1="95" x2="180.0" y2="251" class="grid"/><line x1="315.0" y1="95" x2="315.0" y2="251" class="grid"/><line x1="450.0" y1="95" x2="450.0" y2="251" class="grid"/><line x1="585.0" y1="95" x2="585.0" y2="251" class="grid"/><line x1="720.0" y1="95" x2="720.0" y2="251" class="grid"/><line x1="855.0" y1="95" x2="855.0" y2="251" class="grid"/><line x1="45" y1="95" x2="855" y2="95" class="grid"/><line x1="45" y1="147" x2="855" y2="147" class="grid"/><line x1="45" y1="199" x2="855" y2="199" class="grid"/><line x1="45" y1="251" x2="855" y2="251" class="grid"/><text x="112.5" y="130" text-anchor="middle" class="small" font-weight="700">Делимое</text><text x="247.5" y="130" text-anchor="middle" class="small" font-weight="700">72</text><text x="382.5" y="130" text-anchor="middle" class="small" font-weight="700">64</text><text x="517.5" y="130" text-anchor="middle" class="small" font-weight="700">33</text><text x="652.5" y="130" text-anchor="middle" class="small" font-weight="700"></text><text x="787.5" y="130" text-anchor="middle" class="small" font-weight="700">700</text><text x="112.5" y="182" text-anchor="middle" class="small">Делитель</text><text x="247.5" y="182" text-anchor="middle" class="small">9</text><text x="382.5" y="182" text-anchor="middle" class="small">6</text><text x="517.5" y="182" text-anchor="middle" class="small"></text><text x="652.5" y="182" text-anchor="middle" class="small">10</text><text x="787.5" y="182" text-anchor="middle" class="small"></text><text x="112.5" y="234" text-anchor="middle" class="small">Частное</text><text x="247.5" y="234" text-anchor="middle" class="small"></text><text x="382.5" y="234" text-anchor="middle" class="small">8</text><text x="517.5" y="234" text-anchor="middle" class="small">32</text><text x="652.5" y="234" text-anchor="middle" class="small">120</text><text x="787.5" y="234" text-anchor="middle" class="small">3</text></svg>

@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="520" viewBox="0 0 900 520" role="img">
+<style>
+  .bg{fill:#ffffff}
+  .card{fill:#ffffff;stroke:#d5e3ee;stroke-width:2}
+  .head{fill:#eaf6ff;stroke:#b7d7ee;stroke-width:1.5}
+  .grid{stroke:#b7c7d4;stroke-width:1.4}
+  .axis{stroke:#37a6d6;stroke-width:4;stroke-linecap:round}
+  .line{stroke:#2aa879;stroke-width:4;stroke-linecap:round;fill:none}
+  .pink{stroke:#d66bb6;stroke-width:4;stroke-linecap:round;fill:none}
+  .thin{stroke:#73808c;stroke-width:2;fill:none}
+  .txt{font-family:Arial, sans-serif;font-size:26px;fill:#243040}
+  .small{font-family:Arial, sans-serif;font-size:20px;fill:#243040}
+  .tiny{font-family:Arial, sans-serif;font-size:16px;fill:#243040}
+  .title{font-family:Arial, sans-serif;font-size:32px;font-weight:700;fill:#1f3344}
+  .dot{fill:#243040}
+  .box{fill:#fef9db;stroke:#e8d17d;stroke-width:2}
+  .blank{fill:#fffdf0;stroke:#e8d17d;stroke-width:2}
+</style>
+<rect class="bg" width="100%" height="100%"/>
+<text x="450.0" y="48" text-anchor="middle" class="title">Задание 1.161</text><text x="450.0" y="78" text-anchor="middle" class="small">Длины рыб</text><rect x="45" y="95" width="810" height="312" class="card"/><rect x="45" y="95" width="810" height="52" class="head"/><line x1="45.0" y1="95" x2="45.0" y2="407" class="grid"/><line x1="450.0" y1="95" x2="450.0" y2="407" class="grid"/><line x1="855.0" y1="95" x2="855.0" y2="407" class="grid"/><line x1="45" y1="95" x2="855" y2="95" class="grid"/><line x1="45" y1="147" x2="855" y2="147" class="grid"/><line x1="45" y1="199" x2="855" y2="199" class="grid"/><line x1="45" y1="251" x2="855" y2="251" class="grid"/><line x1="45" y1="303" x2="855" y2="303" class="grid"/><line x1="45" y1="355" x2="855" y2="355" class="grid"/><line x1="45" y1="407" x2="855" y2="407" class="grid"/><text x="247.5" y="130" text-anchor="middle" class="small" font-weight="700">Рыба</text><text x="652.5" y="130" text-anchor="middle" class="small" font-weight="700">Длина, см</text><text x="247.5" y="182" text-anchor="middle" class="small">Щука</text><text x="652.5" y="182" text-anchor="middle" class="small">140</text><text x="247.5" y="234" text-anchor="middle" class="small">Карась</text><text x="652.5" y="234" text-anchor="middle" class="small">35</text><text x="247.5" y="286" text-anchor="middle" class="small">Окунь</text><text x="652.5" y="286" text-anchor="middle" class="small">80</text><text x="247.5" y="338" text-anchor="middle" class="small">Язь</text><text x="652.5" y="338" text-anchor="middle" class="small">115</text><text x="247.5" y="390" text-anchor="middle" class="small">Судак</text><text x="652.5" y="390" text-anchor="middle" class="small">130</text></svg>
