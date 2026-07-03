@@ -443,9 +443,9 @@ body.theme-dark .h-nav-icon { filter: brightness(1.4) saturate(1.2); }
 body.theme-dark .h-theme-switch { background: linear-gradient(135deg,#4778ff,#7650ff); }
 body.theme-dark .h-theme-switch::after { transform: translateX(18px); }
 .h-logout-btn {
-  width: 100%; padding: 10px 14px; margin-top: 8px;
+  width: 100%; padding: 14px 14px; margin-top: 12px;
   background: none; border: 1px solid rgba(255,80,80,.25);
-  border-radius: 12px; cursor: pointer;
+  border-radius: 14px; cursor: pointer;
   font-family: inherit; font-size: 13px; font-weight: 700;
   color: #e05555; text-align: left;
   transition: background .15s, color .15s;
@@ -608,13 +608,12 @@ body.theme-dark .h-step { opacity:.85; color:#c8d8ff; }
 .h-tile {
   background: var(--h-tile-bg);
   border: 1px solid var(--h-tile-border);
-  border-radius: 20px; padding: 22px 18px 20px;
+  border-radius: 20px; padding: 18px 18px 16px;
   cursor: pointer;
   display: grid; grid-template-columns: 1fr 42px; gap: 8px; align-items: end;
   box-shadow: var(--h-card-shadow);
   transition: transform .2s, box-shadow .2s, background .3s;
   position: relative; overflow: hidden;
-  min-height: 160px;
 }
 .h-tile::before {
   content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
@@ -649,7 +648,7 @@ body.theme-dark .h-tile.pink { background: rgba(236,73,217,.08); }
 .h-tile:hover .h-tile-arrow { background: var(--blue); color: #fff; transform: translateX(3px); }
 
 /* Плашки под XP-шкалой — 2 колонки, ширина как первые 2 из 3 */
-.h-banners { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 12px; }
+.h-banners { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 28px; }
 .h-banner {
   display: flex; align-items: center; gap: 16px;
   padding: 18px 24px; border-radius: 20px; cursor: pointer;
