@@ -5,18 +5,22 @@ module.exports = async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  const { imageBase64, taskText } = req.body;
+  const { imageBase64, taskText, correctAnswers } = req.body;
   if (!imageBase64) return res.status(400).json({ error: 'No image' });
+
+  const answersBlock = correctAnswers
+    ? `\nПРАВИЛЬНЫЕ ОТВЕТЫ (используй для проверки):\n${correctAnswers}\n`
+    : '';
 
   const prompt = `Ты — Умник, помощник-репетитор для учеников 5 класса.
 Задание: ${taskText || 'Задание по математике'}
-
-Посмотри на фото решения ученика и ответь строго в JSON:
+${answersBlock}
+Посмотри на фото решения ученика. Сравни с правильными ответами и ответь строго в JSON:
 {
   "correct": true/false,
-  "errors": ["описание ошибки 1"],
+  "errors": ["описание конкретной ошибки — пункт и что неверно"],
   "comment": "короткий дружелюбный комментарий для ребёнка (1-2 предложения)",
-  "parts_done": ["а", "б"] — какие пункты решены правильно
+  "parts_done": ["а", "б"] — список пунктов решённых ПРАВИЛЬНО
 }
 
 Если фото нечёткое — верни { "correct": false, "errors": ["Фото нечёткое"], "comment": "Сфотографируй получше!", "parts_done": [] }`;

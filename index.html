@@ -5445,7 +5445,8 @@ async function checkPhotoSolution() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         imageBase64: base64,
-        taskText: currentTask ? currentTask.text : ''
+        taskText: currentTask ? currentTask.text : '',
+        correctAnswers: currentTask ? buildCorrectAnswers(currentTask) : ''
       })
     });
 
@@ -5805,6 +5806,17 @@ function findTask() {
     <button class="btn-find" onclick="goToWalkthroughFromHW()" style="margin-bottom:10px"><img src="umnik_avatar2.png" style="width:32px;height:32px;object-fit:contain;vertical-align:middle;margin-right:8px;filter:drop-shadow(0 0 4px rgba(147,197,253,.6))"> Разобрать с Умником</button>
     <button class="btn-secondary" onclick="showScreen('screen-already-solved')" style="width:100%">✅ Я уже решил</button>
   </div>`;
+}
+
+function buildCorrectAnswers(task) {
+  const cfg = TASK_PARTS[task.id];
+  if (!cfg) return task.answer || '';
+  return cfg.parts.map(p => {
+    const c = cfg.checks[p];
+    const animal = (c.animals || []).join('/') || '';
+    const num = (c.nums || []).join('/') || '';
+    return `${p}) ${animal}${animal && num ? ' — ' : ''}${num}`;
+  }).join('\n');
 }
 
 function goToWalkthroughFromHW() {
