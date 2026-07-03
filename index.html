@@ -2162,8 +2162,8 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
 .chat-msg { display:flex; gap:10px; margin-bottom:16px; align-items:flex-end; }
 .chat-msg.bot { flex-direction:row; }
 .chat-msg.user { flex-direction:row-reverse; }
-.chat-avatar { width:40px; height:40px; border-radius:50%; background:linear-gradient(135deg,#4f46e5,#7c3aed); display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; overflow:hidden; }
-.chat-avatar img { width:100%; height:100%; object-fit:cover; }
+.chat-avatar { width:44px; height:44px; border-radius:50%; background:transparent; display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; overflow:hidden; }
+.chat-avatar img { width:100%; height:100%; object-fit:contain; }
 .chat-bubble { max-width:80%; padding:12px 16px; border-radius:18px; font-size:15px; line-height:1.5; animation: bubbleIn .25s ease; }
 .chat-bubble.bot { background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.12); color:#fff; border-bottom-left-radius:4px; }
 .chat-bubble.user { background:linear-gradient(135deg,#4f46e5,#7c3aed); color:#fff; border-bottom-right-radius:4px; }
@@ -5790,12 +5790,13 @@ function openWalkthrough(task, backScreen) {
   if (isNewTopic) {
     // Показываем правило темы — задание появится после клика «Понял»
     seenTopics.add(task.topic);
+    chatAddBot('Привет! Я Умник 👋 Давай разберём задание ' + task.id + ' вместе. Сначала вспомним правило!', false);
     const ruleHtml = '<div class="chat-rule-card">' +
       '<div class="chat-rule-label">📚 Тема: ' + task.topic + '</div>' +
       '<div class="chat-rule-keys">🔑 ' + rule.keys + '</div>' +
       '<div class="chat-rule-text">' + rule.rule + '</div>' +
       '</div>' +
-      'Сначала вспомним правило. Прочитай и нажми «Понял» 👇';
+      'Прочитай и нажми «Понял» 👇';
     chatAddBot(ruleHtml, false);
     // Кнопка «Понял» — после клика показывает задание
     const div = document.createElement('div');
@@ -5808,7 +5809,8 @@ function openWalkthrough(task, backScreen) {
     document.getElementById('wt-input-bar').style.opacity = '0.3';
     document.getElementById('wt-input-bar').style.pointerEvents = 'none';
   } else {
-    // Тема уже встречалась — сразу задание
+    // Тема уже встречалась — приветствие и сразу задание
+    chatAddBot('Привет! Я Умник 👋 Давай решим задание ' + task.id + ' вместе. Попробуй сам — я помогу если что!', false);
     wtShowTask();
   }
 
@@ -5833,7 +5835,7 @@ function chatAddBot(html, animate) {
   const chat = document.getElementById('wt-chat');
   const div = document.createElement('div');
   div.className = 'chat-msg bot';
-  div.innerHTML = '<div class="chat-avatar">🤖</div><div class="chat-bubble bot">' + html + '</div>';
+  div.innerHTML = '<div class="chat-avatar"><img src="umnik_obyasnyaet.png" alt="Умник"></div><div class="chat-bubble bot">' + html + '</div>';
   chat.appendChild(div);
   chat.scrollTop = chat.scrollHeight;
 }
