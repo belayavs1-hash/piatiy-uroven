@@ -5423,18 +5423,64 @@ function clearPhotoCheck() {
   if(res) res.innerHTML='';
 }
 
-function checkPhotoSolution() {
+async function checkPhotoSolution() {
   const img = document.getElementById('photo-preview-img');
   if(!img || !img.src || img.style.display==='none') {
     document.getElementById('photo-check-result').innerHTML = `<div class="result-err" style="text-align:left;margin-top:14px"><div class="r-text">Сначала загрузи фото 📷</div></div>`;
     return;
   }
   const res = document.getElementById('photo-check-result');
-  res.innerHTML = `<div style="padding:14px;border-radius:14px;background:rgba(37,99,235,.1);border:2px solid rgba(37,99,235,.2);color:var(--ink2);font-weight:700;margin-top:14px;text-align:center">🔍 Умник смотрит решение…</div>`;
-  setTimeout(() => {
-    if(!currentTask) return;
-    openWalkthrough(currentTask, 'screen-photo-check', true);
-  }, 1200);
+  res.innerHTML = `<div style="padding:14px;border-radius:14px;background:rgba(37,99,235,.1);border:2px solid rgba(37,99,235,.2);color:var(--ink2);font-weight:700;margin-top:14px;text-align:center">🔍 Умник читает твоё решение…</div>`;
+
+  try {
+    // Конвертируем img в base64
+    const canvas = document.createElement('canvas');
+    canvas.width = img.naturalWidth || img.width;
+    canvas.height = img.naturalHeight || img.height;
+    canvas.getContext('2d').drawImage(img, 0, 0);
+    const base64 = canvas.toDataURL('image/jpeg', 0.8).split(',')[1];
+
+    const response = await fetch('/api/check-photo', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        imageBase64: base64,
+        taskText: currentTask ? currentTask.text : ''
+      })
+    });
+
+    const data = await response.json();
+
+    if (data.error) throw new Error(data.error);
+
+    if (data.correct) {
+      // Всё правильно
+      res.innerHTML = `<div class="result-ok" style="margin-top:14px">
+        <div class="r-icon">🏆</div>
+        <div class="r-text">Умник проверил — всё правильно!</div>
+        <div class="result-answer" style="margin-top:8px">${data.comment || ''}</div>
+        <button class="btn-check" style="margin-top:14px;width:100%" onclick="showDone('🏆','Решил сам!','Задание ${currentTask ? currentTask.id : ''} выполнено',25)">Отлично! →</button>
+      </div>`;
+      addXP(25);
+      if(currentTask) markSolved(currentTask.id, {attempts:1, withHints:false, correct:true});
+    } else {
+      // Есть ошибки — показываем и предлагаем разобрать
+      const errorsList = (data.errors || []).map(e => `<li>${e}</li>`).join('');
+      res.innerHTML = `<div class="result-err" style="margin-top:14px">
+        <div class="r-icon">❌</div>
+        <div class="r-text">${data.comment || 'Есть ошибки — давай разберём!'}</div>
+        ${errorsList ? `<ul style="margin:8px 0 0 16px;font-size:13px;color:#374151">${errorsList}</ul>` : ''}
+      </div>
+      <button class="btn-find" style="margin-top:12px;width:100%;display:flex;align-items:center;justify-content:center;gap:10px" onclick="openWalkthrough(currentTask,'screen-photo-check',true)">
+        <img src="umnik_avatar2.png" style="width:28px;height:28px;object-fit:contain;filter:drop-shadow(0 0 4px rgba(147,197,253,.6))"> Разобрать с Умником
+      </button>`;
+      if(currentTask) addMistake(currentTask.topic, 'photo_wrong');
+    }
+  } catch(e) {
+    // Ошибка сети или API — переходим к разбору как раньше
+    res.innerHTML = `<div style="padding:14px;border-radius:14px;background:rgba(37,99,235,.1);border:2px solid rgba(37,99,235,.2);color:var(--ink2);font-weight:700;margin-top:14px;text-align:center">📸 Перехожу к разбору…</div>`;
+    setTimeout(() => { if(currentTask) openWalkthrough(currentTask, 'screen-photo-check', true); }, 800);
+  }
 }
 
 function updateAllXP() {
