@@ -2877,9 +2877,6 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
         </div>
       </div>
       <div id="photo-check-result"></div>
-      <div style="text-align:center;margin-top:12px;font-size:13px;color:var(--ink3)">
-        Или <button onclick="goToCheckFromHW()" style="border:none;background:none;color:var(--blue);cursor:pointer;font-weight:800;font-size:13px;text-decoration:underline;padding:0">введи ответ вручную →</button>
-      </div>
     </div>
   </div>
   <div class="bottom-nav">
@@ -5439,8 +5436,8 @@ function checkPhotoSolution() {
     res.innerHTML = `<div class="result-ok" style="text-align:left;margin-top:14px">
       <div class="r-icon">📸</div>
       <div class="r-text">Фото загружено!</div>
-      <div class="result-answer" style="margin-top:8px">В полной версии Умник распознает текст и проверит шаги. Сейчас введи ответ вручную — Умник сравнит.</div>
-      <button class="btn-find" style="margin-top:14px" onclick="goToCheckFromHW()">✍️ Ввести ответ вручную</button>
+      <div class="result-answer" style="margin-top:8px">Умник проверит твоё решение и разберёт ошибки.</div>
+      <button class="btn-find" style="margin-top:14px" onclick="goToWalkthroughFromHW()"><img src="umnik_avatar.png" style="width:24px;height:24px;border-radius:50%;object-fit:cover;vertical-align:middle;margin-right:6px"> Разобрать с Умником</button>
     </div>`;
   }, 1200);
 }
