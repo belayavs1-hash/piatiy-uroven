@@ -9890,18 +9890,52 @@ const UmnikTutor = (function() {
 
 // ===== HELPERS =====
 function checkAnswer(userAns, task) {
-  // Для многопунктовых заданий — проверяем все числа из правильного ответа
+  // Для многопунктовых заданий — проверяем каждый пункт по его фрагменту текста
   if (TASK_PARTS[task.id]) {
     const cfg = TASK_PARTS[task.id];
-    const allNums = [];
-    cfg.parts.forEach(p => {
+    const text = userAns.toLowerCase();
+
+    for (const p of cfg.parts) {
       const check = cfg.checks[p];
-      if (check && check.nums) check.nums.forEach(n => allNums.push(n));
-    });
-    if (allNums.length > 0) {
-      const userNums = UmnikTutor.getNumbers(userAns).map(Number);
-      return allNums.every(n => userNums.includes(n));
+      if (!check || !check.nums) continue;
+
+      // Найти фрагмент текста относящийся к этому пункту
+      // Ищем «п)» или «п.» или «п » и берём текст до следующего пункта
+      const nextP = cfg.parts[cfg.parts.indexOf(p) + 1];
+      const startRe = new RegExp(p + '[).\\ :]');
+      const startMatch = text.search(startRe);
+      if (startMatch === -1) {
+        // Пункт не упомянут явно — ищем число в общем тексте
+        // но только если оно уникально среди всех пунктов
+        const allOtherNums = cfg.parts
+          .filter(op => op !== p)
+          .flatMap(op => (cfg.checks[op] && cfg.checks[op].nums) || []);
+        const uniqueNums = check.nums.filter(n => !allOtherNums.includes(n));
+        if (uniqueNums.length === 0) return false; // число не уникально — нельзя проверить
+        const userNums = UmnikTutor.getNumbers(text).map(Number);
+        if (!uniqueNums.some(n => userNums.includes(n))) return false;
+        continue;
+      }
+
+      // Берём фрагмент от этого пункта до следующего
+      let endIdx = text.length;
+      if (nextP) {
+        const nextMatch = text.search(new RegExp(nextP + '[).\\ :]'));
+        if (nextMatch > startMatch) endIdx = nextMatch;
+      }
+      const fragment = text.slice(startMatch, endIdx);
+      const fragNums = UmnikTutor.getNumbers(fragment).map(Number);
+
+      // Проверяем что нужное число есть в этом фрагменте
+      const hasNum = check.nums.some(n => fragNums.includes(n));
+      // Для animalOnly — проверяем животное
+      const animals = UmnikTutor.getAnimals(fragment);
+      const hasAnimal = !check.animals || check.animals.length === 0 || check.animals.some(a => animals.includes(a));
+
+      if (check.animalOnly) { if (!hasAnimal) return false; }
+      else if (!hasNum) return false;
     }
+    return true;
   }
   const status = UmnikTutor.classify(userAns, task);
   return status === 'correct';
