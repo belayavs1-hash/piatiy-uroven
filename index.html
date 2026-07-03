@@ -5798,21 +5798,18 @@ function openWalkthrough(task, backScreen) {
       + '</div>'
       + 'Прочитай и нажми «Понял» 👇';
     chatAddBot(ruleHtml, false);
-    // Кнопка «Понял» — в виде пузыря бота
+    // Кнопка «Понял» — как реплика ученика (справа, без аватара Умника)
     const div = document.createElement('div');
-    div.className = 'chat-msg bot';
-    div.innerHTML = '<div class="chat-avatar"><img src="umnik_obyasnyaet.png" alt="Умник"></div>'
-      + '<div class="chat-bubble bot" style="background:none;border:none;padding:0">'
-      + '<button onclick="wtShowTask()" style="padding:12px 28px;border-radius:20px;border:none;background:linear-gradient(135deg,#059669,#10b981);color:#fff;font-size:15px;font-weight:800;cursor:pointer;font-family:inherit">Понял, решаю! →</button>'
-      + '</div>';
+    div.className = 'chat-msg user';
+    div.innerHTML = '<button onclick="wtShowTask()" style="padding:12px 28px;border-radius:20px;border:none;background:linear-gradient(135deg,#059669,#10b981);color:#fff;font-size:15px;font-weight:800;cursor:pointer;font-family:inherit">Понял, решаю! →</button>';
     chat.appendChild(div);
     chat.scrollTop = chat.scrollHeight;
     // Скрываем ввод пока не нажата кнопка
     document.getElementById('wt-input-bar').style.opacity = '0.3';
     document.getElementById('wt-input-bar').style.pointerEvents = 'none';
   } else {
-    // Тема уже встречалась — приветствие и сразу задание
-    chatAddBot('Привет! Я Умник 👋 Давай решим задание ' + task.id + ' вместе. Попробуй сам — я помогу если что!', false);
+    // Тема уже встречалась — короткое приветствие, потом задание
+    chatAddBot('Привет! Давай разберём задание ' + task.id + ' вместе 👋', false);
     wtShowTask();
   }
 
@@ -5825,11 +5822,66 @@ function openWalkthrough(task, backScreen) {
 function wtShowTask() {
   const task = currentTask;
   const paraLabel = task.para ? task.para + ' · ' + task.topic : task.topic;
-  chatAddBot('<div class="chat-task-card"><div class="chat-task-id">Задание ' + task.id + '</div><div class="chat-task-topic">' + paraLabel + '</div><div class="chat-task-text">' + task.text + '</div>' + getTaskSvgHtml(task.id) + '</div>Попробуй решить сам! Введи ответ 👇', false);
-  // Включаем ввод
-  document.getElementById('wt-input-bar').style.opacity = '1';
-  document.getElementById('wt-input-bar').style.pointerEvents = '';
-  setTimeout(() => document.getElementById('wt-answer').focus(), 100);
+  // Карточка задания — без призыва отвечать
+  chatAddBot('<div class="chat-task-card"><div class="chat-task-id">Задание ' + task.id + '</div><div class="chat-task-topic">' + paraLabel + '</div><div class="chat-task-text">' + task.text + '</div>' + getTaskSvgHtml(task.id) + '</div>', false);
+  // Умник начинает диалог
+  const intro = umnikIntro(task);
+  setTimeout(() => {
+    chatAddBot(intro.msg1, false);
+    if (intro.msg2) setTimeout(() => {
+      chatAddBot(intro.msg2, false);
+      // Включаем ввод после сообщений Умника
+      document.getElementById('wt-input-bar').style.opacity = '1';
+      document.getElementById('wt-input-bar').style.pointerEvents = '';
+      setTimeout(() => document.getElementById('wt-answer').focus(), 100);
+    }, 600);
+    else {
+      document.getElementById('wt-input-bar').style.opacity = '1';
+      document.getElementById('wt-input-bar').style.pointerEvents = '';
+      setTimeout(() => document.getElementById('wt-answer').focus(), 100);
+    }
+  }, 400);
+}
+
+// Умник начинает диалог по типу задания
+function umnikIntro(task) {
+  const topic = (task.topic || '').toLowerCase();
+  const text  = (task.text  || '').toLowerCase();
+  if (topic.includes('таблиц') || text.includes('таблиц')) {
+    return {
+      msg1: 'Давай разберём задание спокойно. Здесь есть таблица — в ней строки (животные) и столбцы (числа).',
+      msg2: 'Главное правило: чтобы ответить на вопрос, сначала ищи нужную строку в таблице, а потом читай число рядом. Попробуй ответить на пункт а) — напиши что видишь в 7-й строке.'
+    };
+  }
+  if (topic.includes('дроб')) {
+    return {
+      msg1: 'Разберём дроби вместе. Помни: знаменатель (снизу) — на сколько частей разделили, числитель (сверху) — сколько взяли.',
+      msg2: 'Попробуй начать. Если что-то непонятно — пиши, разберёмся!'
+    };
+  }
+  if (topic.includes('уравнен')) {
+    return {
+      msg1: 'Уравнение — это загадка: нам нужно найти неизвестное число. Чтобы его найти, используем обратное действие.',
+      msg2: 'Попробуй решить. Потом проверь, подставив ответ обратно!'
+    };
+  }
+  if (text.includes('движен') || text.includes('скорост') || text.includes('расстоян')) {
+    return {
+      msg1: 'Здесь задача на движение. Запомни формулу: расстояние = скорость × время.',
+      msg2: 'Сначала запиши, что известно: скорость, время, расстояние. Потом выбери нужную формулу.'
+    };
+  }
+  if (text.includes('периметр') || text.includes('площадь') || text.includes('прямоугольник')) {
+    return {
+      msg1: 'Геометрия! Периметр — это сумма всех сторон. Площадь — длина × ширина.',
+      msg2: 'Попробуй решить. Не забудь написать единицы измерения!'
+    };
+  }
+  // Общий случай
+  return {
+    msg1: 'Давай решим вместе. Прочитай задание внимательно — что нужно найти?',
+    msg2: null
+  };
 }
 
 // Добавить сообщение Умника (слева)
@@ -9258,13 +9310,65 @@ const UmnikTutor = (function() {
   const UNIT_WORDS = ['см','м','км','мм','кг','г','т','л','мл','ч','мин','с','руб','°','га','а','дм'];
   const DONT_KNOW = ['не знаю','не понял','незнаю','непонял','непонятно','помогите','помоги','сложно','запутался','не могу','немогу','хз','ХЗ'];
 
-  // Нормализация: убираем пробелы, приводим к нижнему регистру
-  function norm(s) { return s.trim().toLowerCase().replace(/\s+/g,' '); }
+  // Словарь синонимов животных
+  const ANIMAL_SYNONYMS = {
+    'кошка':          ['кошка','кошки','кот','коты','котик','котики','кися','кот'],
+    'собака':         ['собака','собаки','пёс','пес','псы','собачка','собачки'],
+    'хомяк':          ['хомяк','хомяки','хамяк','хамяки','хомячок','хомячки'],
+    'черепаха':       ['черепаха','черепахи','черепашка','черепашки'],
+    'морская свинка': ['морская свинка','морские свинки','свинка','свинки','мор свинка','мор.свинка','морская'],
+    'кролик':         ['кролик','кролики','крольчонок'],
+    'птицы':          ['птицы','птица','птичка','птички','птиц'],
+    'рыбки':          ['рыбки','рыбы','рыба','рыбка','рыб'],
+    'змеи':           ['змеи','змея','змей','змейки']
+  };
 
-  // Извлечь все числа из строки (включая дроби вида 3/4)
+  // Числа словами
+  const NUM_WORDS = {
+    'ноль':0,'нуль':0,'один':1,'одна':1,'два':2,'две':2,'три':3,'четыре':4,'пять':5,
+    'шесть':6,'семь':7,'восемь':8,'девять':9,'десять':10,'одиннадцать':11,'двенадцать':12,
+    'тринадцать':13,'четырнадцать':14,'пятнадцать':15,'шестнадцать':16,'семнадцать':17,
+    'восемнадцать':18,'девятнадцать':19,'двадцать':20,'тридцать':30,'сорок':40,
+    'пятьдесят':50,'шестьдесят':60,'семьдесят':70,'восемьдесят':80,'девяносто':90
+  };
+
+  // Нормализация
+  function norm(s) {
+    return s.trim().toLowerCase()
+      .replace(/ё/g,'е')
+      .replace(/[.,!?;:]/g,' ')
+      .replace(/\s+/g,' ').trim();
+  }
+
+  // Числа словами → цифры
+  function wordsToNumbers(s) {
+    let result = s;
+    // «тридцать девять» → «39» (двухкомпонентные)
+    result = result.replace(/\b(двадцать|тридцать|сорок|пятьдесят|шестьдесят|семьдесят|восемьдесят|девяносто)\s+(один|одна|два|две|три|четыре|пять|шесть|семь|восемь|девять)\b/gi, (_, tens, units) => {
+      return (NUM_WORDS[norm(tens)] || 0) + (NUM_WORDS[norm(units)] || 0);
+    });
+    // Однокомпонентные
+    Object.entries(NUM_WORDS).forEach(([word, val]) => {
+      result = result.replace(new RegExp('\\b' + word + '\\b', 'gi'), val);
+    });
+    return result;
+  }
+
+  // Извлечь все числа из строки (включая числа словами)
   function extractNumbers(s) {
-    const matches = s.match(/\d+[,./]?\d*/g) || [];
+    const converted = wordsToNumbers(norm(s));
+    const matches = converted.match(/\d+[,./]?\d*/g) || [];
     return matches.map(m => m.replace(',','.'));
+  }
+
+  // Найти упомянутых животных
+  function findAnimals(s) {
+    const sn = norm(wordsToNumbers(s));
+    const found = [];
+    Object.entries(ANIMAL_SYNONYMS).forEach(([canonical, synonyms]) => {
+      if (synonyms.some(syn => sn.includes(syn))) found.push(canonical);
+    });
+    return found;
   }
 
   // Проверить наличие единиц измерения
@@ -9304,10 +9408,30 @@ const UmnikTutor = (function() {
     const unitOk = hasUnits(u);
     const correctHasUnit = hasUnits(correctRaw);
 
+    // Задание с таблицей: расширенный анализ
+    const isTableTask = (task.topic||'').toLowerCase().includes('таблиц') || (task.text||'').toLowerCase().includes('таблиц');
+    if (isTableTask) {
+      const foundAnimals = findAnimals(u);
+      const correctAnimals = findAnimals(correctRaw);
+      const hasAnimals = foundAnimals.length > 0;
+      const animalsCorrect = correctAnimals.length > 0 && correctAnimals.every(a => foundAnimals.includes(a));
+      const someAnimalsCorrect = correctAnimals.some(a => foundAnimals.includes(a));
+
+      // Назвал животное(ых) И число — если всё правильно
+      if ((animalsCorrect || correctAnimals.length === 0) && numOk) return 'correct';
+      // Только правильное животное без числа
+      if (animalsCorrect && !numOk && userNums.length === 0) return 'correct_item_no_number';
+      // Только правильное число без животного
+      if (numOk && !hasAnimals && correctAnimals.length > 0) return 'correct_number_no_item';
+      // Часть животных верна
+      if (someAnimalsCorrect && !animalsCorrect) return 'partial_items';
+      // Животные верные, но число неверное
+      if (animalsCorrect && userNums.length > 0 && !numOk) return 'correct_items_wrong_sum';
+    }
+
     // Число верное, единицы требуются но отсутствуют
     if (numOk && correctHasUnit && !unitOk) return 'correct_number_only';
-
-    // Число верное, единицы не нужны (или есть)
+    // Число верное
     if (numOk) return 'correct';
 
     // Верный метод: назвал правильное действие
@@ -9320,7 +9444,6 @@ const UmnikTutor = (function() {
     // Ответ слишком короткий (одно число — уточнить смысл)
     if (userNums.length === 1 && u.length < 6 && !correctNums.length) return 'needs_clarification';
 
-    // Не попадает ни в одну категорию — неверно
     return 'wrong';
   }
 
@@ -9349,6 +9472,26 @@ const UmnikTutor = (function() {
     // === ВЕРНЫЙ МЕТОД, НЕТ ЧИСЛА ===
     if (status === 'correct_method_only') {
       return { status: 'partial', msg: 'Правильно определил действие! Теперь подставь числа из задачи и посчитай.' };
+    }
+
+    // === ТАБЛИЦА: правильное животное, нет числа ===
+    if (status === 'correct_item_no_number') {
+      return { status: 'partial', msg: 'Верно, нашёл нужную строку! Теперь посмотри на число рядом с ней и допиши его.' };
+    }
+
+    // === ТАБЛИЦА: правильное число, нет названия ===
+    if (status === 'correct_number_no_item') {
+      return { status: 'partial', msg: 'Число верное 👍 А теперь напиши, к какому животному оно относится.' };
+    }
+
+    // === ТАБЛИЦА: часть животных верна ===
+    if (status === 'partial_items') {
+      return { status: 'partial', msg: 'Ты начал правильно — часть животных нашёл. Посмотри, нет ли ещё подходящих строк в таблице.' };
+    }
+
+    // === ТАБЛИЦА: животные верные, сумма неверная ===
+    if (status === 'correct_items_wrong_sum') {
+      return { status: 'partial', msg: 'Строки выбраны правильно! Ошибка только в сложении. Сложи числа из этих строк ещё раз аккуратно.' };
     }
 
     // === НЕ ЗНАЕТ ===
