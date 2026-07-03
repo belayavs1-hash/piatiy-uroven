@@ -5844,7 +5844,8 @@ function openWalkthrough(task, backScreen, fromPhoto) {
 
   if (fromPhoto) {
     // Пришли с фото — Умник говорит что посмотрел решение
-    chatAddBot('Посмотрел твоё решение 📸 Давай разберём по пунктам — я буду спрашивать, ты отвечай.', false);
+    window._wtFromPhoto = true;
+    chatAddBot('Посмотрел твоё решение 📸 Давай проверим по пунктам — отвечай на каждый вопрос.', false);
     setTimeout(() => wtShowTask(), 600);
   } else if (isNewTopic) {
     seenTopics.add(task.topic);
@@ -5903,7 +5904,11 @@ function wtShowTask() {
   setTimeout(() => {
     if (wtIsMultiPart && TASK_PARTS[task.id]) {
       // Многопунктовое — ведём по пунктам
-      chatAddBot('Молодец! Разберём задание по пунктам. В таблице слева — животные, справа — числа.', false);
+      const introMsg = window._wtFromPhoto
+        ? 'Смотри таблицу и отвечай на каждый пункт по очереди 👇'
+        : 'Молодец! Разберём задание по пунктам. В таблице слева — животные, справа — числа.';
+      window._wtFromPhoto = false;
+      chatAddBot(introMsg, false);
       setTimeout(() => {
         wtGoToNextPart();
         wtUpdatePartsBar();
@@ -6256,6 +6261,8 @@ function openCheck(task, backScreen) {
   document.getElementById('chk-steps').value = '';
   document.getElementById('chk-result').style.display = 'none';
   document.getElementById('chk-after').style.display = 'none';
+  // Браузер восстанавливает поле после рендера — сбрасываем с задержкой
+  setTimeout(() => { document.getElementById('chk-answer').value = ''; }, 100);
   showScreen('screen-check');
 }
 
