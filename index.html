@@ -2159,7 +2159,7 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
 @keyframes fadeInUp { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
 
 /* ===== ЧАТ УМНИКА ===== */
-.chat-msg { display:flex; gap:10px; margin-bottom:12px; align-items:flex-end; }
+.chat-msg { display:flex; gap:8px; margin-bottom:8px; align-items:flex-end; }
 .chat-msg.bot { flex-direction:row; }
 .chat-msg.user { flex-direction:row-reverse; }
 
@@ -2174,13 +2174,13 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
 .chat-bubble.correct { background:linear-gradient(135deg,#065f46,#059669); border:none; }
 .chat-bubble.wrong { background:rgba(239,68,68,.12); border:1px solid rgba(239,68,68,.28); }
 
-/* Статус-пилюля */
-.chat-status { display:inline-flex; align-items:center; gap:5px; font-size:12px; font-weight:800; padding:3px 10px; border-radius:20px; margin-bottom:5px; }
-.chat-status.ok    { background:rgba(16,185,129,.2); color:#34d399; }
-.chat-status.almost { background:rgba(251,191,36,.15); color:#fbbf24; }
-.chat-status.clarify { background:rgba(99,102,241,.2); color:#a5b4fc; }
-.chat-status.calc  { background:rgba(249,115,22,.15); color:#fb923c; }
-.chat-status.add   { background:rgba(156,163,175,.15); color:#d1d5db; }
+/* Статус встроен в пузырь — первая строчка мелким шрифтом */
+.chat-status-line { font-size:11px; font-weight:800; letter-spacing:.4px; margin-bottom:4px; display:block; }
+.chat-status-line.ok      { color:#34d399; }
+.chat-status-line.almost  { color:#fbbf24; }
+.chat-status-line.clarify { color:#a5b4fc; }
+.chat-status-line.calc    { color:#fb923c; }
+.chat-status-line.add     { color:#94a3b8; }
 
 /* Прогресс пунктов */
 .wt-parts-bar { display:flex; gap:6px; justify-content:center; padding:6px 16px 0; }
@@ -5811,10 +5811,10 @@ const TASK_PARTS = {
     parts: ['а','б','в','г','д','е','ж','з'],
     checks: {
       'а': { animals:['птицы'], nums:[5],    msg: 'Пункт <b>а</b>: найди 7-ю строку таблицы. Напиши животное и число.' },
-      'б': { animals:['змеи'], nums:[0],     msg: 'Пункт <b>б</b>: найди строку, где стоит 0. Какое животное?' },
-      'в': { animals:['кошка'], nums:[19],   msg: 'Пункт <b>в</b>: найди строку с самым большим числом. Какое животное?' },
+      'б': { animals:['змеи'], nums:[0],     animalOnly:true, msg: 'Пункт <b>б</b>: найди строку, где стоит 0. Какое животное?' },
+      'в': { animals:['кошка'], nums:[19],   animalOnly:true, msg: 'Пункт <b>в</b>: найди строку с самым большим числом. Какое животное?' },
       'г': { nums:[47],                      msg: 'Пункт <b>г</b>: сколько четвероногих? Сложи числа для кошки, собаки, хомяка, черепахи, свинки и кролика.' },
-      'д': { animals:['птицы'], nums:[5],    msg: 'Пункт <b>д</b>: сколько двуногих? Найди животное с двумя ногами.' },
+      'д': { animals:['птицы'], nums:[5],    animalOnly:true, msg: 'Пункт <b>д</b>: сколько двуногих? Найди животное с двумя ногами.' },
       'е': { nums:[9],                       msg: 'Пункт <b>е</b>: сколько животных без ног? Рыбки и змеи. Сложи их числа.' },
       'ж': { nums:[39],                      msg: 'Пункт <b>ж</b>: сколько покрыты шерстью? Кошка, собака, хомяк, свинка, кролик.' },
       'з': { nums:[39],                      msg: 'Пункт <b>з</b>: сколько млекопитающих? Те же животные: кошка, собака, хомяк, свинка, кролик.' }
@@ -5976,15 +5976,14 @@ function checkPart(userAns, partKey, cfg) {
 
   const needAnimals = check.animals || [];
   const needNums    = check.nums    || [];
+  const animalOnly  = check.animalOnly || false;
 
   const hasRightAnimal = needAnimals.length === 0 || needAnimals.some(a => animals.includes(a));
+  const numsAsInt      = nums.map(Number);
+  const hasRightNum    = needNums.length === 0 || needNums.some(n => numsAsInt.includes(n));
 
-  // Проверка числа: числа из ответа + явные слова «нет»/«ноль»/«нуль» → 0
-  const zeroWords = /\b(нет|ноль|нуль|0|zero)\b/i.test(userAns);
-  const numsAsInt  = nums.map(Number);
-  const hasRightNum = needNums.length === 0
-    || needNums.some(n => numsAsInt.includes(n))
-    || (needNums.includes(0) && zeroWords);
+  // Пункты где достаточно назвать животное (б, в, д)
+  if (animalOnly && hasRightAnimal) return { status: 'correct' };
 
   if (hasRightAnimal && hasRightNum) return { status: 'correct' };
   if (hasRightAnimal && !hasRightNum && nums.length > 0) return { status: 'correct_items_wrong_sum' };
@@ -6027,24 +6026,24 @@ function chatAddBot(html, animate, noAvatar) {
   chat.scrollTop = chat.scrollHeight;
 }
 
-// Добавить сообщение ученика со статус-пилюлей
+// Добавить сообщение ученика (статус встроен в пузырь)
 function chatAddUser(text, statusKey) {
   const STATUSES = {
-    ok:      { cls:'ok',     icon:'✅', label:'принято' },
-    almost:  { cls:'almost', icon:'🧩', label:'почти' },
-    clarify: { cls:'clarify',icon:'🔎', label:'уточни' },
-    calc:    { cls:'calc',   icon:'🧮', label:'проверь счёт' },
-    add:     { cls:'add',    icon:'✍️', label:'допиши' }
+    ok:      { cls:'ok',      icon:'✅', label:'принято' },
+    almost:  { cls:'almost',  icon:'🧩', label:'почти' },
+    clarify: { cls:'clarify', icon:'🔎', label:'уточни' },
+    calc:    { cls:'calc',    icon:'🧮', label:'проверь счёт' },
+    add:     { cls:'add',     icon:'✍️',  label:'допиши' }
   };
   const chat = document.getElementById('wt-chat');
   const div = document.createElement('div');
   div.className = 'chat-msg user';
-  let statusHtml = '';
+  let statusLine = '';
   if (statusKey && STATUSES[statusKey]) {
     const s = STATUSES[statusKey];
-    statusHtml = '<div class="chat-status ' + s.cls + '">' + s.icon + ' ' + s.label + '</div>';
+    statusLine = '<span class="chat-status-line ' + s.cls + '">' + s.icon + ' ' + s.label + '</span>';
   }
-  div.innerHTML = '<div>' + statusHtml + '<div class="chat-bubble user">' + text + '</div></div>';
+  div.innerHTML = '<div class="chat-bubble user">' + statusLine + text + '</div>';
   chat.appendChild(div);
   chat.scrollTop = chat.scrollHeight;
 }
@@ -9593,31 +9592,41 @@ const UmnikTutor = (function() {
       .replace(/\s+/g,' ').trim();
   }
 
-  // Числа словами → цифры
+  // Надёжное преобразование: разбиваем на токены, заменяем слова числами
   function wordsToNumbers(s) {
-    let result = s;
-    // «тридцать девять» → «39» (двухкомпонентные)
-    result = result.replace(/\b(двадцать|тридцать|сорок|пятьдесят|шестьдесят|семьдесят|восемьдесят|девяносто)\s+(один|одна|два|две|три|четыре|пять|шесть|семь|восемь|девять)\b/gi, (_, tens, units) => {
-      return (NUM_WORDS[norm(tens)] || 0) + (NUM_WORDS[norm(units)] || 0);
-    });
-    // Явная замена нуля (до общего цикла, чтобы не конфликтовать)
-    result = result.replace(/\bноль\b|\bнуль\b|\bнет\b/gi, '0');
-    // Однокомпонентные (кроме уже замененных)
-    Object.entries(NUM_WORDS).forEach(([word, val]) => {
-      if (word === 'ноль' || word === 'нуль') return;
-      // Используем indexOf вместо \b — надёжнее для кириллицы
-      const re = new RegExp('(?<![а-яё])' + word + '(?![а-яё])', 'gi');
-      result = result.replace(re, String(val));
-    });
-    return result;
+    const TENS = {'двадцать':20,'тридцать':30,'сорок':40,'пятьдесят':50,'шестьдесят':60,'семьдесят':70,'восемьдесят':80,'девяносто':90};
+    const UNITS = {'ноль':0,'нуль':0,'нет':0,'один':1,'одна':1,'два':2,'две':2,'три':3,'четыре':4,'пять':5,'шесть':6,'семь':7,'восемь':8,'девять':9,'десять':10,'одиннадцать':11,'двенадцать':12,'тринадцать':13,'четырнадцать':14,'пятнадцать':15,'шестнадцать':16,'семнадцать':17,'восемнадцать':18,'девятнадцать':19};
+
+    // Разбиваем на токены: слова и числа
+    const tokens = s.split(/([^а-яёa-z0-9]+)/gi);
+    const result = [];
+    let i = 0;
+    while (i < tokens.length) {
+      const t = tokens[i].toLowerCase().replace(/е/g,'е'); // нормализация ё→е уже сделана
+      if (t in TENS) {
+        // Смотрим вперёд: есть ли следующий токен-единица?
+        const next = (tokens[i+2] || '').toLowerCase();
+        if (next in UNITS && UNITS[next] >= 1 && UNITS[next] <= 9) {
+          result.push(String(TENS[t] + UNITS[next]));
+          i += 3; // пропускаем разделитель и следующее слово
+          continue;
+        }
+        result.push(String(TENS[t]));
+      } else if (t in UNITS) {
+        result.push(String(UNITS[t]));
+      } else {
+        result.push(tokens[i]);
+      }
+      i++;
+    }
+    return result.join('');
   }
 
   // Извлечь все числа из строки (включая числа словами)
   function extractNumbers(s) {
     const converted = wordsToNumbers(norm(s));
-    // \d+ — находит и 0
-    const matches = converted.match(/\d+[,./]?\d*/g) || [];
-    return matches.map(m => m.replace(',','.'));
+    const matches = converted.match(/\d+/g) || [];
+    return matches;
   }
 
   // Найти упомянутых животных
