@@ -5466,13 +5466,18 @@ async function checkPhotoSolution() {
       if(currentTask) markSolved(currentTask.id, {attempts:1, withHints:false, correct:true});
     } else {
       // Есть ошибки — показываем и предлагаем разобрать
+      _lastDoneParts = data.parts_done || [];
       const errorsList = (data.errors || []).map(e => `<li>${e}</li>`).join('');
+      const donePartsStr = _lastDoneParts.length > 0
+        ? `<div style="margin-top:6px;font-size:13px;color:#059669">✅ Пункты ${_lastDoneParts.join(', ')} — верно!</div>`
+        : '';
       res.innerHTML = `<div class="result-err" style="margin-top:14px">
         <div class="r-icon">❌</div>
         <div class="r-text">${data.comment || 'Есть ошибки — давай разберём!'}</div>
         ${errorsList ? `<ul style="margin:8px 0 0 16px;font-size:13px;color:#374151">${errorsList}</ul>` : ''}
+        ${donePartsStr}
       </div>
-      <button class="btn-find" style="margin-top:12px;width:100%;display:flex;align-items:center;justify-content:center;gap:10px" onclick="openWalkthrough(currentTask,'screen-photo-check',true)">
+      <button class="btn-find" style="margin-top:12px;width:100%;display:flex;align-items:center;justify-content:center;gap:10px" onclick="openWalkthrough(currentTask,'screen-photo-check',true,_lastDoneParts)">
         <img src="umnik_avatar2.png" style="width:28px;height:28px;object-fit:contain;filter:drop-shadow(0 0 4px rgba(147,197,253,.6))"> Разобрать с Умником
       </button>`;
       if(currentTask) addMistake(currentTask.topic, 'photo_wrong');
@@ -5836,24 +5841,6 @@ function goCheck() {
   showScreen('screen-homework');
 }
 
-function openWalkthrough(task, backScreen) {
-  currentTask = task;
-  wtHintIdx = 0;
-  wtAttempts = 0;
-  document.getElementById('wt-back-btn').onclick = () => showScreen(backScreen);
-  document.getElementById('wt-task-id').textContent = `Задание ${task.id}`;
-  document.getElementById('wt-task-topic').textContent = task.topic;
-  document.getElementById('wt-task-text').innerHTML = task.text + getTaskSvgHtml(task.id);
-  document.getElementById('wt-answer').value = '';
-  document.getElementById('wt-result').style.display = 'none';
-  document.getElementById('wt-after').style.display = 'none';
-  document.getElementById('wt-answer-area').style.display = 'block';
-  document.getElementById('wt-next-hint-wrap').style.display = 'none'; // скрыта — появится после ошибки
-  renderHintProgress();
-  renderHints();
-  showScreen('screen-walkthrough');
-}
-
 // ===== СОСТОЯНИЕ ПУНКТОВ ЗАДАНИЯ =====
 let wtCurrentPart = null;   // текущий пункт: 'а','б',...
 let wtDoneParts   = [];     // выполненные пункты
@@ -5877,12 +5864,12 @@ const TASK_PARTS = {
   }
 };
 
-function openWalkthrough(task, backScreen, fromPhoto) {
+function openWalkthrough(task, backScreen, fromPhoto, doneParts) {
   currentTask = task;
   wtHintIdx = 0;
   wtAttempts = 0;
   wtCurrentPart = null;
-  wtDoneParts = [];
+  wtDoneParts = doneParts || [];
   wtPartAttempts = 0;
   wtIsMultiPart = !!(TASK_PARTS[task.id]);
 
@@ -5897,11 +5884,25 @@ function openWalkthrough(task, backScreen, fromPhoto) {
   const rule = TOPIC_RULES[task.topic];
   const isNewTopic = rule && !seenTopics.has(task.topic);
 
-  if (fromPhoto) {
-    // Пришли с фото — Умник говорит что посмотрел решение
+  if (fromPhoto && doneParts && doneParts.length > 0) {
+    // Пришли с фото — есть правильные пункты, начинаем с ошибочных
     window._wtFromPhoto = true;
-    chatAddBot('Посмотрел твоё решение 📸 Давай проверим по пунктам — отвечай на каждый вопрос.', false);
+    const cfg = TASK_PARTS[task.id];
+    const errorParts = cfg ? cfg.parts.filter(p => !doneParts.includes(p)) : [];
+    const doneStr = doneParts.map(p => '<b>' + p + '</b>').join(', ');
+    chatAddBot('Посмотрел твоё решение 📸<br>Пункты ' + doneStr + ' — ✅ правильно!<br>Давай разберём остальные.', false);
+    setTimeout(() => { wtShowTask(errorParts[0]); }, 600);
+  } else if (fromPhoto) {
+    window._wtFromPhoto = true;
+    chatAddBot('Посмотрел твоё решение 📸 Давай разберём по пунктам.', false);
     setTimeout(() => wtShowTask(), 600);
+  } else if (doneParts && doneParts.length > 0 && TASK_PARTS[task.id]) {
+    // Пришли после проверки текстом — есть правильные пункты
+    const cfg = TASK_PARTS[task.id];
+    const errorParts = cfg.parts.filter(p => !doneParts.includes(p));
+    const doneStr = doneParts.map(p => '<b>' + p + '</b>').join(', ');
+    chatAddBot('Пункты ' + doneStr + ' — ✅ верно! Разберём где ошибка 👇', false);
+    setTimeout(() => { wtShowTask(errorParts[0]); }, 600);
   } else if (isNewTopic) {
     seenTopics.add(task.topic);
     const ruleHtml = 'Привет! 👋 Помогу разобраться с этим заданием. Но сначала вспомним правило.<br><br>'
@@ -5945,7 +5946,7 @@ function wtUpdatePartsBar() {
   }).join('');
 }
 
-function wtShowTask() {
+function wtShowTask(startPart) {
   const task = currentTask;
   const paraLabel = task.para ? task.para + ' · ' + task.topic : task.topic;
   chatAddBot(
@@ -5961,11 +5962,12 @@ function wtShowTask() {
       // Многопунктовое — ведём по пунктам
       const introMsg = window._wtFromPhoto
         ? 'Смотри таблицу и отвечай на каждый пункт по очереди 👇'
-        : 'Молодец! Разберём задание по пунктам. В таблице слева — животные, справа — числа.';
+        : 'Разберём где ошибка. В таблице слева — животные, справа — числа.';
       window._wtFromPhoto = false;
       chatAddBot(introMsg, false);
       setTimeout(() => {
-        wtGoToNextPart();
+        if (startPart) wtCurrentPart = startPart;
+        wtGoToNextPart(!!startPart);
         wtUpdatePartsBar();
         document.getElementById('wt-input-bar').style.opacity = '1';
         document.getElementById('wt-input-bar').style.pointerEvents = '';
@@ -5983,9 +5985,11 @@ function wtShowTask() {
   }, 350);
 }
 
-function wtGoToNextPart() {
+function wtGoToNextPart(keepCurrent) {
   const cfg = TASK_PARTS[currentTask.id];
   if (!cfg) return;
+  // Если keepCurrent — не двигаемся вперёд, начинаем с wtCurrentPart
+  if (!keepCurrent) wtCurrentPart = null;
   const remaining = cfg.parts.filter(p => !wtDoneParts.includes(p));
   if (remaining.length === 0) {
     // Все пункты выполнены!
@@ -6341,9 +6345,36 @@ function checkSolution() {
     grantAchievement('solved_self');
     document.getElementById('chk-after').style.display = 'none';
   } else {
+    // Вычисляем какие пункты правильные
+    _lastDoneParts = [];
+    if (TASK_PARTS[currentTask.id]) {
+      const cfg = TASK_PARTS[currentTask.id];
+      const userAnsLow = userAns.toLowerCase();
+      cfg.parts.forEach(p => {
+        const c = cfg.checks[p];
+        if (!c) return;
+        const startRe = new RegExp(p + '[).\\ :]');
+        const startMatch = userAnsLow.search(startRe);
+        const nextP = cfg.parts[cfg.parts.indexOf(p) + 1];
+        let fragment = userAnsLow;
+        if (startMatch !== -1) {
+          let endIdx = userAnsLow.length;
+          if (nextP) { const nm = userAnsLow.search(new RegExp(nextP + '[).\\ :]')); if (nm > startMatch) endIdx = nm; }
+          fragment = userAnsLow.slice(startMatch, endIdx);
+        }
+        const fragNums = UmnikTutor.getNumbers(fragment).map(Number);
+        const hasNum = !c.nums || c.nums.length === 0 || c.nums.some(n => fragNums.includes(n));
+        const animals = UmnikTutor.getAnimals(fragment);
+        const hasAnimal = !c.animals || c.animals.length === 0 || c.animals.some(a => animals.includes(a));
+        if (c.animalOnly ? hasAnimal : (hasNum && (c.animals ? hasAnimal : true))) _lastDoneParts.push(p);
+      });
+    }
+    const doneStr = _lastDoneParts.length > 0
+      ? `Пункты ${_lastDoneParts.map(p=>'<b>'+p+'</b>').join(', ')} — верно! Есть ошибки в остальных.`
+      : 'Есть ошибка — Умник поможет разобраться';
     resultEl.innerHTML = `<div class="result-err">
       <div class="r-icon">❌</div>
-      <div class="r-text">Есть ошибка — Умник поможет разобраться</div>
+      <div class="r-text">${doneStr}</div>
     </div>`;
     addMistake(currentTask.topic, 'check_wrong');
     grantAchievement('found_error');
@@ -6351,8 +6382,10 @@ function checkSolution() {
   }
 }
 
+let _lastDoneParts = [];
+
 function goToWalkthrough() {
-  if(currentTask) openWalkthrough(currentTask, 'screen-check');
+  if(currentTask) openWalkthrough(currentTask, 'screen-check', false, _lastDoneParts);
 }
 
 // ===== MAP =====
