@@ -6349,24 +6349,14 @@ function checkSolution() {
     _lastDoneParts = [];
     if (TASK_PARTS[currentTask.id]) {
       const cfg = TASK_PARTS[currentTask.id];
-      const userAnsLow = userAns.toLowerCase();
-      cfg.parts.forEach(p => {
+      const text = userAns.toLowerCase();
+      const labeled = hasPartLabels(text, cfg);
+      const positional = labeled ? null : splitPositional(text, cfg.parts.length);
+      cfg.parts.forEach((p, i) => {
         const c = cfg.checks[p];
         if (!c) return;
-        const startRe = new RegExp(p + '[).\\ :]');
-        const startMatch = userAnsLow.search(startRe);
-        const nextP = cfg.parts[cfg.parts.indexOf(p) + 1];
-        let fragment = userAnsLow;
-        if (startMatch !== -1) {
-          let endIdx = userAnsLow.length;
-          if (nextP) { const nm = userAnsLow.search(new RegExp(nextP + '[).\\ :]')); if (nm > startMatch) endIdx = nm; }
-          fragment = userAnsLow.slice(startMatch, endIdx);
-        }
-        const fragNums = UmnikTutor.getNumbers(fragment).map(Number);
-        const hasNum = !c.nums || c.nums.length === 0 || c.nums.some(n => fragNums.includes(n));
-        const animals = UmnikTutor.getAnimals(fragment);
-        const hasAnimal = !c.animals || c.animals.length === 0 || c.animals.some(a => animals.includes(a));
-        if (c.animalOnly ? hasAnimal : (hasNum && (c.animals ? hasAnimal : true))) _lastDoneParts.push(p);
+        const fragment = labeled ? (getPartFragment(text, p, cfg) || '') : (positional[i] || '');
+        if (checkPartFragment(fragment, c)) _lastDoneParts.push(p);
       });
     }
     const doneStr = _lastDoneParts.length > 0
@@ -9934,51 +9924,70 @@ const UmnikTutor = (function() {
 })();
 
 // ===== HELPERS =====
+// Разбить ответ без меток на позиционные фрагменты по запятым
+function splitPositional(text, count) {
+  // Делим по запятым/точкам с запятой, возвращаем массив длиной count
+  const parts = text.split(/[,;]+/).map(s => s.trim()).filter(Boolean);
+  // Дополняем пустыми если не хватает
+  while (parts.length < count) parts.push('');
+  return parts;
+}
+
+// Проверить один пункт по фрагменту текста
+function checkPartFragment(fragment, check) {
+  const fragNums = UmnikTutor.getNumbers(fragment).map(Number);
+  const hasNum = !check.nums || check.nums.length === 0 || check.nums.some(n => fragNums.includes(n));
+  const animals = UmnikTutor.getAnimals(fragment);
+  const hasAnimal = !check.animals || check.animals.length === 0 || check.animals.some(a => animals.includes(a));
+  if (check.animalOnly) return hasAnimal;
+  return hasNum && (!check.animals || check.animals.length === 0 || hasAnimal);
+}
+
+// Определить режим ответа: есть ли буквенные метки пунктов
+function hasPartLabels(text, cfg) {
+  return cfg.parts.some(p => new RegExp(p + '[).\\ :]').test(text));
+}
+
+function getPartFragment(text, p, cfg) {
+  const idx = cfg.parts.indexOf(p);
+  const nextP = cfg.parts[idx + 1];
+  const startRe = new RegExp(p + '[).\\ :]');
+  const startMatch = text.search(startRe);
+  if (startMatch === -1) return null;
+  let endIdx = text.length;
+  if (nextP) {
+    const nm = text.search(new RegExp(nextP + '[).\\ :]'));
+    if (nm > startMatch) endIdx = nm;
+  }
+  return text.slice(startMatch, endIdx);
+}
+
 function checkAnswer(userAns, task) {
-  // Для многопунктовых заданий — проверяем каждый пункт по его фрагменту текста
   if (TASK_PARTS[task.id]) {
     const cfg = TASK_PARTS[task.id];
     const text = userAns.toLowerCase();
+    const labeled = hasPartLabels(text, cfg);
 
-    for (const p of cfg.parts) {
-      const check = cfg.checks[p];
-      if (!check || !check.nums) continue;
-
-      // Найти фрагмент текста относящийся к этому пункту
-      // Ищем «п)» или «п.» или «п » и берём текст до следующего пункта
-      const nextP = cfg.parts[cfg.parts.indexOf(p) + 1];
-      const startRe = new RegExp(p + '[).\\ :]');
-      const startMatch = text.search(startRe);
-      if (startMatch === -1) {
-        // Пункт не упомянут явно — ищем число в общем тексте
-        // но только если оно уникально среди всех пунктов
-        const allOtherNums = cfg.parts
-          .filter(op => op !== p)
-          .flatMap(op => (cfg.checks[op] && cfg.checks[op].nums) || []);
-        const uniqueNums = check.nums.filter(n => !allOtherNums.includes(n));
-        if (uniqueNums.length === 0) return false; // число не уникально — нельзя проверить
-        const userNums = UmnikTutor.getNumbers(text).map(Number);
-        if (!uniqueNums.some(n => userNums.includes(n))) return false;
-        continue;
+    if (labeled) {
+      // Режим с метками: каждый пункт в своём фрагменте
+      for (const p of cfg.parts) {
+        const check = cfg.checks[p];
+        if (!check) continue;
+        const fragment = getPartFragment(text, p, cfg);
+        if (!fragment) {
+          // Пункт не упомянут — считаем ошибкой
+          return false;
+        }
+        if (!checkPartFragment(fragment, check)) return false;
       }
-
-      // Берём фрагмент от этого пункта до следующего
-      let endIdx = text.length;
-      if (nextP) {
-        const nextMatch = text.search(new RegExp(nextP + '[).\\ :]'));
-        if (nextMatch > startMatch) endIdx = nextMatch;
+    } else {
+      // Позиционный режим: ответы через запятую, по порядку пунктов
+      const positional = splitPositional(text, cfg.parts.length);
+      for (let i = 0; i < cfg.parts.length; i++) {
+        const check = cfg.checks[cfg.parts[i]];
+        if (!check) continue;
+        if (!checkPartFragment(positional[i], check)) return false;
       }
-      const fragment = text.slice(startMatch, endIdx);
-      const fragNums = UmnikTutor.getNumbers(fragment).map(Number);
-
-      // Проверяем что нужное число есть в этом фрагменте
-      const hasNum = check.nums.some(n => fragNums.includes(n));
-      // Для animalOnly — проверяем животное
-      const animals = UmnikTutor.getAnimals(fragment);
-      const hasAnimal = !check.animals || check.animals.length === 0 || check.animals.some(a => animals.includes(a));
-
-      if (check.animalOnly) { if (!hasAnimal) return false; }
-      else if (!hasNum) return false;
     }
     return true;
   }
