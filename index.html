@@ -2167,7 +2167,7 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
 
 /* Аватар — скрыт по умолчанию, показывается только у первого в группе */
 .chat-avatar { width:52px; height:52px; background:transparent; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
-.chat-avatar img { width:100%; height:100%; object-fit:contain; mix-blend-mode:screen; }
+.chat-avatar img { width:100%; height:100%; object-fit:contain; }
 .chat-avatar.hidden { visibility:hidden; }
 
 /* Пузыри */
@@ -5931,7 +5931,7 @@ function wtGoToNextPart() {
       const chat = document.getElementById('wt-chat');
       const div = document.createElement('div');
       div.className = 'chat-msg bot';
-      div.innerHTML = '<div class="chat-avatar"><img src="umnik_avatar 2.png" alt="Умник"></div>'
+      div.innerHTML = '<div class="chat-avatar"><img src="umnik_avatar2.png" alt="Умник"></div>'
         + '<div style="display:flex;flex-direction:column;gap:8px">'
         + '<button onclick="afterWalkthrough()" style="padding:10px 20px;border-radius:20px;border:none;background:linear-gradient(135deg,#059669,#10b981);color:#fff;font-size:14px;font-weight:800;cursor:pointer;font-family:inherit">🏆 На главную</button>'
         + '<button onclick="showScreen(\'screen-homework\')" style="padding:10px 20px;border-radius:20px;border:none;background:rgba(255,255,255,.1);color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit">📚 Следующее задание</button>'
@@ -6030,7 +6030,7 @@ function chatAddBot(html, animate, noAvatar) {
   if (noAvatar) {
     avatarHtml = '<div style="width:40px;flex-shrink:0"></div>';
   } else {
-    avatarHtml = '<div class="chat-avatar"><img src="umnik_avatar 2.png" alt="Умник"></div>';
+    avatarHtml = '<div class="chat-avatar"><img src="umnik_avatar2.png" alt="Умник"></div>';
   }
   div.innerHTML = avatarHtml + '<div class="chat-bubble bot">' + html + '</div>';
   chat.appendChild(div);
@@ -6142,7 +6142,7 @@ function checkWalkthrough() {
         const chat = document.getElementById('wt-chat');
         const div = document.createElement('div');
         div.className = 'chat-msg bot';
-        div.innerHTML = '<div class="chat-avatar"><img src="umnik_avatar 2.png" alt="Умник"></div>'
+        div.innerHTML = '<div class="chat-avatar"><img src="umnik_avatar2.png" alt="Умник"></div>'
           + '<div style="display:flex;flex-direction:column;gap:8px">'
           + '<button onclick="afterWalkthrough()" style="padding:10px 20px;border-radius:20px;border:none;background:linear-gradient(135deg,#059669,#10b981);color:#fff;font-size:14px;font-weight:800;cursor:pointer;font-family:inherit">🏆 На главную</button>'
           + '<button onclick="showScreen(\'screen-homework\')" style="padding:10px 20px;border-radius:20px;border:none;background:rgba(255,255,255,.1);color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit">📚 Следующее задание</button>'
@@ -7457,7 +7457,7 @@ function tgResolve(correct, rightAnswer, studentAnswer) {
         document.getElementById('tg-oops').style.display = 'block';
         document.getElementById('tg-status').textContent = '';
         document.getElementById('tg-status').className = 'tg-status';
-        tgHeroSetImg('umnik_avatar 2.png');
+        tgHeroSetImg('umnik_avatar2.png');
       }, 850);
     } else {
       // Вторая ошибка — финал
@@ -7540,7 +7540,7 @@ function tgHeroFall() {
     platEl.classList.add('shake');
     setTimeout(function(){ platEl.classList.remove('shake'); }, 400);
   }
-  tgHeroSetImg('umnik_avatar 2.png');
+  tgHeroSetImg('umnik_avatar2.png');
   hero.classList.remove('jump', 'fall', 'appear');
   void hero.offsetWidth;
   hero.classList.add('fall');
