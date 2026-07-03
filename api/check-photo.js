@@ -1,4 +1,4 @@
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -14,12 +14,12 @@ export default async function handler(req, res) {
 Посмотри на фото решения ученика и ответь строго в JSON:
 {
   "correct": true/false,
-  "errors": ["описание ошибки 1", ...] или [],
+  "errors": ["описание ошибки 1"],
   "comment": "короткий дружелюбный комментарий для ребёнка (1-2 предложения)",
-  "parts_done": ["а", "б", ...] — какие пункты решены правильно (если есть пункты)
+  "parts_done": ["а", "б"] — какие пункты решены правильно
 }
 
-Если на фото не видно решения или фото нечёткое — верни { "correct": false, "errors": ["Фото нечёткое, не вижу решения"], "comment": "Сфотографируй получше — мне нужно видеть твои записи!", "parts_done": [] }`;
+Если фото нечёткое — верни { "correct": false, "errors": ["Фото нечёткое"], "comment": "Сфотографируй получше!", "parts_done": [] }`;
 
   try {
     const response = await fetch('https://polza.ai/api/v1/chat/completions', {
@@ -31,21 +31,13 @@ export default async function handler(req, res) {
       body: JSON.stringify({
         model: 'anthropic/claude-haiku-4-5',
         max_tokens: 500,
-        messages: [
-          {
-            role: 'user',
-            content: [
-              {
-                type: 'image_url',
-                image_url: { url: `data:image/jpeg;base64,${imageBase64}` }
-              },
-              {
-                type: 'text',
-                text: prompt
-              }
-            ]
-          }
-        ]
+        messages: [{
+          role: 'user',
+          content: [
+            { type: 'image_url', image_url: { url: `data:image/jpeg;base64,${imageBase64}` } },
+            { type: 'text', text: prompt }
+          ]
+        }]
       })
     });
 
@@ -53,14 +45,12 @@ export default async function handler(req, res) {
     if (!response.ok) return res.status(500).json({ error: data.error?.message || 'API error' });
 
     const text = data.choices?.[0]?.message?.content || '';
-    // Извлекаем JSON из ответа
     const match = text.match(/\{[\s\S]*\}/);
     if (!match) return res.status(200).json({ correct: false, errors: [], comment: text, parts_done: [] });
 
-    const result = JSON.parse(match[0]);
-    return res.status(200).json(result);
+    return res.status(200).json(JSON.parse(match[0]));
 
   } catch (e) {
     return res.status(500).json({ error: e.message });
   }
-}
+};
