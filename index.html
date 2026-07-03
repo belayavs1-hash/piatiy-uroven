@@ -5433,7 +5433,8 @@ function checkPhotoSolution() {
   const res = document.getElementById('photo-check-result');
   res.innerHTML = `<div style="padding:14px;border-radius:14px;background:rgba(37,99,235,.1);border:2px solid rgba(37,99,235,.2);color:var(--ink2);font-weight:700;margin-top:14px;text-align:center">🔍 Умник смотрит решение…</div>`;
   setTimeout(() => {
-    goToWalkthroughFromHW();
+    if(!currentTask) return;
+    openWalkthrough(currentTask, 'screen-photo-check', true);
   }, 1200);
 }
 
@@ -5818,7 +5819,7 @@ const TASK_PARTS = {
   }
 };
 
-function openWalkthrough(task, backScreen) {
+function openWalkthrough(task, backScreen, fromPhoto) {
   currentTask = task;
   wtHintIdx = 0;
   wtAttempts = 0;
@@ -5830,7 +5831,6 @@ function openWalkthrough(task, backScreen) {
   document.getElementById('wt-back-btn').onclick = () => showScreen(backScreen);
   document.getElementById('wt-answer').value = '';
 
-  // Обновляем шапку
   document.getElementById('wt-nav-title').innerHTML = 'Задание ' + task.id;
 
   const chat = document.getElementById('wt-chat');
@@ -5839,7 +5839,11 @@ function openWalkthrough(task, backScreen) {
   const rule = TOPIC_RULES[task.topic];
   const isNewTopic = rule && !seenTopics.has(task.topic);
 
-  if (isNewTopic) {
+  if (fromPhoto) {
+    // Пришли с фото — Умник говорит что посмотрел решение
+    chatAddBot('Посмотрел твоё решение 📸 Давай разберём по пунктам — я буду спрашивать, ты отвечай.', false);
+    setTimeout(() => wtShowTask(), 600);
+  } else if (isNewTopic) {
     seenTopics.add(task.topic);
     const ruleHtml = 'Привет! 👋 Помогу разобраться с этим заданием. Но сначала вспомним правило.<br><br>'
       + '<div class="chat-rule-card">'
@@ -5860,10 +5864,9 @@ function openWalkthrough(task, backScreen) {
   }
 
   showScreen('screen-walkthrough');
-  // Поднять wt-chat если есть прогресс-бар
   setTimeout(() => {
     wtUpdatePartsBar();
-    if (!isNewTopic) document.getElementById('wt-answer').focus();
+    if (!isNewTopic && !fromPhoto) document.getElementById('wt-answer').focus();
   }, 300);
 }
 
