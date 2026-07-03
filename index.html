@@ -5958,17 +5958,19 @@ function wtGoToNextPart() {
 // Проверка пункта для заданий с таблицей
 function checkPart(userAns, partKey, cfg) {
   const check = cfg.checks[partKey];
-  const u = UmnikTutor.norm ? UmnikTutor.normText(userAns) : userAns.toLowerCase();
   const nums = UmnikTutor.getNumbers(userAns);
   const animals = UmnikTutor.getAnimals(userAns);
 
   // Определить, указал ли пользователь конкретный пункт в ответе
-  // «а. птицы 5» → пункт а
-  const partMatch = userAns.match(/^([а-з])[.):\s]/i);
-  if (partMatch) {
-    const mentioned = partMatch[1].toLowerCase();
-    if (mentioned !== partKey) {
-      return { status: 'other_part', part: mentioned };
+  // «а. птицы 5» / «а) птицы» / «а птицы» → пункт а
+  // Используем indexOf вместо сложного regex для надёжности
+  const firstChar = userAns.trim()[0] ? userAns.trim()[0].toLowerCase() : '';
+  const second    = userAns.trim()[1] || '';
+  const isCyrPart = firstChar >= 'а' && firstChar <= 'з';
+  const hasSep    = ['.', ')', ':', ' '].includes(second);
+  if (isCyrPart && hasSep) {
+    if (firstChar !== partKey) {
+      return { status: 'other_part', part: firstChar };
     }
   }
 
@@ -6044,6 +6046,12 @@ function checkWalkthrough() {
   const inp = document.getElementById('wt-answer');
   const userAns = inp.value.trim();
   if(!userAns) { inp.focus(); return; }
+  // Фильтр: слишком короткий ответ (1–2 символа без цифр) — мусор
+  if(userAns.length <= 2 && !/\d/.test(userAns)) {
+    chatAddBot('Напиши подробнее — животное и число из таблицы.', false);
+    inp.value = '';
+    return;
+  }
   inp.value = '';
   wtAttempts++;
 
@@ -6082,16 +6090,14 @@ function checkWalkthrough() {
     } else {
       // wrong
       chatAddUser(userAns, 'almost');
-      const hints = currentTask.hints || [];
-      const hintForPart = hints.find(h => h.toLowerCase().startsWith(wtCurrentPart + ')'));
       setTimeout(() => {
+        const soft = PART_HINTS[wtCurrentPart] || cfg.checks[wtCurrentPart].msg;
         if (wtPartAttempts === 1) {
-          chatAddBot('Почти. ' + (hintForPart ? hintForPart.split(':')[0] + ' — посмотри внимательнее.' : 'Перечитай пункт и найди нужную строку.'), false);
+          chatAddBot('Не совсем. ' + soft, false);
         } else if (wtPartAttempts === 2) {
-          chatAddBot((hintForPart || cfg.checks[wtCurrentPart].msg) + ' Попробуй ещё раз!', false);
+          chatAddBot('Давай ещё раз. ' + soft + ' Попробуй написать ответ.', false);
         } else {
-          const fullHint = hintForPart || '';
-          chatAddBot('Смотри: ' + (fullHint || cfg.checks[wtCurrentPart].msg) + '. Запиши ответ сам.', false);
+          chatAddBot(soft + ' Напиши что нашёл — я помогу дальше.', false);
         }
       }, 300);
     }
@@ -6139,19 +6145,30 @@ function checkWalkthrough() {
   }
 }
 
-// Кнопка подсказки
+// Кнопка подсказки — только зацепка, без готового ответа
+const PART_HINTS = {
+  'а': 'Посчитай строки сверху вниз: 1-я кошка, 2-я собака… 7-я — это что?',
+  'б': 'Найди строку, где в числовом столбце стоит 0. Что за животное?',
+  'в': 'Посмотри на все числа в таблице. Какое из них самое большое?',
+  'г': 'Четвероногие — это те, у кого 4 лапы. Посмотри на кошку, собаку, хомяка, черепаху, свинку и кролика.',
+  'д': 'Двуногие — у кого 2 ноги. Кто из животных в таблице ходит на двух ногах?',
+  'е': 'Без ног — это рыбки и змеи. Найди их числа в таблице и сложи.',
+  'ж': 'Шерсть есть у пушистых животных: кошки, собаки, хомяка, свинки, кролика. Найди их числа.',
+  'з': 'Млекопитающие — теплокровные, кормят детёнышей молоком. Кошка, собака, хомяк, свинка, кролик.'
+};
 function wtAskHint() {
-  const hints = currentTask ? currentTask.hints || [] : [];
-  if (!hints.length) { chatAddBot('Подсказок к этому заданию нет. Попробуй разобрать по шагам!', false); return; }
-  const cfg = wtIsMultiPart && TASK_PARTS[currentTask.id];
-  let hint = '';
-  if (cfg && wtCurrentPart) {
-    hint = hints.find(h => h.toLowerCase().startsWith(wtCurrentPart + ')')) || hints[wtHintIdx] || '';
+  let hintMsg = '';
+  if (wtIsMultiPart && wtCurrentPart && PART_HINTS[wtCurrentPart]) {
+    hintMsg = PART_HINTS[wtCurrentPart];
   } else {
-    hint = hints[wtHintIdx] || hints[hints.length-1];
+    const hints = currentTask ? currentTask.hints || [] : [];
+    if (!hints.length) { chatAddBot('Попробуй разобрать задачу по шагам: что дано, что нужно найти?', false); return; }
+    // Берём часть hint до двоеточия — не раскрываем ответ
+    const raw = hints[Math.min(wtHintIdx, hints.length-1)] || '';
+    hintMsg = raw.split(':')[0].trim();
     wtHintIdx = Math.min(wtHintIdx+1, hints.length-1);
   }
-  chatAddBot('💡 ' + hint, false);
+  chatAddBot('💡 ' + hintMsg, false);
 }
 
 function afterWalkthrough() {
