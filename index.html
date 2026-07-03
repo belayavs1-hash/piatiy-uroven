@@ -5763,7 +5763,7 @@ function findTask() {
     <div style="font-size:12px;color:#6366f1;font-weight:700;margin-bottom:12px">${task.para} · ${task.topic}</div>
     <div class="task-text">${task.text}</div>
     ${getTaskSvgHtml(task.id)}
-    <button class="btn-find" onclick="goToWalkthroughFromHW()" style="margin-bottom:10px">🤖 Разобрать с Умником</button>
+    <button class="btn-find" onclick="goToWalkthroughFromHW()" style="margin-bottom:10px;display:flex;align-items:center;justify-content:center;gap:8px"><img src="umnik_obyasnyaet.png" style="width:28px;height:28px;border-radius:50%;object-fit:cover;background:#fff;flex-shrink:0"> Разобрать с Умником</button>
     <button class="btn-secondary" onclick="showScreen('screen-already-solved')" style="width:100%">✅ Я уже решил</button>
   </div>`;
 }
