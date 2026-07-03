@@ -509,9 +509,8 @@ body.theme-dark .h-logout-btn { border-color: rgba(255,100,100,.3); color: #ff70
 .h-mf6{right:14px;top:80px;font-size:44px;color:#67d349;--r:6deg;animation-duration:4.2s;animation-delay:1.2s}
 
 /* 3-колоночный контент — те же пропорции что и h-hero */
-.h-content { display: grid; grid-template-columns: 1fr 1fr 380px; gap: 16px; align-items: start; margin-top: -42px; }
-.h-content > article { height: 310px; align-self: stretch; }
-.h-content > article:last-child { grid-row: 1 / 3; align-self: stretch; }
+.h-content { display: grid; grid-template-columns: 1fr 1fr 380px; gap: 16px; align-items: stretch; margin-top: -42px; }
+.h-content > article { height: 310px; }
 .h-card {
   background: var(--h-card);
   border: 1px solid var(--h-card-border);
@@ -615,7 +614,7 @@ body.theme-dark .h-step { opacity:.85; color:#c8d8ff; }
   box-shadow: var(--h-card-shadow);
   transition: transform .2s, box-shadow .2s, background .3s;
   position: relative; overflow: hidden;
-  min-height: 140px;
+  min-height: 160px;
 }
 .h-tile::before {
   content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
@@ -649,10 +648,8 @@ body.theme-dark .h-tile.pink { background: rgba(236,73,217,.08); }
 }
 .h-tile:hover .h-tile-arrow { background: var(--blue); color: #fff; transform: translateX(3px); }
 
-/* Плашки под XP-шкалой (старые, не используются) */
+/* Плашки под XP-шкалой — 2 колонки, ширина как первые 2 из 3 */
 .h-banners { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 12px; }
-/* Плашки над домашкой — внутри h-content grid, занимают первые 2 колонки */
-.h-banners-row { grid-column: 1 / 3; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-self: end; margin-bottom: 4px; }
 .h-banner {
   display: flex; align-items: center; gap: 16px;
   padding: 18px 24px; border-radius: 20px; cursor: pointer;
@@ -2549,6 +2546,25 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: rgba(14,45,122,.4); }
           <div class="h-xp-line"><span style="width:58%"></span></div>
           <span class="h-xp-sparkle">✦ ✨</span>
         </div>
+        <!-- Плашки — та же ширина что и XP, умник и карточки не трогаем -->
+        <div class="h-banners">
+          <button class="h-banner h-banner-know" onclick="showScreen('screen-funfacts')">
+            <div class="h-banner-glow"></div>
+            <span class="h-banner-emoji">💡</span>
+            <div class="h-banner-text">
+              <div class="h-banner-title">Хочу всё знать</div>
+              <div class="h-banner-sub" id="banner-know-sub">Мои ошибки и разбор с Умником</div>
+            </div>
+          </button>
+          <button class="h-banner h-banner-cheat" onclick="showScreen('screen-cheatsheet')">
+            <div class="h-banner-glow"></div>
+            <span class="h-banner-emoji">📋</span>
+            <div class="h-banner-text">
+              <div class="h-banner-title">Шпаргалки</div>
+              <div class="h-banner-sub">Правила и формулы §1–§7</div>
+            </div>
+          </button>
+        </div>
       </div>
       <div class="h-mascot">
         <div class="h-math-float h-mf1">a²+b²=c²</div>
@@ -2561,27 +2577,8 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: rgba(14,45,122,.4); }
       </div>
     </div>
 
-    <!-- 3 карточки + плашки над первыми двумя -->
+    <!-- 3 карточки -->
     <div class="h-content">
-      <!-- Плашки над домашкой и проверкой -->
-      <div class="h-banners-row">
-        <button class="h-banner h-banner-know" onclick="showScreen('screen-funfacts')">
-          <div class="h-banner-glow"></div>
-          <span class="h-banner-emoji">💡</span>
-          <div class="h-banner-text">
-            <div class="h-banner-title">Хочу всё знать</div>
-            <div class="h-banner-sub" id="banner-know-sub">Интересные факты о числах и математике</div>
-          </div>
-        </button>
-        <button class="h-banner h-banner-cheat" onclick="showScreen('screen-cheatsheet')">
-          <div class="h-banner-glow"></div>
-          <span class="h-banner-emoji">📋</span>
-          <div class="h-banner-text">
-            <div class="h-banner-title">Шпаргалки</div>
-            <div class="h-banner-sub">Правила и формулы §1–§7</div>
-          </div>
-        </button>
-      </div>
       <!-- Домашка -->
       <article class="h-card purple" style="justify-content:space-between">
         <div>
