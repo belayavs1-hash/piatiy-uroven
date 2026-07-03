@@ -2172,6 +2172,7 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
 .chat-task-id { font-size:11px; font-weight:800; color:#818cf8; text-transform:uppercase; letter-spacing:1px; margin-bottom:4px; }
 .chat-task-topic { font-size:12px; color:rgba(255,255,255,.5); margin-bottom:8px; }
 .chat-task-text { font-size:15px; color:#fff; font-weight:600; line-height:1.5; }
+.chat-task-card .task-svg-wrap { margin: 12px 0 0; border-radius: 10px; }
 .chat-xp { display:inline-block; background:rgba(250,204,21,.2); border:1px solid rgba(250,204,21,.4); border-radius:12px; padding:3px 10px; font-size:13px; font-weight:800; color:#fbbf24; margin-top:6px; }
 @keyframes bubbleIn { from { opacity:0; transform:translateY(8px) scale(.97); } to { opacity:1; transform:translateY(0) scale(1); } }
 
@@ -5819,7 +5820,7 @@ function openWalkthrough(task, backScreen) {
 function wtShowTask() {
   const task = currentTask;
   const paraLabel = task.para ? task.para + ' · ' + task.topic : task.topic;
-  chatAddBot('<div class="chat-task-card"><div class="chat-task-id">Задание ' + task.id + '</div><div class="chat-task-topic">' + paraLabel + '</div><div class="chat-task-text">' + task.text + '</div></div>Попробуй решить сам! Введи ответ 👇', false);
+  chatAddBot('<div class="chat-task-card"><div class="chat-task-id">Задание ' + task.id + '</div><div class="chat-task-topic">' + paraLabel + '</div><div class="chat-task-text">' + task.text + '</div>' + getTaskSvgHtml(task.id) + '</div>Попробуй решить сам! Введи ответ 👇', false);
   // Включаем ввод
   document.getElementById('wt-input-bar').style.opacity = '1';
   document.getElementById('wt-input-bar').style.pointerEvents = '';
