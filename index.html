@@ -5896,7 +5896,7 @@ function wtShowTask() {
     + '<div class="chat-task-topic">' + paraLabel + '</div>'
     + '<div class="chat-task-text">' + task.text + '</div>'
     + getTaskSvgHtml(task.id)
-    + '</div>', false);
+    + '</div>', false, true);
 
   setTimeout(() => {
     if (wtIsMultiPart && TASK_PARTS[task.id]) {
@@ -6011,11 +6011,12 @@ function umnikIntro(task) {
 }
 
 // Добавить сообщение Умника
-function chatAddBot(html, animate) {
+function chatAddBot(html, animate, noAvatar) {
   const chat = document.getElementById('wt-chat');
   const div = document.createElement('div');
   div.className = 'chat-msg bot';
-  div.innerHTML = '<div class="chat-avatar"><img src="umnik_obyasnyaet.png" alt="Умник"></div><div class="chat-bubble bot">' + html + '</div>';
+  const avatar = noAvatar ? '<div style="width:48px;flex-shrink:0"></div>' : '<div class="chat-avatar"><img src="umnik_obyasnyaet.png" alt="Умник"></div>';
+  div.innerHTML = avatar + '<div class="chat-bubble bot">' + html + '</div>';
   chat.appendChild(div);
   chat.scrollTop = chat.scrollHeight;
 }
