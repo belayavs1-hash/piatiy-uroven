@@ -2791,7 +2791,7 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
       <div class="task-text" id="chk-task-text"></div>
       <div class="form-group">
         <label class="form-label">Краткий ответ</label>
-        <input type="text" class="form-input" id="chk-answer" placeholder="Например: 87">
+        <input type="text" class="form-input" id="chk-answer" placeholder="Например: 87" autocomplete="off">
       </div>
       <div class="form-group">
         <label class="form-label">Решение по шагам (необязательно)</label>
@@ -5420,6 +5420,9 @@ function clearPhotoCheck() {
   if(img) { img.style.display='none'; img.src=''; }
   const actions = document.getElementById('photo-preview-actions');
   if(actions) actions.style.display='none';
+  // Сбрасываем input чтобы можно было выбрать тот же файл повторно
+  const inp = document.querySelector('#screen-photo-check input[type=file]');
+  if(inp) inp.value = '';
   const res = document.getElementById('photo-check-result');
   if(res) res.innerHTML='';
 }
@@ -9835,6 +9838,19 @@ const UmnikTutor = (function() {
 
 // ===== HELPERS =====
 function checkAnswer(userAns, task) {
+  // Для многопунктовых заданий — проверяем все числа из правильного ответа
+  if (TASK_PARTS[task.id]) {
+    const cfg = TASK_PARTS[task.id];
+    const allNums = [];
+    cfg.parts.forEach(p => {
+      const check = cfg.checks[p];
+      if (check && check.nums) check.nums.forEach(n => allNums.push(n));
+    });
+    if (allNums.length > 0) {
+      const userNums = UmnikTutor.getNumbers(userAns).map(Number);
+      return allNums.every(n => userNums.includes(n));
+    }
+  }
   const status = UmnikTutor.classify(userAns, task);
   return status === 'correct';
 }
