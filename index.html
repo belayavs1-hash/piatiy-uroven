@@ -5857,16 +5857,18 @@ function checkWalkthrough() {
   inp.value = '';
   wtAttempts++;
   chatAddUser(userAns);
-  const correct = checkAnswer(userAns, currentTask);
-  if(correct) {
+
+  const response = UmnikTutor.respond(userAns, currentTask, wtAttempts);
+
+  if(response.status === 'correct') {
     const xp = wtAttempts === 1 ? 20 : wtAttempts === 2 ? 15 : wtAttempts <= 3 ? 10 : 5;
     setTimeout(() => {
-      chatAddBot('🎉 Верно! Отличная работа!<br><span class="chat-xp">+' + xp + ' XP ⭐</span>', true);
-      // Кнопка «Следующее задание» появляется в чате
+      chatAddBot(response.msg + '<br><span class="chat-xp">+' + xp + ' XP ⭐</span>', true);
+      // Кнопки после правильного ответа
       const chat = document.getElementById('wt-chat');
       const div = document.createElement('div');
       div.className = 'chat-msg bot';
-            const _btns = document.createElement('div');
+      const _btns = document.createElement('div');
       _btns.style.cssText = 'display:flex;flex-direction:column;gap:8px';
       const _b1 = document.createElement('button');
       _b1.textContent = '🏆 На главную';
@@ -5888,29 +5890,17 @@ function checkWalkthrough() {
     markSolved(currentTask.id, {attempts: wtAttempts, correct: true});
     if(wtAttempts === 1) grantAchievement('solved_self');
     showDone('🤖', 'Разобрались!', 'С Умником · ' + wtAttempts + ' попытки', xp);
+
+  } else if(response.status === 'partial') {
+    // Частично верно — не считаем за ошибку, не снимаем попытку
+    wtAttempts--;
+    setTimeout(() => chatAddBot(response.msg, true), 300);
+
   } else {
-    addMistake(currentTask.topic, 'check_wrong');
-    const hints = currentTask.hints || [];
-    setTimeout(() => {
-      if(wtAttempts === 1) {
-        // Первая ошибка: наводящий вопрос без ответа
-        const h = hints[0] || '';
-        const q = h.split(':')[0] || h.split('.')[0] || h;
-        chatAddBot('🤔 Не совсем... Подумай: <b>' + q + '</b>.<br>Попробуй ещё раз!', true);
-      } else if(wtAttempts === 2) {
-        // Вторая ошибка: зацепка (первый шаг без конечного ответа)
-        const h = hints[Math.min(1, hints.length-1)] || hints[0] || '';
-        chatAddBot('💡 Вот зацепка: ' + h.split(';')[0] + '.<br>Что получается?', true);
-      } else if(wtAttempts === 3) {
-        // Третья ошибка: разбор похожего примера
-        const h = hints[Math.min(2, hints.length-1)] || hints[0] || '';
-        chatAddBot('📖 Давай разберём вместе:<br>' + h + '<br><br>Теперь реши своё!', true);
-      } else {
-        // 4+: напоминание разбора
-        const h = hints[hints.length-1] || '';
-        chatAddBot('💪 Ещё разок: ' + h + '. Введи ответ!', true);
-      }
-    }, 300);
+    // Неверно или «не знаю»
+    if(response.saveError) addMistake(currentTask.topic, 'check_wrong');
+    const emoji = response.status === 'hint' ? '💡' : '🤔';
+    setTimeout(() => chatAddBot(response.msg, true), 300);
   }
 }
 
@@ -9253,11 +9243,166 @@ function spawnConfetti() {
   setTimeout(() => cont.innerHTML = '', 4000);
 }
 
+// ===== UMNIK TUTOR — умный анализ ответов ученика =====
+const UmnikTutor = (function() {
+
+  // Словари для понимания разговорного языка
+  const OP_WORDS = {
+    add:      ['плюс','сложить','прибавить','всего','сумм','итого','складываем','стало больше'],
+    subtract: ['минус','вычесть','убрать','разниц','осталось','меньше на','вычитаем','уменьш'],
+    multiply: ['умножить','произвед','раз по','умножаем','раз больше','кратно'],
+    divide:   ['разделить','делить','частн','каждому','поровну','раз меньше']
+  };
+  const UNIT_WORDS = ['см','м','км','мм','кг','г','т','л','мл','ч','мин','с','руб','°','га','а','дм'];
+  const DONT_KNOW = ['не знаю','не понял','незнаю','непонял','непонятно','помогите','помоги','сложно','запутался','не могу','немогу','хз','ХЗ'];
+
+  // Нормализация: убираем пробелы, приводим к нижнему регистру
+  function norm(s) { return s.trim().toLowerCase().replace(/\s+/g,' '); }
+
+  // Извлечь все числа из строки (включая дроби вида 3/4)
+  function extractNumbers(s) {
+    const matches = s.match(/\d+[,./]?\d*/g) || [];
+    return matches.map(m => m.replace(',','.'));
+  }
+
+  // Проверить наличие единиц измерения
+  function hasUnits(s) {
+    const sn = norm(s);
+    return UNIT_WORDS.some(u => sn.includes(u));
+  }
+
+  // Проверить «не знаю»
+  function isDontKnow(s) {
+    const sn = norm(s);
+    return DONT_KNOW.some(d => sn.includes(d));
+  }
+
+  // Мягкая проверка числа: учитываем запятую/точку, «вроде», «около»
+  function numbersMatch(userNums, correctNums) {
+    if (!correctNums.length || !userNums.length) return false;
+    return correctNums.some(c => userNums.some(u => {
+      const cu = parseFloat(c.replace(',','.')), uu = parseFloat(u.replace(',','.'));
+      if (isNaN(cu) || isNaN(uu)) return false;
+      return Math.abs(cu - uu) < 0.001;
+    }));
+  }
+
+  // Определить статус ответа
+  function classify(userAns, task) {
+    const u = norm(userAns);
+    const correctRaw = norm(task.answer || '');
+    const userNums  = extractNumbers(u);
+    const correctNums = extractNumbers(correctRaw);
+    const exactMatch = u.replace(/\s/g,'') === correctRaw.replace(/\s/g,'');
+
+    if (isDontKnow(u))  return 'i_dont_know';
+    if (exactMatch)     return 'correct';
+
+    const numOk  = correctNums.length > 0 && numbersMatch(userNums, correctNums);
+    const unitOk = hasUnits(u);
+    const correctHasUnit = hasUnits(correctRaw);
+
+    // Число верное, единицы требуются но отсутствуют
+    if (numOk && correctHasUnit && !unitOk) return 'correct_number_only';
+
+    // Число верное, единицы не нужны (или есть)
+    if (numOk) return 'correct';
+
+    // Верный метод: назвал правильное действие
+    const detectedOps = [];
+    Object.entries(OP_WORDS).forEach(([op, words]) => {
+      if (words.some(w => u.includes(w))) detectedOps.push(op);
+    });
+    if (detectedOps.length && !userNums.length) return 'correct_method_only';
+
+    // Ответ слишком короткий (одно число — уточнить смысл)
+    if (userNums.length === 1 && u.length < 6 && !correctNums.length) return 'needs_clarification';
+
+    // Не попадает ни в одну категорию — неверно
+    return 'wrong';
+  }
+
+  // Сгенерировать ответ Умника
+  function respond(userAns, task, attempt) {
+    const status = classify(userAns, task);
+    const hints = task.hints || [];
+    const h1 = hints[0] || '';
+    const h2 = hints[Math.min(1, hints.length-1)] || h1;
+    const h3 = hints[Math.min(2, hints.length-1)] || h2;
+    const taskTopic = (task.topic || '').toLowerCase();
+
+    // === ПРАВИЛЬНО ===
+    if (status === 'correct') {
+      const praise = attempt === 1
+        ? ['Сам справился — это лучший результат! 🎉','Верно! Ты сам дошёл до ответа 💪','Отлично! Так и надо 🌟']
+        : ['Верно! Немного разобрались — и всё получилось 👍','Есть! Умница, нашёл правильный путь 🎉','Верно! С каждой попыткой лучше 💪'];
+      return { status: 'correct', msg: praise[attempt % praise.length] };
+    }
+
+    // === ВЕРНОЕ ЧИСЛО, НО НЕТ ЕДИНИЦ ===
+    if (status === 'correct_number_only') {
+      return { status: 'partial', msg: 'Число правильное 👍 Осталось добавить единицы измерения. Что это — сантиметры, метры, килограммы?' };
+    }
+
+    // === ВЕРНЫЙ МЕТОД, НЕТ ЧИСЛА ===
+    if (status === 'correct_method_only') {
+      return { status: 'partial', msg: 'Правильно определил действие! Теперь подставь числа из задачи и посчитай.' };
+    }
+
+    // === НЕ ЗНАЕТ ===
+    if (status === 'i_dont_know') {
+      const q = taskTopic.includes('текст') || taskTopic.includes('задач')
+        ? 'Давай начнём как детективы: что нам известно из условия?'
+        : taskTopic.includes('дроб')
+          ? 'Нормально. Посмотри на дробь: что написано сверху (числитель), что снизу (знаменатель)?'
+          : 'Нормально, начнём вместе. Первый вопрос: что нужно найти в задаче?';
+      return { status: 'hint', msg: q };
+    }
+
+    // === НУЖНО УТОЧНЕНИЕ (одно число без контекста) ===
+    if (status === 'needs_clarification') {
+      const clarify = taskTopic.includes('геом') || taskTopic.includes('периметр') || taskTopic.includes('площадь')
+        ? 'Число похоже на ответ. Уточни: это периметр или площадь? И в каких единицах?'
+        : taskTopic.includes('таблиц') || taskTopic.includes('диаграмм')
+          ? 'Число может быть верным. Из какой строки или столбца ты его взял?'
+          : 'Похоже, ты нашёл число. А к чему оно относится в задаче?';
+      return { status: 'partial', msg: clarify };
+    }
+
+    // === НЕВЕРНЫЙ ОТВЕТ — по попыткам ===
+    if (attempt === 1) {
+      const hint1 = h1
+        ? 'Хорошая попытка. Давай подумаем: ' + h1.split(':')[0].split('.')[0] + '. Попробуй ещё раз!'
+        : 'Почти. Перечитай задачу — что именно нужно найти? Попробуй ещё раз.';
+      return { status: 'wrong', msg: hint1 };
+    }
+    if (attempt === 2) {
+      const hint2 = h2
+        ? 'Ты на правильном пути. Вот зацепка: ' + h2 + '. Что получается?'
+        : 'Давай разберём шаг за шагом. Какие числа даны в задаче?';
+      return { status: 'wrong', msg: hint2, saveError: true };
+    }
+    if (attempt === 3) {
+      const hint3 = h3
+        ? 'Смотри, вот шаги: ' + h3 + '. Теперь запиши ответ сам — ты уже близко!'
+        : 'Разберём вместе: сначала найди нужные числа, потом выбери действие. Попробуй написать ответ ещё раз.';
+      return { status: 'wrong', msg: hint3, saveError: true };
+    }
+    // 4+ попытка
+    return {
+      status: 'wrong',
+      msg: 'Не сдавайся! ' + (hints[hints.length-1] || 'Попробуй ещё раз — ты можешь.') + ' Введи ответ 💪',
+      saveError: true
+    };
+  }
+
+  return { classify, respond };
+})();
+
 // ===== HELPERS =====
 function checkAnswer(userAns, task) {
-  const u = userAns.trim().toLowerCase().replace(/\s+/g,'');
-  const c = task.answer.toLowerCase().replace(/\s+/g,'');
-  return u === c;
+  const status = UmnikTutor.classify(userAns, task);
+  return status === 'correct';
 }
 
 function addXP(amount) {
