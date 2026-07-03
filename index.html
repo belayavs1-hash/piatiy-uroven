@@ -5431,14 +5431,9 @@ function checkPhotoSolution() {
     return;
   }
   const res = document.getElementById('photo-check-result');
-  res.innerHTML = `<div style="padding:14px;border-radius:14px;background:rgba(37,99,235,.1);border:2px solid rgba(37,99,235,.2);color:var(--ink2);font-weight:700;margin-top:14px">🔍 Умник смотрит решение…</div>`;
+  res.innerHTML = `<div style="padding:14px;border-radius:14px;background:rgba(37,99,235,.1);border:2px solid rgba(37,99,235,.2);color:var(--ink2);font-weight:700;margin-top:14px;text-align:center">🔍 Умник смотрит решение…</div>`;
   setTimeout(() => {
-    res.innerHTML = `<div class="result-ok" style="text-align:left;margin-top:14px">
-      <div class="r-icon">📸</div>
-      <div class="r-text">Фото загружено!</div>
-      <div class="result-answer" style="margin-top:8px">Умник проверит твоё решение и разберёт ошибки.</div>
-      <button class="btn-find" style="margin-top:14px" onclick="goToWalkthroughFromHW()">🤖 Разобрать с Умником</button>
-    </div>`;
+    goToWalkthroughFromHW();
   }, 1200);
 }
 
