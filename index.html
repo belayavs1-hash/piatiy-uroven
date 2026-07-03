@@ -2800,7 +2800,7 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
       <button class="btn-check" onclick="checkSolution()">✅ Проверить</button>
       <div id="chk-result" style="margin-top:16px;display:none"></div>
       <div id="chk-after" style="display:none;margin-top:14px">
-        <button class="btn-secondary" onclick="goToWalkthrough()" style="width:100%">🤖 Разобрать ошибку с Умником</button>
+        <button class="btn-find" onclick="goToWalkthrough()" style="width:100%;display:flex;align-items:center;justify-content:center;gap:10px"><img src="umnik_avatar2.png" style="width:32px;height:32px;object-fit:contain;filter:drop-shadow(0 0 4px rgba(147,197,253,.6))"> Разобрать ошибку с Умником</button>
       </div>
     </div>
   </div>
@@ -5755,7 +5755,7 @@ function findTask() {
     <div style="font-size:12px;color:#6366f1;font-weight:700;margin-bottom:12px">${task.para} · ${task.topic}</div>
     <div class="task-text">${task.text}</div>
     ${getTaskSvgHtml(task.id)}
-    <button class="btn-find" onclick="goToWalkthroughFromHW()" style="margin-bottom:10px"><img src="umnik_avatar2.png" style="width:26px;height:26px;object-fit:contain;vertical-align:middle;margin-right:6px;filter:drop-shadow(0 0 4px rgba(147,197,253,.6))"> Разобрать с Умником</button>
+    <button class="btn-find" onclick="goToWalkthroughFromHW()" style="margin-bottom:10px"><img src="umnik_avatar2.png" style="width:32px;height:32px;object-fit:contain;vertical-align:middle;margin-right:8px;filter:drop-shadow(0 0 4px rgba(147,197,253,.6))"> Разобрать с Умником</button>
     <button class="btn-secondary" onclick="showScreen('screen-already-solved')" style="width:100%">✅ Я уже решил</button>
   </div>`;
 }
@@ -6261,20 +6261,19 @@ function checkSolution() {
   resultEl.style.display = 'block';
   if(correct) {
     resultEl.innerHTML = `<div class="result-ok">
-      <div class="r-icon">✅</div>
-      <div class="r-text">Правильно! Решил самостоятельно!</div>
+      <div class="r-icon">🏆</div>
+      <div class="r-text">Правильно! Решил сам!</div>
+      <button class="btn-check" style="margin-top:14px;width:100%" onclick="showDone('🏆','Решил сам!','Задание ${currentTask.id} выполнено',25)">Отлично! →</button>
     </div>`;
     addXP(25);
     ST.selfSolved++;
     markSolved(currentTask.id, {attempts:1, withHints:false, correct:true});
     grantAchievement('solved_self');
     document.getElementById('chk-after').style.display = 'none';
-    showDone('🏆', 'Решил сам!', `Задание ${currentTask.id} выполнено`, 25);
   } else {
     resultEl.innerHTML = `<div class="result-err">
       <div class="r-icon">❌</div>
-      <div class="r-text">Ответ неверный</div>
-      <div class="result-answer">Ожидался: <b>${currentTask.answer}</b></div>
+      <div class="r-text">Есть ошибка — Умник поможет разобраться</div>
     </div>`;
     addMistake(currentTask.topic, 'check_wrong');
     grantAchievement('found_error');
