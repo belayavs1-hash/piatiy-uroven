@@ -5978,7 +5978,13 @@ function checkPart(userAns, partKey, cfg) {
   const needNums    = check.nums    || [];
 
   const hasRightAnimal = needAnimals.length === 0 || needAnimals.some(a => animals.includes(a));
-  const hasRightNum    = needNums.length === 0    || needNums.some(n => nums.map(Number).includes(n));
+
+  // Проверка числа: числа из ответа + явные слова «нет»/«ноль»/«нуль» → 0
+  const zeroWords = /\b(нет|ноль|нуль|0|zero)\b/i.test(userAns);
+  const numsAsInt  = nums.map(Number);
+  const hasRightNum = needNums.length === 0
+    || needNums.some(n => numsAsInt.includes(n))
+    || (needNums.includes(0) && zeroWords);
 
   if (hasRightAnimal && hasRightNum) return { status: 'correct' };
   if (hasRightAnimal && !hasRightNum && nums.length > 0) return { status: 'correct_items_wrong_sum' };
@@ -9594,9 +9600,14 @@ const UmnikTutor = (function() {
     result = result.replace(/\b(двадцать|тридцать|сорок|пятьдесят|шестьдесят|семьдесят|восемьдесят|девяносто)\s+(один|одна|два|две|три|четыре|пять|шесть|семь|восемь|девять)\b/gi, (_, tens, units) => {
       return (NUM_WORDS[norm(tens)] || 0) + (NUM_WORDS[norm(units)] || 0);
     });
-    // Однокомпонентные
+    // Явная замена нуля (до общего цикла, чтобы не конфликтовать)
+    result = result.replace(/\bноль\b|\bнуль\b|\bнет\b/gi, '0');
+    // Однокомпонентные (кроме уже замененных)
     Object.entries(NUM_WORDS).forEach(([word, val]) => {
-      result = result.replace(new RegExp('\\b' + word + '\\b', 'gi'), val);
+      if (word === 'ноль' || word === 'нуль') return;
+      // Используем indexOf вместо \b — надёжнее для кириллицы
+      const re = new RegExp('(?<![а-яё])' + word + '(?![а-яё])', 'gi');
+      result = result.replace(re, String(val));
     });
     return result;
   }
@@ -9604,6 +9615,7 @@ const UmnikTutor = (function() {
   // Извлечь все числа из строки (включая числа словами)
   function extractNumbers(s) {
     const converted = wordsToNumbers(norm(s));
+    // \d+ — находит и 0
     const matches = converted.match(/\d+[,./]?\d*/g) || [];
     return matches.map(m => m.replace(',','.'));
   }
