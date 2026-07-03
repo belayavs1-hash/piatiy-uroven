@@ -5467,14 +5467,12 @@ async function checkPhotoSolution() {
     } else {
       // Есть ошибки — показываем и предлагаем разобрать
       _lastDoneParts = data.parts_done || [];
-      const errorsList = (data.errors || []).map(e => `<li>${e}</li>`).join('');
       const donePartsStr = _lastDoneParts.length > 0
         ? `<div style="margin-top:6px;font-size:13px;color:#059669">✅ Пункты ${_lastDoneParts.join(', ')} — верно!</div>`
         : '';
       res.innerHTML = `<div class="result-err" style="margin-top:14px">
         <div class="r-icon">❌</div>
         <div class="r-text">${data.comment || 'Есть ошибки — давай разберём!'}</div>
-        ${errorsList ? `<ul style="margin:8px 0 0 16px;font-size:13px;color:#374151">${errorsList}</ul>` : ''}
         ${donePartsStr}
       </div>
       <button class="btn-find" style="margin-top:12px;width:100%;display:flex;align-items:center;justify-content:center;gap:10px" onclick="openWalkthrough(currentTask,'screen-photo-check',true,_lastDoneParts)">
