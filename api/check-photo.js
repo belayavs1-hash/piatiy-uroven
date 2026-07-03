@@ -29,7 +29,7 @@ module.exports = async function handler(req, res) {
         'Authorization': `Bearer ${process.env.POLZA_API_KEY}`
       },
       body: JSON.stringify({
-        model: 'anthropic/claude-haiku-4-5',
+        model: 'claude-haiku-4-5',
         max_tokens: 500,
         messages: [{
           role: 'user',
