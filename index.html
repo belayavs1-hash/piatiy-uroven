@@ -9519,13 +9519,13 @@ function renderCheatsheet() {
           <div class="cs-rule-text">${r.text}</div>
         </div>
       `).join('')}
-      ${sec.tips && sec.tips.length ? `
-        <div class="cs-tips">
-          <div class="cs-tips-header"><img src="umnik_transparent_real.png" alt="" class="cs-umnik-img"><span>💡 Как не ошибиться</span></div>
-          ${sec.tips.map(t => `<div class="cs-tip-item">${t}</div>`).join('')}
-        </div>
-      ` : ''}
     </div>
+    ${sec.tips && sec.tips.length ? `
+      <div class="cs-tips">
+        <div class="cs-tips-header"><img src="umnik_transparent_real.png" alt="" class="cs-umnik-img"><span>💡 Как не ошибиться</span></div>
+        ${sec.tips.map(t => `<div class="cs-tip-item">${t}</div>`).join('')}
+      </div>
+    ` : ''}
   `).join('');
 }
 
