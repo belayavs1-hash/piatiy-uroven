@@ -2316,6 +2316,12 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
 .cs-rule { background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.09); border-radius: 12px; padding: 12px 16px; margin-bottom: 8px; }
 .cs-rule-name { font-size: 13px; font-weight: 800; color: #818cf8; margin-bottom: 4px; }
 .cs-rule-text { font-size: 14px; color: rgba(255,255,255,.85); line-height: 1.5; font-weight: 600; }
+.cs-tips { margin-top: 10px; background: rgba(250,204,21,.08); border: 1px solid rgba(250,204,21,.22); border-radius: 12px; padding: 10px 14px; }
+
+.cs-tip-item { font-size: 13px; color: rgba(255,255,255,.82); line-height: 1.5; padding: 3px 0 3px 16px; position: relative; }
+.cs-tip-item::before { content: '💡'; position: absolute; left: 0; font-size: 11px; top: 4px; }
+.cs-tips-header { display:flex; align-items:center; gap:8px; font-size:12px; font-weight:900; color:#facc15; text-transform:uppercase; letter-spacing:.06em; margin-bottom:8px; }
+.cs-umnik-img { width:32px; height:32px; object-fit:contain; }
 
 /* ===== ПРАВИЛО ТЕМЫ В УМНИКЕ ===== */
 .chat-rule-card { background: rgba(250,204,21,.08); border: 1px solid rgba(250,204,21,.25); border-radius: 14px; padding: 14px 16px; margin-bottom: 8px; }
@@ -5342,7 +5348,8 @@ const CHEATSHEET = [
       { name: "Неизвестный множитель", text: "x × b = a → x = a ÷ b (произведение раздели на известный множитель)" },
       { name: "Неизвестное делимое", text: "x ÷ b = c → x = c × b (частное умножь на делитель)" },
       { name: "Неизвестный делитель", text: "a ÷ x = c → x = a ÷ c (делимое раздели на частное)" }
-    ]
+    ],
+    tips: ["Не путай число и цифру: цифры — это «буквы» для записи чисел","Нуль важен в записи числа: 305 и 35 — разные числа","Большое число удобно делить на группы по три цифры справа налево: 12 345 678"]
   },
   {
     section: "Порядок действий",
@@ -5350,7 +5357,8 @@ const CHEATSHEET = [
     rules: [
       { name: "Правило", text: "1) Скобки → 2) × и ÷ слева направо → 3) + и − слева направо" },
       { name: "Подсказка", text: "Если сомневаешься — пронумеруй действия над примером цифрами 1, 2, 3..." }
-    ]
+    ],
+    tips: ["Скобки — сначала всегда","Умножение и деление «сильнее» сложения и вычитания","Если сомневаешься — пронумеруй действия над примером"]
   },
   {
     section: "Единицы измерения",
@@ -5360,7 +5368,8 @@ const CHEATSHEET = [
       { name: "Время", text: "1 ч = 60 мин, 1 мин = 60 с, 1 сутки = 24 ч" },
       { name: "Объём", text: "V = a × b × c (прямоугольный параллелепипед). 1 дм³ = 1000 см³" },
       { name: "Правило перевода", text: "Приведи все величины к одной единице, реши задачу, верни нужную единицу" }
-    ]
+    ],
+    tips: ["Перед вычислениями приведи все величины к одной единице","В ответе вернись к тем единицам, которые просит задача","Складывать можно только одинаковые величины: метры с метрами, граммы с граммами"]
   },
   {
     section: "Шкала и координатная прямая",
@@ -5369,7 +5378,8 @@ const CHEATSHEET = [
       { name: "Цена деления", text: "Значение одного маленького деления шкалы. Если между 0 и 10 пять делений — цена = 2" },
       { name: "Координата точки", text: "Число, соответствующее точке на прямой. A(4) — точка A имеет координату 4" },
       { name: "Сравнение точек", text: "Правее = больше координата, левее = меньше" }
-    ]
+    ],
+    tips: ["Сначала найди цену деления, потом считай","Правее на числовой прямой — всегда больше","Координата — это адрес точки, одно число точно определяет её место"]
   },
   {
     section: "Геометрия: фигуры",
@@ -5380,7 +5390,8 @@ const CHEATSHEET = [
       { name: "Прямоугольник", text: "Все углы прямые. P = 2(a + b), S = a × b" },
       { name: "Квадрат", text: "Все стороны равны и все углы прямые. P = 4a, S = a²" },
       { name: "Куб", text: "Все рёбра равны. V = a³. Имеет 6 граней, 12 рёбер, 8 вершин" }
-    ]
+    ],
+    tips: ["Прямой угол — как угол листа бумаги или угол комнаты","Периметр прямоугольника: P = 2(a + b) — не забудь умножить на 2","Квадрат — это частный случай прямоугольника, у которого все стороны равны"]
   }
 ];
 
@@ -9506,6 +9517,12 @@ function renderCheatsheet() {
           <div class="cs-rule-text">${r.text}</div>
         </div>
       `).join('')}
+      ${sec.tips && sec.tips.length ? `
+        <div class="cs-tips">
+          <div class="cs-tips-header"><img src="umnik_transparent_real.png" alt="" class="cs-umnik-img"> Подсказки</div>
+          ${sec.tips.map(t => `<div class="cs-tip-item">${t}</div>`).join('')}
+        </div>
+      ` : ''}
     </div>
   `).join('');
 }
