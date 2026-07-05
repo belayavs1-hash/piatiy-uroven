@@ -27,7 +27,18 @@
 </head>
 <body>
 
-<button class="print-btn" onclick="window.print()">🖨️ Распечатать / Сохранить как PDF</button>
+<div style="display:flex;gap:12px;justify-content:center;margin-bottom:24px;flex-wrap:wrap">
+<button class="print-btn" style="margin:0" onclick="window.print()">🖨️ Распечатать / PDF</button>
+<a id="dl" class="print-btn" style="margin:0;text-decoration:none" download="Китайская-нумерация.html">⬇️ Скачать</a>
+</div>
+<script>
+(function(){
+  var a = document.getElementById('dl');
+  var html = '<!DOCTYPE html>' + document.documentElement.outerHTML;
+  var blob = new Blob([html], {type:'text/html;charset=utf-8'});
+  a.href = URL.createObjectURL(blob);
+})();
+</script>
 
 <h1>Китайская нумерация</h1>
 <p class="subtitle">Сообщение к заданию 2.235 · Математика 5 класс (Виленкин)</p>
