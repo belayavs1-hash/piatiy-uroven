@@ -11942,9 +11942,36 @@ async function umnikSend() {
     });
     const data = await resp.json();
     hideUmnikTyping();
-    const reply = data.reply || data.error || 'Что-то пошло не так, попробуй ещё раз';
-    appendUmnikMsg('bot', reply);
+    let reply = data.reply || data.error || 'Что-то пошло не так, попробуй ещё раз';
+
+    // извлекаем тег [НАРИСУЙ: ...]
+    const drawMatch = reply.match(/\[НАРИСУЙ:\s*([^\]]+)\]/i);
+    const cleanReply = reply.replace(/\[НАРИСУЙ:[^\]]+\]/gi, '').trim();
+
+    appendUmnikMsg('bot', cleanReply);
     umnikHistory.push({ role: 'assistant', content: reply });
+
+    // если есть тег — генерируем картинку
+    if (drawMatch) {
+      const imagePrompt = drawMatch[1].trim();
+      const imgMsg = appendUmnikMsg('bot', '🎨 Рисую иллюстрацию…', false);
+      try {
+        const imgResp = await fetch('/api/imagine', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ prompt: imagePrompt })
+        });
+        const imgData = await imgResp.json();
+        if (imgData.url) {
+          imgMsg.innerHTML = '<img src="' + imgData.url + '" style="max-width:100%;border-radius:12px;display:block" alt="иллюстрация">';
+        } else {
+          imgMsg.remove();
+        }
+      } catch(e) {
+        imgMsg.remove();
+      }
+    }
+
   } catch(e) {
     hideUmnikTyping();
     appendUmnikMsg('bot', 'Нет соединения. Проверь интернет и попробуй снова.');
