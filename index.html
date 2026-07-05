@@ -11769,7 +11769,7 @@ function umnikWelcome() {
   const wrap = document.getElementById('umnik-messages');
   wrap.innerHTML = '';
   umnikHistory = [];
-  appendUmnikMsg('bot', 'Привет! Я Умник 🧠\n\nЗадавай любой вопрос — помогу с математикой, другими предметами, олимпиадой или напишу доклад. Что нужно?');
+  appendUmnikMsg('bot', 'Привет! Я Умник 🧠\n\nЧто сегодня задали? Расскажи — помогу разобраться, подготовиться к олимпиаде или написать доклад.');
 }
 
 function appendUmnikMsg(role, text) {
@@ -11804,7 +11804,6 @@ async function umnikSend() {
   inp.value = '';
   inp.style.height = 'auto';
 
-  document.getElementById('umnik-chips').style.display = 'none';
   appendUmnikMsg('user', text);
   umnikHistory.push({ role: 'user', content: text });
 
@@ -11830,10 +11829,6 @@ async function umnikSend() {
   btn.disabled = false;
 }
 
-function umnikChip(text) {
-  document.getElementById('umnik-input').value = text;
-  umnikSend();
-}
 
 // авторастягивание textarea
 document.addEventListener('DOMContentLoaded', function() {
@@ -11861,12 +11856,6 @@ document.addEventListener('DOMContentLoaded', function() {
     </div>
   </div>
   <div id="umnik-messages" class="umnik-messages"></div>
-  <div id="umnik-chips" class="umnik-chips">
-    <button class="umnik-chip" onclick="umnikChip('Помоги подготовиться к олимпиаде по математике')">🏆 Олимпиада</button>
-    <button class="umnik-chip" onclick="umnikChip('Объясни эту тему простыми словами')">💡 Объяснение</button>
-    <button class="umnik-chip" onclick="umnikChip('Напиши сообщение/доклад на тему')">📝 Доклад</button>
-    <button class="umnik-chip" onclick="umnikChip('Придумай похожие примеры для тренировки')">✏️ Тренировка</button>
-  </div>
   <div class="umnik-input-wrap">
     <textarea id="umnik-input" class="umnik-input" placeholder="Задай вопрос..." rows="1"></textarea>
     <button id="umnik-send-btn" class="umnik-send" onclick="umnikSend()">➤</button>
