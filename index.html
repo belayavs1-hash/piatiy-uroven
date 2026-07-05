@@ -11907,7 +11907,7 @@ async function umnikSend() {
       const data = await resp.json();
       hideUmnikTyping();
       if (data.url) {
-        const html = 'Держи! 🎨<br><img src="' + data.url + '" style="max-width:100%;border-radius:12px;margin-top:8px;display:block" alt="рисунок">';
+        const html = 'Держи! 🎨<br><img src="' + data.url + '" style="max-width:100%;border-radius:12px;margin-top:8px;display:block" alt="рисунок"><br><button onclick="umnikDownloadImg(this)" data-url="' + data.url + '" style="margin-top:8px;padding:7px 16px;border-radius:10px;border:none;background:rgba(99,102,241,.25);color:#a5b4fc;font-size:13px;cursor:pointer;font-family:inherit">⬇️ Скачать</button>';
         appendUmnikMsg('bot', html, true);
         umnikHistory.push({ role: 'assistant', content: 'Я нарисовал картинку по твоему запросу.' });
       } else if (data.pending) {
@@ -11963,7 +11963,7 @@ async function umnikSend() {
         });
         const imgData = await imgResp.json();
         if (imgData.url) {
-          imgMsg.innerHTML = '<img src="' + imgData.url + '" style="max-width:100%;border-radius:12px;display:block" alt="иллюстрация">';
+          imgMsg.innerHTML = '<img src="' + imgData.url + '" style="max-width:100%;border-radius:12px;display:block" alt="иллюстрация"><br><button onclick="umnikDownloadImg(this)" data-url="' + imgData.url + '" style="margin-top:8px;padding:7px 16px;border-radius:10px;border:none;background:rgba(99,102,241,.25);color:#a5b4fc;font-size:13px;cursor:pointer;font-family:inherit">⬇️ Скачать</button>';
         } else {
           imgMsg.remove();
         }
@@ -11981,6 +11981,26 @@ async function umnikSend() {
 
 function escapeHtml(s) {
   return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+}
+
+async function umnikDownloadImg(btn) {
+  const url = btn.getAttribute('data-url');
+  btn.textContent = '⏳ Загружаю…';
+  btn.disabled = true;
+  try {
+    const resp = await fetch(url);
+    const blob = await resp.blob();
+    const ext = blob.type.includes('png') ? 'png' : blob.type.includes('webp') ? 'webp' : 'jpg';
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'умник-рисунок.' + ext;
+    a.click();
+    URL.revokeObjectURL(a.href);
+    btn.textContent = '✅ Скачано';
+  } catch(e) {
+    btn.textContent = '⬇️ Скачать';
+    btn.disabled = false;
+  }
 }
 
 
