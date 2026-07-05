@@ -11873,6 +11873,8 @@ function umnikToggleMic() {
   umnikRecognition.start();
 }
 
+const IMAGINE_TRIGGERS = /^(нарисуй|нарисуйте|создай (картинку|изображение|рисунок)|сгенерируй (картинку|изображение|рисунок)|покажи (картинку|рисунок)|изобрази|придумай рисунок)/i;
+
 async function umnikSend() {
   const inp = document.getElementById('umnik-input');
   const text = inp.value.trim();
@@ -11887,7 +11889,41 @@ async function umnikSend() {
   if (photo) userDisplayHtml += (userDisplayHtml ? '<br>' : '') + '<img src="' + photo.dataUrl + '">';
   appendUmnikMsg('user', userDisplayHtml, true);
 
-  // формируем content для API
+  // сбрасываем фото
+  if (photo) umnikRemovePhoto();
+
+  const btn = document.getElementById('umnik-send-btn');
+  btn.disabled = true;
+  showUmnikTyping();
+
+  // запрос на генерацию изображения?
+  if (text && !photo && IMAGINE_TRIGGERS.test(text)) {
+    try {
+      const resp = await fetch('/api/imagine', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt: text })
+      });
+      const data = await resp.json();
+      hideUmnikTyping();
+      if (data.url) {
+        const html = 'Держи! 🎨<br><img src="' + data.url + '" style="max-width:100%;border-radius:12px;margin-top:8px;display:block" alt="рисунок">';
+        appendUmnikMsg('bot', html, true);
+        umnikHistory.push({ role: 'assistant', content: 'Я нарисовал картинку по твоему запросу.' });
+      } else if (data.pending) {
+        appendUmnikMsg('bot', 'Рисую… это займёт немного больше времени. Попробуй ещё раз через 30 секунд.');
+      } else {
+        appendUmnikMsg('bot', 'Не получилось нарисовать. Попробуй описать по-другому.');
+      }
+    } catch(e) {
+      hideUmnikTyping();
+      appendUmnikMsg('bot', 'Нет соединения. Проверь интернет и попробуй снова.');
+    }
+    btn.disabled = false;
+    return;
+  }
+
+  // обычный чат
   let userContent;
   if (photo) {
     userContent = [];
@@ -11897,13 +11933,6 @@ async function umnikSend() {
     userContent = text;
   }
   umnikHistory.push({ role: 'user', content: userContent });
-
-  // сбрасываем фото
-  if (photo) umnikRemovePhoto();
-
-  const btn = document.getElementById('umnik-send-btn');
-  btn.disabled = true;
-  showUmnikTyping();
 
   try {
     const resp = await fetch('/api/chat', {
