@@ -2574,7 +2574,7 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
       <button class="h-nav-item" onclick="showScreen('screen-cheatsheet')"><span class="h-nav-icon">📋</span>Шпаргалки</button>
       <button class="h-nav-item" onclick="showScreen('screen-parent')"><span class="h-nav-icon">👪</span>Кабинет родителя</button>
       <button class="h-nav-item" onclick="showScreen('screen-profile')"><span class="h-nav-icon">👤</span>Профиль</button>
-      <button class="h-nav-item" onclick="showUmnik('screen-home')" style="background:linear-gradient(135deg,rgba(99,102,241,.2),rgba(139,92,246,.2));border:1.5px solid rgba(99,102,241,.4);margin-top:4px"><span class="h-nav-icon">🧠</span>Умник</button>
+      <button class="h-nav-item" onclick="showUmnik('screen-home')" style="background:linear-gradient(135deg,rgba(99,102,241,.2),rgba(139,92,246,.2));border:1.5px solid rgba(99,102,241,.4);margin-top:4px"><span class="h-nav-icon">🧠</span>Чат с Умником</button>
     </nav>
 
     <div class="h-sidebar-bottom">
@@ -2797,7 +2797,7 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
     <a onclick="showScreen('screen-map')"><span class="icon">🗺</span>Темы</a>
     <a onclick="showScreen('screen-self-check')"><span class="icon">✅</span>Проверка</a>
     <a onclick="showScreen('screen-parent')"><span class="icon">🏆</span>Прогресс</a>
-    <a onclick="showUmnik('screen-homework')"><span class="icon">🧠</span>Умник</a>
+    <a onclick="showUmnik('screen-homework')"><span class="icon">🧠</span>Чат с Умником</a>
   </div>
 </div>
 
@@ -11974,7 +11974,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const a = document.createElement('a');
     a.setAttribute('data-umnik', '1');
     a.setAttribute('onclick', "showUmnik('" + fromId + "')");
-    a.innerHTML = '<span class="icon">🧠</span>Умник';
+    a.innerHTML = '<span class="icon">🧠</span>Чат с Умником';
     nav.appendChild(a);
   });
 });
@@ -11987,7 +11987,7 @@ document.addEventListener('DOMContentLoaded', function() {
     <button onclick="showScreen(window._umnikFrom||'screen-homework')" style="background:none;border:none;color:rgba(255,255,255,.7);font-size:22px;cursor:pointer;padding:0;line-height:1">←</button>
     <div class="umnik-avatar">🧠</div>
     <div>
-      <div class="umnik-title">Умник</div>
+      <div class="umnik-title">Чат с Умником</div>
       <div class="umnik-sub">Помощник по учёбе</div>
     </div>
   </div>
