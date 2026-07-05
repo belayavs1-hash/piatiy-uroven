@@ -11830,16 +11830,30 @@ async function umnikSend() {
 }
 
 
-// авторастягивание textarea
+// авторастягивание textarea + кнопка Умника во все bottom-nav
 document.addEventListener('DOMContentLoaded', function() {
+  // textarea
   const inp = document.getElementById('umnik-input');
-  if (!inp) return;
-  inp.addEventListener('input', function() {
-    this.style.height = 'auto';
-    this.style.height = Math.min(this.scrollHeight, 120) + 'px';
-  });
-  inp.addEventListener('keydown', function(e) {
-    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); umnikSend(); }
+  if (inp) {
+    inp.addEventListener('input', function() {
+      this.style.height = 'auto';
+      this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+    });
+    inp.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); umnikSend(); }
+    });
+  }
+  // добавить кнопку Умника во все bottom-nav кроме экрана Умника
+  document.querySelectorAll('.bottom-nav').forEach(function(nav) {
+    if (nav.closest('#screen-umnik')) return;
+    if (nav.querySelector('[data-umnik]')) return;
+    const screenEl = nav.closest('.screen');
+    const fromId = screenEl ? screenEl.id : 'screen-homework';
+    const a = document.createElement('a');
+    a.setAttribute('data-umnik', '1');
+    a.setAttribute('onclick', "showUmnik('" + fromId + "')");
+    a.innerHTML = '<span class="icon">🧠</span>Умник';
+    nav.appendChild(a);
   });
 });
 
