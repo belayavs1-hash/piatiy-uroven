@@ -87,7 +87,7 @@ body {
 .bottom-nav a span.icon { font-size: 20px; }
 .bottom-nav a:hover, .bottom-nav a.active { color: var(--gold); }
 /* ── Умник-чат ── */
-#screen-umnik { display:flex; flex-direction:column; height:100dvh; background:linear-gradient(160deg,#0f172a 0%,#1e1b4b 100%); }
+#screen-umnik { flex-direction:column; height:100dvh; background:linear-gradient(160deg,#0f172a 0%,#1e1b4b 100%); }
 .umnik-header { display:flex; align-items:center; gap:12px; padding:14px 16px; background:rgba(255,255,255,.05); border-bottom:1px solid rgba(255,255,255,.08); flex-shrink:0; }
 .umnik-avatar { width:40px; height:40px; border-radius:50%; background:linear-gradient(135deg,#6366f1,#8b5cf6); display:grid; place-items:center; font-size:20px; flex-shrink:0; }
 .umnik-title { font-size:17px; font-weight:800; color:#fff; }
@@ -11861,7 +11861,7 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 <!-- ===== УМНИК ЧАТ ===== -->
-<div id="screen-umnik" class="screen" style="display:none">
+<div id="screen-umnik" class="screen">
   <div class="umnik-header">
     <button onclick="showScreen(window._umnikFrom||'screen-homework')" style="background:none;border:none;color:rgba(255,255,255,.7);font-size:22px;cursor:pointer;padding:0;line-height:1">←</button>
     <div class="umnik-avatar">🧠</div>
