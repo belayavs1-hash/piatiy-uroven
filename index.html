@@ -112,6 +112,12 @@ body {
 .umnik-mic { width:42px; height:42px; border-radius:13px; border:2px solid rgba(99,102,241,.5); background:rgba(99,102,241,.15); color:#a5b4fc; font-size:18px; cursor:pointer; display:grid; place-items:center; flex-shrink:0; transition:all .2s; }
 .umnik-mic:hover { background:rgba(99,102,241,.3); }
 .umnik-mic.recording { background:rgba(239,68,68,.2); border-color:#ef4444; color:#ef4444; animation:umnikDot 0.8s ease-in-out infinite; }
+.umnik-attach { width:42px; height:42px; border-radius:13px; border:2px solid rgba(255,255,255,.15); background:rgba(255,255,255,.07); color:rgba(255,255,255,.6); font-size:18px; cursor:pointer; display:grid; place-items:center; flex-shrink:0; transition:all .2s; }
+.umnik-attach:hover { background:rgba(255,255,255,.15); border-color:rgba(255,255,255,.3); }
+.umnik-photo-preview { display:none; padding:8px 16px 0; max-width:760px; width:100%; margin:0 auto; box-sizing:border-box; position:relative; }
+.umnik-photo-preview img { max-height:120px; border-radius:10px; border:2px solid rgba(99,102,241,.4); display:block; }
+.umnik-photo-remove { position:absolute; top:4px; left:calc(16px + 2px); width:22px; height:22px; border-radius:50%; background:#ef4444; border:none; color:#fff; font-size:13px; line-height:1; cursor:pointer; display:grid; place-items:center; }
+.umnik-msg img { max-width:100%; border-radius:10px; display:block; margin-top:6px; }
 
 /* ===== LOGIN ===== */
 
@@ -11773,11 +11779,12 @@ function umnikWelcome() {
   appendUmnikMsg('bot', 'Привет! Я Умник 🧠\n\nЧто сегодня задали? Расскажи — помогу разобраться, подготовиться к олимпиаде или написать доклад.');
 }
 
-function appendUmnikMsg(role, text) {
+function appendUmnikMsg(role, text, isHtml) {
   const wrap = document.getElementById('umnik-messages');
   const div = document.createElement('div');
   div.className = 'umnik-msg ' + role;
-  div.textContent = text;
+  if (isHtml) div.innerHTML = text;
+  else div.textContent = text;
   wrap.appendChild(div);
   wrap.scrollTop = wrap.scrollHeight;
   return div;
@@ -11800,6 +11807,31 @@ function hideUmnikTyping() {
 
 let umnikRecognition = null;
 let umnikRecording = false;
+let umnikPendingPhoto = null; // { base64, mime, dataUrl }
+
+function umnikPhotoChosen(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const dataUrl = e.target.result;
+    const mime = file.type || 'image/jpeg';
+    const base64 = dataUrl.split(',')[1];
+    umnikPendingPhoto = { base64, mime, dataUrl };
+    const preview = document.getElementById('umnik-photo-preview');
+    const img = document.getElementById('umnik-photo-img');
+    img.src = dataUrl;
+    preview.style.display = 'block';
+  };
+  reader.readAsDataURL(file);
+  input.value = '';
+}
+
+function umnikRemovePhoto() {
+  umnikPendingPhoto = null;
+  document.getElementById('umnik-photo-preview').style.display = 'none';
+  document.getElementById('umnik-photo-img').src = '';
+}
 
 function umnikToggleMic() {
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -11844,12 +11876,30 @@ function umnikToggleMic() {
 async function umnikSend() {
   const inp = document.getElementById('umnik-input');
   const text = inp.value.trim();
-  if (!text) return;
+  const photo = umnikPendingPhoto;
+  if (!text && !photo) return;
+
   inp.value = '';
   inp.style.height = 'auto';
 
-  appendUmnikMsg('user', text);
-  umnikHistory.push({ role: 'user', content: text });
+  // показываем сообщение пользователя
+  let userDisplayHtml = text ? escapeHtml(text) : '';
+  if (photo) userDisplayHtml += (userDisplayHtml ? '<br>' : '') + '<img src="' + photo.dataUrl + '">';
+  appendUmnikMsg('user', userDisplayHtml, true);
+
+  // формируем content для API
+  let userContent;
+  if (photo) {
+    userContent = [];
+    if (text) userContent.push({ type: 'text', text: text });
+    userContent.push({ type: 'image_url', image_url: { url: 'data:' + photo.mime + ';base64,' + photo.base64 } });
+  } else {
+    userContent = text;
+  }
+  umnikHistory.push({ role: 'user', content: userContent });
+
+  // сбрасываем фото
+  if (photo) umnikRemovePhoto();
 
   const btn = document.getElementById('umnik-send-btn');
   btn.disabled = true;
@@ -11873,6 +11923,10 @@ async function umnikSend() {
   btn.disabled = false;
 }
 
+function escapeHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+}
+
 
 // авторастягивание textarea + кнопка Умника во все bottom-nav
 document.addEventListener('DOMContentLoaded', function() {
@@ -11885,6 +11939,30 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     inp.addEventListener('keydown', function(e) {
       if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); umnikSend(); }
+    });
+    // вставка скриншота через Ctrl+V
+    inp.addEventListener('paste', function(e) {
+      const items = e.clipboardData && e.clipboardData.items;
+      if (!items) return;
+      for (let i = 0; i < items.length; i++) {
+        if (items[i].type.indexOf('image') !== -1) {
+          e.preventDefault();
+          const file = items[i].getAsFile();
+          const reader = new FileReader();
+          reader.onload = function(ev) {
+            const dataUrl = ev.target.result;
+            const mime = file.type || 'image/png';
+            const base64 = dataUrl.split(',')[1];
+            umnikPendingPhoto = { base64, mime, dataUrl };
+            const preview = document.getElementById('umnik-photo-preview');
+            const img = document.getElementById('umnik-photo-img');
+            img.src = dataUrl;
+            preview.style.display = 'block';
+          };
+          reader.readAsDataURL(file);
+          break;
+        }
+      }
     });
   }
   // добавить кнопку Умника во все bottom-nav кроме экрана Умника
@@ -11914,8 +11992,14 @@ document.addEventListener('DOMContentLoaded', function() {
     </div>
   </div>
   <div id="umnik-messages" class="umnik-messages"></div>
+  <div id="umnik-photo-preview" class="umnik-photo-preview">
+    <button class="umnik-photo-remove" onclick="umnikRemovePhoto()" title="Удалить фото">✕</button>
+    <img id="umnik-photo-img" src="" alt="фото">
+  </div>
   <div class="umnik-input-wrap">
-    <textarea id="umnik-input" class="umnik-input" placeholder="Задай вопрос..." rows="1"></textarea>
+    <input type="file" id="umnik-file-input" accept="image/*" style="display:none" onchange="umnikPhotoChosen(this)">
+    <button class="umnik-attach" onclick="document.getElementById('umnik-file-input').click()" title="Прикрепить фото">📎</button>
+    <textarea id="umnik-input" class="umnik-input" placeholder="Задай вопрос или прикрепи фото..." rows="1"></textarea>
     <button id="umnik-mic-btn" class="umnik-mic" onclick="umnikToggleMic()" title="Голосовой ввод">🎤</button>
     <button id="umnik-send-btn" class="umnik-send" onclick="umnikSend()">➤</button>
   </div>
