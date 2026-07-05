@@ -4013,8 +4013,8 @@ const TASKS = [
   {
     id:"2.73", part:1, para:"§2", topic:"Действие вычитания. Свойства",
     text:"На координатной прямой отметьте точки S(4) и N(11). В какую сторону и сколько единичных отрезков надо отложить от точки N, чтобы попасть в точку S?<svg width='100%' height='auto' viewBox='0 0 400 60' style='max-width:100%;display:block;margin:8px 0' xmlns='http://www.w3.org/2000/svg'><defs><marker id='ax73' markerWidth='7' markerHeight='5' refX='7' refY='2.5' orient='auto'><polygon points='0 0,7 5,0 5' fill='#94a3b8'/></marker><marker id='arc73' markerWidth='7' markerHeight='5' refX='0' refY='2.5' orient='auto'><polygon points='7 0,0 2.5,7 5' fill='#f59e0b'/></marker></defs><line x1='10' y1='30' x2='390' y2='30' stroke='#94a3b8' stroke-width='1.5' marker-end='url(#ax73)'/><circle cx='120' cy='30' r='4' fill='#4ade80'/><text x='120' y='48' text-anchor='middle' font-size='11' font-weight='bold' fill='#4ade80'>S(4)</text><circle cx='330' cy='30' r='4' fill='#818cf8'/><text x='330' y='48' text-anchor='middle' font-size='11' font-weight='bold' fill='#818cf8'>N(11)</text><path d='M330 26 Q225 10 120 26' stroke='#f59e0b' stroke-width='1.5' fill='none' marker-end='url(#arc73)'/><text x='225' y='10' text-anchor='middle' font-size='10' fill='#f59e0b'>?</text></svg>",
-    type:"text", answer:"7 единичных отрезков (от N к S)",
-    hints:["S левее N, идти влево; расстояние: 11 - 4 = 7"]
+    type:"text", answer:"7 единичных отрезков",
+    hints:["S левее N; расстояние: 11 − 4 = 7"]
   },
   {     id:"2.74", part:1, para:"§2", topic:"Действие вычитания. Свойства",     text:"Покажите на координатной прямой вычитание чисел: а) 7 − 4; б) 7 − 6; в) 7 − 7.<svg width='100%' height='auto' viewBox='0 0 400 150' style='max-width:100%;display:block;margin:8px 0' xmlns='http://www.w3.org/2000/svg'><defs><marker id='ax74' markerWidth='7' markerHeight='5' refX='7' refY='2.5' orient='auto'><polygon points='0 0,7 5,0 5' fill='#94a3b8'/></marker><marker id='arc74' markerWidth='7' markerHeight='5' refX='0' refY='2.5' orient='auto'><polygon points='7 0,0 2.5,7 5' fill='#f59e0b'/></marker></defs><text x='5' y='18' font-size='11' font-weight='bold' fill='#fbbf24'>а) 7−4</text><line x1='30' y1='18' x2='392' y2='18' stroke='#94a3b8' stroke-width='1.5' marker-end='url(#ax74)'/><circle cx='150' cy='18' r='4' fill='#f59e0b'/><text x='150' y='34' text-anchor='middle' font-size='9' fill='#f59e0b'>?</text><circle cx='270' cy='18' r='4' fill='#4ade80'/><text x='270' y='34' text-anchor='middle' font-size='9' fill='#4ade80'>7</text><path d='M270 14 Q210 2 150 14' stroke='#f59e0b' stroke-width='1.5' fill='none' marker-end='url(#arc74)'/><text x='210' y='4' text-anchor='middle' font-size='9' fill='#f59e0b'>−4</text><text x='5' y='65' font-size='11' font-weight='bold' fill='#fbbf24'>б) 7−6</text><line x1='30' y1='65' x2='392' y2='65' stroke='#94a3b8' stroke-width='1.5' marker-end='url(#ax74)'/><circle cx='90' cy='65' r='4' fill='#f59e0b'/><text x='90' y='81' text-anchor='middle' font-size='9' fill='#f59e0b'>?</text><circle cx='270' cy='65' r='4' fill='#4ade80'/><text x='270' y='81' text-anchor='middle' font-size='9' fill='#4ade80'>7</text><path d='M270 61 Q180 49 90 61' stroke='#f59e0b' stroke-width='1.5' fill='none' marker-end='url(#arc74)'/><text x='180' y='51' text-anchor='middle' font-size='9' fill='#f59e0b'>−6</text><text x='5' y='112' font-size='11' font-weight='bold' fill='#fbbf24'>в) 7−7</text><line x1='30' y1='112' x2='392' y2='112' stroke='#94a3b8' stroke-width='1.5' marker-end='url(#ax74)'/><circle cx='30' cy='112' r='4' fill='#f59e0b'/><text x='30' y='128' text-anchor='middle' font-size='9' fill='#f59e0b'>0</text><circle cx='270' cy='112' r='4' fill='#4ade80'/><text x='270' y='128' text-anchor='middle' font-size='9' fill='#4ade80'>7</text><path d='M270 108 Q150 96 30 108' stroke='#f59e0b' stroke-width='1.5' fill='none' marker-end='url(#arc74)'/><text x='150' y='98' text-anchor='middle' font-size='9' fill='#f59e0b'>−7</text></svg>",     type:"text", answer:"а) 3; б) 1; в) 0",     hints:[       "Вычитание на прямой — дуга влево; результат — куда попали"     ]   },
   {
@@ -4476,35 +4476,27 @@ const TASKS = [
   },
   {
     id:"2.138", part:1, para:"§2", topic:"Буквенные выражения",
-    text:"На отрезке CD лежит точка M, как показано на рис. 2.13. Найдите отрезок MD, составив выражение, и вычислите его значение при n = 3; n = 8; n = 5.<br>(CM = 4 см, CD = n см, рис. 2.13)",
-    type:"text", answer:"MD = n − 4; при n=3: нет смысла (4>3); при n=8: 4 см; при n=5: 1 см",
-    hints:[
-      "MD = CD − CM = n − 4"
-    ]
+    text:"На отрезке CD лежит точка M (рис. 2.13). Найдите длину отрезка MD, составив выражение, и вычислите его значение при n = 3; n = 8; n = 5.<svg width='100%' height='auto' viewBox='0 0 320 65' style='max-width:100%;display:block;margin:8px 0' xmlns='http://www.w3.org/2000/svg'><line x1='20' y1='28' x2='300' y2='28' stroke='#ef4444' stroke-width='2'/><circle cx='20' cy='28' r='4' fill='#4ade80'/><text x='20' y='46' text-anchor='middle' font-size='12' font-weight='bold' fill='#4ade80'>C</text><circle cx='110' cy='28' r='4' fill='#818cf8'/><text x='110' y='46' text-anchor='middle' font-size='12' font-weight='bold' fill='#818cf8'>M</text><circle cx='300' cy='28' r='4' fill='#4ade80'/><text x='300' y='46' text-anchor='middle' font-size='12' font-weight='bold' fill='#4ade80'>D</text><line x1='20' y1='12' x2='110' y2='12' stroke='#475569' stroke-width='1'/><text x='20' y='10' font-size='9' fill='#94a3b8'>|</text><text x='110' y='10' font-size='9' fill='#94a3b8'>|</text><text x='65' y='8' text-anchor='middle' font-size='10' fill='#94a3b8'>4 см</text><line x1='20' y1='56' x2='300' y2='56' stroke='#475569' stroke-width='1'/><text x='20' y='54' font-size='9' fill='#94a3b8'>|</text><text x='300' y='54' font-size='9' fill='#94a3b8'>|</text><text x='160' y='64' text-anchor='middle' font-size='10' fill='#94a3b8'>n см</text><text x='205' y='20' text-anchor='middle' font-size='11' fill='#f59e0b'>MD = ?</text></svg>",
+    type:"text", answer:"MD = n − 4; при n=8: 4 см; при n=5: 1 см; при n=3: нет смысла (4 > 3)",
+    hints:["MD = CD − CM = n − 4"]
   },
   {
     id:"2.139", part:1, para:"§2", topic:"Буквенные выражения",
-    text:"Периметр треугольника ABC равен p см. Найдите сторону AB треугольника, если BC = c см и AC = 10 см. Составьте выражение и вычислите его значение при: а) c = 8, p = 24; б) c = 9, p = 26.",
+    text:"Периметр треугольника ABC равен p см. Найдите сторону AB треугольника, если BC = c см и AC = 10 см. Составьте выражение и вычислите его значение при: а) c = 8, p = 24; б) c = 9, p = 26.<svg width='100%' height='auto' viewBox='0 0 240 150' style='max-width:100%;display:block;margin:8px 0' xmlns='http://www.w3.org/2000/svg'><polygon points='20,130 220,130 120,20' stroke='#818cf8' stroke-width='2' fill='rgba(129,140,248,0.08)'/><circle cx='20' cy='130' r='4' fill='#4ade80'/><text x='10' y='145' font-size='13' font-weight='bold' fill='#4ade80'>A</text><circle cx='220' cy='130' r='4' fill='#4ade80'/><text x='218' y='145' font-size='13' font-weight='bold' fill='#4ade80'>B</text><circle cx='120' cy='20' r='4' fill='#4ade80'/><text x='118' y='14' font-size='13' font-weight='bold' fill='#4ade80'>C</text><text x='120' y='145' text-anchor='middle' font-size='11' fill='#f59e0b'>AB = ?</text><text x='55' y='82' text-anchor='middle' font-size='11' fill='#94a3b8'>AC = 10</text><text x='186' y='82' text-anchor='middle' font-size='11' fill='#94a3b8'>BC = c</text><text x='120' y='30' text-anchor='middle' font-size='10' fill='#64748b'>P = p см</text></svg>",
     type:"text", answer:"AB = p − c − 10; а) 24−8−10=6 см; б) 26−9−10=7 см",
-    hints:[
-      "AB = P − BC − AC = p − c − 10"
-    ]
+    hints:["AB = P − BC − AC = p − c − 10"]
   },
   {
     id:"2.140", part:1, para:"§2", topic:"Буквенные выражения",
-    text:"Проведите координатную прямую и отметьте точки, как на рисунке 2.14. Отметьте на прямой точку M(b + 4) и точку N(b − 3).",
-    type:"text", answer:"На прямой с точкой E(1) и B(b): M находится на 4 вправо от B, N — на 3 влево от B",
-    hints:[
-      "b+4 правее b на 4; b−3 левее b на 3"
-    ]
+    text:"Проведите координатную прямую и отметьте точки, как на рисунке 2.14. Отметьте на прямой точку M(b + 4) и точку N(b − 3).<svg width='100%' height='auto' viewBox='0 0 420 65' style='max-width:100%;display:block;margin:8px 0' xmlns='http://www.w3.org/2000/svg'><defs><marker id='ax140' markerWidth='7' markerHeight='5' refX='7' refY='2.5' orient='auto'><polygon points='0 0,7 5,0 5' fill='#3b82f6'/></marker></defs><line x1='10' y1='30' x2='410' y2='30' stroke='#3b82f6' stroke-width='1.5' marker-end='url(#ax140)'/><circle cx='10' cy='30' r='4' fill='#3b82f6'/><text x='10' y='46' text-anchor='middle' font-size='11' fill='#3b82f6'>O</text><text x='10' y='58' text-anchor='middle' font-size='10' fill='#64748b'>0</text><circle cx='70' cy='30' r='4' fill='#3b82f6'/><text x='70' y='18' text-anchor='middle' font-size='11' fill='#3b82f6'>E</text><text x='70' y='46' text-anchor='middle' font-size='10' fill='#64748b'>1</text><circle cx='200' cy='30' r='4' fill='#3b82f6'/><text x='200' y='18' text-anchor='middle' font-size='11' fill='#3b82f6'>B</text><text x='200' y='46' text-anchor='middle' font-size='10' fill='#64748b'>b</text><circle cx='280' cy='30' r='5' fill='#f59e0b'/><text x='280' y='18' text-anchor='middle' font-size='11' font-weight='bold' fill='#f59e0b'>M</text><text x='280' y='46' text-anchor='middle' font-size='10' fill='#f59e0b'>b+4</text><circle cx='130' cy='30' r='5' fill='#4ade80'/><text x='130' y='18' text-anchor='middle' font-size='11' font-weight='bold' fill='#4ade80'>N</text><text x='130' y='46' text-anchor='middle' font-size='10' fill='#4ade80'>b−3</text><text x='350' y='14' font-size='10' fill='#64748b'>Рис. 2.14</text></svg>",
+    type:"text", answer:"M(b+4) — правее B на 4; N(b−3) — левее B на 3",
+    hints:["b+4 правее b на 4; b−3 левее b на 3"]
   },
   {
     id:"2.141", part:1, para:"§2", topic:"Буквенные выражения",
-    text:"Проведите координатную прямую и отметьте точки, как на рисунке 2.15. Отметьте на прямой точку M(x + 5) и точку K(x − 5).",
-    type:"text", answer:"На прямой с точками N(5) и A(x): M правее A на 5, K левее A на 5",
-    hints:[
-      "x+5 правее x на 5; x−5 левее x на 5"
-    ]
+    text:"Проведите координатную прямую и отметьте точки, как на рисунке 2.15. Отметьте на прямой точку M(x + 5) и точку K(x − 5).<svg width='100%' height='auto' viewBox='0 0 420 65' style='max-width:100%;display:block;margin:8px 0' xmlns='http://www.w3.org/2000/svg'><defs><marker id='ax141' markerWidth='7' markerHeight='5' refX='7' refY='2.5' orient='auto'><polygon points='0 0,7 5,0 5' fill='#3b82f6'/></marker></defs><line x1='10' y1='30' x2='410' y2='30' stroke='#3b82f6' stroke-width='1.5' marker-end='url(#ax141)'/><circle cx='10' cy='30' r='4' fill='#3b82f6'/><text x='10' y='46' text-anchor='middle' font-size='11' fill='#3b82f6'>O</text><text x='10' y='58' text-anchor='middle' font-size='10' fill='#64748b'>0</text><circle cx='120' cy='30' r='4' fill='#3b82f6'/><text x='120' y='18' text-anchor='middle' font-size='11' fill='#3b82f6'>N</text><text x='120' y='46' text-anchor='middle' font-size='10' fill='#64748b'>5</text><circle cx='220' cy='30' r='4' fill='#3b82f6'/><text x='220' y='18' text-anchor='middle' font-size='11' fill='#3b82f6'>A</text><text x='220' y='46' text-anchor='middle' font-size='10' fill='#64748b'>x</text><circle cx='310' cy='30' r='5' fill='#f59e0b'/><text x='310' y='18' text-anchor='middle' font-size='11' font-weight='bold' fill='#f59e0b'>M</text><text x='310' y='46' text-anchor='middle' font-size='10' fill='#f59e0b'>x+5</text><circle cx='140' cy='30' r='5' fill='#4ade80'/><text x='140' y='46' text-anchor='middle' font-size='10' fill='#4ade80'>x−5</text><text x='140' y='18' text-anchor='middle' font-size='11' font-weight='bold' fill='#4ade80'>K</text><text x='350' y='14' font-size='10' fill='#64748b'>Рис. 2.15</text></svg>",
+    type:"text", answer:"M(x+5) — правее A на 5; K(x−5) — левее A на 5",
+    hints:["x+5 правее x на 5; x−5 левее x на 5"]
   },
   {
     id:"2.142", part:1, para:"§2", topic:"Буквенные выражения",
@@ -4532,19 +4524,15 @@ const TASKS = [
   },
   {
     id:"2.145", part:1, para:"§2", topic:"Буквенные выражения",
-    text:"а) Используя циркуль, отметьте точки A(n + m) и B(n − m) (рис. 2.16 а).<br>б) Объясните смысл сочетательного свойства сложения, используя рисунок 2.16 б.<br>в) Объясните остальные свойства сложения и вычитания, используя рисунки.",
-    type:"text", answer:"а) A правее O на n+m, B правее O на n−m; б) (m+k)+r=m+(k+r) — можно переставить скобки; в) переместительное, сочетательное, вычитание суммы",
-    hints:[
-      "На координатной прямой сложение — движение вправо, вычитание — влево"
-    ]
+    text:"а) Используя циркуль, отметьте точки A(n + m) и B(n − m) (рис. 2.16 а).<br>б) Объясните смысл сочетательного свойства сложения, используя рисунок 2.16 б.<svg width='100%' height='auto' viewBox='0 0 440 140' style='max-width:100%;display:block;margin:8px 0' xmlns='http://www.w3.org/2000/svg'><defs><marker id='ax145a' markerWidth='7' markerHeight='5' refX='7' refY='2.5' orient='auto'><polygon points='0 0,7 5,0 5' fill='#3b82f6'/></marker><marker id='ax145b' markerWidth='7' markerHeight='5' refX='7' refY='2.5' orient='auto'><polygon points='0 0,7 5,0 5' fill='#3b82f6'/></marker><marker id='arc145p' markerWidth='6' markerHeight='5' refX='6' refY='2.5' orient='auto'><polygon points='0 0,6 5,0 5' fill='#f472b6'/></marker></defs><text x='5' y='14' font-size='11' font-weight='bold' fill='#4ade80'>а</text><line x1='20' y1='22' x2='410' y2='22' stroke='#3b82f6' stroke-width='1.5' marker-end='url(#ax145a)'/><circle cx='20' cy='22' r='3' fill='#3b82f6'/><text x='20' y='36' text-anchor='middle' font-size='10' fill='#3b82f6'>O</text><text x='20' y='44' text-anchor='middle' font-size='9' fill='#64748b'>0</text><circle cx='120' cy='22' r='3' fill='#4ade80'/><text x='120' y='36' text-anchor='middle' font-size='10' fill='#4ade80'>M</text><text x='120' y='44' text-anchor='middle' font-size='9' fill='#64748b'>m</text><circle cx='240' cy='22' r='3' fill='#f59e0b'/><text x='240' y='36' text-anchor='middle' font-size='10' fill='#f59e0b'>N</text><text x='240' y='44' text-anchor='middle' font-size='9' fill='#64748b'>n</text><text x='380' y='14' font-size='9' fill='#64748b'>Рис. 2.16</text><text x='5' y='72' font-size='11' font-weight='bold' fill='#4ade80'>б</text><line x1='20' y1='80' x2='410' y2='80' stroke='#3b82f6' stroke-width='1.5' marker-end='url(#ax145b)'/><circle cx='20' cy='80' r='3' fill='#3b82f6'/><text x='20' y='96' text-anchor='middle' font-size='10' fill='#3b82f6'>O</text><text x='20' y='104' text-anchor='middle' font-size='9' fill='#64748b'>0</text><circle cx='100' cy='80' r='3' fill='#4ade80'/><text x='100' y='96' text-anchor='middle' font-size='10' fill='#4ade80'>M</text><text x='100' y='104' text-anchor='middle' font-size='9' fill='#64748b'>m</text><circle cx='220' cy='80' r='3' fill='#818cf8'/><text x='220' y='96' text-anchor='middle' font-size='10' fill='#818cf8'>K</text><circle cx='340' cy='80' r='3' fill='#f59e0b'/><text x='340' y='96' text-anchor='middle' font-size='10' fill='#f59e0b'>R</text><path d='M100 76 Q160 62 220 76' stroke='#f472b6' stroke-width='1.5' fill='none' marker-end='url(#arc145p)'/><text x='160' y='58' text-anchor='middle' font-size='9' fill='#f472b6'>+ k</text><path d='M220 76 Q280 62 340 76' stroke='#f472b6' stroke-width='1.5' fill='none' marker-end='url(#arc145p)'/><text x='280' y='58' text-anchor='middle' font-size='9' fill='#f472b6'>+ r</text><path d='M100 84 Q220 100 340 84' stroke='#f472b6' stroke-width='1.5' fill='none' marker-end='url(#arc145p)'/><text x='220' y='115' text-anchor='middle' font-size='9' fill='#f472b6'>+ (k + r)</text></svg>",
+    type:"text", answer:"а) A(n+m) правее O на n+m, B(n−m) правее O на n−m; б) k+r или (k+r) — результат одинаков (сочетательное свойство)",
+    hints:["На прямой сложение — движение вправо", "(m+k)+r = m+(k+r) — порядок скобок не важен"]
   },
   {
     id:"2.146", part:1, para:"§2", topic:"Буквенные выражения",
-    text:"Используя свойства сложения, упростите выражения:<br>а) 35 + 56 + c; в) z + 64 + 17;<br>б) 47 + k + 38; г) 203 + p + 97.",
+    text:"Используя свойства сложения, упростите выражения:<br>а) 35 + 56 + c; в) z + 64 + 17;<br>б) 47 + k + 38; г) 203 + p + 97.<br><svg width='100%' height='auto' viewBox='0 0 340 50' style='max-width:100%;display:block;margin:8px 0' xmlns='http://www.w3.org/2000/svg'><rect x='2' y='2' width='336' height='44' rx='6' fill='#1e3a5f' stroke='#6366f1' stroke-width='1.5'/><text x='12' y='18' font-size='11' fill='#94a3b8'>Образец:</text><text x='12' y='36' font-size='13' fill='#e2e8f0'>25 + 38 + n = (25 + 38) + n = 63 + n</text></svg>",
     type:"text", answer:"а) 91+c; б) k+85; в) z+81; г) p+300",
-    hints:[
-      "Сложи числа, букву оставь: 35+56=91, итого 91+c"
-    ]
+    hints:["Сложи числа, букву оставь: 35+56=91, итого 91+c"]
   },
   {
     id:"2.147", part:1, para:"§2", topic:"Буквенные выражения",
@@ -4556,27 +4544,21 @@ const TASKS = [
   },
   {
     id:"2.148", part:1, para:"§2", topic:"Буквенные выражения",
-    text:"Используя свойства вычитания, упростите выражения:<br>а) 104 − (17 + a); б) a − 233 − 577.",
-    type:"text", answer:"а) 104−17−a=87−a; б) a−810",
-    hints:[
-      "а) a−(b+c)=a−b−c; б) последовательное вычитание: a−233−577=a−(233+577)"
-    ]
+    text:"Используя свойства вычитания, упростите выражения:<br>а) 104 − (17 + a); б) a − 233 − 577.<br><svg width='100%' height='auto' viewBox='0 0 380 70' style='max-width:100%;display:block;margin:8px 0' xmlns='http://www.w3.org/2000/svg'><rect x='2' y='2' width='376' height='64' rx='6' fill='#1e3a5f' stroke='#6366f1' stroke-width='1.5'/><text x='12' y='18' font-size='11' fill='#94a3b8'>Образец:</text><text x='12' y='36' font-size='13' fill='#e2e8f0'>a − (b + c) = a − b − c</text><text x='12' y='55' font-size='12' fill='#94a3b8'>80 − (12 + n) = 80 − 12 − n = 68 − n</text></svg>",
+    type:"text", answer:"а) 104−17−a=87−a; б) a−(233+577)=a−810",
+    hints:["а) a−(b+c)=a−b−c; б) a−b−c=a−(b+c)"]
   },
   {
     id:"2.149", part:1, para:"§2", topic:"Буквенные выражения",
-    text:"Упростите выражение, используя свойства сложения и вычитания:<br>а) 267 − (x + 88); б) 423 − m − 245.",
+    text:"Упростите выражение, используя свойства сложения и вычитания:<br>а) 267 − (x + 88); б) 423 − m − 245.<br><svg width='100%' height='auto' viewBox='0 0 380 70' style='max-width:100%;display:block;margin:8px 0' xmlns='http://www.w3.org/2000/svg'><rect x='2' y='2' width='376' height='64' rx='6' fill='#1e3a5f' stroke='#6366f1' stroke-width='1.5'/><text x='12' y='18' font-size='11' fill='#94a3b8'>Образец:</text><text x='12' y='36' font-size='13' fill='#e2e8f0'>350 − (n + 50) = 350 − n − 50 = 300 − n</text><text x='12' y='55' font-size='12' fill='#94a3b8'>600 − a − 400 = 600 − 400 − a = 200 − a</text></svg>",
     type:"text", answer:"а) 267−x−88=179−x; б) 423−245−m=178−m",
-    hints:[
-      "а) a−(b+c)=a−b−c; б) вычитание переместительно не является, но числа можно переставить"
-    ]
+    hints:["а) a−(b+c)=a−b−c; б) числа можно поменять местами: 423−245=178"]
   },
   {
     id:"2.150", part:1, para:"§2", topic:"Буквенные выражения",
-    text:"Упростите выражение:<br>а) (101 + m) − 26; в) b + 211 − 39; д) (41 − k) + 39;<br>б) 199 + n − 26; г) a − 40 + 160; е) x − 23 + 42.",
+    text:"Упростите выражение:<br>а) (101 + m) − 26; в) b + 211 − 39; д) (41 − k) + 39;<br>б) 199 + n − 26; г) a − 40 + 160; е) x − 23 + 42.<br><svg width='100%' height='auto' viewBox='0 0 380 50' style='max-width:100%;display:block;margin:8px 0' xmlns='http://www.w3.org/2000/svg'><rect x='2' y='2' width='376' height='44' rx='6' fill='#1e3a5f' stroke='#6366f1' stroke-width='1.5'/><text x='12' y='18' font-size='11' fill='#94a3b8'>Образец:</text><text x='12' y='36' font-size='13' fill='#e2e8f0'>(50 + x) − 20 = 50 − 20 + x = 30 + x</text></svg>",
     type:"text", answer:"а) m+75; б) n+173; в) b+172; г) a+120; д) 80−k; е) x+19",
-    hints:[
-      "Выполни действия с числами, букву оставь"
-    ]
+    hints:["Выполни действия с числами, букву оставь"]
   },
   {
     id:"2.151", part:1, para:"§2", topic:"Буквенные выражения",
@@ -4588,11 +4570,9 @@ const TASKS = [
   },
   {
     id:"2.152", part:1, para:"§2", topic:"Буквенные выражения",
-    text:"Точки M и N отмечены на отрезке PQ так, что точка N лежит между точками M и Q. Составьте выражение для нахождения длины отрезка:<br>а) PQ, если PM = 373 мм, MN = z мм и NQ = 75 мм. Найдите значение при z = 225; 384;<br>б) PM, если PQ = 226 мм, MN = 74 мм и NQ = z мм. Найдите значение при z = 47; 105.",
-    type:"text", answer:"а) PQ=373+z+75=448+z; при z=225: 673мм; при z=384: 832мм; б) PM=226−74−z=152−z; при z=47: 105мм; при z=105: 47мм",
-    hints:[
-      "PQ=PM+MN+NQ; PM=PQ−MN−NQ"
-    ]
+    text:"Точки M и N отмечены на отрезке PQ так, что точка N лежит между точками M и Q. Составьте выражение для нахождения длины отрезка:<br>а) PQ, если PM = 373 мм, MN = z мм и NQ = 75 мм. Найдите значение при z = 225; 384;<br>б) PM, если PQ = 226 мм, MN = 74 мм и NQ = z мм. Найдите значение при z = 47; 105.<svg width='100%' height='auto' viewBox='0 0 360 55' style='max-width:100%;display:block;margin:8px 0' xmlns='http://www.w3.org/2000/svg'><line x1='10' y1='28' x2='350' y2='28' stroke='#818cf8' stroke-width='2.5'/><circle cx='10' cy='28' r='4' fill='#4ade80'/><text x='10' y='45' text-anchor='middle' font-size='12' font-weight='bold' fill='#4ade80'>P</text><circle cx='100' cy='28' r='4' fill='#f59e0b'/><text x='100' y='45' text-anchor='middle' font-size='12' font-weight='bold' fill='#f59e0b'>M</text><circle cx='230' cy='28' r='4' fill='#818cf8'/><text x='230' y='45' text-anchor='middle' font-size='12' font-weight='bold' fill='#818cf8'>N</text><circle cx='350' cy='28' r='4' fill='#4ade80'/><text x='350' y='45' text-anchor='middle' font-size='12' font-weight='bold' fill='#4ade80'>Q</text><text x='55' y='15' text-anchor='middle' font-size='10' fill='#f59e0b'>PM=?</text><text x='165' y='15' text-anchor='middle' font-size='10' fill='#94a3b8'>MN=z</text><text x='290' y='15' text-anchor='middle' font-size='10' fill='#94a3b8'>NQ=75</text></svg>",
+    type:"text", answer:"а) PQ=448+z; при z=225: 673мм; при z=384: 832мм; б) PM=152−z; при z=47: 105мм; при z=105: 47мм",
+    hints:["PQ = PM + MN + NQ", "PM = PQ − MN − NQ"]
   },
   {
     id:"2.153", part:1, para:"§2", topic:"Буквенные выражения",
@@ -4604,11 +4584,9 @@ const TASKS = [
   },
   {
     id:"2.154", part:1, para:"§2", topic:"Буквенные выражения",
-    text:"Вычислите.<br>а) 50 · 2, :58, :14, :21, :12 = ?<br>б) 32 + 58, :6, :2, :16, +35 = ?<br>в) 32 − 27, :5, :5, ·16, −12 = ?<br>г) 6 · 12, +28, +6, ·15, ·10 = ?<br>д) 32 : 16, +25, +34, +12, :10 = ?",
-    type:"text", answer:"а) 100→:58 невозможно целое... Цепочки считай последовательно по столбцам",
-    hints:[
-      "Считай строку сверху вниз, выполняя каждую операцию"
-    ]
+    text:"Вычислите.<svg width='100%' height='auto' viewBox='0 0 500 160' style='max-width:100%;display:block;margin:8px 0' xmlns='http://www.w3.org/2000/svg'><text x='30' y='15' text-anchor='middle' font-size='11' fill='#fbbf24' font-weight='bold'>а)</text><text x='30' y='32' text-anchor='middle' font-size='13' fill='#e2e8f0' font-family='monospace'>50·2</text><text x='30' y='50' text-anchor='middle' font-size='13' fill='#94a3b8' font-family='monospace'>−58</text><text x='30' y='68' text-anchor='middle' font-size='13' fill='#94a3b8' font-family='monospace'>:14</text><text x='30' y='86' text-anchor='middle' font-size='13' fill='#94a3b8' font-family='monospace'>+21</text><text x='30' y='104' text-anchor='middle' font-size='13' fill='#94a3b8' font-family='monospace'>:12</text><line x1='8' y1='110' x2='56' y2='110' stroke='#475569' stroke-width='1.5'/><text x='30' y='126' text-anchor='middle' font-size='13' fill='#4ade80' font-family='monospace'>?</text><text x='130' y='15' text-anchor='middle' font-size='11' fill='#fbbf24' font-weight='bold'>б)</text><text x='130' y='32' text-anchor='middle' font-size='13' fill='#e2e8f0' font-family='monospace'>32+58</text><text x='130' y='50' text-anchor='middle' font-size='13' fill='#94a3b8' font-family='monospace'>:6</text><text x='130' y='68' text-anchor='middle' font-size='13' fill='#94a3b8' font-family='monospace'>−2</text><text x='130' y='86' text-anchor='middle' font-size='13' fill='#94a3b8' font-family='monospace'>·5</text><text x='130' y='104' text-anchor='middle' font-size='13' fill='#94a3b8' font-family='monospace'>+35</text><line x1='108' y1='110' x2='156' y2='110' stroke='#475569' stroke-width='1.5'/><text x='130' y='126' text-anchor='middle' font-size='13' fill='#4ade80' font-family='monospace'>?</text><text x='230' y='15' text-anchor='middle' font-size='11' fill='#fbbf24' font-weight='bold'>в)</text><text x='230' y='32' text-anchor='middle' font-size='13' fill='#e2e8f0' font-family='monospace'>32−27</text><text x='230' y='50' text-anchor='middle' font-size='13' fill='#94a3b8' font-family='monospace'>:5</text><text x='230' y='68' text-anchor='middle' font-size='13' fill='#94a3b8' font-family='monospace'>+9</text><text x='230' y='86' text-anchor='middle' font-size='13' fill='#94a3b8' font-family='monospace'>·16</text><text x='230' y='104' text-anchor='middle' font-size='13' fill='#94a3b8' font-family='monospace'>−12</text><line x1='208' y1='110' x2='256' y2='110' stroke='#475569' stroke-width='1.5'/><text x='230' y='126' text-anchor='middle' font-size='13' fill='#4ade80' font-family='monospace'>?</text><text x='350' y='15' text-anchor='middle' font-size='11' fill='#fbbf24' font-weight='bold'>г)</text><text x='350' y='32' text-anchor='middle' font-size='13' fill='#e2e8f0' font-family='monospace'>6·12</text><text x='350' y='50' text-anchor='middle' font-size='13' fill='#94a3b8' font-family='monospace'>+28</text><text x='350' y='68' text-anchor='middle' font-size='13' fill='#94a3b8' font-family='monospace'>:10</text><text x='350' y='86' text-anchor='middle' font-size='13' fill='#94a3b8' font-family='monospace'>−6</text><text x='350' y='104' text-anchor='middle' font-size='13' fill='#94a3b8' font-family='monospace'>·15</text><line x1='328' y1='110' x2='376' y2='110' stroke='#475569' stroke-width='1.5'/><text x='350' y='126' text-anchor='middle' font-size='13' fill='#4ade80' font-family='monospace'>?</text><text x='460' y='15' text-anchor='middle' font-size='11' fill='#fbbf24' font-weight='bold'>д)</text><text x='460' y='32' text-anchor='middle' font-size='13' fill='#e2e8f0' font-family='monospace'>32:16</text><text x='460' y='50' text-anchor='middle' font-size='13' fill='#94a3b8' font-family='monospace'>+25</text><text x='460' y='68' text-anchor='middle' font-size='13' fill='#94a3b8' font-family='monospace'>+34</text><text x='460' y='86' text-anchor='middle' font-size='13' fill='#94a3b8' font-family='monospace'>+12</text><text x='460' y='104' text-anchor='middle' font-size='13' fill='#94a3b8' font-family='monospace'>:10</text><line x1='438' y1='110' x2='490' y2='110' stroke='#475569' stroke-width='1.5'/><text x='460' y='126' text-anchor='middle' font-size='13' fill='#4ade80' font-family='monospace'>?</text></svg>",
+    type:"text", answer:"а) 50·2=100; 100−58=42; 42:14=3; 3+21=24; 24:12=2; б) 32+58=90; 90:6=15; 15−2=13; 13·5=65; 65+35=100; в) 32−27=5; 5:5=1; 1+9=10; 10·16=160; 160−12=148; г) 6·12=72; 72+28=100; 100:10=10; 10−6=4; 4·15=60; д) 32:16=2; 2+25=27; 27+34=61; 61+12=73; 73:10=7,3",
+    hints:["Считай сверху вниз в каждом столбике", "Каждая строка — операция над предыдущим результатом"]
   },
   {
     id:"2.155", part:1, para:"§2", topic:"Буквенные выражения",
@@ -4628,19 +4606,15 @@ const TASKS = [
   },
   {
     id:"2.157", part:1, para:"§2", topic:"Буквенные выражения",
-    text:"Точки O(0), S(26) и N(13) отмечены на координатной прямой.<br>а) На сколько единичных отрезков отрезок ON короче отрезка OS?<br>б) Во сколько раз отрезок ON короче отрезка OS?",
+    text:"Точки O(0), S(26) и N(13) отмечены на координатной прямой.<br>а) На сколько единичных отрезков отрезок ON короче отрезка OS?<br>б) Во сколько раз отрезок ON короче отрезка OS?<svg width='100%' height='auto' viewBox='0 0 380 60' style='max-width:100%;display:block;margin:8px 0' xmlns='http://www.w3.org/2000/svg'><defs><marker id='ax157' markerWidth='7' markerHeight='5' refX='7' refY='2.5' orient='auto'><polygon points='0 0,7 5,0 5' fill='#94a3b8'/></marker></defs><line x1='10' y1='28' x2='370' y2='28' stroke='#94a3b8' stroke-width='1.5' marker-end='url(#ax157)'/><circle cx='10' cy='28' r='4' fill='#4ade80'/><text x='10' y='46' text-anchor='middle' font-size='11' font-weight='bold' fill='#4ade80'>O</text><text x='10' y='58' text-anchor='middle' font-size='9' fill='#64748b'>0</text><circle cx='190' cy='28' r='4' fill='#818cf8'/><text x='190' y='14' text-anchor='middle' font-size='11' font-weight='bold' fill='#818cf8'>N</text><text x='190' y='46' text-anchor='middle' font-size='9' fill='#64748b'>13</text><circle cx='350' cy='28' r='4' fill='#f59e0b'/><text x='350' y='14' text-anchor='middle' font-size='11' font-weight='bold' fill='#f59e0b'>S</text><text x='350' y='46' text-anchor='middle' font-size='9' fill='#64748b'>26</text><line x1='10' y1='28' x2='190' y2='28' stroke='#818cf8' stroke-width='2'/><line x1='10' y1='28' x2='350' y2='28' stroke='#f59e0b' stroke-width='1' stroke-dasharray='4,3'/></svg>",
     type:"text", answer:"а) OS=26, ON=13; ON короче на 26−13=13; б) в 2 раза (26÷13=2)",
-    hints:[
-      "Длина отрезка = разность координат"
-    ]
+    hints:["Длина отрезка = координата правой точки (от O)"]
   },
   {
     id:"2.158", part:1, para:"§2", topic:"Буквенные выражения",
-    text:"Найдите значение выражения:<br>а) 3 см 4 мм · 5; б) 4 ц 6 кг · 8; в) 6 т 3 ц · 2; г) 10 дм 12 мм · 2.",
-    type:"text", answer:"а) 34мм·5=170мм=17см; б) 406кг·8=3248кг=32ц48кг; в) 63ц·2=126ц=12т26ц... 6т3ц=63ц·2=126ц=12т6ц; г) 112мм·2=224мм=22см4мм",
-    hints:[
-      "Переведи в меньшие единицы, умножь, переведи обратно"
-    ]
+    text:"Найдите значение выражения:<br>а) 3 см 4 мм · 5;<br>б) 4 ц 6 кг · 8;<br>в) 6 т 3 ц · 2;<br>г) 10 дм 12 мм · 2.",
+    type:"text", answer:"а) 34мм·5=170мм=17 см; б) 406кг·8=3248кг=32ц48кг; в) 63ц·2=126ц=12т6ц; г) 112мм·2=224мм=22см4мм",
+    hints:["Переведи в меньшие единицы, умножь, переведи обратно", "а) 3см4мм=34мм; в) 6т3ц=63ц; г) 10дм12мм=112мм"]
   },
   {
     id:"2.159", part:1, para:"§2", topic:"Буквенные выражения",
