@@ -8291,15 +8291,23 @@ function autoParseTaskParts(task) {
     return result;
   }
 
+  // Все числа из фрагмента (включая промежуточные) — для allNums
+  function allNumsFromStr(s) {
+    const cleaned = s.replace(/(\d) (\d)/g, '$1$2').replace(/(\d) (\d)/g, '$1$2');
+    return (cleaned.match(/\d+/g) || []).map(Number).filter(n => n >= 2);
+  }
+
   const answerParts = splitAnswer(answer, parts);
   const checks = {};
   let hasAnyNums = false;
   for (const p of parts) {
     const fragment = answerParts[p] || '';
-    const nums = numsFromStr(fragment);
-    if (nums.length > 0) hasAnyNums = true;
+    const nums = numsFromStr(fragment);       // финальные числа (после последнего =)
+    const allNums = allNumsFromStr(fragment); // все числа включая промежуточные
+    if (allNums.length > 0) hasAnyNums = true;
     checks[p] = {
       nums: nums,
+      allNums: allNums,
       msg: 'Пункт <b>' + p + ')</b>: найди ответ и напиши.'
     };
   }
@@ -8524,12 +8532,23 @@ function checkPart(userAns, partKey, cfg) {
 
   const hasRightAnimal = needAnimals.length === 0 || needAnimals.some(a => animals.includes(a));
   const numsAsInt      = nums.map(Number);
-  // Если ожидается 2+ числа (составной ответ типа "3 м 52 см") — требуем все числа
-  // Если одно — достаточно найти его
-  const hasRightNum    = needNums.length === 0
-    || (needNums.length >= 2
-        ? needNums.every(n => numsAsInt.includes(n))
-        : needNums.some(n => numsAsInt.includes(n)));
+
+  // Все допустимые числа для этого пункта (финальные + промежуточные)
+  const allExpected = check.allNums || check.nums || [];
+
+  let hasRightNum;
+  if (needNums.length === 0) {
+    hasRightNum = true;
+  } else if (needNums.length >= 2) {
+    // Составной ответ (напр. "3 м 52 см"): требуем ВСЕ финальные числа
+    // ИЛИ одно промежуточное число которое однозначно идентифицирует ответ
+    const hasAllFinal = needNums.every(n => numsAsInt.includes(n));
+    const hasSignificantIntermediate = allExpected.some(n => n > 99 && numsAsInt.includes(n));
+    hasRightNum = hasAllFinal || hasSignificantIntermediate;
+  } else {
+    // Одно число — достаточно найти его среди всех ожидаемых
+    hasRightNum = allExpected.some(n => numsAsInt.includes(n));
+  }
 
   // Пункты где достаточно назвать животное (б, в, д)
   if (animalOnly && hasRightAnimal) return { status: 'correct' };
