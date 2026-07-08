@@ -8491,6 +8491,7 @@ function wtGoToNextPart(keepCurrent) {
   }
   wtCurrentPart = remaining[0];
   wtPartAttempts = 0;
+  wtHintIdx = 0;  // сбрасываем счётчик подсказок для нового пункта
   chatAddBot(cfg.checks[wtCurrentPart].msg, false);
 }
 
@@ -8557,14 +8558,21 @@ function umnikIntro(task) {
 // Добавить сообщение Умника
 function chatAddBot(html, animate, noAvatar) {
   const chat = document.getElementById('wt-chat');
-  // Пометить предыдущее bot-сообщение как конец группы если после него будет пауза
   const prevMsgs = chat.querySelectorAll('.chat-msg.bot');
   const lastBot = prevMsgs[prevMsgs.length - 1];
 
-  // Скрыть аватар у предыдущих bot-сообщений в той же серии (аватар только у последнего в группе)
   if (lastBot && !noAvatar) {
     const prevAvatar = lastBot.querySelector('.chat-avatar');
     if (prevAvatar) prevAvatar.classList.add('hidden');
+  }
+
+  // Конвертируем markdown → HTML если текст не содержит HTML-тегов
+  if (!/<[a-z][\s\S]*>/i.test(html)) {
+    html = html
+      .replace(/\*\*([^*\n]+)\*\*/g, '<b>$1</b>')
+      .replace(/\*([^*\n]+)\*/g, '<i>$1</i>')
+      .replace(/^- /gm, '• ')
+      .replace(/\n/g, '<br>');
   }
 
   const div = document.createElement('div');
@@ -8659,13 +8667,24 @@ function checkWalkthrough() {
       // wrong
       chatAddUser(userAns, 'almost');
       setTimeout(() => {
-        const soft = PART_HINTS[wtCurrentPart] || cfg.checks[wtCurrentPart].msg;
+        // Получаем подсказку для текущего пункта из hints задания
+        const taskHints = currentTask.hints || [];
+        const partCfg = getTaskCfg(currentTask.id);
+        const partIdx = partCfg ? partCfg.parts.indexOf(wtCurrentPart) : -1;
+        const labeledHint = taskHints.find(h => h.startsWith(wtCurrentPart + ')') || h.startsWith(wtCurrentPart + '. '));
+        const partHint = PART_HINTS[wtCurrentPart]
+          || (labeledHint ? labeledHint.split('→')[0].split('=')[0].trim() : null)
+          || (partIdx >= 0 && taskHints[partIdx] ? taskHints[partIdx].split('→')[0].split('=')[0].trim() : null)
+          || cfg.checks[wtCurrentPart].msg;
+
         if (wtPartAttempts === 1) {
-          chatAddBot('Не совсем. ' + soft, false);
+          chatAddBot('Не совсем. ' + partHint, false);
         } else if (wtPartAttempts === 2) {
-          chatAddBot('Давай ещё раз. ' + soft + ' Попробуй написать ответ.', false);
+          // Вторая попытка — даём больше подсказки
+          const hint2 = labeledHint || (partIdx >= 0 && taskHints[partIdx]) || partHint;
+          chatAddBot('Давай ещё раз. ' + hint2 + '. Попробуй написать ответ.', false);
         } else {
-          chatAddBot(soft + ' Напиши что нашёл — я помогу дальше.', false);
+          chatAddBot(partHint + ' Напиши что нашёл — я помогу дальше.', false);
         }
       }, 300);
     }
@@ -8724,19 +8743,50 @@ const PART_HINTS = {
   'ж': 'Шерсть есть у пушистых животных: кошки, собаки, хомяка, свинки, кролика. Найди их числа.',
   'з': 'Млекопитающие — теплокровные, кормят детёнышей молоком. Кошка, собака, хомяк, свинка, кролик.'
 };
+function mdToHtml(s) {
+  // Конвертируем markdown в HTML для отображения в чате
+  return s
+    .replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>')
+    .replace(/\*([^*]+)\*/g, '<i>$1</i>')
+    .replace(/^- /gm, '• ')
+    .replace(/\n/g, '<br>');
+}
+
 function wtAskHint() {
   let hintMsg = '';
-  if (wtIsMultiPart && wtCurrentPart && PART_HINTS[wtCurrentPart]) {
-    hintMsg = PART_HINTS[wtCurrentPart];
+  const hints = currentTask ? currentTask.hints || [] : [];
+
+  if (wtIsMultiPart && wtCurrentPart) {
+    // Для многопунктового: ищем подсказку по пункту
+    // Если в PART_HINTS есть для этой буквы — используем
+    if (PART_HINTS[wtCurrentPart]) {
+      hintMsg = PART_HINTS[wtCurrentPart];
+    } else {
+      // Ищем hint соответствующий текущему пункту по индексу или по метке
+      const cfg = getTaskCfg(currentTask.id);
+      const partIdx = cfg ? cfg.parts.indexOf(wtCurrentPart) : -1;
+      // Пробуем найти hint с меткой пункта (например "1) ..." или "а) ...")
+      const labeled = hints.find(h => h.startsWith(wtCurrentPart + ')') || h.startsWith(wtCurrentPart + '. '));
+      if (labeled) {
+        // Показываем подсказку без раскрытия ответа (до знака =)
+        hintMsg = labeled.split('=')[0].split('→')[0].trim();
+      } else if (partIdx >= 0 && hints[partIdx]) {
+        // По индексу пункта
+        hintMsg = hints[partIdx].split('=')[0].split('→')[0].trim();
+      } else if (hints.length > 0) {
+        hintMsg = hints[Math.min(wtHintIdx, hints.length-1)].split('=')[0].split('→')[0].trim();
+        wtHintIdx = Math.min(wtHintIdx+1, hints.length-1);
+      }
+    }
   } else {
-    const hints = currentTask ? currentTask.hints || [] : [];
     if (!hints.length) { chatAddBot('Попробуй разобрать задачу по шагам: что дано, что нужно найти?', false); return; }
-    // Берём часть hint до двоеточия — не раскрываем ответ
     const raw = hints[Math.min(wtHintIdx, hints.length-1)] || '';
     hintMsg = raw.split(':')[0].trim();
     wtHintIdx = Math.min(wtHintIdx+1, hints.length-1);
   }
-  chatAddBot('💡 ' + hintMsg, false);
+
+  if (!hintMsg) hintMsg = 'Подумай: что известно из условия и что нужно найти?';
+  chatAddBot('💡 ' + mdToHtml(hintMsg), false);
 }
 
 function afterWalkthrough() {
