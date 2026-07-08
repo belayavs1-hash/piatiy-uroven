@@ -8,6 +8,10 @@ module.exports = async function handler(req, res) {
   const { task, messages } = req.body;
   if (!task || !messages) return res.status(400).json({ error: 'Missing task or messages' });
 
+  const partContext = task.currentPart
+    ? `\nСЕЙЧАС РЕШАЕМ ПУНКТ: ${task.currentPart}). Помоги ученику решить именно этот пункт задания.`
+    : '';
+
   const systemMsg = {
     role: 'system',
     content: `Ты Умник — репетитор по математике для 5 класса. Помогаешь ученику решить конкретное задание.
@@ -15,7 +19,7 @@ module.exports = async function handler(req, res) {
 ЗАДАНИЕ:
 ${task.text ? task.text.replace(/<[^>]+>/g, '') : ''}
 
-ПРАВИЛЬНЫЙ ОТВЕТ (не показывай его напрямую): ${task.answer || ''}
+ПРАВИЛЬНЫЙ ОТВЕТ (не показывай его напрямую): ${task.answer || ''}${partContext}
 
 ${task.hints && task.hints.length ? 'ПОДСКАЗКИ (используй по шагам):\n' + task.hints.map((h,i) => (i+1)+') '+h).join('\n') : ''}
 

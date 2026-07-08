@@ -8592,9 +8592,12 @@ function checkPart(userAns, partKey, cfg) {
   if (animalOnly && hasRightAnimal) return { status: 'correct' };
 
   if (hasRightAnimal && hasRightNum) return { status: 'correct' };
-  if (hasRightAnimal && !hasRightNum && nums.length > 0) return { status: 'correct_items_wrong_sum' };
-  if (hasRightAnimal && !hasRightNum) return { status: 'correct_item_no_number' };
-  if (!hasRightAnimal && hasRightNum) return { status: 'correct_number_no_item' };
+  // correct_item_no_number / correct_number_no_item — только для заданий с животными (1.1)
+  if (needAnimals.length > 0) {
+    if (hasRightAnimal && !hasRightNum && nums.length > 0) return { status: 'correct_items_wrong_sum' };
+    if (hasRightAnimal && !hasRightNum) return { status: 'correct_item_no_number' };
+    if (!hasRightAnimal && hasRightNum) return { status: 'correct_number_no_item' };
+  }
   return { status: 'wrong' };
 }
 
@@ -8730,31 +8733,49 @@ function checkWalkthrough() {
       setTimeout(() => chatAddBot('Сейчас разбираем пункт <b>' + wtCurrentPart + '</b>. Ответь именно на него — потом перейдём к другим.', false), 300);
 
     } else {
-      // wrong
+      // wrong — вызываем AI репетитора с контекстом текущего пункта
       chatAddUser(userAns, 'almost');
-      setTimeout(() => {
-        // Получаем подсказку для текущего пункта из hints задания
-        const taskHints = currentTask.hints || [];
-        const partCfg = getTaskCfg(currentTask.id);
-        const partIdx = partCfg ? partCfg.parts.indexOf(wtCurrentPart) : -1;
-        const labeledHint = taskHints.find(h => h.startsWith(wtCurrentPart + ')') || h.startsWith(wtCurrentPart + '. '));
-        // PART_HINTS только для задания 1.1 (таблица животных)
-        const usePartHints = TASK_PARTS[currentTask.id] && PART_HINTS[wtCurrentPart];
-        const partHint = (usePartHints ? PART_HINTS[wtCurrentPart] : null)
-          || (labeledHint ? labeledHint.split('→')[0].split('=')[0].trim() : null)
-          || (partIdx >= 0 && taskHints[partIdx] ? taskHints[partIdx].split('→')[0].split('=')[0].trim() : null)
-          || cfg.checks[wtCurrentPart].msg;
+      const partLabel = wtCurrentPart;
+      const partMsg = 'Сейчас решаем пункт ' + partLabel + '). ' + userAns;
+      wtTutorHistory.push({ role: 'user', content: partMsg });
 
-        if (wtPartAttempts === 1) {
-          chatAddBot('Не совсем. ' + partHint, false);
-        } else if (wtPartAttempts === 2) {
-          // Вторая попытка — даём больше подсказки
-          const hint2 = labeledHint || (partIdx >= 0 && taskHints[partIdx]) || partHint;
-          chatAddBot('Давай ещё раз. ' + hint2 + '. Попробуй написать ответ.', false);
+      const typingDiv2 = document.createElement('div');
+      typingDiv2.className = 'chat-msg bot';
+      typingDiv2.innerHTML = '<div class="chat-avatar"><img src="umnik_avatar2.png" alt="Умник"></div>'
+        + '<div class="chat-bubble bot" style="color:#64748b">печатает…</div>';
+      document.getElementById('wt-chat').appendChild(typingDiv2);
+      document.getElementById('wt-chat').scrollTop = document.getElementById('wt-chat').scrollHeight;
+
+      fetch('/api/tutor', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          task: {
+            text: currentTask.text,
+            answer: currentTask.answer,
+            hints: currentTask.hints,
+            currentPart: partLabel
+          },
+          messages: wtTutorHistory
+        })
+      })
+      .then(r => r.json())
+      .then(data => {
+        typingDiv2.remove();
+        const reply = data.reply || 'Подумай ещё — ты на правильном пути!';
+        wtTutorHistory.push({ role: 'assistant', content: reply });
+        const geoFig = getGeoSvg(reply);
+        if (geoFig) {
+          chatAddBot(reply + '<div style="margin-top:8px">' + geoFig + '</div>', false);
         } else {
-          chatAddBot(partHint + ' Напиши что нашёл — я помогу дальше.', false);
+          chatAddBot(reply, false);
         }
-      }, 300);
+      })
+      .catch(() => {
+        typingDiv2.remove();
+        chatAddBot('Не могу связаться с сервером. Попробуй ещё раз!', false);
+        wtAttempts--;
+      });
     }
     return;
   }
