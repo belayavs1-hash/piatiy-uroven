@@ -8190,7 +8190,7 @@ function findTask() {
 }
 
 function buildCorrectAnswers(task) {
-  const cfg = TASK_PARTS[task.id];
+  const cfg = getTaskCfg(task.id);
   if (!cfg) return task.answer || '';
   return cfg.parts.map(p => {
     const c = cfg.checks[p];
@@ -8223,6 +8223,100 @@ let wtDoneParts   = [];     // выполненные пункты
 let wtPartAttempts = 0;     // попытки по текущему пункту
 let wtIsMultiPart = false;  // задание с пунктами а–з
 
+// ===== АВТОПАРСИНГ ПУНКТОВ =====
+// Строит конфиг пунктов из текста и ответа задания — без ручного TASK_PARTS
+function autoParseTaskParts(task) {
+  const text = task.text || '';
+  const answer = task.answer || '';
+
+  // Тип пунктов: буквенные или числовые
+  // Буквенные: <br>а) или начало строки а)
+  const hasAlpha = /<br>[абвгдеж]\)/u.test(text);
+  // Числовые: только метки после <br> — так исключаем числа внутри выражений
+  const hasNum = /<br>[1-9]\d{0,1}\)/.test(text);
+  if (!hasAlpha && !hasNum) return null;
+
+  // Извлекаем метки пунктов (только те что идут после <br>)
+  let parts = [];
+  if (hasAlpha) {
+    // Ищем все буквенные пункты после <br> или в начале строки (первый пункт а) часто без <br>)
+    const m = [...text.matchAll(/(?:<br>|^|:\s*)([абвгдеж])\)/gu)];
+    parts = [...new Set(m.map(x => x[1]))];
+    // Если нашли только б)в)... без а) — добавляем а) в начало
+    if (parts.length > 0 && !parts.includes('а')) parts.unshift('а');
+  } else {
+    // Числовые пункты: только после <br>
+    const m = [...text.matchAll(/<br>([1-9]\d{0,1})\)/g)];
+    parts = [...new Set(m.map(x => x[1]))];
+    // Проверяем есть ли 1) без <br> (первый пункт)
+    if (parts.length > 0 && !parts.includes('1') && /(?:^|:\s*)1\)/.test(text)) parts.unshift('1');
+  }
+  if (parts.length < 2) return null;
+
+  // Убрать пробелы между цифрами: "4 120 172" → 4120172
+  function numsFromStr(s) {
+    const cleaned = s.replace(/(\d) (\d)/g, '$1$2').replace(/(\d) (\d)/g, '$1$2');
+    // Фильтруем: только числа ≥ 2 (убираем метки пунктов 1,2,3... в контексте "1-й:", "2-й:")
+    // и числа с хоть одной значащей цифрой
+    return (cleaned.match(/\d+/g) || []).map(Number).filter(n => n >= 2);
+  }
+
+  // Разбиваем ответ на фрагменты по пунктам
+  // Сплитим по разделителям пунктов: "а)" "б)" "1)" "2)" в начале строки или после ";"
+  function splitAnswer(ans, pts) {
+    const result = {};
+    // Нормализуем: заменяем \n на ; для единообразия
+    const norm = ans.replace(/\n/g, '; ');
+    for (let i = 0; i < pts.length; i++) {
+      const p = pts[i];
+      const next = pts[i + 1];
+      // Ищем p) в ответе
+      const startRe = new RegExp(p + '[).]\\s*');
+      const sm = norm.search(startRe);
+      if (sm === -1) { result[p] = ''; continue; }
+      let endIdx = norm.length;
+      if (next) {
+        const endRe = new RegExp('(?:;\\s*)?' + next.replace(/\d/, '\\d') + '[).]');
+        // Ищем только метки следующего пункта (не числа в тексте)
+        const endRe2 = new RegExp('[;\\s]' + next + '[).]');
+        const em = norm.slice(sm).search(endRe2);
+        if (em > 0) endIdx = sm + em;
+      }
+      result[p] = norm.slice(sm, endIdx);
+    }
+    return result;
+  }
+
+  const answerParts = splitAnswer(answer, parts);
+  const checks = {};
+  let hasAnyNums = false;
+  for (const p of parts) {
+    const fragment = answerParts[p] || '';
+    const nums = numsFromStr(fragment);
+    if (nums.length > 0) hasAnyNums = true;
+    checks[p] = {
+      nums: nums,
+      msg: 'Пункт <b>' + p + ')</b>: найди ответ и напиши.'
+    };
+  }
+  // Если ни у одного пункта нет чисел — это текстовое задание, автопарсинг не применяем
+  if (!hasAnyNums) return null;
+
+  return { parts, checks };
+}
+
+// Кэш автопарсинга (чтобы не пересчитывать каждый раз)
+const _autoPartsCache = {};
+function getTaskCfg(taskId) {
+  if (TASK_PARTS[taskId]) return TASK_PARTS[taskId];
+  if (_autoPartsCache[taskId] !== undefined) return _autoPartsCache[taskId];
+  // TASKS — плоский массив объектов {id, text, answer, ...}
+  const found = TASKS.find(t => t.id === taskId) || null;
+  const cfg = found ? autoParseTaskParts(found) : null;
+  _autoPartsCache[taskId] = cfg;
+  return cfg;
+}
+
 // Конфигурация пунктов для задания 1.1
 const TASK_PARTS = {
   '1.1': {
@@ -8247,7 +8341,7 @@ function openWalkthrough(task, backScreen, fromPhoto, doneParts) {
   wtCurrentPart = null;
   wtDoneParts = doneParts || [];
   wtPartAttempts = 0;
-  wtIsMultiPart = !!(TASK_PARTS[task.id]);
+  wtIsMultiPart = !!(getTaskCfg(task.id));
 
   document.getElementById('wt-back-btn').onclick = () => showScreen(backScreen);
   document.getElementById('wt-answer').value = '';
@@ -8263,7 +8357,7 @@ function openWalkthrough(task, backScreen, fromPhoto, doneParts) {
   if (fromPhoto && doneParts && doneParts.length > 0) {
     // Пришли с фото — есть правильные пункты, начинаем с ошибочных
     window._wtFromPhoto = true;
-    const cfg = TASK_PARTS[task.id];
+    const cfg = getTaskCfg(task.id);
     const errorParts = cfg ? cfg.parts.filter(p => !doneParts.includes(p)) : [];
     const doneStr = doneParts.map(p => '<b>' + p + '</b>').join(', ');
     chatAddBot('Посмотрел твоё решение 📸<br>Пункты ' + doneStr + ' — ✅ правильно!<br>Давай разберём остальные.', false);
@@ -8272,9 +8366,9 @@ function openWalkthrough(task, backScreen, fromPhoto, doneParts) {
     window._wtFromPhoto = true;
     chatAddBot('Посмотрел твоё решение 📸 Давай разберём по пунктам.', false);
     setTimeout(() => wtShowTask(), 600);
-  } else if (doneParts && doneParts.length > 0 && TASK_PARTS[task.id]) {
+  } else if (doneParts && doneParts.length > 0 && getTaskCfg(task.id)) {
     // Пришли после проверки текстом — есть правильные пункты
-    const cfg = TASK_PARTS[task.id];
+    const cfg = getTaskCfg(task.id);
     const errorParts = cfg.parts.filter(p => !doneParts.includes(p));
     const doneStr = doneParts.map(p => '<b>' + p + '</b>').join(', ');
     chatAddBot('Пункты ' + doneStr + ' — ✅ верно! Разберём где ошибка 👇', false);
@@ -8310,7 +8404,7 @@ function wtUpdatePartsBar() {
   const bar = document.getElementById('wt-parts-bar');
   const chat = document.getElementById('wt-chat');
   if (!wtIsMultiPart || !currentTask) { bar.style.display = 'none'; return; }
-  const cfg = TASK_PARTS[currentTask.id];
+  const cfg = getTaskCfg(currentTask.id);
   if (!cfg) { bar.style.display = 'none'; return; }
   bar.style.display = 'flex';
   // Сдвигаем чат вниз
@@ -8334,11 +8428,14 @@ function wtShowTask(startPart) {
     + '</div>', false, true);
 
   setTimeout(() => {
-    if (wtIsMultiPart && TASK_PARTS[task.id]) {
+    if (wtIsMultiPart && getTaskCfg(task.id)) {
       // Многопунктовое — ведём по пунктам
+      const cfg_check = getTaskCfg(task.id);
+      const isTable = cfg_check && cfg_check.parts && cfg_check.parts[0] === 'а' && cfg_check.checks['а'] && cfg_check.checks['а'].animals;
       const introMsg = window._wtFromPhoto
-        ? 'Смотри таблицу и отвечай на каждый пункт по очереди 👇'
-        : 'Разберём где ошибка. В таблице слева — животные, справа — числа.';
+        ? 'Смотри задание и отвечай на каждый пункт по очереди 👇'
+        : isTable ? 'Разберём где ошибка. В таблице слева — животные, справа — числа.'
+        : 'Решаем по пунктам. Начнём с первого 👇';
       window._wtFromPhoto = false;
       chatAddBot(introMsg, false);
       setTimeout(() => {
@@ -8362,7 +8459,7 @@ function wtShowTask(startPart) {
 }
 
 function wtGoToNextPart(keepCurrent) {
-  const cfg = TASK_PARTS[currentTask.id];
+  const cfg = getTaskCfg(currentTask.id);
   if (!cfg) return;
   // Если keepCurrent — не двигаемся вперёд, начинаем с wtCurrentPart
   if (!keepCurrent) wtCurrentPart = null;
@@ -8519,7 +8616,7 @@ function checkWalkthrough() {
   if(!userAns) { inp.focus(); return; }
   // Фильтр: слишком короткий ответ (1–2 символа без цифр) — мусор
   if(userAns.length <= 2 && !/\d/.test(userAns)) {
-    chatAddBot('Напиши подробнее — животное и число из таблицы.', false);
+    chatAddBot('Напиши ответ — число или выражение из задания.', false);
     inp.value = '';
     return;
   }
@@ -8527,8 +8624,8 @@ function checkWalkthrough() {
   wtAttempts++;
 
   // === Многопунктовое задание ===
-  if (wtIsMultiPart && wtCurrentPart && currentTask && TASK_PARTS[currentTask.id]) {
-    const cfg = TASK_PARTS[currentTask.id];
+  if (wtIsMultiPart && wtCurrentPart && currentTask && getTaskCfg(currentTask.id)) {
+    const cfg = getTaskCfg(currentTask.id);
     const result = checkPart(userAns, wtCurrentPart, cfg);
     wtPartAttempts++;
 
@@ -8723,8 +8820,8 @@ function checkSolution() {
   } else {
     // Вычисляем какие пункты правильные
     _lastDoneParts = [];
-    if (TASK_PARTS[currentTask.id]) {
-      const cfg = TASK_PARTS[currentTask.id];
+    if (getTaskCfg(currentTask.id)) {
+      const cfg = getTaskCfg(currentTask.id);
       const text = userAns.toLowerCase();
       const labeled = hasPartLabels(text, cfg);
       const positional = labeled ? null : splitPositional(text, cfg.parts.length);
@@ -12345,8 +12442,8 @@ function getPartFragment(text, p, cfg) {
 }
 
 function checkAnswer(userAns, task) {
-  if (TASK_PARTS[task.id]) {
-    const cfg = TASK_PARTS[task.id];
+  if (getTaskCfg(task.id)) {
+    const cfg = getTaskCfg(task.id);
     const text = userAns.toLowerCase();
     const labeled = hasPartLabels(text, cfg);
 
