@@ -8330,6 +8330,33 @@ function getTaskCfg(taskId) {
   return cfg;
 }
 
+// SVG-библиотека геометрических фигур для Умника
+const GEO_SVG = {
+  отрезок: `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 220 50' width='220' height='50' style='display:block;margin:6px 0'><line x1='20' y1='25' x2='200' y2='25' stroke='#2D9D4E' stroke-width='2'/><circle cx='20' cy='25' r='3.5' fill='#2D9D4E'/><text x='14' y='44' font-size='13' font-family='serif' fill='#374151'>A</text><circle cx='200' cy='25' r='3.5' fill='#2D9D4E'/><text x='196' y='44' font-size='13' font-family='serif' fill='#374151'>B</text></svg><div style='font-size:11px;color:#6b7280;margin-top:2px'>Отрезок AB — ограничен двумя точками</div>`,
+  луч: `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 220 50' width='220' height='50' style='display:block;margin:6px 0'><line x1='20' y1='25' x2='196' y2='25' stroke='#2D9D4E' stroke-width='2'/><circle cx='20' cy='25' r='3.5' fill='#2D9D4E'/><text x='14' y='44' font-size='13' font-family='serif' fill='#374151'>A</text><polygon points='200,25 190,20 190,30' fill='#2D9D4E'/></svg><div style='font-size:11px;color:#6b7280;margin-top:2px'>Луч — начинается в точке A, уходит бесконечно</div>`,
+  прямая: `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 220 50' width='220' height='50' style='display:block;margin:6px 0'><line x1='20' y1='25' x2='200' y2='25' stroke='#2D9D4E' stroke-width='2'/><polygon points='16,25 26,20 26,30' fill='#2D9D4E'/><polygon points='204,25 194,20 194,30' fill='#2D9D4E'/></svg><div style='font-size:11px;color:#6b7280;margin-top:2px'>Прямая — бесконечна в обе стороны</div>`,
+  угол: `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 100' width='120' height='100' style='display:block;margin:6px 0'><line x1='60' y1='80' x2='20' y2='20' stroke='#6366F1' stroke-width='2'/><polygon points='18,16 28,22 22,30' fill='#6366F1'/><line x1='60' y1='80' x2='110' y2='30' stroke='#6366F1' stroke-width='2'/><polygon points='113,27 104,34 108,42' fill='#6366F1'/><circle cx='60' cy='80' r='3' fill='#374151'/><text x='54' y='95' font-size='13' font-family='serif' fill='#374151'>O</text><path d='M 52,72 A 10,10 0 0,1 68,74' stroke='#6366F1' stroke-width='1.5' fill='none'/></svg><div style='font-size:11px;color:#6b7280;margin-top:2px'>Угол — два луча с общим началом</div>`,
+  треугольник: `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 130' width='160' height='130' style='display:block;margin:6px 0'><polygon points='80,15 15,115 145,115' fill='#EFF6FF' stroke='#2563eb' stroke-width='2'/><text x='74' y='12' font-size='13' font-family='serif' fill='#374151'>A</text><text x='6' y='128' font-size='13' font-family='serif' fill='#374151'>B</text><text x='146' y='128' font-size='13' font-family='serif' fill='#374151'>C</text></svg><div style='font-size:11px;color:#6b7280;margin-top:2px'>Треугольник ABC — 3 вершины, 3 стороны</div>`,
+  квадрат: `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 130 130' width='130' height='130' style='display:block;margin:6px 0'><rect x='20' y='20' width='90' height='90' fill='#EFF6FF' stroke='#2563eb' stroke-width='2'/><text x='14' y='18' font-size='13' font-family='serif' fill='#374151'>A</text><text x='112' y='18' font-size='13' font-family='serif' fill='#374151'>B</text><text x='112' y='118' font-size='13' font-family='serif' fill='#374151'>C</text><text x='14' y='118' font-size='13' font-family='serif' fill='#374151'>D</text><line x1='20' y1='60' x2='110' y2='60' stroke='#2563eb' stroke-width='1' stroke-dasharray='4,3' opacity='0.4'/><line x1='65' y1='20' x2='65' y2='110' stroke='#2563eb' stroke-width='1' stroke-dasharray='4,3' opacity='0.4'/></svg><div style='font-size:11px;color:#6b7280;margin-top:2px'>Квадрат — все стороны равны, все углы 90°</div>`,
+  прямоугольник: `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 120' width='180' height='120' style='display:block;margin:6px 0'><rect x='20' y='20' width='140' height='80' fill='#EFF6FF' stroke='#2563eb' stroke-width='2'/><text x='14' y='18' font-size='13' font-family='serif' fill='#374151'>A</text><text x='160' y='18' font-size='13' font-family='serif' fill='#374151'>B</text><text x='160' y='112' font-size='13' font-family='serif' fill='#374151'>C</text><text x='14' y='112' font-size='13' font-family='serif' fill='#374151'>D</text></svg><div style='font-size:11px;color:#6b7280;margin-top:2px'>Прямоугольник — противоположные стороны равны</div>`,
+  куб: `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 130 120' width='130' height='120' style='display:block;margin:6px 0'><polygon points='15,90 75,90 75,30 15,30' fill='#EFF6FF' stroke='#2563eb' stroke-width='1.5'/><polygon points='75,90 115,60 115,10 75,30' fill='#DBEAFE' stroke='#2563eb' stroke-width='1.5'/><polygon points='15,30 55,10 115,10 75,30' fill='#BFDBFE' stroke='#2563eb' stroke-width='1.5'/><line x1='15' y1='90' x2='55' y2='60' stroke='#2563eb' stroke-width='1.5' stroke-dasharray='4,3'/><line x1='55' y1='60' x2='115' y2='60' stroke='#2563eb' stroke-width='1.5' stroke-dasharray='4,3'/><line x1='55' y1='60' x2='55' y2='10' stroke='#2563eb' stroke-width='1.5' stroke-dasharray='4,3'/></svg><div style='font-size:11px;color:#6b7280;margin-top:2px'>Куб — 6 граней, 12 рёбер, 8 вершин</div>`,
+};
+
+// Определяет геометрическую фигуру в тексте и возвращает SVG или null
+function getGeoSvg(text) {
+  const t = text.toLowerCase();
+  // порядок важен: более специфичные раньше
+  if (/\bлуч\b|лучи\b/.test(t)) return GEO_SVG.луч;
+  if (/\bпрямая\b|прямые\b|прямой\b/.test(t)) return GEO_SVG.прямая;
+  if (/\bотрезок\b|отрезки\b|отрезка\b/.test(t)) return GEO_SVG.отрезок;
+  if (/\bкуб\b|куба\b|кубе\b/.test(t)) return GEO_SVG.куб;
+  if (/\bквадрат\b|квадрата\b/.test(t)) return GEO_SVG.квадрат;
+  if (/\bпрямоугольник\b/.test(t)) return GEO_SVG.прямоугольник;
+  if (/\bтреугольник\b/.test(t)) return GEO_SVG.треугольник;
+  if (/\bугол\b|углы\b|угла\b/.test(t)) return GEO_SVG.угол;
+  return null;
+}
+
 // Конфигурация пунктов для задания 1.1
 const TASK_PARTS = {
   '1.1': {
@@ -8466,6 +8493,14 @@ function wtShowTask(startPart) {
       chatAddBot(intro.msg1, false);
       wtTutorHistory.push({ role: 'assistant', content: intro.msg1 });
       if (intro.msg2) setTimeout(() => { chatAddBot(intro.msg2, false); wtTutorHistory.push({ role: 'assistant', content: intro.msg2 }); }, 550);
+      // Показать иллюстрацию если задание про геометрическую фигуру
+      const taskGeo = getGeoSvg((task.text || '') + ' ' + (task.topic || ''));
+      if (taskGeo) {
+        const delay = intro.msg2 ? 1200 : 600;
+        setTimeout(() => {
+          chatAddBot('<b>Вот как выглядит эта фигура:</b><div style="margin-top:6px">' + taskGeo + '</div>', false);
+        }, delay);
+      }
       document.getElementById('wt-input-bar').style.opacity = '1';
       document.getElementById('wt-input-bar').style.pointerEvents = '';
       setTimeout(() => document.getElementById('wt-answer').focus(), 100);
@@ -8790,7 +8825,13 @@ function checkWalkthrough() {
     typingDiv.remove();
     const reply = data.reply || 'Попробуй ещё раз — ты на правильном пути!';
     wtTutorHistory.push({ role: 'assistant', content: reply });
-    chatAddBot(reply, false);
+    // Показать геометрическую иллюстрацию если Умник упоминает фигуру
+    const geoFig = getGeoSvg(reply);
+    if (geoFig) {
+      chatAddBot(reply + '<div style="margin-top:8px">' + geoFig + '</div>', false);
+    } else {
+      chatAddBot(reply, false);
+    }
   })
   .catch(() => {
     typingDiv.remove();
