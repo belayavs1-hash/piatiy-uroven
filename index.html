@@ -8750,8 +8750,8 @@ function checkWalkthrough() {
     if(wtAttempts === 1) grantAchievement('solved_self');
     showDone('🤖', 'Разобрались!', 'С Умником', xp);
 
-  } else if(response.status === 'partial') {
-    wtAttempts--;
+  } else if(response.status === 'partial' || response.status === 'hint') {
+    wtAttempts--;  // не считаем как неверную попытку
     chatAddUser(userAns, statusMap[UmnikTutor.lastStatus] || 'add');
     setTimeout(() => chatAddBot(response.msg, false), 300);
 
@@ -12380,6 +12380,9 @@ const UmnikTutor = (function() {
     // Ответ слишком короткий (одно число — уточнить смысл)
     if (userNums.length === 1 && u.length < 6 && !correctNums.length) return 'needs_clarification';
 
+    // Текст без цифр и не метод — ученик описывает рассуждение, а не пишет ответ
+    if (userNums.length === 0 && u.length > 3) return 'i_dont_know';
+
     return 'wrong';
   }
 
@@ -12407,7 +12410,7 @@ const UmnikTutor = (function() {
 
     // === ВЕРНЫЙ МЕТОД, НЕТ ЧИСЛА ===
     if (status === 'correct_method_only') {
-      return { status: 'partial', msg: 'Правильно определил действие! Теперь подставь числа из задачи и посчитай.' };
+      return { status: 'partial', msg: 'Верно, понял что делать! Теперь посчитай и напиши число — ответ.' };
     }
 
     // === ТАБЛИЦА: правильное животное, нет числа ===
