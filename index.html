@@ -8672,7 +8672,9 @@ function checkWalkthrough() {
         const partCfg = getTaskCfg(currentTask.id);
         const partIdx = partCfg ? partCfg.parts.indexOf(wtCurrentPart) : -1;
         const labeledHint = taskHints.find(h => h.startsWith(wtCurrentPart + ')') || h.startsWith(wtCurrentPart + '. '));
-        const partHint = PART_HINTS[wtCurrentPart]
+        // PART_HINTS только для задания 1.1 (таблица животных)
+        const usePartHints = TASK_PARTS[currentTask.id] && PART_HINTS[wtCurrentPart];
+        const partHint = (usePartHints ? PART_HINTS[wtCurrentPart] : null)
           || (labeledHint ? labeledHint.split('→')[0].split('=')[0].trim() : null)
           || (partIdx >= 0 && taskHints[partIdx] ? taskHints[partIdx].split('→')[0].split('=')[0].trim() : null)
           || cfg.checks[wtCurrentPart].msg;
@@ -8757,18 +8759,16 @@ function wtAskHint() {
   const hints = currentTask ? currentTask.hints || [] : [];
 
   if (wtIsMultiPart && wtCurrentPart) {
-    // Для многопунктового: ищем подсказку по пункту
-    // Если в PART_HINTS есть для этой буквы — используем
-    if (PART_HINTS[wtCurrentPart]) {
+    // Для задания 1.1 (таблица животных) — специальные подсказки
+    if (TASK_PARTS[currentTask.id] && PART_HINTS[wtCurrentPart]) {
       hintMsg = PART_HINTS[wtCurrentPart];
     } else {
-      // Ищем hint соответствующий текущему пункту по индексу или по метке
+      // Все остальные задания: ищем hint по пункту из hints задания
       const cfg = getTaskCfg(currentTask.id);
       const partIdx = cfg ? cfg.parts.indexOf(wtCurrentPart) : -1;
-      // Пробуем найти hint с меткой пункта (например "1) ..." или "а) ...")
+      // Ищем hint с меткой пункта (например "1) ..." или "а) ...")
       const labeled = hints.find(h => h.startsWith(wtCurrentPart + ')') || h.startsWith(wtCurrentPart + '. '));
       if (labeled) {
-        // Показываем подсказку без раскрытия ответа (до знака =)
         hintMsg = labeled.split('=')[0].split('→')[0].trim();
       } else if (partIdx >= 0 && hints[partIdx]) {
         // По индексу пункта
