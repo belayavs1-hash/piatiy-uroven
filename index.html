@@ -8222,6 +8222,7 @@ let wtCurrentPart = null;   // текущий пункт: 'а','б',...
 let wtDoneParts   = [];     // выполненные пункты
 let wtPartAttempts = 0;     // попытки по текущему пункту
 let wtIsMultiPart = false;  // задание с пунктами а–з
+let wtTutorHistory = [];    // история диалога с AI репетитором
 
 // ===== АВТОПАРСИНГ ПУНКТОВ =====
 // Строит конфиг пунктов из текста и ответа задания — без ручного TASK_PARTS
@@ -8354,6 +8355,7 @@ function openWalkthrough(task, backScreen, fromPhoto, doneParts) {
   wtDoneParts = doneParts || [];
   wtPartAttempts = 0;
   wtIsMultiPart = !!(getTaskCfg(task.id));
+  wtTutorHistory = [];  // сброс истории при новом задании
 
   document.getElementById('wt-back-btn').onclick = () => showScreen(backScreen);
   document.getElementById('wt-answer').value = '';
@@ -8462,7 +8464,8 @@ function wtShowTask(startPart) {
       // Обычное задание
       const intro = umnikIntro(task);
       chatAddBot(intro.msg1, false);
-      if (intro.msg2) setTimeout(() => chatAddBot(intro.msg2, false), 550);
+      wtTutorHistory.push({ role: 'assistant', content: intro.msg1 });
+      if (intro.msg2) setTimeout(() => { chatAddBot(intro.msg2, false); wtTutorHistory.push({ role: 'assistant', content: intro.msg2 }); }, 550);
       document.getElementById('wt-input-bar').style.opacity = '1';
       document.getElementById('wt-input-bar').style.pointerEvents = '';
       setTimeout(() => document.getElementById('wt-answer').focus(), 100);
@@ -8721,15 +8724,21 @@ function checkWalkthrough() {
     return;
   }
 
-  // === Обычное задание ===
-  const response = UmnikTutor.respond(userAns, currentTask, wtAttempts);
-  const statusMap = { correct:'ok', partial:'add', correct_number_only:'add', correct_item_no_number:'add', correct_number_no_item:'add', correct_items_wrong_sum:'calc', partial_items:'almost', i_dont_know:'clarify', wrong:'almost' };
+  // === Обычное задание — AI репетитор ===
+  const quickStatus = UmnikTutor.classify(userAns, currentTask);
+  const isCorrect = quickStatus === 'correct';
 
-  if(response.status === 'correct') {
+  if (isCorrect) {
+    // Правильный ответ — сразу завершаем без API
     const xp = wtAttempts === 1 ? 20 : wtAttempts === 2 ? 15 : wtAttempts <= 3 ? 10 : 5;
     chatAddUser(userAns, 'ok');
+    wtTutorHistory.push({ role: 'user', content: userAns });
     setTimeout(() => {
-      chatAddBot(response.msg + '<br><span class="chat-xp">+' + xp + ' XP ⭐</span>', false);
+      const praise = wtAttempts === 1
+        ? ['Сам справился — это лучший результат! 🎉','Верно! Ты сам дошёл до ответа 💪','Отлично! Так и надо 🌟']
+        : ['Верно! Разобрались вместе — молодец 👍','Правильно! С каждой попыткой лучше 💪','Есть! Умница 🎉'];
+      const msg = praise[wtAttempts % praise.length];
+      chatAddBot(msg + '<br><span class="chat-xp">+' + xp + ' XP ⭐</span>', false);
       setTimeout(() => {
         const chat = document.getElementById('wt-chat');
         const div = document.createElement('div');
@@ -8749,17 +8758,45 @@ function checkWalkthrough() {
     markSolved(currentTask.id, {attempts: wtAttempts, correct: true});
     if(wtAttempts === 1) grantAchievement('solved_self');
     showDone('🤖', 'Разобрались!', 'С Умником', xp);
-
-  } else if(response.status === 'partial' || response.status === 'hint') {
-    wtAttempts--;  // не считаем как неверную попытку
-    chatAddUser(userAns, statusMap[UmnikTutor.lastStatus] || 'add');
-    setTimeout(() => chatAddBot(response.msg, false), 300);
-
-  } else {
-    if(response.saveError) addMistake(currentTask.topic, 'check_wrong');
-    chatAddUser(userAns, 'almost');
-    setTimeout(() => chatAddBot(response.msg, false), 300);
+    return;
   }
+
+  // Не правильно — спрашиваем AI репетитора
+  chatAddUser(userAns, 'almost');
+  wtTutorHistory.push({ role: 'user', content: userAns });
+
+  // Показываем индикатор печати
+  const typingDiv = document.createElement('div');
+  typingDiv.className = 'chat-msg bot';
+  typingDiv.innerHTML = '<div class="chat-avatar"><img src="umnik_avatar2.png" alt="Умник"></div>'
+    + '<div class="chat-bubble bot" style="color:#64748b">печатает…</div>';
+  document.getElementById('wt-chat').appendChild(typingDiv);
+  document.getElementById('wt-chat').scrollTop = document.getElementById('wt-chat').scrollHeight;
+
+  fetch('/api/tutor', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      task: {
+        text: currentTask.text,
+        answer: currentTask.answer,
+        hints: currentTask.hints
+      },
+      messages: wtTutorHistory
+    })
+  })
+  .then(r => r.json())
+  .then(data => {
+    typingDiv.remove();
+    const reply = data.reply || 'Попробуй ещё раз — ты на правильном пути!';
+    wtTutorHistory.push({ role: 'assistant', content: reply });
+    chatAddBot(reply, false);
+  })
+  .catch(() => {
+    typingDiv.remove();
+    chatAddBot('Не могу связаться с сервером. Попробуй ещё раз!', false);
+    wtAttempts--;
+  });
 }
 
 // Кнопка подсказки — только зацепка, без готового ответа
