@@ -8672,7 +8672,8 @@ function chatAddUser(text, statusKey) {
     almost:  { cls:'almost',  icon:'🧩', label:'почти' },
     clarify: { cls:'clarify', icon:'🔎', label:'уточни' },
     calc:    { cls:'calc',    icon:'🧮', label:'проверь счёт' },
-    add:     { cls:'add',     icon:'✍️',  label:'допиши' }
+    add:     { cls:'add',     icon:'✍️',  label:'допиши' },
+    hint:    { cls:'clarify', icon:'💡', label:'подсказка' }
   };
   const chat = document.getElementById('wt-chat');
   const div = document.createElement('div');
@@ -8882,38 +8883,53 @@ function mdToHtml(s) {
 }
 
 function wtAskHint() {
-  let hintMsg = '';
-  const hints = currentTask ? currentTask.hints || [] : [];
+  if (!currentTask) return;
 
-  if (wtIsMultiPart && wtCurrentPart) {
-    // Для задания 1.1 (таблица животных) — специальные подсказки
-    if (TASK_PARTS[currentTask.id] && PART_HINTS[wtCurrentPart]) {
-      hintMsg = PART_HINTS[wtCurrentPart];
-    } else {
-      // Все остальные задания: ищем hint по пункту из hints задания
-      const cfg = getTaskCfg(currentTask.id);
-      const partIdx = cfg ? cfg.parts.indexOf(wtCurrentPart) : -1;
-      // Ищем hint с меткой пункта (например "1) ..." или "а) ...")
-      const labeled = hints.find(h => h.startsWith(wtCurrentPart + ')') || h.startsWith(wtCurrentPart + '. '));
-      if (labeled) {
-        hintMsg = labeled.split('=')[0].split('→')[0].trim();
-      } else if (partIdx >= 0 && hints[partIdx]) {
-        // По индексу пункта
-        hintMsg = hints[partIdx].split('=')[0].split('→')[0].trim();
-      } else if (hints.length > 0) {
-        hintMsg = hints[Math.min(wtHintIdx, hints.length-1)].split('=')[0].split('→')[0].trim();
-        wtHintIdx = Math.min(wtHintIdx+1, hints.length-1);
-      }
-    }
-  } else {
-    if (!hints.length) { chatAddBot('Попробуй разобрать задачу по шагам: что дано, что нужно найти?', false); return; }
-    const raw = hints[Math.min(wtHintIdx, hints.length-1)] || '';
-    hintMsg = raw.split(':')[0].trim();
-    wtHintIdx = Math.min(wtHintIdx+1, hints.length-1);
+  // Для задания 1.1 с таблицей животных — статичные подсказки по пункту
+  if (TASK_PARTS[currentTask.id] && PART_HINTS[wtCurrentPart]) {
+    chatAddBot('💡 ' + PART_HINTS[wtCurrentPart], false);
+    return;
   }
 
-  if (!hintMsg) hintMsg = 'Подумай: что известно из условия и что нужно найти?';
-  chatAddBot('💡 ' + mdToHtml(hintMsg), false);
+  // Для всех остальных — просим AI дать наводящую подсказку
+  const hintRequest = wtIsMultiPart && wtCurrentPart
+    ? 'Дай мне подсказку для пункта ' + wtCurrentPart + ') — не говори ответ, только наводящий вопрос'
+    : 'Дай мне подсказку — не говори ответ, только наводящий вопрос';
+
+  chatAddUser('💡 подсказка', 'hint');
+  wtTutorHistory.push({ role: 'user', content: hintRequest });
+
+  const typingDiv = document.createElement('div');
+  typingDiv.className = 'chat-msg bot';
+  typingDiv.innerHTML = '<div class="chat-avatar"><img src="umnik_avatar2.png" alt="Умник"></div>'
+    + '<div class="chat-bubble bot" style="color:#64748b">печатает…</div>';
+  document.getElementById('wt-chat').appendChild(typingDiv);
+  document.getElementById('wt-chat').scrollTop = document.getElementById('wt-chat').scrollHeight;
+
+  fetch('/api/tutor', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      task: {
+        text: currentTask.text,
+        answer: currentTask.answer,
+        hints: currentTask.hints,
+        currentPart: wtIsMultiPart ? wtCurrentPart : undefined
+      },
+      messages: wtTutorHistory
+    })
+  })
+  .then(r => r.json())
+  .then(data => {
+    typingDiv.remove();
+    const reply = data.reply || 'Попробуй разобрать: что дано в задаче и что нужно найти?';
+    wtTutorHistory.push({ role: 'assistant', content: reply });
+    chatAddBot('💡 ' + reply, false);
+  })
+  .catch(() => {
+    typingDiv.remove();
+    chatAddBot('💡 Подумай: что дано в задаче и что нужно найти?', false);
+  });
 }
 
 function afterWalkthrough() {
