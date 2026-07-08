@@ -8255,9 +8255,13 @@ function autoParseTaskParts(task) {
 
   // Убрать пробелы между цифрами: "4 120 172" → 4120172
   function numsFromStr(s) {
-    const cleaned = s.replace(/(\d) (\d)/g, '$1$2').replace(/(\d) (\d)/g, '$1$2');
-    // Фильтруем: только числа ≥ 2 (убираем метки пунктов 1,2,3... в контексте "1-й:", "2-й:")
-    // и числа с хоть одной значащей цифрой
+    // Берём только финальный результат — часть после последнего "=" или "≈"
+    // "2 × 176 = 352 см = 3 м 52 см" → берём "3 м 52 см" (после последнего =)
+    const lastEq = s.lastIndexOf('=');
+    const lastApprox = s.lastIndexOf('≈');
+    const splitAt = Math.max(lastEq, lastApprox);
+    const finalPart = splitAt >= 0 ? s.slice(splitAt + 1) : s;
+    const cleaned = finalPart.replace(/(\d) (\d)/g, '$1$2').replace(/(\d) (\d)/g, '$1$2');
     return (cleaned.match(/\d+/g) || []).map(Number).filter(n => n >= 2);
   }
 
@@ -8520,7 +8524,12 @@ function checkPart(userAns, partKey, cfg) {
 
   const hasRightAnimal = needAnimals.length === 0 || needAnimals.some(a => animals.includes(a));
   const numsAsInt      = nums.map(Number);
-  const hasRightNum    = needNums.length === 0 || needNums.some(n => numsAsInt.includes(n));
+  // Если ожидается 2+ числа (составной ответ типа "3 м 52 см") — требуем все числа
+  // Если одно — достаточно найти его
+  const hasRightNum    = needNums.length === 0
+    || (needNums.length >= 2
+        ? needNums.every(n => numsAsInt.includes(n))
+        : needNums.some(n => numsAsInt.includes(n)));
 
   // Пункты где достаточно назвать животное (б, в, д)
   if (animalOnly && hasRightAnimal) return { status: 'correct' };
