@@ -3228,44 +3228,83 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
 </div>
 
 <!-- ===== SELF CHECK ===== -->
+<style>
+.sc-chat { display:flex; flex-direction:column; gap:10px; padding:0 0 12px; }
+.sc-msg { display:flex; gap:10px; align-items:flex-start; }
+.sc-msg.user { flex-direction:row-reverse; }
+.sc-bubble { max-width:82%; padding:12px 16px; border-radius:18px; font-size:15px; line-height:1.5; }
+.sc-msg.bot .sc-bubble { background:rgba(255,255,255,.09); color:#fff; border-bottom-left-radius:4px; }
+.sc-msg.user .sc-bubble { background:linear-gradient(135deg,#4f46e5,#7c3aed); color:#fff; border-bottom-right-radius:4px; }
+.sc-msg.user .sc-bubble.ok { background:linear-gradient(135deg,#059669,#10b981); }
+.sc-msg.user .sc-bubble.wrong { background:linear-gradient(135deg,#b91c1c,#ef4444); }
+.sc-msg.hint .sc-bubble { background:rgba(251,191,36,.12); border:1px solid rgba(251,191,36,.3); color:#fef3c7; border-radius:14px; }
+.sc-avatar { width:32px; height:32px; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:18px; }
+.sc-avatar.umnik { background:linear-gradient(135deg,#4f46e5,#7c3aed); }
+.sc-score-bar { display:flex; gap:8px; align-items:center; background:rgba(255,255,255,.06); border-radius:14px; padding:10px 14px; margin-bottom:4px; font-size:13px; font-weight:800; }
+.sc-score-you { color:#10b981; }
+.sc-score-vs { color:rgba(255,255,255,.4); }
+.sc-score-umnik { color:#818cf8; }
+.sc-input-row { display:flex; gap:8px; margin-top:8px; }
+.sc-inp { flex:1; padding:13px 15px; border-radius:14px; border:1.5px solid rgba(255,255,255,.2); background:rgba(255,255,255,.08); color:#fff; font-size:15px; font-weight:700; font-family:inherit; outline:none; }
+.sc-inp:focus { border-color:#4f46e5; }
+.sc-send-btn { padding:13px 18px; border-radius:14px; border:none; background:#4f46e5; color:#fff; font-size:15px; font-weight:900; cursor:pointer; font-family:inherit; flex-shrink:0; }
+.sc-next-btn { width:100%; padding:14px; border-radius:14px; border:none; background:rgba(255,255,255,.1); color:#fff; font-size:14px; font-weight:800; cursor:pointer; font-family:inherit; margin-top:8px; }
+.sc-typing { display:flex; gap:4px; align-items:center; padding:10px 14px; }
+.sc-typing span { width:7px; height:7px; border-radius:50%; background:rgba(255,255,255,.4); animation:scDot 1.2s infinite; }
+.sc-typing span:nth-child(2) { animation-delay:.2s; }
+.sc-typing span:nth-child(3) { animation-delay:.4s; }
+@keyframes scDot { 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-5px)} }
+</style>
 <div id="screen-self-check" class="screen">
   <nav class="top-nav">
-    <button class="nav-back" onclick="showScreen('screen-home')">← Назад</button>
-    <div class="nav-logo">✅ Проверь себя</div>
-    <div class="nav-xp" id="nav-xp-sc">⭐ 0 XP</div>
+    <button class="nav-back" id="sc-nav-back" onclick="scNavBack()">← Назад</button>
+    <div class="nav-logo" id="sc-nav-title">✅ Проверь себя</div>
+    <div id="sc-score-top" style="display:none;font-size:13px;font-weight:800;color:#fff;display:flex;gap:8px;align-items:center">
+      <span id="sc-top-you" style="color:#10b981">Ты: 0</span>
+      <span style="color:rgba(255,255,255,.4)">vs</span>
+      <span id="sc-top-umnik" style="color:#818cf8">🧠 0</span>
+    </div>
     <div class="nav-menu">
       <a onclick="showScreen('screen-homework')">📚 Домашка</a>
-      <a onclick="showScreen('screen-map')">🗺 Темы</a>
       <a onclick="showScreen('screen-self-check')" class="active">✅ Проверь себя</a>
       <a onclick="showScreen('screen-parent')">🏆 Прогресс</a>
     </div>
   </nav>
   <div class="screen-body">
-    <div class="screen-title">Проверь себя</div>
-    <div class="screen-subtitle">Проверочные работы из учебника</div>
+    <!-- Список работ -->
     <div id="sc-list-view">
+      <div class="screen-title">Проверь себя</div>
+      <div class="screen-subtitle">Выбери тему — сыграй с Умником 🧠</div>
       <div id="sc-cards"></div>
     </div>
-    <div id="sc-session-view" style="display:none">
-      <div class="trainer-session">
-        <div class="session-progress" id="sc-session-prog"></div>
-        <div class="task-num" id="sc-task-num">Задание 1 из 5</div>
-        <div style="font-size:13px;color:rgba(255,255,255,0.7);margin-bottom:8px" id="sc-task-source"></div>
-        <div class="trainer-task-text" id="sc-task-text"></div>
-        <input type="text" class="trainer-input" id="sc-input" placeholder="Ответ..." onkeydown="if(event.key==='Enter')checkSelfCheck()">
-        <button class="btn-check" onclick="checkSelfCheck()">✅ Проверить</button>
-        <div class="xp-flash" id="sc-xp-flash">+10 XP ⭐</div>
-        <div id="sc-result" style="margin-top:16px;display:none"></div>
-        <div id="sc-next-wrap" style="display:none;margin-top:12px">
-          <button class="btn-secondary" onclick="nextSelfCheckTask()">Следующее →</button>
-        </div>
+    <!-- Чат-сессия -->
+    <div id="sc-session-view" style="display:none;padding-bottom:130px">
+      <div id="sc-progress-bar" style="height:5px;background:rgba(255,255,255,.1);border-radius:3px;margin-bottom:14px">
+        <div id="sc-prog-fill" style="height:100%;background:linear-gradient(90deg,#10b981,#4f46e5);border-radius:3px;width:0%;transition:width .4s"></div>
       </div>
+      <div class="sc-score-bar" id="sc-scorebar" style="display:none">
+        <span style="font-size:16px">⚔️</span>
+        <span class="sc-score-you">Ты: <span id="sc-you-score">0</span></span>
+        <span class="sc-score-vs">vs</span>
+        <span class="sc-score-umnik">🧠 Умник: <span id="sc-umnik-score">0</span></span>
+        <span id="sc-q-counter" style="margin-left:auto;color:rgba(255,255,255,.5);font-weight:700"></span>
+      </div>
+      <div id="sc-chat" class="sc-chat"></div>
     </div>
+    <!-- Итог -->
     <div id="sc-done-view" style="display:none;text-align:center;padding:40px 0">
-      <div style="font-size:56px;margin-bottom:16px">🏆</div>
-      <div style="font-size:24px;font-weight:900;color:#fff;margin-bottom:8px">Проверочная пройдена!</div>
-      <div style="font-size:15px;color:rgba(255,255,255,0.8);margin-bottom:24px" id="sc-done-score"></div>
-      <button class="btn-primary" onclick="showSCList()">← К списку работ</button>
+      <div id="sc-done-icon" style="font-size:56px;margin-bottom:12px">🏆</div>
+      <div id="sc-done-title" style="font-size:22px;font-weight:900;color:#fff;margin-bottom:8px">Проверочная пройдена!</div>
+      <div id="sc-done-sub" style="font-size:15px;color:rgba(255,255,255,.8);margin-bottom:24px"></div>
+      <div id="sc-done-result" style="background:rgba(255,255,255,.07);border-radius:16px;padding:18px;margin-bottom:20px;font-size:14px;line-height:1.8;color:rgba(255,255,255,.9)"></div>
+      <button class="btn-primary" onclick="showSCList()">← К списку тем</button>
+    </div>
+  </div>
+  <!-- Фиксированная строка ввода -->
+  <div id="sc-input-wrap" style="display:none;position:fixed;bottom:60px;left:0;right:0;padding:10px 14px;background:rgba(14,11,36,.95);backdrop-filter:blur(10px);border-top:1px solid rgba(255,255,255,.08);z-index:50">
+    <div class="sc-input-row">
+      <input type="text" class="sc-inp" id="sc-input" placeholder="Твой ответ..." onkeydown="if(event.key==='Enter')scCheckAnswer()">
+      <button class="sc-send-btn" onclick="scCheckAnswer()">→</button>
     </div>
   </div>
   <div class="bottom-nav">
@@ -12740,6 +12779,7 @@ function grantAchievement(id) {
 const SELF_CHECKS = [
   {
     id: "pr-t2-1",
+    para: "§2 Сложение и вычитание",
     title: "Проверочная работа №1",
     subtitle: "Тема 2 · стр. 15",
     tasks: [
@@ -12752,6 +12792,7 @@ const SELF_CHECKS = [
   },
   {
     id: "pr-t2-2",
+    para: "§2 Сложение и вычитание",
     title: "Проверочная работа №2",
     subtitle: "Тема 2 · стр. 15",
     tasks: [
@@ -12767,6 +12808,7 @@ const SELF_CHECKS = [
   },
   {
     id: "pr-t3-1",
+    para: "§3 Отрезок и длина",
     title: "Проверочная работа №1",
     subtitle: "Тема 3 · стр. 22",
     tasks: [
@@ -12779,6 +12821,7 @@ const SELF_CHECKS = [
   },
   {
     id: "pr-t3-2",
+    para: "§3 Отрезок и длина",
     title: "Проверочная работа №2",
     subtitle: "Тема 3 · стр. 22",
     tasks: [
@@ -12790,6 +12833,7 @@ const SELF_CHECKS = [
   },
   {
     id: "pr-t4-1",
+    para: "§4 Плоскость, прямая, луч",
     title: "Проверочная работа",
     subtitle: "Тема 4 · стр. 27",
     tasks: [
@@ -12800,29 +12844,166 @@ const SELF_CHECKS = [
       { q: "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 220 190' width='220' height='190' style='display:block;margin:8px 0'><line x1='8' y1='155' x2='212' y2='155' stroke='#333' stroke-width='1.5'/><polygon points='4,155 12,151 12,159' fill='#333'/><polygon points='216,155 208,151 208,159' fill='#333'/><circle cx='28' cy='155' r='2.5' fill='#222'/><text x='22' y='169' font-size='11' font-family='serif' fill='#222'>B</text><circle cx='78' cy='155' r='2.5' fill='#222'/><text x='72' y='169' font-size='11' font-family='serif' fill='#222'>A</text><circle cx='138' cy='155' r='2.5' fill='#222'/><text x='132' y='169' font-size='11' font-family='serif' fill='#222'>T</text><circle cx='193' cy='155' r='2.5' fill='#222'/><text x='187' y='169' font-size='11' font-family='serif' fill='#222'>C</text><line x1='98' y1='182' x2='183' y2='38' stroke='#EF4444' stroke-width='1.5'/><polygon points='183,34 178,44 188,44' fill='#EF4444'/><circle cx='178' cy='46' r='2.5' fill='#222'/><text x='182' y='44' font-size='11' font-family='serif' fill='#222'>O</text><circle cx='158' cy='82' r='2.5' fill='#222'/><text x='162' y='80' font-size='11' font-family='serif' fill='#222'>N</text><circle cx='138' cy='118' r='2.5' fill='#222'/><text x='142' y='116' font-size='11' font-family='serif' fill='#222'>P</text><circle cx='108' cy='168' r='2.5' fill='#222'/><text x='112' y='180' font-size='11' font-family='serif' fill='#222'>M</text><circle cx='190' cy='22' r='2.5' fill='#222'/><text x='194' y='20' font-size='11' font-family='serif' fill='#222'>F</text><circle cx='208' cy='90' r='2.5' fill='#222'/><text x='212' y='88' font-size='11' font-family='serif' fill='#222'>Q</text><circle cx='22' cy='90' r='2.5' fill='#222'/><text x='8' y='88' font-size='11' font-family='serif' fill='#222'>R</text><text x='4' y='14' font-size='9' fill='#888' font-family='sans-serif'>Рис. 1.24</text></svg><br>Имеют ли общие точки лучи AB и PM? Лучи AB и PO?", a: "AB и PM: да; AB и PO: нет", hint: "Луч AB — от A влево. Луч PM — вниз от P, пересекает AB. Луч PO — вверх от P, не пересекает AB" },
       { q: "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 220 190' width='220' height='190' style='display:block;margin:8px 0'><line x1='8' y1='155' x2='212' y2='155' stroke='#333' stroke-width='1.5'/><polygon points='4,155 12,151 12,159' fill='#333'/><polygon points='216,155 208,151 208,159' fill='#333'/><circle cx='28' cy='155' r='2.5' fill='#222'/><text x='22' y='169' font-size='11' font-family='serif' fill='#222'>B</text><circle cx='78' cy='155' r='2.5' fill='#222'/><text x='72' y='169' font-size='11' font-family='serif' fill='#222'>A</text><circle cx='138' cy='155' r='2.5' fill='#222'/><text x='132' y='169' font-size='11' font-family='serif' fill='#222'>T</text><circle cx='193' cy='155' r='2.5' fill='#222'/><text x='187' y='169' font-size='11' font-family='serif' fill='#222'>C</text><line x1='98' y1='182' x2='183' y2='38' stroke='#EF4444' stroke-width='1.5'/><polygon points='183,34 178,44 188,44' fill='#EF4444'/><circle cx='178' cy='46' r='2.5' fill='#222'/><text x='182' y='44' font-size='11' font-family='serif' fill='#222'>O</text><circle cx='158' cy='82' r='2.5' fill='#222'/><text x='162' y='80' font-size='11' font-family='serif' fill='#222'>N</text><circle cx='138' cy='118' r='2.5' fill='#222'/><text x='142' y='116' font-size='11' font-family='serif' fill='#222'>P</text><circle cx='108' cy='168' r='2.5' fill='#222'/><text x='112' y='180' font-size='11' font-family='serif' fill='#222'>M</text><circle cx='190' cy='22' r='2.5' fill='#222'/><text x='194' y='20' font-size='11' font-family='serif' fill='#222'>F</text><circle cx='208' cy='90' r='2.5' fill='#222'/><text x='212' y='88' font-size='11' font-family='serif' fill='#222'>Q</text><circle cx='22' cy='90' r='2.5' fill='#222'/><text x='8' y='88' font-size='11' font-family='serif' fill='#222'>R</text><text x='4' y='14' font-size='9' fill='#888' font-family='sans-serif'>Рис. 1.24</text></svg><br>Какие из утверждений верны? а) луч AB имеет общую точку с прямой OM; б) прямая AB имеет общую точку с лучом OM; в) прямая AB имеет общую точку с прямой OM; г) луч AB имеет общую точку с лучом OM?", a: "а) да; б) да; в) да; г) нет", hint: "Прямая бесконечна в обе стороны и пересекает всё. Луч AB (влево) и луч OM (вверх-влево) не пересекаются" }
     ]
+  },
+
+  // ===== §1 ПРОВЕРОЧНЫЕ ПО ТЕМАМ =====
+  {
+    id: "p1-t1",
+    para: "§1 Натуральные числа и нуль",
+    title: "Тема 1: Числовая информация в таблицах",
+    subtitle: "Задания 1.1–1.13",
+    tasks: [
+      { q: "В таблице о домашних животных написано: Кошки — 19, Собаки — 11, Хомяки — 3, Черепахи — 8, Птицы — 5, Рыбки — 9. Каких животных больше всего?", a: "кошки", hint: "Смотри на наибольшее число в столбце: 19 — Кошки" },
+      { q: "Каких животных нет у пятиклассников (0 штук)?", a: "змеи", hint: "В строке «Змеи» стоит 0" },
+      { q: "Расстояние = скорость × время. Велосипед едет 15 км/ч 2 часа. Какое расстояние проедет?", a: "30", hint: "15 × 2 = 30 км" },
+      { q: "Автомобиль проехал 350 км за 5 часов. Какова его скорость?", a: "70", hint: "350 ÷ 5 = 70 км/ч" },
+      { q: "В первый день на элеватор отвезли 108 т зерна, а во второй — на 8 т меньше. Сколько тонн отвезли за два дня?", a: "208", hint: "2-й день: 108−8=100; итого: 108+100=208 т" },
+      { q: "Вычислите: 42 : 7 · 8", a: "48", hint: "42÷7=6; 6×8=48" },
+      { q: "Вычислите: (37 + 11) : 24", a: "2", hint: "37+11=48; 48÷24=2" }
+    ]
+  },
+  {
+    id: "p1-t2",
+    para: "§1 Натуральные числа и нуль",
+    title: "Тема 2: Цифры и числа",
+    subtitle: "Задания 1.14–1.41",
+    tasks: [
+      { q: "Запиши число: 5 сотен, 0 десятков, 7 единиц", a: "507", hint: "500 + 0 + 7 = 507" },
+      { q: "Запиши цифрами: «пять тысяч четыреста двенадцать»", a: "5412", hint: "5 тысяч + 4 сотни + 1 десяток + 2 = 5412" },
+      { q: "Сколько десятков в тысяче?", a: "100", hint: "1000 ÷ 10 = 100 десятков" },
+      { q: "Сколько чисел между 15 и 21?", a: "5", hint: "16, 17, 18, 19, 20 — это 5 чисел" },
+      { q: "Назови натуральное число, предшествующее числу 4000", a: "3999", hint: "4000 − 1 = 3999" },
+      { q: "Трёхзначных чисел из цифр 3 и 5 (с повторениями) — сколько штук?", a: "8", hint: "2×2×2 = 8: 333, 335, 353, 355, 533, 535, 553, 555" },
+      { q: "Вычисли: 2390 − 180 : 2", a: "2300", hint: "Сначала деление: 180÷2=90; потом 2390−90=2300" }
+    ]
+  },
+  {
+    id: "p1-t3",
+    para: "§1 Натуральные числа и нуль",
+    title: "Тема 3: Отрезок и его длина. Ломаная. Многоугольник",
+    subtitle: "Задания 1.42–1.91",
+    tasks: [
+      { q: "Отрезок — это часть прямой, ограниченная двумя точками. Сколько концов у отрезка AB?", a: "2", hint: "Два конца: точка A и точка B" },
+      { q: "Ломаная ABCD состоит из звеньев AB, BC, CD. Сколько звеньев у этой ломаной?", a: "3", hint: "AB, BC, CD — 3 звена" },
+      { q: "Периметр — это сумма всех сторон. Найди периметр прямоугольника 8 см × 5 см", a: "26", hint: "P = 2×(8+5) = 2×13 = 26 см" },
+      { q: "Найди периметр квадрата со стороной 7 см", a: "28", hint: "P = 4 × 7 = 28 см" },
+      { q: "Ломаная ABCD: AB=3 см, BC=4 см, CD=5 см. Найди длину ломаной.", a: "12", hint: "3 + 4 + 5 = 12 см" },
+      { q: "Сколько сторон у пятиугольника?", a: "5", hint: "«Пяти» = 5 сторон" },
+      { q: "Точка делит отрезок AB длиной 10 см на два отрезка: 4 см и ?", a: "6", hint: "10 − 4 = 6 см" }
+    ]
+  },
+  {
+    id: "p1-t4",
+    para: "§1 Натуральные числа и нуль",
+    title: "Тема 4: Плоскость, прямая, луч, угол",
+    subtitle: "Задания 1.92–1.125",
+    tasks: [
+      { q: "Прямая бесконечна в двух направлениях. Луч бесконечен в одном. У прямой ____ начало?", a: "нет", hint: "Прямая не имеет начала и конца" },
+      { q: "Луч имеет начало, но не имеет ___", a: "конца", hint: "Луч начинается в точке и продолжается бесконечно" },
+      { q: "Точка P делит прямую на 2 луча. Лучи называются ___", a: "дополнительные", hint: "Два луча с общим началом на прямой — дополнительные" },
+      { q: "Сколько прямых можно провести через две точки?", a: "1", hint: "Через две точки проходит единственная прямая" },
+      { q: "Угол — это фигура из двух лучей с общим началом. Общее начало называется ___", a: "вершина", hint: "Вершина угла — точка, из которой выходят оба луча" },
+      { q: "Прямой угол равен ___ градусов", a: "90", hint: "Прямой угол = 90°" },
+      { q: "Пересекаются ли две прямые на плоскости — всегда, никогда, или иногда?", a: "иногда", hint: "Параллельные прямые не пересекаются, остальные — пересекаются" }
+    ]
+  },
+  {
+    id: "p1-t5",
+    para: "§1 Натуральные числа и нуль",
+    title: "Тема 5: Шкалы и координатная прямая",
+    subtitle: "Задания 1.126–1.162",
+    tasks: [
+      { q: "На координатной прямой точке соответствует число — это называется ___", a: "координата", hint: "Координата точки — её число на числовой прямой" },
+      { q: "На числовой прямой отметили точки 3 и 7. Какое расстояние между ними?", a: "4", hint: "7 − 3 = 4" },
+      { q: "Начало координат — это точка с координатой ___", a: "0", hint: "Ноль — начало числовой прямой" },
+      { q: "На шкале термометра каждое деление = 2°. Между отметками 10° и 20° сколько делений?", a: "5", hint: "(20−10)÷2 = 5 делений" },
+      { q: "Единичный отрезок на числовой прямой — это расстояние от 0 до ___", a: "1", hint: "От нуля до единицы — единичный отрезок" },
+      { q: "Точка A имеет координату 8, точка B — координату 3. A правее или левее B?", a: "правее", hint: "8 > 3, поэтому A правее B на числовой прямой" },
+      { q: "Числа на числовой прямой расположены слева направо: меньшие — ___, большие — ___", a: "слева, справа", hint: "Числа возрастают слева направо" }
+    ]
+  },
+  {
+    id: "p1-t6",
+    para: "§1 Натуральные числа и нуль",
+    title: "Тема 6: Сравнение натуральных чисел",
+    subtitle: "Задания 1.163–1.199",
+    tasks: [
+      { q: "Какое число больше: 5847 или 5874?", a: "5874", hint: "Смотри на разряд сотен: 8 > 4" },
+      { q: "Расставь знаки: 347 ___ 374", a: "<", hint: "347 < 374, так как в разряде десятков 4 < 7" },
+      { q: "Из чисел 512, 521, 215, 251 — какое наибольшее?", a: "521", hint: "Все трёхзначные, сотни одинаковы — смотри на десятки: 2 > 1 → 521" },
+      { q: "Верно ли: 0 < любого натурального числа?", a: "да", hint: "Нуль меньше любого натурального числа" },
+      { q: "Натуральный ряд: 997, 998, 999, ___", a: "1000", hint: "После 999 идёт 1000" },
+      { q: "Между какими двумя соседними сотнями находится число 734?", a: "700 и 800", hint: "700 < 734 < 800" },
+      { q: "Чему равно наименьшее трёхзначное число?", a: "100", hint: "Наименьшее трёхзначное: 100" }
+    ]
+  },
+  {
+    id: "p1-t7",
+    para: "§1 Натуральные числа и нуль",
+    title: "Тема 7: Числовая информация в столбчатых диаграммах",
+    subtitle: "Задания 1.201–1.214",
+    tasks: [
+      { q: "Столбчатая диаграмма показывает данные в виде ___", a: "столбцов", hint: "В столбчатой диаграмме каждое значение — это высота столбца" },
+      { q: "На диаграмме: понедельник — 5 задач, вторник — 3, среда — 7. В какой день решили больше всего задач?", a: "среда", hint: "7 > 5 > 3 → наибольший столбец — среда" },
+      { q: "Те же данные: сколько задач решили за три дня?", a: "15", hint: "5 + 3 + 7 = 15 задач" },
+      { q: "Что показывает высота столбца на диаграмме?", a: "значение", hint: "Высота столбца = числовое значение для этой категории" },
+      { q: "На диаграмме 4 столбца с высотами 2, 4, 6, 8. Средняя высота равна ___", a: "5", hint: "(2+4+6+8)÷4 = 20÷4 = 5" },
+      { q: "Для чего используют диаграммы?", a: "сравнивать данные", hint: "Диаграммы помогают наглядно сравнить несколько значений" },
+      { q: "На диаграмме школьники выбрали любимые предметы: математика — 12, русский — 8, история — 5. Сколько всего ответило?", a: "25", hint: "12 + 8 + 5 = 25" }
+    ]
   }
 
 ];
 
+// ===== SELF CHECK (чат + соревнование с Умником) =====
 let scCurrentCheck = null;
 let scCurrentIndex = 0;
-let scCorrectCount = 0;
+let scYouScore = 0;
+let scUmnikScore = 0;
+let scAwaitingNext = false; // ждём нажатия "Далее" или Enter
+
+function scNavBack() {
+  if (scCurrentCheck) { showSCList(); } else { showScreen('screen-home'); }
+}
 
 function renderSelfCheckList() {
   const grid = document.getElementById('sc-cards');
-  grid.innerHTML = SELF_CHECKS.map(ch => `
-    <div class="white-card" style="margin-bottom:12px;cursor:pointer" onclick="startSelfCheck('${ch.id}')">
-      <div style="font-size:16px;font-weight:900;color:var(--ink);margin-bottom:4px">${ch.title}</div>
-      <div style="font-size:13px;color:#888;margin-bottom:8px">${ch.subtitle}</div>
-      <div style="font-size:13px;color:var(--purple)">${ch.tasks.length} вопросов</div>
-    </div>
-  `).join('');
+  // группируем по параграфу
+  const byPara = {};
+  SELF_CHECKS.forEach(ch => {
+    const p = ch.para || 'Другие';
+    if (!byPara[p]) byPara[p] = [];
+    byPara[p].push(ch);
+  });
+  let html = '';
+  Object.keys(byPara).sort().forEach(para => {
+    html += `<div style="font-size:12px;font-weight:900;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.06em;margin:16px 0 8px">${para}</div>`;
+    byPara[para].forEach(ch => {
+      const done = (parseInt(localStorage.getItem('sc_done_' + ch.id)) || 0);
+      const total = ch.tasks.length;
+      const pct = Math.round(done / total * 100);
+      html += `<div onclick="startSelfCheck('${ch.id}')" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:14px 16px;margin-bottom:10px;cursor:pointer;display:flex;align-items:center;gap:12px">
+        <div style="width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,#4f46e5,#7c3aed);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">⚡</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:15px;font-weight:900;color:#fff;margin-bottom:2px">${ch.title}</div>
+          <div style="font-size:12px;color:rgba(255,255,255,.5)">${ch.subtitle} · ${total} вопросов</div>
+          ${done > 0 ? `<div style="height:3px;background:rgba(255,255,255,.1);border-radius:2px;margin-top:6px"><div style="height:100%;width:${pct}%;background:#10b981;border-radius:2px"></div></div>` : ''}
+        </div>
+        <div style="font-size:20px;flex-shrink:0">${pct===100?'✅':'→'}</div>
+      </div>`;
+    });
+  });
+  grid.innerHTML = html;
 }
 
 function showSCList() {
+  scCurrentCheck = null;
   document.getElementById('sc-list-view').style.display = '';
   document.getElementById('sc-session-view').style.display = 'none';
   document.getElementById('sc-done-view').style.display = 'none';
+  document.getElementById('sc-input-wrap').style.display = 'none';
+  document.getElementById('sc-nav-title').textContent = '✅ Проверь себя';
+  document.getElementById('sc-scorebar').style.display = 'none';
   renderSelfCheckList();
 }
 
@@ -12830,65 +13011,149 @@ function startSelfCheck(id) {
   scCurrentCheck = SELF_CHECKS.find(c => c.id === id);
   if(!scCurrentCheck) return;
   scCurrentIndex = 0;
-  scCorrectCount = 0;
+  scYouScore = 0;
+  scUmnikScore = 0;
+  scAwaitingNext = false;
   document.getElementById('sc-list-view').style.display = 'none';
   document.getElementById('sc-session-view').style.display = '';
   document.getElementById('sc-done-view').style.display = 'none';
-  showSCTask();
+  document.getElementById('sc-input-wrap').style.display = '';
+  document.getElementById('sc-nav-title').textContent = scCurrentCheck.title;
+  document.getElementById('sc-scorebar').style.display = 'flex';
+  document.getElementById('sc-chat').innerHTML = '';
+  scUpdateScores();
+  // Приветствие Умника
+  scAddMsg('bot', '⚔️ Начинаем соревнование! Я — Умник 🧠<br>Кто ответит правильно — получает очко. Ты против меня!<br><b>' + scCurrentCheck.subtitle + '</b>');
+  setTimeout(() => scShowQuestion(), 800);
 }
 
-function showSCTask() {
+function scUpdateScores() {
+  document.getElementById('sc-you-score').textContent = scYouScore;
+  document.getElementById('sc-umnik-score').textContent = scUmnikScore;
+  const total = scCurrentCheck ? scCurrentCheck.tasks.length : 1;
+  document.getElementById('sc-q-counter').textContent = (scCurrentIndex + 1) + '/' + total;
+  const pct = scCurrentCheck ? Math.round(scCurrentIndex / total * 100) : 0;
+  document.getElementById('sc-prog-fill').style.width = pct + '%';
+}
+
+function scAddMsg(role, html, extraCls) {
+  const chat = document.getElementById('sc-chat');
+  const div = document.createElement('div');
+  div.className = 'sc-msg ' + role;
+  const avatar = role === 'bot' ? '<div class="sc-avatar umnik">🧠</div>' : '';
+  const bubbleCls = 'sc-bubble' + (extraCls ? ' ' + extraCls : '');
+  div.innerHTML = (role === 'bot' ? avatar : '') + `<div class="${bubbleCls}">${html}</div>` + (role === 'user' ? avatar : '');
+  if (role === 'bot') div.querySelector('.sc-avatar').style.cssText = 'width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#4f46e5,#7c3aed);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0';
+  chat.appendChild(div);
+  chat.scrollTop = chat.scrollHeight;
+  return div;
+}
+
+function scShowTyping() {
+  const chat = document.getElementById('sc-chat');
+  const div = document.createElement('div');
+  div.className = 'sc-msg bot';
+  div.id = 'sc-typing';
+  div.innerHTML = '<div class="sc-avatar umnik" style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#4f46e5,#7c3aed);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">🧠</div><div class="sc-bubble"><div class="sc-typing"><span></span><span></span><span></span></div></div>';
+  chat.appendChild(div);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function scHideTyping() { const el = document.getElementById('sc-typing'); if(el) el.remove(); }
+
+function scShowQuestion() {
+  if (!scCurrentCheck || scCurrentIndex >= scCurrentCheck.tasks.length) { scFinish(); return; }
   const t = scCurrentCheck.tasks[scCurrentIndex];
   const total = scCurrentCheck.tasks.length;
-  document.getElementById('sc-task-num').textContent = `Вопрос ${scCurrentIndex+1} из ${total}`;
-  document.getElementById('sc-task-source').textContent = scCurrentCheck.title + ' · ' + scCurrentCheck.subtitle;
-  document.getElementById('sc-task-text').innerHTML = t.q;
+  scUpdateScores();
+  scAwaitingNext = false;
   document.getElementById('sc-input').value = '';
-  document.getElementById('sc-result').style.display = 'none';
-  document.getElementById('sc-next-wrap').style.display = 'none';
-  document.getElementById('sc-xp-flash').style.display = 'none';
-  const prog = Math.round((scCurrentIndex / total) * 100);
-  document.getElementById('sc-session-prog').style.setProperty('--prog', prog + '%');
-  document.getElementById('sc-session-prog').innerHTML = `<div style="height:6px;background:rgba(255,255,255,0.2);border-radius:3px"><div style="height:6px;background:var(--gold);border-radius:3px;width:${prog}%"></div></div>`;
+  document.getElementById('sc-input').disabled = false;
+  scAddMsg('bot', `<div style="font-size:11px;font-weight:800;color:rgba(255,255,255,.4);margin-bottom:6px">Вопрос ${scCurrentIndex+1} из ${total}</div>${t.q}`);
   setTimeout(() => document.getElementById('sc-input').focus(), 100);
 }
 
-function checkSelfCheck() {
-  const t = scCurrentCheck.tasks[scCurrentIndex];
-  const userAns = document.getElementById('sc-input').value.trim().toLowerCase().replace(/\s+/g,' ');
-  const correctAns = String(t.a).toLowerCase();
-  // Нечёткое сравнение: принимаем совпадение, вхождение (падежи), варианты через ; или |
-  const _norm = s => s.replace(/[.,;:!?]/g,'').replace(/\s+/g,' ').trim();
-  const _u = _norm(userAns);
-  const _c = _norm(correctAns);
-  const _vars = _c.split(/[|]/).map(v => _norm(v));
-  const isOk = _vars.some(v => v === _u || v.includes(_u) || _u.includes(v));
-  const resEl = document.getElementById('sc-result');
-  resEl.style.display = 'block';
-  if(isOk) {
-    scCorrectCount++;
-    resEl.innerHTML = `<div class="result-correct">✅ Верно! Ответ: ${t.a}</div>`;
-    const flash = document.getElementById('sc-xp-flash');
-    flash.style.display = 'block';
-    flash.textContent = '+10 XP ⭐';
-    setTimeout(() => flash.style.display = 'none', 1500);
-    addXP(10);
-  } else {
-    resEl.innerHTML = `<div class="result-wrong">❌ Ответ: <b>${t.a}</b><br><small>${t.hint}</small></div>`;
-  }
-  document.getElementById('sc-next-wrap').style.display = 'block';
+function scNormAns(s) { return String(s).toLowerCase().replace(/[.,;:!?\s]/g,' ').replace(/\s+/g,' ').trim(); }
+
+function scIsCorrect(userAns, correctAns) {
+  const u = scNormAns(userAns);
+  const vars = scNormAns(correctAns).split('|').map(v => v.trim());
+  return vars.some(v => v === u || v.includes(u) || u.includes(v));
 }
 
-function nextSelfCheckTask() {
-  scCurrentIndex++;
-  if(scCurrentIndex >= scCurrentCheck.tasks.length) {
-    document.getElementById('sc-session-view').style.display = 'none';
-    document.getElementById('sc-done-view').style.display = '';
-    const total = scCurrentCheck.tasks.length;
-    document.getElementById('sc-done-score').textContent = `Правильно: ${scCorrectCount} из ${total}`;
+function scCheckAnswer() {
+  const inp = document.getElementById('sc-input');
+  const userAns = inp.value.trim();
+  if (!userAns) return;
+  if (scAwaitingNext) { scNext(); return; }
+  if (!scCurrentCheck || scCurrentIndex >= scCurrentCheck.tasks.length) return;
+
+  const t = scCurrentCheck.tasks[scCurrentIndex];
+  inp.disabled = true;
+  const isOk = scIsCorrect(userAns, t.a);
+
+  scAddMsg('user', userAns, isOk ? 'ok' : 'wrong');
+
+  if (isOk) {
+    scYouScore++;
+    scUpdateScores();
+    scAddMsg('bot', '✅ Верно! Молодец — ты опередил меня!');
+    addXP(10);
+    scShowNext();
   } else {
-    showSCTask();
+    // Умник "думает" и отвечает через 1.8с
+    scShowTyping();
+    setTimeout(() => {
+      scHideTyping();
+      scUmnikScore++;
+      scUpdateScores();
+      const umnikMsg = `🧠 Правильный ответ: <b>${t.a}</b><br><span style="font-size:13px;color:rgba(255,255,255,.7)">${t.hint}</span>`;
+      scAddMsg('bot', umnikMsg);
+      scShowNext();
+    }, 1800);
   }
+}
+
+function scShowNext() {
+  scAwaitingNext = true;
+  const inp = document.getElementById('sc-input');
+  inp.value = '';
+  inp.placeholder = 'Нажми Enter — следующий вопрос';
+  inp.disabled = false;
+  setTimeout(() => inp.focus(), 100);
+}
+
+function scNext() {
+  scCurrentIndex++;
+  const inp = document.getElementById('sc-input');
+  inp.placeholder = 'Твой ответ...';
+  inp.disabled = false;
+  scAwaitingNext = false;
+  if (scCurrentIndex >= scCurrentCheck.tasks.length) {
+    scFinish();
+  } else {
+    scShowQuestion();
+  }
+}
+
+function scFinish() {
+  document.getElementById('sc-session-view').style.display = 'none';
+  document.getElementById('sc-input-wrap').style.display = 'none';
+  document.getElementById('sc-done-view').style.display = '';
+  const total = scCurrentCheck.tasks.length;
+  localStorage.setItem('sc_done_' + scCurrentCheck.id, scYouScore);
+  let icon, title, sub;
+  if (scYouScore > scUmnikScore) { icon='🏆'; title='Ты победил!'; sub=`Умник повержён! ${scYouScore}:${scUmnikScore}`; }
+  else if (scYouScore === scUmnikScore) { icon='🤝'; title='Ничья!'; sub=`${scYouScore}:${scUmnikScore} — хорошая борьба!`; }
+  else { icon='🧠'; title='Умник победил!'; sub=`Ты ${scYouScore}, Умник ${scUmnikScore} — попробуй снова!`; }
+  document.getElementById('sc-done-icon').textContent = icon;
+  document.getElementById('sc-done-title').textContent = title;
+  document.getElementById('sc-done-sub').textContent = sub;
+  const errs = total - scYouScore;
+  document.getElementById('sc-done-result').innerHTML =
+    `Правильных ответов: <b style="color:#10b981">${scYouScore}</b> из ${total}<br>` +
+    (errs > 0 ? `Ошибок: <b style="color:#f87171">${errs}</b> — повтори задания ещё раз!` : '🎉 Все ответы верны!');
+  if (scYouScore > scUmnikScore) addXP(30);
 }
 
 
