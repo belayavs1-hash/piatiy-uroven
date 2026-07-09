@@ -8240,9 +8240,12 @@ function autoParseTaskParts(task) {
   // Извлекаем метки пунктов (только те что идут после <br>)
   let parts = [];
   if (hasAlpha) {
-    // Ищем все буквенные пункты после <br> или в начале строки (первый пункт а) часто без <br>)
-    const m = [...text.matchAll(/(?:<br>|^|:\s*)([абвгдеж])\)/gu)];
-    parts = [...new Set(m.map(x => x[1]))];
+    // Ищем ВСЕ буквенные пункты в тексте — и после <br>, и в строку через ; &nbsp;
+    const m = [...text.matchAll(/([абвгдеж])\)/gu)];
+    // Убираем дубли и сортируем по порядку алфавита
+    const order = 'абвгдежзийклмн';
+    const found = [...new Set(m.map(x => x[1]))];
+    parts = found.sort((a, b) => order.indexOf(a) - order.indexOf(b));
     // Если нашли только б)в)... без а) — добавляем а) в начало
     if (parts.length > 0 && !parts.includes('а')) parts.unshift('а');
   } else {
@@ -8342,18 +8345,21 @@ const GEO_SVG = {
   куб: `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 130 120' width='130' height='120' style='display:block;margin:6px 0'><polygon points='15,90 75,90 75,30 15,30' fill='#EFF6FF' stroke='#2563eb' stroke-width='1.5'/><polygon points='75,90 115,60 115,10 75,30' fill='#DBEAFE' stroke='#2563eb' stroke-width='1.5'/><polygon points='15,30 55,10 115,10 75,30' fill='#BFDBFE' stroke='#2563eb' stroke-width='1.5'/><line x1='15' y1='90' x2='55' y2='60' stroke='#2563eb' stroke-width='1.5' stroke-dasharray='4,3'/><line x1='55' y1='60' x2='115' y2='60' stroke='#2563eb' stroke-width='1.5' stroke-dasharray='4,3'/><line x1='55' y1='60' x2='55' y2='10' stroke='#2563eb' stroke-width='1.5' stroke-dasharray='4,3'/></svg><div style='font-size:11px;color:#6b7280;margin-top:2px'>Куб — 6 граней, 12 рёбер, 8 вершин</div>`,
 };
 
-// Определяет геометрическую фигуру в тексте и возвращает SVG или null
+// Определяет геометрическую фигуру в тексте темы и возвращает SVG или null
+// Используется ТОЛЬКО для topic задания — не для произвольного текста AI
 function getGeoSvg(text) {
   const t = text.toLowerCase();
-  // порядок важен: более специфичные раньше
-  if (/\bлуч\b|лучи\b/.test(t)) return GEO_SVG.луч;
-  if (/\bпрямая\b|прямые\b|прямой\b/.test(t)) return GEO_SVG.прямая;
-  if (/\bотрезок\b|отрезки\b|отрезка\b/.test(t)) return GEO_SVG.отрезок;
-  if (/\bкуб\b|куба\b|кубе\b/.test(t)) return GEO_SVG.куб;
-  if (/\bквадрат\b|квадрата\b/.test(t)) return GEO_SVG.квадрат;
-  if (/\bпрямоугольник\b/.test(t)) return GEO_SVG.прямоугольник;
-  if (/\bтреугольник\b/.test(t)) return GEO_SVG.треугольник;
-  if (/\bугол\b|углы\b|угла\b/.test(t)) return GEO_SVG.угол;
+  // Порядок важен: более специфичные раньше
+  // Разделители: пробел, точка, запятая, начало/конец строки
+  const w = s => new RegExp('(^|[\\s,./!?;:])' + s + '($|[\\s,./!?;:])').test(t);
+  if (w('луч') || w('лучи')) return GEO_SVG.луч;
+  if (w('прямая') || w('прямые') || w('прямой')) return GEO_SVG.прямая;
+  if (w('отрезок') || w('отрезки') || w('отрезка')) return GEO_SVG.отрезок;
+  if (w('куб') || w('куба') || w('кубе')) return GEO_SVG.куб;
+  if (w('квадрат') || w('квадрата') || t.includes('квадрат')) return GEO_SVG.квадрат;
+  if (t.includes('прямоугольник')) return GEO_SVG.прямоугольник;
+  if (t.includes('треугольник')) return GEO_SVG.треугольник;
+  if (w('угол') || w('углы') || w('угла')) return GEO_SVG.угол;
   return null;
 }
 
@@ -8371,14 +8377,10 @@ function injectGeoTags(text) {
   });
 }
 
-// Применяет injectGeoTags + автодетект по ключевым словам (если тег не вставлен)
+// Применяет injectGeoTags — только явные теги [РИСУНОК: название] от AI
+// Автодетект убран: он давал ложные срабатывания на «прямая», «луч» в арифметических заданиях
 function processGeoReply(reply) {
-  const injected = injectGeoTags(reply);
-  if (injected !== reply) return injected; // AI сам вставил [РИСУНОК:]
-  // Иначе — автодетект по ключевым словам в тексте
-  const geoFig = getGeoSvg(reply);
-  if (geoFig) return reply + '<div style="margin-top:8px">' + geoFig + '</div>';
-  return reply;
+  return injectGeoTags(reply);
 }
 
 // Конфигурация пунктов для задания 1.1
@@ -8518,7 +8520,8 @@ function wtShowTask(startPart) {
       wtTutorHistory.push({ role: 'assistant', content: intro.msg1 });
       if (intro.msg2) setTimeout(() => { chatAddBot(intro.msg2, false); wtTutorHistory.push({ role: 'assistant', content: intro.msg2 }); }, 550);
       // Показать иллюстрацию если задание про геометрическую фигуру
-      const taskGeo = getGeoSvg((task.text || '') + ' ' + (task.topic || ''));
+      // Показываем SVG только если ТЕМА задания геометрическая — не текст (там «прямая», «луч» в другом смысле)
+      const taskGeo = getGeoSvg(task.topic || '');
       if (taskGeo) {
         const delay = intro.msg2 ? 1200 : 600;
         setTimeout(() => {
