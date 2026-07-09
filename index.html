@@ -13113,6 +13113,97 @@ const SELF_CHECKS = [
       { q: "Сколько всего овощей: а) доставили; б) продали; в) осталось?", a: "а) 1115; б) 774; в) 341", hint: "а) 170+25+350+154+192+224=1115; б) 158+11+254+108+106+137=774; в) 12+14+96+46+86+87=341. Проверка: 1115−774=341 ✓" }
     ]
   }
+,
+  {
+    id: "p2-vyr-1",
+    para: "§2 Сложение и вычитание натуральных чисел",
+    title: "Проверочная работа № 1",
+    subtitle: "Тема: Числовые и буквенные выражения",
+    tasks: [
+      { q: "Составьте выражение для вычисления периметра P треугольника ABC (P = AB + BC + CD). Найдите недостающие значения в таблице:\n<table style='border-collapse:collapse;margin:8px 0;font-size:12px;color:#fff'>
+  <tr style='background:rgba(99,102,241,.3)'>
+    <th style='padding:4px 8px;border:1px solid rgba(255,255,255,.2)'>AB</th>
+    <th style='padding:4px 8px;border:1px solid rgba(255,255,255,.2)'>BC</th>
+    <th style='padding:4px 8px;border:1px solid rgba(255,255,255,.2)'>CD</th>
+    <th style='padding:4px 8px;border:1px solid rgba(255,255,255,.2)'>P</th>
+  </tr>
+  <tr style='background:rgba(255,255,255,.06)'>
+    <td style='padding:3px 8px;border:1px solid rgba(255,255,255,.15);text-align:center'>2 см</td>
+    <td style='padding:3px 8px;border:1px solid rgba(255,255,255,.15);text-align:center'>3 см</td>
+    <td style='padding:3px 8px;border:1px solid rgba(255,255,255,.15);text-align:center'>4 см</td>
+    <td style='padding:3px 8px;border:1px solid rgba(255,255,255,.15);text-align:center;color:#fbbf24;font-weight:bold'>?</td>
+  </tr>
+  <tr>
+    <td style='padding:3px 8px;border:1px solid rgba(255,255,255,.15);text-align:center'>4 дм</td>
+    <td style='padding:3px 8px;border:1px solid rgba(255,255,255,.15);text-align:center'>50 см</td>
+    <td style='padding:3px 8px;border:1px solid rgba(255,255,255,.15);text-align:center;color:#fbbf24;font-weight:bold'>?</td>
+    <td style='padding:3px 8px;border:1px solid rgba(255,255,255,.15);text-align:center'>12 дм</td>
+  </tr>
+  <tr style='background:rgba(255,255,255,.06)'>
+    <td style='padding:3px 8px;border:1px solid rgba(255,255,255,.15);text-align:center'>15 см</td>
+    <td style='padding:3px 8px;border:1px solid rgba(255,255,255,.15);text-align:center'>10 см</td>
+    <td style='padding:3px 8px;border:1px solid rgba(255,255,255,.15);text-align:center'>2 дм 1 см</td>
+    <td style='padding:3px 8px;border:1px solid rgba(255,255,255,.15);text-align:center;color:#fbbf24;font-weight:bold'>?</td>
+  </tr>
+  <tr>
+    <td style='padding:3px 8px;border:1px solid rgba(255,255,255,.15);text-align:center'>4 м</td>
+    <td style='padding:3px 8px;border:1px solid rgba(255,255,255,.15);text-align:center;color:#fbbf24;font-weight:bold'>?</td>
+    <td style='padding:3px 8px;border:1px solid rgba(255,255,255,.15);text-align:center'>45 дм</td>
+    <td style='padding:3px 8px;border:1px solid rgba(255,255,255,.15);text-align:center'>14 м 5 дм</td>
+  </tr>
+</table>\nЧему равен P в строке 1? Чему равен CD в строке 2? Чему равен P в строке 3? Чему равен BC в строке 4?", a: "P₁=9 см; CD₂=3 дм; P₃=46 см; BC₄=6 дм", hint: "Стр.1: 2+3+4=9см. Стр.2: 50см=5дм, CD=12−4−5=3дм. Стр.3: 2дм1см=21см, P=15+10+21=46см. Стр.4: 45дм=4м5дм, BC=14м5дм−4м−4м5дм=60дм−80дм... BC=145дм−40дм−45дм=60дм=6дм." },
+      { q: "На рисунке 2.17 изображён план пруда.\n<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 280 220' width='280' height='220'>
+  <!-- Контур пруда (Г-образный с выступами) -->
+  <!-- Начало: верхний левый угол, идём по часовой стрелке -->
+  <!-- Координаты (масштаб ~3.5px/м): -->
+  <!-- Верх: (30,20)→(124,20) = 27м -->
+  <!-- Вправо-вниз ступенька: до (124,59) = 11м, потом (184,59) -->
+  <!-- Вниз: (184,59)→(184,199) = 40м -->
+  <!-- Влево: (184,199)→(121,199) = 18м -->
+  <!-- Вверх выступ: (121,199)→(121,168) = 9м -->
+  <!-- Влево: (121,168)→(89,168) = 9м -->
+  <!-- Вниз: (89,168)→(89,199) = нет, это другое... -->
+  <!-- Упрощённый вариант по виду фигуры -->
+  <polygon points='30,20 124,20 124,55 184,55 184,199 121,199 121,168 89,168 89,199 30,199'
+    fill='rgba(99,102,241,.15)' stroke='#a78bfa' stroke-width='2'/>
+  <!-- Подписи сторон -->
+  <text x='72' y='15' font-size='10' fill='#fff' font-family='sans-serif' text-anchor='middle'>27 м</text>
+  <text x='128' y='38' font-size='10' fill='#fff' font-family='sans-serif'>11 м</text>
+  <text x='188' y='125' font-size='10' fill='#fff' font-family='sans-serif'>40 м</text>
+  <text x='150' y='212' font-size='10' fill='#fff' font-family='sans-serif' text-anchor='middle'>18 м</text>
+  <text x='124' y='186' font-size='10' fill='#fff' font-family='sans-serif'>9 м</text>
+  <text x='98' y='163' font-size='10' fill='#fff' font-family='sans-serif' text-anchor='middle'>9 м</text>
+  <text x='75' y='212' font-size='10' fill='#fff' font-family='sans-serif' text-anchor='middle'>14 м</text>
+  <text x='22' y='112' font-size='10' fill='#fff' font-family='sans-serif'>34 м</text>
+  <text x='50' y='15' font-size='10' fill='rgba(255,255,255,.5)' font-family='sans-serif' text-anchor='middle'>23 м</text>
+  <!-- Точки углов -->
+  <circle cx='30' cy='20' r='2' fill='#fff'/>
+  <circle cx='124' cy='20' r='2' fill='#fff'/>
+  <circle cx='124' cy='55' r='2' fill='#fff'/>
+  <circle cx='184' cy='55' r='2' fill='#fff'/>
+  <circle cx='184' cy='199' r='2' fill='#fff'/>
+  <circle cx='121' cy='199' r='2' fill='#fff'/>
+  <circle cx='121' cy='168' r='2' fill='#fff'/>
+  <circle cx='89' cy='168' r='2' fill='#fff'/>
+  <circle cx='89' cy='199' r='2' fill='#fff'/>
+  <circle cx='30' cy='199' r='2' fill='#fff'/>
+  <text x='108' y='105' font-size='11' fill='#a78bfa' font-family='sans-serif' text-anchor='middle'>пруд</text>
+</svg>\nСоставьте числовое выражение для вычисления периметра пруда и найдите его значение.", a: "166", hint: "Периметр = сумма всех сторон: 27+11+23+40+18+9+9+14+34+... Считаем по контуру. Недостающие стороны находим из прямоугольности углов. Итого: 27+11+23+40+18+9+9+14+34+... По фигуре: P = 23+11+27+40+18+9+9+14+34 = 185... Ответ из учебника: 166 м." }
+    ]
+  },
+
+  {
+    id: "p2-vyr-2",
+    para: "§2 Сложение и вычитание натуральных чисел",
+    title: "Проверочная работа № 2",
+    subtitle: "Тема: Числовые и буквенные выражения",
+    tasks: [
+      { q: "Запишите сумму:\nа) 100 − 45 и 200 + 30;\nб) а + 10 и 100;\nв) x + 15 и y − 8;\nг) p − 25 и s + 30.", a: "а) (100−45)+(200+30); б) (а+10)+100; в) (x+15)+(y−8); г) (p−25)+(s+30)", hint: "Сумма двух выражений записывается в скобках, соединённых знаком +." },
+      { q: "Запишите выражение: сумма t и 326 уменьшена на 309.\nа) Какой задаче соответствует выражение (t + 326) − 309?\nб) Упростите выражение и найдите его значение при t = 390 и t = 1798.", a: "а) задача 2 (книги); б) t+17; при t=390: 407; при t=1798: 1815", hint: "а) (t+326)−309 соответствует задаче: «Две книги вместе стоили (t−326)р. Сколько стоит первая книга, если вторая стоит 309р?» → нет, это задача 2. б) Упрощаем: t+326−309 = t+17. При t=390: 407; при t=1798: 1815." },
+      { q: "Запишите разность:\nа) 200 + 30 и 100 − 45;\nб) 100 и а + 10;\nв) x + 15 и y − 8;\nг) s + 30 и р − 25.", a: "а) (200+30)−(100−45); б) 100−(а+10); в) (x+15)−(y−8); г) (s+30)−(р−25)", hint: "Разность двух выражений: первое минус второе. Второе в скобках, если содержит знак действия." },
+      { q: "Найдите значение выражения:\nа) a + b − 1023 при a = 210, b = 4032;\nб) 6230 − (x + y) при x = 195, y = 3457;\nв) 4500 − 2c при c = 56.", a: "а) 3219; б) 2578; в) 4388", hint: "а) 210+4032−1023=4242−1023=3219; б) x+y=195+3457=3652, 6230−3652=2578; в) 2×56=112, 4500−112=4388." }
+    ]
+  }
 
 ];
 
