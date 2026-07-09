@@ -13568,6 +13568,60 @@ const SELF_CHECKS = [
       { q: "Маша взяла с полки 3 пакета сушек по 50р. и на кассе ещё 3 пакета лимонада. Кассир сказала: надо заплатить 280р. Маша возразила — сумма неверна. Кто прав?", a: "Маша права", hint: "3 пакета сушек: 3×50=150р. Итого 280р. → лимонад: 280−150=130р. на 3 пакета. 130÷3 не делится нацело. Цена пакета — не целое число рублей. Маша права." }
     ]
   }
+,
+  {
+    id: "p4-formuly-1",
+    para: "§4 Делимость натуральных чисел",
+    title: "Проверочная работа",
+    subtitle: "Тема: Формулы",
+    tasks: [
+      { q: "Из одного города одновременно выехали два автомобиля: скорость одного v₁ км/ч, другого v₂ км/ч. Составьте формулу для нахождения расстояния sн между автомобилями через t ч, если они движутся в противоположных направлениях.", a: "sн = (v₁ + v₂) · t", hint: "При движении навстречу (или от) скорости складываются. За t часов расстояние: sн = (v₁ + v₂) · t." },
+      { q: "Составьте формулу расстояния sод между автомобилями через t ч, если они движутся в одном направлении и v₁ < v₂.", a: "sод = (v₂ − v₁) · t", hint: "При движении в одну сторону скорости вычитаются. Быстрый уходит вперёд: sод = (v₂ − v₁) · t." },
+      { q: "Составьте формулу расстояния sод между автомобилями через t ч, если они движутся в одном направлении и v₂ < v₁.", a: "sод = (v₁ − v₂) · t", hint: "Аналогично: быстрый первый уходит вперёд. sод = (v₁ − v₂) · t. В обоих случаях sод = |v₁ − v₂| · t." },
+      { q: "Заполните таблицу, используя формулы sн = (v₁+v₂)·t и sод = |v₁−v₂|·t:\n<table style='border-collapse:collapse;margin:8px 0;font-size:12px;color:#fff'>
+  <tr style='background:rgba(99,102,241,.3)'>
+    <th style='padding:4px 8px;border:1px solid rgba(255,255,255,.2)'>v₁, км/ч</th>
+    <td style='padding:4px 8px;border:1px solid rgba(255,255,255,.2);text-align:center'>60</td>
+    <td style='padding:4px 8px;border:1px solid rgba(255,255,255,.2);text-align:center'>70</td>
+    <td style='padding:4px 8px;border:1px solid rgba(255,255,255,.2);text-align:center'>75</td>
+    <td style='padding:4px 8px;border:1px solid rgba(255,255,255,.2);text-align:center'>65</td>
+    <td style='padding:4px 8px;border:1px solid rgba(255,255,255,.2);text-align:center'>48</td>
+  </tr>
+  <tr style='background:rgba(255,255,255,.06)'>
+    <th style='padding:4px 8px;border:1px solid rgba(255,255,255,.2)'>v₂, км/ч</th>
+    <td style='padding:4px 8px;border:1px solid rgba(255,255,255,.15);text-align:center'>55</td>
+    <td style='padding:4px 8px;border:1px solid rgba(255,255,255,.15);text-align:center'>70</td>
+    <td style='padding:4px 8px;border:1px solid rgba(255,255,255,.15);text-align:center'>65</td>
+    <td style='padding:4px 8px;border:1px solid rgba(255,255,255,.15);text-align:center'>75</td>
+    <td style='padding:4px 8px;border:1px solid rgba(255,255,255,.15);text-align:center'>56</td>
+  </tr>
+  <tr>
+    <th style='padding:4px 8px;border:1px solid rgba(255,255,255,.2)'>t, ч</th>
+    <td style='padding:4px 8px;border:1px solid rgba(255,255,255,.15);text-align:center'>3</td>
+    <td style='padding:4px 8px;border:1px solid rgba(255,255,255,.15);text-align:center'>2</td>
+    <td style='padding:4px 8px;border:1px solid rgba(255,255,255,.15);text-align:center'>4</td>
+    <td style='padding:4px 8px;border:1px solid rgba(255,255,255,.15);text-align:center'>4</td>
+    <td style='padding:4px 8px;border:1px solid rgba(255,255,255,.15);text-align:center'>5</td>
+  </tr>
+  <tr style='background:rgba(255,255,255,.06)'>
+    <th style='padding:4px 8px;border:1px solid rgba(255,255,255,.2)'>sн, км</th>
+    <td style='padding:4px 8px;border:1px solid rgba(255,255,255,.15);text-align:center;color:#fbbf24;font-weight:bold'>?</td>
+    <td style='padding:4px 8px;border:1px solid rgba(255,255,255,.15);text-align:center;color:#fbbf24;font-weight:bold'>?</td>
+    <td style='padding:4px 8px;border:1px solid rgba(255,255,255,.15);text-align:center;color:#fbbf24;font-weight:bold'>?</td>
+    <td style='padding:4px 8px;border:1px solid rgba(255,255,255,.15);text-align:center;color:#fbbf24;font-weight:bold'>?</td>
+    <td style='padding:4px 8px;border:1px solid rgba(255,255,255,.15);text-align:center;color:#fbbf24;font-weight:bold'>?</td>
+  </tr>
+  <tr>
+    <th style='padding:4px 8px;border:1px solid rgba(255,255,255,.2)'>sод, км</th>
+    <td style='padding:4px 8px;border:1px solid rgba(255,255,255,.15);text-align:center;color:#fbbf24;font-weight:bold'>?</td>
+    <td style='padding:4px 8px;border:1px solid rgba(255,255,255,.15);text-align:center;color:#fbbf24;font-weight:bold'>?</td>
+    <td style='padding:4px 8px;border:1px solid rgba(255,255,255,.15);text-align:center;color:#fbbf24;font-weight:bold'>?</td>
+    <td style='padding:4px 8px;border:1px solid rgba(255,255,255,.15);text-align:center;color:#fbbf24;font-weight:bold'>?</td>
+    <td style='padding:4px 8px;border:1px solid rgba(255,255,255,.15);text-align:center;color:#fbbf24;font-weight:bold'>?</td>
+  </tr>
+</table>", a: "sн: 345; 280; 560; 560; 520 | sод: 15; 0; 40; 40; 40", hint: "sн=(v₁+v₂)·t: (60+55)·3=345; (70+70)·2=280; (75+65)·4=560; (65+75)·4=560; (48+56)·5=520. sод=|v₁−v₂|·t: |60−55|·3=15; |70−70|·2=0; |75−65|·4=40; |65−75|·4=40; |48−56|·5=40." }
+    ]
+  }
 
 ];
 
