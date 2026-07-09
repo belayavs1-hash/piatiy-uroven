@@ -6906,7 +6906,7 @@ const TOPIC_RULES = {
       { type:"match", q: "Соотнеси цифру в числе 4 352 с её разрядом", pairs:[{q:"4",a:"тысячи"},{q:"3",a:"сотни"},{q:"5",a:"десятки"},{q:"2",a:"единицы"}] }
     ]
   },
-  "Отрезок. Ломаная. Многоугольник": {
+  "Отрезок и его длина. Ломаная. Многоугольник": {
     keys: "отрезок, концы, длина, ломаная, звенья, многоугольник, вершины, стороны",
     rule: "Отрезок — часть прямой между двумя точками. Длина отрезка — расстояние между его концами. Ломаная — несколько последовательных отрезков. Длина ломаной = сумма длин всех звеньев.",
     example: "Например: ломаная из звеньев 4 см и 3 см → длина = 4+3 = 7 см.",
@@ -6966,7 +6966,7 @@ const TOPIC_RULES = {
       { q: "В круговой диаграмме сектора: 50%, 25%, 15%, 10%. Какой сектор самый большой?", a: "50%", opts:["50%","25%","15%","10%"] }
     ]
   },
-  "Действие сложения. Свойства": {
+  "Действие сложения. Свойства сложения": {
     keys: "слагаемые, сумма, переместительный закон, сочетательный закон",
     rule: "a + b = b + a (переместительный). (a + b) + c = a + (b + c) (сочетательный). Сумма не изменится, если слагаемые переставить или перегруппировать.",
     example: "Например: 38 + 62 = 62 + 38 = 100 (переставили — считать удобнее).",
@@ -7006,7 +7006,7 @@ const TOPIC_RULES = {
       { type:"match", q: "Соотнеси уравнение с его корнем", pairs:[{q:"x + 5 = 12",a:"7"},{q:"x − 3 = 9",a:"12"},{q:"4 · x = 28",a:"7"}] }
     ]
   },
-  "Действие вычитания. Свойства": {
+  "Действие вычитания. Свойства вычитания": {
     keys: "уменьшаемое, вычитаемое, разность, проверка",
     rule: "a − b = c. Проверка: c + b = a. Вычитание — действие, обратное сложению. Нельзя вычесть большее из меньшего (в натуральных числах).",
     example: "Например: 83 − 27 = 56. Проверка: 56 + 27 = 83 ✓",
@@ -8419,7 +8419,7 @@ function openWalkthrough(task, backScreen, fromPhoto, doneParts) {
   chat.innerHTML = '';
 
   const rule = TOPIC_RULES[task.topic];
-  const isNewTopic = rule && !seenTopics.has(task.topic);
+  const isNewTopic = false; // правило теперь всегда в umnikIntro
 
   if (fromPhoto && doneParts && doneParts.length > 0) {
     // Пришли с фото — есть правильные пункты, начинаем с ошибочных
@@ -8440,22 +8440,6 @@ function openWalkthrough(task, backScreen, fromPhoto, doneParts) {
     const doneStr = doneParts.map(p => '<b>' + p + '</b>').join(', ');
     chatAddBot('Пункты ' + doneStr + ' — ✅ верно! Разберём где ошибка 👇', false);
     setTimeout(() => { wtShowTask(errorParts[0]); }, 600);
-  } else if (isNewTopic) {
-    seenTopics.add(task.topic);
-    const ruleHtml = 'Привет! 👋 Помогу разобраться с этим заданием. Но сначала вспомним правило.<br><br>'
-      + '<div class="chat-rule-card">'
-      + '<div class="chat-rule-label">📚 ' + task.topic + '</div>'
-      + '<div class="chat-rule-keys">🔑 ' + rule.keys + '</div>'
-      + '<div class="chat-rule-text">' + rule.rule + '</div>'
-      + '</div>';
-    chatAddBot(ruleHtml, false);
-    const div = document.createElement('div');
-    div.className = 'chat-msg user';
-    div.innerHTML = '<button onclick="wtShowTask()" style="padding:11px 26px;border-radius:20px;border:none;background:linear-gradient(135deg,#059669,#10b981);color:#fff;font-size:15px;font-weight:800;cursor:pointer;font-family:inherit">Понял, решаю! →</button>';
-    chat.appendChild(div);
-    chat.scrollTop = chat.scrollHeight;
-    document.getElementById('wt-input-bar').style.opacity = '0.3';
-    document.getElementById('wt-input-bar').style.pointerEvents = 'none';
   } else {
     wtShowTask();
   }
@@ -8631,25 +8615,30 @@ function checkPart(userAns, partKey, cfg) {
 
 // Умник начинает диалог по типу задания (для обычных заданий)
 function umnikIntro(task) {
+  // Берём правило из TOPIC_RULES по теме задания
+  const topicRule = TOPIC_RULES[task.topic];
+  if (topicRule && topicRule.rule) {
+    return {
+      msg1: 'Прежде чем решать — давай вспомним! 💡<br><b>' + topicRule.rule + '</b>',
+      msg2: topicRule.example ? topicRule.example + '<br>Готов? Поехали!' : 'Готов? Поехали!'
+    };
+  }
+  // Запасные варианты если темы нет в TOPIC_RULES
   const topic = (task.topic || '').toLowerCase();
   const text  = (task.text  || '').toLowerCase();
   if (topic.includes('дроб')) return {
-    msg1: 'Разберём дроби вместе.',
-    msg2: 'Помни: знаменатель снизу — на сколько частей разделили, числитель сверху — сколько взяли. Попробуй!'
+    msg1: 'Прежде чем решать — давай вспомним! 💡<br><b>Знаменатель снизу — на сколько частей разделили, числитель сверху — сколько взяли.</b>',
+    msg2: 'Готов? Поехали!'
   };
   if (topic.includes('уравнен')) return {
-    msg1: 'Уравнение — загадка: нужно найти неизвестное.',
-    msg2: 'Используй обратное действие, потом проверь подстановкой.'
+    msg1: 'Прежде чем решать — давай вспомним! 💡<br><b>Уравнение: используй обратное действие, потом проверь подстановкой.</b>',
+    msg2: 'Готов? Поехали!'
   };
   if (text.includes('скорост') || text.includes('расстоян')) return {
-    msg1: 'Задача на движение. Формула: расстояние = скорость × время.',
-    msg2: 'Запиши что известно, выбери нужную формулу.'
+    msg1: 'Прежде чем решать — давай вспомним! 💡<br><b>Расстояние = скорость × время.</b>',
+    msg2: 'Готов? Поехали!'
   };
-  if (text.includes('периметр') || text.includes('площадь')) return {
-    msg1: 'Периметр — сумма сторон. Площадь — длина × ширина.',
-    msg2: 'Не забудь единицы измерения!'
-  };
-  return { msg1: 'Прочитай задание. Что нужно найти?', msg2: null };
+  return { msg1: 'Прочитай задание внимательно. Что нужно найти?', msg2: null };
 }
 
 // Добавить сообщение Умника
