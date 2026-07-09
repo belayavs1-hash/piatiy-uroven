@@ -8553,6 +8553,7 @@ function wtGoToNextPart(keepCurrent) {
       div.className = 'chat-msg bot';
       div.innerHTML = '<div class="chat-avatar"><img src="umnik_avatar2.png" alt="Умник"></div>'
         + '<div style="display:flex;flex-direction:column;gap:8px">'
+        + '<button onclick="document.getElementById(\'wt-chat\').scrollTop=0" style="padding:10px 20px;border-radius:20px;border:none;background:rgba(255,255,255,.08);color:#fbbf24;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit">📝 Списать в тетрадь</button>'
         + '<button onclick="afterWalkthrough()" style="padding:10px 20px;border-radius:20px;border:none;background:linear-gradient(135deg,#059669,#10b981);color:#fff;font-size:14px;font-weight:800;cursor:pointer;font-family:inherit">🏆 На главную</button>'
         + '<button onclick="showScreen(\'screen-homework\')" style="padding:10px 20px;border-radius:20px;border:none;background:rgba(255,255,255,.1);color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit">📚 Следующее задание</button>'
         + '</div>';
@@ -8824,6 +8825,7 @@ function checkWalkthrough() {
         div.className = 'chat-msg bot';
         div.innerHTML = '<div class="chat-avatar"><img src="umnik_avatar2.png" alt="Умник"></div>'
           + '<div style="display:flex;flex-direction:column;gap:8px">'
+          + '<button onclick="document.getElementById(\'wt-chat\').scrollTop=0" style="padding:10px 20px;border-radius:20px;border:none;background:rgba(255,255,255,.08);color:#fbbf24;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit">📝 Списать в тетрадь</button>'
           + '<button onclick="afterWalkthrough()" style="padding:10px 20px;border-radius:20px;border:none;background:linear-gradient(135deg,#059669,#10b981);color:#fff;font-size:14px;font-weight:800;cursor:pointer;font-family:inherit">🏆 На главную</button>'
           + '<button onclick="showScreen(\'screen-homework\')" style="padding:10px 20px;border-radius:20px;border:none;background:rgba(255,255,255,.1);color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit">📚 Следующее задание</button>'
           + '</div>';
