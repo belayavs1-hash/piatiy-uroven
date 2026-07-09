@@ -8357,6 +8357,30 @@ function getGeoSvg(text) {
   return null;
 }
 
+// Заменяет [РИСУНОК: название] в тексте на SVG-иллюстрацию
+function injectGeoTags(text) {
+  const GEO_KEYS = {
+    'отрезок': GEO_SVG.отрезок, 'луч': GEO_SVG.луч, 'прямая': GEO_SVG.прямая,
+    'угол': GEO_SVG.угол, 'треугольник': GEO_SVG.треугольник,
+    'квадрат': GEO_SVG.квадрат, 'прямоугольник': GEO_SVG.прямоугольник, 'куб': GEO_SVG.куб
+  };
+  return text.replace(/\[РИСУНОК:\s*([^\]]+)\]/gi, (_, name) => {
+    const key = name.trim().toLowerCase();
+    const svg = GEO_KEYS[key];
+    return svg ? '<div style="margin:6px 0">' + svg + '</div>' : '';
+  });
+}
+
+// Применяет injectGeoTags + автодетект по ключевым словам (если тег не вставлен)
+function processGeoReply(reply) {
+  const injected = injectGeoTags(reply);
+  if (injected !== reply) return injected; // AI сам вставил [РИСУНОК:]
+  // Иначе — автодетект по ключевым словам в тексте
+  const geoFig = getGeoSvg(reply);
+  if (geoFig) return reply + '<div style="margin-top:8px">' + geoFig + '</div>';
+  return reply;
+}
+
 // Конфигурация пунктов для задания 1.1
 const TASK_PARTS = {
   '1.1': {
@@ -8765,12 +8789,7 @@ function checkWalkthrough() {
         typingDiv2.remove();
         const reply = data.reply || 'Подумай ещё — ты на правильном пути!';
         wtTutorHistory.push({ role: 'assistant', content: reply });
-        const geoFig = getGeoSvg(reply);
-        if (geoFig) {
-          chatAddBot(reply + '<div style="margin-top:8px">' + geoFig + '</div>', false);
-        } else {
-          chatAddBot(reply, false);
-        }
+        chatAddBot(processGeoReply(reply), false);
       })
       .catch(() => {
         typingDiv2.remove();
@@ -8847,13 +8866,7 @@ function checkWalkthrough() {
     typingDiv.remove();
     const reply = data.reply || 'Попробуй ещё раз — ты на правильном пути!';
     wtTutorHistory.push({ role: 'assistant', content: reply });
-    // Показать геометрическую иллюстрацию если Умник упоминает фигуру
-    const geoFig = getGeoSvg(reply);
-    if (geoFig) {
-      chatAddBot(reply + '<div style="margin-top:8px">' + geoFig + '</div>', false);
-    } else {
-      chatAddBot(reply, false);
-    }
+    chatAddBot(processGeoReply(reply), false);
   })
   .catch(() => {
     typingDiv.remove();
@@ -8924,7 +8937,7 @@ function wtAskHint() {
     typingDiv.remove();
     const reply = data.reply || 'Попробуй разобрать: что дано в задаче и что нужно найти?';
     wtTutorHistory.push({ role: 'assistant', content: reply });
-    chatAddBot('💡 ' + reply, false);
+    chatAddBot('💡 ' + processGeoReply(reply), false);
   })
   .catch(() => {
     typingDiv.remove();
