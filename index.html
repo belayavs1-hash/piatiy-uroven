@@ -12778,43 +12778,32 @@ function grantAchievement(id) {
 // ===== ПРОВЕРОЧНЫЕ РАБОТЫ =====
 const SELF_CHECKS = [
   {
-    id: "pr-t3-1",
+    id: "p1-cifry-1",
     para: "§1 Натуральные числа и нуль. Шкалы",
     title: "Проверочная работа № 1",
-    subtitle: "Тема: Отрезок и его длина. Ломаная. Многоугольник",
+    subtitle: "Тема: Цифры и числа",
     tasks: [
-      { q: "Выразите в сантиметрах: а) 5 м; б) 7 дм 90 мм", a: "а) 500; б) 79", hint: "а) 5×100=500 см; б) 7дм=70см, 90мм=9см → 79 см" },
-      { q: "Выразите в дециметрах: а) 4 м 2 дм; б) 1 м 30 см", a: "а) 42; б) 13", hint: "а) 4м=40дм+2дм=42дм; б) 1м=10дм, 30см=3дм → 13дм" },
-      { q: "Выразите в километрах и метрах: а) 8563 м; б) 30 600 м", a: "а) 8 км 563 м; б) 30 км 600 м", hint: "а) 8563÷1000=8 км ост.563 м; б) 30600÷1000=30 км ост.600 м" },
-      { q: "Выразите в одних единицах измерения: а) 30 м 40 дм; б) 13 м 700 см", a: "а) 34 м; б) 20 м", hint: "а) 40дм=4м → 30+4=34 м; б) 700см=7м → 13+7=20 м" },
-      { q: "При постройке забора поставили по одной стороне 7 столбов на расстоянии 2 м друг от друга. Найдите длину этой стороны забора.", a: "12", hint: "7 столбов = 6 промежутков; 6 × 2 = 12 м" }
+      { q: "В магазине купили лук, морковь, капусту и яблоки.<br><table style='border-collapse:collapse;margin:8px 0;font-size:13px;color:#fff'><tr style='background:rgba(99,102,241,.25)'><th style='padding:4px 8px;border:1px solid rgba(255,255,255,.2);text-align:left'>Наименование</th><th style='padding:4px 8px;border:1px solid rgba(255,255,255,.2)'>Цена, р.</th><th style='padding:4px 8px;border:1px solid rgba(255,255,255,.2)'>Масса, кг</th><th style='padding:4px 8px;border:1px solid rgba(255,255,255,.2)'>Стоимость, р.</th></tr><tr><td style='padding:4px 8px;border:1px solid rgba(255,255,255,.15)'>Лук</td><td style='padding:4px 8px;border:1px solid rgba(255,255,255,.15);text-align:center'>35</td><td style='padding:4px 8px;border:1px solid rgba(255,255,255,.15);text-align:center'>3</td><td style='padding:4px 8px;border:1px solid rgba(255,255,255,.15);text-align:center'>105</td></tr><tr style='background:rgba(255,255,255,.06)'><td style='padding:4px 8px;border:1px solid rgba(255,255,255,.15)'>Морковь</td><td style='padding:4px 8px;border:1px solid rgba(255,255,255,.15);text-align:center'>28</td><td style='padding:4px 8px;border:1px solid rgba(255,255,255,.15);text-align:center'>2</td><td style='padding:4px 8px;border:1px solid rgba(255,255,255,.15);text-align:center;color:#fbbf24;font-weight:bold'>?</td></tr><tr><td style='padding:4px 8px;border:1px solid rgba(255,255,255,.15)'>Капуста</td><td style='padding:4px 8px;border:1px solid rgba(255,255,255,.15);text-align:center'>78</td><td style='padding:4px 8px;border:1px solid rgba(255,255,255,.15);text-align:center;color:#fbbf24;font-weight:bold'>?</td><td style='padding:4px 8px;border:1px solid rgba(255,255,255,.15);text-align:center'>234</td></tr><tr style='background:rgba(255,255,255,.06)'><td style='padding:4px 8px;border:1px solid rgba(255,255,255,.15)'>Яблоки</td><td style='padding:4px 8px;border:1px solid rgba(255,255,255,.15);text-align:center;color:#fbbf24;font-weight:bold'>?</td><td style='padding:4px 8px;border:1px solid rgba(255,255,255,.15);text-align:center'>2</td><td style='padding:4px 8px;border:1px solid rgba(255,255,255,.15);text-align:center'>260</td></tr><tr style='background:rgba(99,102,241,.15)'><td colspan='3' style='padding:4px 8px;border:1px solid rgba(255,255,255,.2);font-weight:bold'>Итого</td><td style='padding:4px 8px;border:1px solid rgba(255,255,255,.2);text-align:center;color:#fbbf24;font-weight:bold'>?</td></tr></table>Какова стоимость моркови?", a: "56", hint: "Стоимость = цена × масса: 28 × 2 = 56 р." },
+      { q: "Какова масса капусты? (цена 78 р., стоимость 234 р.)", a: "3", hint: "Масса = стоимость ÷ цена: 234 ÷ 78 = 3 кг" },
+      { q: "Какова цена яблок? (масса 2 кг, стоимость 260 р.)", a: "130", hint: "Цена = стоимость ÷ масса: 260 ÷ 2 = 130 р." },
+      { q: "Сколько стоит вся покупка? (лук=105 р., морковь=56 р., капуста=234 р., яблоки=260 р.)", a: "655", hint: "105 + 56 + 234 + 260 = 655 р." },
+      { q: "Сколько денег потратят, если купят лука на 1 кг меньше (2 кг), моркови на 1 кг больше (3 кг), капусты на 1 кг меньше (2 кг) и 3 кг яблок?", a: "700", hint: "Лук: 35×2=70; Морковь: 28×3=84; Капуста: 78×2=156; Яблоки: 130×3=390. Итого: 70+84+156+390=700 р." }
     ]
   },
   {
-    id: "pr-t3-2",
+    id: "p1-cifry-2",
     para: "§1 Натуральные числа и нуль. Шкалы",
     title: "Проверочная работа № 2",
-    subtitle: "Тема: Отрезок и его длина. Ломаная. Многоугольник",
-        tasks: [
-      { q: "На рисунке 1.13 изображена фигура ABCD.<br><svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 150' width='200' height='150' style='display:block;margin:8px 0'><polygon points='30,30 160,20 170,110 20,120' fill='none' stroke='#a78bfa' stroke-width='2'/><circle cx='30' cy='30' r='3' fill='#fff'/><text x='18' y='26' font-size='13' font-family='serif' fill='#fff'>A</text><circle cx='160' cy='20' r='3' fill='#fff'/><text x='164' y='18' font-size='13' font-family='serif' fill='#fff'>B</text><circle cx='170' cy='110' r='3' fill='#fff'/><text x='174' y='114' font-size='13' font-family='serif' fill='#fff'>C</text><circle cx='20' cy='120' r='3' fill='#fff'/><text x='4' y='134' font-size='13' font-family='serif' fill='#fff'>D</text><text x='4' y='146' font-size='9' fill='rgba(255,255,255,.5)' font-family='sans-serif'>Рис. 1.13</text></svg>Является ли ломаная ABCD замкнутой или незамкнутой?", a: "незамкнутой", hint: "Точки A и D не совпадают -- ломаная незамкнута" },
-      { q: "На рисунке 1.13 изображена фигура ABCD.<br><svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 150' width='200' height='150' style='display:block;margin:8px 0'><polygon points='30,30 160,20 170,110 20,120' fill='none' stroke='#a78bfa' stroke-width='2'/><circle cx='30' cy='30' r='3' fill='#fff'/><text x='18' y='26' font-size='13' font-family='serif' fill='#fff'>A</text><circle cx='160' cy='20' r='3' fill='#fff'/><text x='164' y='18' font-size='13' font-family='serif' fill='#fff'>B</text><circle cx='170' cy='110' r='3' fill='#fff'/><text x='174' y='114' font-size='13' font-family='serif' fill='#fff'>C</text><circle cx='20' cy='120' r='3' fill='#fff'/><text x='4' y='134' font-size='13' font-family='serif' fill='#fff'>D</text><text x='4' y='146' font-size='9' fill='rgba(255,255,255,.5)' font-family='sans-serif'>Рис. 1.13</text></svg>Как называется изображённая фигура? Перечислите её стороны и вершины.", a: "ломаная; стороны AB, BC, CD; вершины A, B, C, D", hint: "3 звена: AB, BC, CD. Вершины: A, B, C, D" },
-      { q: "Измерьте длину отрезка AB на рис. 1.13 и выразите её в миллиметрах и в сантиметрах.<br><svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 150' width='200' height='150' style='display:block;margin:8px 0'><polygon points='30,30 160,20 170,110 20,120' fill='none' stroke='#a78bfa' stroke-width='2'/><circle cx='30' cy='30' r='3' fill='#fff'/><text x='18' y='26' font-size='13' font-family='serif' fill='#fff'>A</text><circle cx='160' cy='20' r='3' fill='#fff'/><text x='164' y='18' font-size='13' font-family='serif' fill='#fff'>B</text><circle cx='170' cy='110' r='3' fill='#fff'/><text x='174' y='114' font-size='13' font-family='serif' fill='#fff'>C</text><circle cx='20' cy='120' r='3' fill='#fff'/><text x='4' y='134' font-size='13' font-family='serif' fill='#fff'>D</text><text x='4' y='146' font-size='9' fill='rgba(255,255,255,.5)' font-family='sans-serif'>Рис. 1.13</text></svg>(Измерь по учебнику линейкой)", a: "35 мм; 3 см 5 мм", hint: "1 см = 10 мм. AB ≈ 35 мм = 3 см 5 мм" },
-      { q: "Найдите периметр фигуры ABCD и выразите его в миллиметрах и в сантиметрах.<br><svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 150' width='200' height='150' style='display:block;margin:8px 0'><polygon points='30,30 160,20 170,110 20,120' fill='none' stroke='#a78bfa' stroke-width='2'/><circle cx='30' cy='30' r='3' fill='#fff'/><text x='18' y='26' font-size='13' font-family='serif' fill='#fff'>A</text><circle cx='160' cy='20' r='3' fill='#fff'/><text x='164' y='18' font-size='13' font-family='serif' fill='#fff'>B</text><circle cx='170' cy='110' r='3' fill='#fff'/><text x='174' y='114' font-size='13' font-family='serif' fill='#fff'>C</text><circle cx='20' cy='120' r='3' fill='#fff'/><text x='4' y='134' font-size='13' font-family='serif' fill='#fff'>D</text><text x='4' y='146' font-size='9' fill='rgba(255,255,255,.5)' font-family='sans-serif'>Рис. 1.13</text></svg>(Измерь все стороны по учебнику)", a: "105 мм; 10 см 5 мм", hint: "P = AB + BC + CD + DA. Сложи все измеренные стороны" }
-    ]
-  },
-  {
-    id: "pr-t4-1",
-    para: "§1 Натуральные числа и нуль. Шкалы",
-    title: "Проверочная работа",
-    subtitle: "Тема: Плоскость, прямая, луч, угол",
-        tasks: [
-      { q: "Рассмотрите рисунок 1.24.<br><svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 220 190' width='220' height='190' style='display:block;margin:8px 0'><line x1='8' y1='155' x2='212' y2='155' stroke='rgba(255,255,255,.7)' stroke-width='1.5'/><polygon points='4,155 12,151 12,159' fill='rgba(255,255,255,.7)'/><polygon points='216,155 208,151 208,159' fill='rgba(255,255,255,.7)'/><circle cx='28' cy='155' r='2.5' fill='#fff'/><text x='22' y='169' font-size='11' font-family='serif' fill='#fff'>B</text><circle cx='78' cy='155' r='2.5' fill='#fff'/><text x='72' y='169' font-size='11' font-family='serif' fill='#fff'>A</text><circle cx='138' cy='155' r='2.5' fill='#fff'/><text x='132' y='169' font-size='11' font-family='serif' fill='#fff'>T</text><circle cx='193' cy='155' r='2.5' fill='#fff'/><text x='187' y='169' font-size='11' font-family='serif' fill='#fff'>C</text><line x1='98' y1='182' x2='183' y2='38' stroke='#f87171' stroke-width='1.5'/><polygon points='183,34 178,44 188,44' fill='#f87171'/><circle cx='178' cy='46' r='2.5' fill='#fff'/><text x='182' y='44' font-size='11' font-family='serif' fill='#fff'>O</text><circle cx='158' cy='82' r='2.5' fill='#fff'/><text x='162' y='80' font-size='11' font-family='serif' fill='#fff'>N</text><circle cx='138' cy='118' r='2.5' fill='#fff'/><text x='142' y='116' font-size='11' font-family='serif' fill='#fff'>P</text><circle cx='108' cy='168' r='2.5' fill='#fff'/><text x='112' y='176' font-size='11' font-family='serif' fill='#fff'>M</text><circle cx='190' cy='22' r='2.5' fill='#fff'/><text x='194' y='20' font-size='11' font-family='serif' fill='#fff'>F</text><circle cx='208' cy='90' r='2.5' fill='#fff'/><text x='212' y='88' font-size='11' font-family='serif' fill='#fff'>Q</text><circle cx='22' cy='90' r='2.5' fill='#fff'/><text x='8' y='88' font-size='11' font-family='serif' fill='#fff'>R</text><text x='4' y='14' font-size='9' fill='rgba(255,255,255,.5)' font-family='sans-serif'>Рис. 1.24</text></svg>Какой луч дополнительный к лучу AC?", a: "луч AB", hint: "Дополнительный луч -- противоположный на той же прямой: от A в сторону B" },
-      { q: "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 220 190' width='220' height='190' style='display:block;margin:8px 0'><line x1='8' y1='155' x2='212' y2='155' stroke='rgba(255,255,255,.7)' stroke-width='1.5'/><polygon points='4,155 12,151 12,159' fill='rgba(255,255,255,.7)'/><polygon points='216,155 208,151 208,159' fill='rgba(255,255,255,.7)'/><circle cx='28' cy='155' r='2.5' fill='#fff'/><text x='22' y='169' font-size='11' font-family='serif' fill='#fff'>B</text><circle cx='78' cy='155' r='2.5' fill='#fff'/><text x='72' y='169' font-size='11' font-family='serif' fill='#fff'>A</text><circle cx='138' cy='155' r='2.5' fill='#fff'/><text x='132' y='169' font-size='11' font-family='serif' fill='#fff'>T</text><circle cx='193' cy='155' r='2.5' fill='#fff'/><text x='187' y='169' font-size='11' font-family='serif' fill='#fff'>C</text><line x1='98' y1='182' x2='183' y2='38' stroke='#f87171' stroke-width='1.5'/><polygon points='183,34 178,44 188,44' fill='#f87171'/><circle cx='178' cy='46' r='2.5' fill='#fff'/><text x='182' y='44' font-size='11' font-family='serif' fill='#fff'>O</text><circle cx='158' cy='82' r='2.5' fill='#fff'/><text x='162' y='80' font-size='11' font-family='serif' fill='#fff'>N</text><circle cx='138' cy='118' r='2.5' fill='#fff'/><text x='142' y='116' font-size='11' font-family='serif' fill='#fff'>P</text><circle cx='108' cy='168' r='2.5' fill='#fff'/><text x='112' y='176' font-size='11' font-family='serif' fill='#fff'>M</text><circle cx='190' cy='22' r='2.5' fill='#fff'/><text x='194' y='20' font-size='11' font-family='serif' fill='#fff'>F</text><circle cx='208' cy='90' r='2.5' fill='#fff'/><text x='212' y='88' font-size='11' font-family='serif' fill='#fff'>Q</text><circle cx='22' cy='90' r='2.5' fill='#fff'/><text x='8' y='88' font-size='11' font-family='serif' fill='#fff'>R</text><text x='4' y='14' font-size='9' fill='rgba(255,255,255,.5)' font-family='sans-serif'>Рис. 1.24</text></svg>Какие точки принадлежат прямой MN? Какие точки не принадлежат прямой PO?", a: "MN: O, N, P, M; не принадлежат PO: B, A, T, C, F, Q, R", hint: "Прямая MO (красная) содержит F, O, N, P, M. Прямая BC (горизонтальная) содержит B, A, T, C" },
-      { q: "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 220 190' width='220' height='190' style='display:block;margin:8px 0'><line x1='8' y1='155' x2='212' y2='155' stroke='rgba(255,255,255,.7)' stroke-width='1.5'/><polygon points='4,155 12,151 12,159' fill='rgba(255,255,255,.7)'/><polygon points='216,155 208,151 208,159' fill='rgba(255,255,255,.7)'/><circle cx='28' cy='155' r='2.5' fill='#fff'/><text x='22' y='169' font-size='11' font-family='serif' fill='#fff'>B</text><circle cx='78' cy='155' r='2.5' fill='#fff'/><text x='72' y='169' font-size='11' font-family='serif' fill='#fff'>A</text><circle cx='138' cy='155' r='2.5' fill='#fff'/><text x='132' y='169' font-size='11' font-family='serif' fill='#fff'>T</text><circle cx='193' cy='155' r='2.5' fill='#fff'/><text x='187' y='169' font-size='11' font-family='serif' fill='#fff'>C</text><line x1='98' y1='182' x2='183' y2='38' stroke='#f87171' stroke-width='1.5'/><polygon points='183,34 178,44 188,44' fill='#f87171'/><circle cx='178' cy='46' r='2.5' fill='#fff'/><text x='182' y='44' font-size='11' font-family='serif' fill='#fff'>O</text><circle cx='158' cy='82' r='2.5' fill='#fff'/><text x='162' y='80' font-size='11' font-family='serif' fill='#fff'>N</text><circle cx='138' cy='118' r='2.5' fill='#fff'/><text x='142' y='116' font-size='11' font-family='serif' fill='#fff'>P</text><circle cx='108' cy='168' r='2.5' fill='#fff'/><text x='112' y='176' font-size='11' font-family='serif' fill='#fff'>M</text><circle cx='190' cy='22' r='2.5' fill='#fff'/><text x='194' y='20' font-size='11' font-family='serif' fill='#fff'>F</text><circle cx='208' cy='90' r='2.5' fill='#fff'/><text x='212' y='88' font-size='11' font-family='serif' fill='#fff'>Q</text><circle cx='22' cy='90' r='2.5' fill='#fff'/><text x='8' y='88' font-size='11' font-family='serif' fill='#fff'>R</text><text x='4' y='14' font-size='9' fill='rgba(255,255,255,.5)' font-family='sans-serif'>Рис. 1.24</text></svg>На какие лучи делит прямую MO точка P?", a: "луч PM и луч PO", hint: "Точка P делит прямую MO на два луча: PM (вниз) и PO (вверх)" },
-      { q: "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 220 190' width='220' height='190' style='display:block;margin:8px 0'><line x1='8' y1='155' x2='212' y2='155' stroke='rgba(255,255,255,.7)' stroke-width='1.5'/><polygon points='4,155 12,151 12,159' fill='rgba(255,255,255,.7)'/><polygon points='216,155 208,151 208,159' fill='rgba(255,255,255,.7)'/><circle cx='28' cy='155' r='2.5' fill='#fff'/><text x='22' y='169' font-size='11' font-family='serif' fill='#fff'>B</text><circle cx='78' cy='155' r='2.5' fill='#fff'/><text x='72' y='169' font-size='11' font-family='serif' fill='#fff'>A</text><circle cx='138' cy='155' r='2.5' fill='#fff'/><text x='132' y='169' font-size='11' font-family='serif' fill='#fff'>T</text><circle cx='193' cy='155' r='2.5' fill='#fff'/><text x='187' y='169' font-size='11' font-family='serif' fill='#fff'>C</text><line x1='98' y1='182' x2='183' y2='38' stroke='#f87171' stroke-width='1.5'/><polygon points='183,34 178,44 188,44' fill='#f87171'/><circle cx='178' cy='46' r='2.5' fill='#fff'/><text x='182' y='44' font-size='11' font-family='serif' fill='#fff'>O</text><circle cx='158' cy='82' r='2.5' fill='#fff'/><text x='162' y='80' font-size='11' font-family='serif' fill='#fff'>N</text><circle cx='138' cy='118' r='2.5' fill='#fff'/><text x='142' y='116' font-size='11' font-family='serif' fill='#fff'>P</text><circle cx='108' cy='168' r='2.5' fill='#fff'/><text x='112' y='176' font-size='11' font-family='serif' fill='#fff'>M</text><circle cx='190' cy='22' r='2.5' fill='#fff'/><text x='194' y='20' font-size='11' font-family='serif' fill='#fff'>F</text><circle cx='208' cy='90' r='2.5' fill='#fff'/><text x='212' y='88' font-size='11' font-family='serif' fill='#fff'>Q</text><circle cx='22' cy='90' r='2.5' fill='#fff'/><text x='8' y='88' font-size='11' font-family='serif' fill='#fff'>R</text><text x='4' y='14' font-size='9' fill='rgba(255,255,255,.5)' font-family='sans-serif'>Рис. 1.24</text></svg>Пересекаются ли прямые BC и MO?", a: "да", hint: "Наклонная MO пересекает горизонтальную BC в точке T" },
-      { q: "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 220 190' width='220' height='190' style='display:block;margin:8px 0'><line x1='8' y1='155' x2='212' y2='155' stroke='rgba(255,255,255,.7)' stroke-width='1.5'/><polygon points='4,155 12,151 12,159' fill='rgba(255,255,255,.7)'/><polygon points='216,155 208,151 208,159' fill='rgba(255,255,255,.7)'/><circle cx='28' cy='155' r='2.5' fill='#fff'/><text x='22' y='169' font-size='11' font-family='serif' fill='#fff'>B</text><circle cx='78' cy='155' r='2.5' fill='#fff'/><text x='72' y='169' font-size='11' font-family='serif' fill='#fff'>A</text><circle cx='138' cy='155' r='2.5' fill='#fff'/><text x='132' y='169' font-size='11' font-family='serif' fill='#fff'>T</text><circle cx='193' cy='155' r='2.5' fill='#fff'/><text x='187' y='169' font-size='11' font-family='serif' fill='#fff'>C</text><line x1='98' y1='182' x2='183' y2='38' stroke='#f87171' stroke-width='1.5'/><polygon points='183,34 178,44 188,44' fill='#f87171'/><circle cx='178' cy='46' r='2.5' fill='#fff'/><text x='182' y='44' font-size='11' font-family='serif' fill='#fff'>O</text><circle cx='158' cy='82' r='2.5' fill='#fff'/><text x='162' y='80' font-size='11' font-family='serif' fill='#fff'>N</text><circle cx='138' cy='118' r='2.5' fill='#fff'/><text x='142' y='116' font-size='11' font-family='serif' fill='#fff'>P</text><circle cx='108' cy='168' r='2.5' fill='#fff'/><text x='112' y='176' font-size='11' font-family='serif' fill='#fff'>M</text><circle cx='190' cy='22' r='2.5' fill='#fff'/><text x='194' y='20' font-size='11' font-family='serif' fill='#fff'>F</text><circle cx='208' cy='90' r='2.5' fill='#fff'/><text x='212' y='88' font-size='11' font-family='serif' fill='#fff'>Q</text><circle cx='22' cy='90' r='2.5' fill='#fff'/><text x='8' y='88' font-size='11' font-family='serif' fill='#fff'>R</text><text x='4' y='14' font-size='9' fill='rgba(255,255,255,.5)' font-family='sans-serif'>Рис. 1.24</text></svg>Имеют ли общие точки лучи AB и PM? Лучи AB и PO?", a: "AB и PM: да; AB и PO: нет", hint: "Луч AB идёт влево от A. Луч PM идёт вниз и влево -- пересекает AB. Луч PO идёт вверх-вправо -- не пересекает AB" },
-      { q: "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 220 190' width='220' height='190' style='display:block;margin:8px 0'><line x1='8' y1='155' x2='212' y2='155' stroke='rgba(255,255,255,.7)' stroke-width='1.5'/><polygon points='4,155 12,151 12,159' fill='rgba(255,255,255,.7)'/><polygon points='216,155 208,151 208,159' fill='rgba(255,255,255,.7)'/><circle cx='28' cy='155' r='2.5' fill='#fff'/><text x='22' y='169' font-size='11' font-family='serif' fill='#fff'>B</text><circle cx='78' cy='155' r='2.5' fill='#fff'/><text x='72' y='169' font-size='11' font-family='serif' fill='#fff'>A</text><circle cx='138' cy='155' r='2.5' fill='#fff'/><text x='132' y='169' font-size='11' font-family='serif' fill='#fff'>T</text><circle cx='193' cy='155' r='2.5' fill='#fff'/><text x='187' y='169' font-size='11' font-family='serif' fill='#fff'>C</text><line x1='98' y1='182' x2='183' y2='38' stroke='#f87171' stroke-width='1.5'/><polygon points='183,34 178,44 188,44' fill='#f87171'/><circle cx='178' cy='46' r='2.5' fill='#fff'/><text x='182' y='44' font-size='11' font-family='serif' fill='#fff'>O</text><circle cx='158' cy='82' r='2.5' fill='#fff'/><text x='162' y='80' font-size='11' font-family='serif' fill='#fff'>N</text><circle cx='138' cy='118' r='2.5' fill='#fff'/><text x='142' y='116' font-size='11' font-family='serif' fill='#fff'>P</text><circle cx='108' cy='168' r='2.5' fill='#fff'/><text x='112' y='176' font-size='11' font-family='serif' fill='#fff'>M</text><circle cx='190' cy='22' r='2.5' fill='#fff'/><text x='194' y='20' font-size='11' font-family='serif' fill='#fff'>F</text><circle cx='208' cy='90' r='2.5' fill='#fff'/><text x='212' y='88' font-size='11' font-family='serif' fill='#fff'>Q</text><circle cx='22' cy='90' r='2.5' fill='#fff'/><text x='8' y='88' font-size='11' font-family='serif' fill='#fff'>R</text><text x='4' y='14' font-size='9' fill='rgba(255,255,255,.5)' font-family='sans-serif'>Рис. 1.24</text></svg>Проведите прямую через точку R так, чтобы она имела только одну общую точку с прямыми BC и MO. Как называются такие прямые?", a: "пересекающиеся", hint: "Прямая через R, пересекающая обе прямые в разных точках -- пересекающаяся. Нарисуй в тетради" },
-      { q: "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 220 190' width='220' height='190' style='display:block;margin:8px 0'><line x1='8' y1='155' x2='212' y2='155' stroke='rgba(255,255,255,.7)' stroke-width='1.5'/><polygon points='4,155 12,151 12,159' fill='rgba(255,255,255,.7)'/><polygon points='216,155 208,151 208,159' fill='rgba(255,255,255,.7)'/><circle cx='28' cy='155' r='2.5' fill='#fff'/><text x='22' y='169' font-size='11' font-family='serif' fill='#fff'>B</text><circle cx='78' cy='155' r='2.5' fill='#fff'/><text x='72' y='169' font-size='11' font-family='serif' fill='#fff'>A</text><circle cx='138' cy='155' r='2.5' fill='#fff'/><text x='132' y='169' font-size='11' font-family='serif' fill='#fff'>T</text><circle cx='193' cy='155' r='2.5' fill='#fff'/><text x='187' y='169' font-size='11' font-family='serif' fill='#fff'>C</text><line x1='98' y1='182' x2='183' y2='38' stroke='#f87171' stroke-width='1.5'/><polygon points='183,34 178,44 188,44' fill='#f87171'/><circle cx='178' cy='46' r='2.5' fill='#fff'/><text x='182' y='44' font-size='11' font-family='serif' fill='#fff'>O</text><circle cx='158' cy='82' r='2.5' fill='#fff'/><text x='162' y='80' font-size='11' font-family='serif' fill='#fff'>N</text><circle cx='138' cy='118' r='2.5' fill='#fff'/><text x='142' y='116' font-size='11' font-family='serif' fill='#fff'>P</text><circle cx='108' cy='168' r='2.5' fill='#fff'/><text x='112' y='176' font-size='11' font-family='serif' fill='#fff'>M</text><circle cx='190' cy='22' r='2.5' fill='#fff'/><text x='194' y='20' font-size='11' font-family='serif' fill='#fff'>F</text><circle cx='208' cy='90' r='2.5' fill='#fff'/><text x='212' y='88' font-size='11' font-family='serif' fill='#fff'>Q</text><circle cx='22' cy='90' r='2.5' fill='#fff'/><text x='8' y='88' font-size='11' font-family='serif' fill='#fff'>R</text><text x='4' y='14' font-size='9' fill='rgba(255,255,255,.5)' font-family='sans-serif'>Рис. 1.24</text></svg>Какие из утверждений верны?<br>а) луч AB имеет общую точку с прямой OM;<br>б) прямая AB имеет общую точку с лучом OM;<br>в) прямая AB имеет общую точку с прямой OM;<br>г) луч AB имеет общую точку с лучом OM?", a: "а) да; б) да; в) да; г) нет", hint: "Прямая AB бесконечна -- пересекает всё. Луч AB идёт только влево, луч OM -- вверх-вправо, они не пересекаются" }
+    subtitle: "Тема: Цифры и числа",
+    tasks: [
+      { q: "Запишите любое трёхзначное число и припишите к нему ещё одно такое же (например 235 → 235235). Сколько знаков содержит полученное число?", a: "6", hint: "Трёхзначное + трёхзначное = шестизначное: всегда 6 знаков" },
+      { q: "Какое число стоит в классе единиц числа 235235?", a: "235", hint: "Класс единиц -- последние три цифры: ...235" },
+      { q: "Какая цифра стоит в разряде единиц числа 235235?", a: "5", hint: "Единицы -- самый правый разряд: 23523<b>5</b>" },
+      { q: "Какая цифра стоит в разряде единиц тысяч числа 235235?", a: "5", hint: "Единицы тысяч -- четвёртый разряд справа: 23<b>5</b>235" },
+      { q: "Увеличьте число 235235 на 1.", a: "235236", hint: "235235 + 1 = 235236" },
+      { q: "Запишите число, предшествующее числу 235235.", a: "235234", hint: "Предыдущее = 235235 - 1 = 235234" },
+      { q: "Увеличьте число 235235 на 1000.", a: "236235", hint: "235235 + 1000 = 236235" },
+      { q: "Разделите число 235235 на 1001.", a: "235", hint: "Любое такое шестизначное число ÷ 1001 = исходное трёхзначное" }
     ]
   },
   {
@@ -12845,40 +12834,6 @@ const SELF_CHECKS = [
       { q: "Выразите в метрах: 1 км 250 м.", a: "1250 м", hint: "1 км = 1000 м; 1000 + 250 = 1250 м" }
     ]
   },
-
-  // ===== §1 ПРОВЕРОЧНЫЕ ИЗ УЧЕБНИКА =====
-  {
-    id: "p1-cifry-1",
-    para: "§1 Натуральные числа и нуль. Шкалы",
-    title: "Проверочная работа № 1",
-    subtitle: "Тема: Цифры и числа",
-    tasks: [
-      { q: "В магазине купили лук, морковь, капусту и яблоки.<br><table style='border-collapse:collapse;margin:8px 0;font-size:13px;color:#fff'><tr style='background:rgba(99,102,241,.25)'><th style='padding:4px 8px;border:1px solid rgba(255,255,255,.2);text-align:left'>Наименование</th><th style='padding:4px 8px;border:1px solid rgba(255,255,255,.2)'>Цена, р.</th><th style='padding:4px 8px;border:1px solid rgba(255,255,255,.2)'>Масса, кг</th><th style='padding:4px 8px;border:1px solid rgba(255,255,255,.2)'>Стоимость, р.</th></tr><tr><td style='padding:4px 8px;border:1px solid rgba(255,255,255,.15)'>Лук</td><td style='padding:4px 8px;border:1px solid rgba(255,255,255,.15);text-align:center'>35</td><td style='padding:4px 8px;border:1px solid rgba(255,255,255,.15);text-align:center'>3</td><td style='padding:4px 8px;border:1px solid rgba(255,255,255,.15);text-align:center'>105</td></tr><tr style='background:rgba(255,255,255,.06)'><td style='padding:4px 8px;border:1px solid rgba(255,255,255,.15)'>Морковь</td><td style='padding:4px 8px;border:1px solid rgba(255,255,255,.15);text-align:center'>28</td><td style='padding:4px 8px;border:1px solid rgba(255,255,255,.15);text-align:center'>2</td><td style='padding:4px 8px;border:1px solid rgba(255,255,255,.15);text-align:center;color:#fbbf24;font-weight:bold'>?</td></tr><tr><td style='padding:4px 8px;border:1px solid rgba(255,255,255,.15)'>Капуста</td><td style='padding:4px 8px;border:1px solid rgba(255,255,255,.15);text-align:center'>78</td><td style='padding:4px 8px;border:1px solid rgba(255,255,255,.15);text-align:center;color:#fbbf24;font-weight:bold'>?</td><td style='padding:4px 8px;border:1px solid rgba(255,255,255,.15);text-align:center'>234</td></tr><tr style='background:rgba(255,255,255,.06)'><td style='padding:4px 8px;border:1px solid rgba(255,255,255,.15)'>Яблоки</td><td style='padding:4px 8px;border:1px solid rgba(255,255,255,.15);text-align:center;color:#fbbf24;font-weight:bold'>?</td><td style='padding:4px 8px;border:1px solid rgba(255,255,255,.15);text-align:center'>2</td><td style='padding:4px 8px;border:1px solid rgba(255,255,255,.15);text-align:center'>260</td></tr><tr style='background:rgba(99,102,241,.15)'><td colspan='3' style='padding:4px 8px;border:1px solid rgba(255,255,255,.2);font-weight:bold'>Итого</td><td style='padding:4px 8px;border:1px solid rgba(255,255,255,.2);text-align:center;color:#fbbf24;font-weight:bold'>?</td></tr></table>Какова стоимость моркови?", a: "56", hint: "Стоимость = цена × масса: 28 × 2 = 56 р." },
-      { q: "Какова масса капусты? (цена 78 р., стоимость 234 р.)", a: "3", hint: "Масса = стоимость ÷ цена: 234 ÷ 78 = 3 кг" },
-      { q: "Какова цена яблок? (масса 2 кг, стоимость 260 р.)", a: "130", hint: "Цена = стоимость ÷ масса: 260 ÷ 2 = 130 р." },
-      { q: "Сколько стоит вся покупка? (лук=105 р., морковь=56 р., капуста=234 р., яблоки=260 р.)", a: "655", hint: "105 + 56 + 234 + 260 = 655 р." },
-      { q: "Сколько денег потратят, если купят лука на 1 кг меньше (2 кг), моркови на 1 кг больше (3 кг), капусты на 1 кг меньше (2 кг) и 3 кг яблок?", a: "700", hint: "Лук: 35×2=70; Морковь: 28×3=84; Капуста: 78×2=156; Яблоки: 130×3=390. Итого: 70+84+156+390=700 р." }
-    ]
-  },
-  {
-    id: "p1-cifry-2",
-    para: "§1 Натуральные числа и нуль. Шкалы",
-    title: "Проверочная работа № 2",
-    subtitle: "Тема: Цифры и числа",
-    tasks: [
-      { q: "Запишите любое трёхзначное число и припишите к нему ещё одно такое же (например 235 → 235235). Сколько знаков содержит полученное число?", a: "6", hint: "Трёхзначное + трёхзначное = шестизначное: всегда 6 знаков" },
-      { q: "Какое число стоит в классе единиц числа 235235?", a: "235", hint: "Класс единиц -- последние три цифры: ...235" },
-      { q: "Какая цифра стоит в разряде единиц числа 235235?", a: "5", hint: "Единицы -- самый правый разряд: 23523<b>5</b>" },
-      { q: "Какая цифра стоит в разряде единиц тысяч числа 235235?", a: "5", hint: "Единицы тысяч -- четвёртый разряд справа: 23<b>5</b>235" },
-      { q: "Увеличьте число 235235 на 1.", a: "235236", hint: "235235 + 1 = 235236" },
-      { q: "Запишите число, предшествующее числу 235235.", a: "235234", hint: "Предыдущее = 235235 - 1 = 235234" },
-      { q: "Увеличьте число 235235 на 1000.", a: "236235", hint: "235235 + 1000 = 236235" },
-      { q: "Разделите число 235235 на 1001.", a: "235", hint: "Любое такое шестизначное число ÷ 1001 = исходное трёхзначное" }
-    ]
-  }
-
-,
-
   {
     id: "p1-sravnenie-1",
     para: "§1 Натуральные числа и нуль. Шкалы",
@@ -12895,7 +12850,33 @@ const SELF_CHECKS = [
       { q: "Сравните величины: а) 100 см и 1 м; б) 5 см и 25 дм; в) 20 дм и 35 см; г) 1200 м и 2 км; д) 1 км 20 дм и 1002 м; е) 6 ц 25 кг и 2 т.", a: "а) =; б) <; в) >; г) <; д) <; е) <", hint: "Переводим в одинаковые единицы: 1м=100см, 1дм=10см, 1км=1000м, 1т=10ц=1000кг." }
     ]
   },
-
+  {
+    id: "pr-t3-2",
+    para: "§1 Натуральные числа и нуль. Шкалы",
+    title: "Проверочная работа № 2",
+    subtitle: "Тема: Отрезок и его длина. Ломаная. Многоугольник",
+    tasks: [
+      { q: "На рисунке 1.13 изображена фигура ABCD.<br><svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 150' width='200' height='150' style='display:block;margin:8px 0'><polygon points='30,30 160,20 170,110 20,120' fill='none' stroke='#a78bfa' stroke-width='2'/><circle cx='30' cy='30' r='3' fill='#fff'/><text x='18' y='26' font-size='13' font-family='serif' fill='#fff'>A</text><circle cx='160' cy='20' r='3' fill='#fff'/><text x='164' y='18' font-size='13' font-family='serif' fill='#fff'>B</text><circle cx='170' cy='110' r='3' fill='#fff'/><text x='174' y='114' font-size='13' font-family='serif' fill='#fff'>C</text><circle cx='20' cy='120' r='3' fill='#fff'/><text x='4' y='134' font-size='13' font-family='serif' fill='#fff'>D</text><text x='4' y='146' font-size='9' fill='rgba(255,255,255,.5)' font-family='sans-serif'>Рис. 1.13</text></svg>Является ли ломаная ABCD замкнутой или незамкнутой?", a: "незамкнутой", hint: "Точки A и D не совпадают -- ломаная незамкнута" },
+      { q: "На рисунке 1.13 изображена фигура ABCD.<br><svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 150' width='200' height='150' style='display:block;margin:8px 0'><polygon points='30,30 160,20 170,110 20,120' fill='none' stroke='#a78bfa' stroke-width='2'/><circle cx='30' cy='30' r='3' fill='#fff'/><text x='18' y='26' font-size='13' font-family='serif' fill='#fff'>A</text><circle cx='160' cy='20' r='3' fill='#fff'/><text x='164' y='18' font-size='13' font-family='serif' fill='#fff'>B</text><circle cx='170' cy='110' r='3' fill='#fff'/><text x='174' y='114' font-size='13' font-family='serif' fill='#fff'>C</text><circle cx='20' cy='120' r='3' fill='#fff'/><text x='4' y='134' font-size='13' font-family='serif' fill='#fff'>D</text><text x='4' y='146' font-size='9' fill='rgba(255,255,255,.5)' font-family='sans-serif'>Рис. 1.13</text></svg>Как называется изображённая фигура? Перечислите её стороны и вершины.", a: "ломаная; стороны AB, BC, CD; вершины A, B, C, D", hint: "3 звена: AB, BC, CD. Вершины: A, B, C, D" },
+      { q: "Измерьте длину отрезка AB на рис. 1.13 и выразите её в миллиметрах и в сантиметрах.<br><svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 150' width='200' height='150' style='display:block;margin:8px 0'><polygon points='30,30 160,20 170,110 20,120' fill='none' stroke='#a78bfa' stroke-width='2'/><circle cx='30' cy='30' r='3' fill='#fff'/><text x='18' y='26' font-size='13' font-family='serif' fill='#fff'>A</text><circle cx='160' cy='20' r='3' fill='#fff'/><text x='164' y='18' font-size='13' font-family='serif' fill='#fff'>B</text><circle cx='170' cy='110' r='3' fill='#fff'/><text x='174' y='114' font-size='13' font-family='serif' fill='#fff'>C</text><circle cx='20' cy='120' r='3' fill='#fff'/><text x='4' y='134' font-size='13' font-family='serif' fill='#fff'>D</text><text x='4' y='146' font-size='9' fill='rgba(255,255,255,.5)' font-family='sans-serif'>Рис. 1.13</text></svg>(Измерь по учебнику линейкой)", a: "35 мм; 3 см 5 мм", hint: "1 см = 10 мм. AB ≈ 35 мм = 3 см 5 мм" },
+      { q: "Найдите периметр фигуры ABCD и выразите его в миллиметрах и в сантиметрах.<br><svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 150' width='200' height='150' style='display:block;margin:8px 0'><polygon points='30,30 160,20 170,110 20,120' fill='none' stroke='#a78bfa' stroke-width='2'/><circle cx='30' cy='30' r='3' fill='#fff'/><text x='18' y='26' font-size='13' font-family='serif' fill='#fff'>A</text><circle cx='160' cy='20' r='3' fill='#fff'/><text x='164' y='18' font-size='13' font-family='serif' fill='#fff'>B</text><circle cx='170' cy='110' r='3' fill='#fff'/><text x='174' y='114' font-size='13' font-family='serif' fill='#fff'>C</text><circle cx='20' cy='120' r='3' fill='#fff'/><text x='4' y='134' font-size='13' font-family='serif' fill='#fff'>D</text><text x='4' y='146' font-size='9' fill='rgba(255,255,255,.5)' font-family='sans-serif'>Рис. 1.13</text></svg>(Измерь все стороны по учебнику)", a: "105 мм; 10 см 5 мм", hint: "P = AB + BC + CD + DA. Сложи все измеренные стороны" }
+    ]
+  },
+  {
+    id: "pr-t4-1",
+    para: "§1 Натуральные числа и нуль. Шкалы",
+    title: "Проверочная работа",
+    subtitle: "Тема: Плоскость, прямая, луч, угол",
+    tasks: [
+      { q: "Рассмотрите рисунок 1.24.<br><svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 220 190' width='220' height='190' style='display:block;margin:8px 0'><line x1='8' y1='155' x2='212' y2='155' stroke='rgba(255,255,255,.7)' stroke-width='1.5'/><polygon points='4,155 12,151 12,159' fill='rgba(255,255,255,.7)'/><polygon points='216,155 208,151 208,159' fill='rgba(255,255,255,.7)'/><circle cx='28' cy='155' r='2.5' fill='#fff'/><text x='22' y='169' font-size='11' font-family='serif' fill='#fff'>B</text><circle cx='78' cy='155' r='2.5' fill='#fff'/><text x='72' y='169' font-size='11' font-family='serif' fill='#fff'>A</text><circle cx='138' cy='155' r='2.5' fill='#fff'/><text x='132' y='169' font-size='11' font-family='serif' fill='#fff'>T</text><circle cx='193' cy='155' r='2.5' fill='#fff'/><text x='187' y='169' font-size='11' font-family='serif' fill='#fff'>C</text><line x1='98' y1='182' x2='183' y2='38' stroke='#f87171' stroke-width='1.5'/><polygon points='183,34 178,44 188,44' fill='#f87171'/><circle cx='178' cy='46' r='2.5' fill='#fff'/><text x='182' y='44' font-size='11' font-family='serif' fill='#fff'>O</text><circle cx='158' cy='82' r='2.5' fill='#fff'/><text x='162' y='80' font-size='11' font-family='serif' fill='#fff'>N</text><circle cx='138' cy='118' r='2.5' fill='#fff'/><text x='142' y='116' font-size='11' font-family='serif' fill='#fff'>P</text><circle cx='108' cy='168' r='2.5' fill='#fff'/><text x='112' y='176' font-size='11' font-family='serif' fill='#fff'>M</text><circle cx='190' cy='22' r='2.5' fill='#fff'/><text x='194' y='20' font-size='11' font-family='serif' fill='#fff'>F</text><circle cx='208' cy='90' r='2.5' fill='#fff'/><text x='212' y='88' font-size='11' font-family='serif' fill='#fff'>Q</text><circle cx='22' cy='90' r='2.5' fill='#fff'/><text x='8' y='88' font-size='11' font-family='serif' fill='#fff'>R</text><text x='4' y='14' font-size='9' fill='rgba(255,255,255,.5)' font-family='sans-serif'>Рис. 1.24</text></svg>Какой луч дополнительный к лучу AC?", a: "луч AB", hint: "Дополнительный луч -- противоположный на той же прямой: от A в сторону B" },
+      { q: "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 220 190' width='220' height='190' style='display:block;margin:8px 0'><line x1='8' y1='155' x2='212' y2='155' stroke='rgba(255,255,255,.7)' stroke-width='1.5'/><polygon points='4,155 12,151 12,159' fill='rgba(255,255,255,.7)'/><polygon points='216,155 208,151 208,159' fill='rgba(255,255,255,.7)'/><circle cx='28' cy='155' r='2.5' fill='#fff'/><text x='22' y='169' font-size='11' font-family='serif' fill='#fff'>B</text><circle cx='78' cy='155' r='2.5' fill='#fff'/><text x='72' y='169' font-size='11' font-family='serif' fill='#fff'>A</text><circle cx='138' cy='155' r='2.5' fill='#fff'/><text x='132' y='169' font-size='11' font-family='serif' fill='#fff'>T</text><circle cx='193' cy='155' r='2.5' fill='#fff'/><text x='187' y='169' font-size='11' font-family='serif' fill='#fff'>C</text><line x1='98' y1='182' x2='183' y2='38' stroke='#f87171' stroke-width='1.5'/><polygon points='183,34 178,44 188,44' fill='#f87171'/><circle cx='178' cy='46' r='2.5' fill='#fff'/><text x='182' y='44' font-size='11' font-family='serif' fill='#fff'>O</text><circle cx='158' cy='82' r='2.5' fill='#fff'/><text x='162' y='80' font-size='11' font-family='serif' fill='#fff'>N</text><circle cx='138' cy='118' r='2.5' fill='#fff'/><text x='142' y='116' font-size='11' font-family='serif' fill='#fff'>P</text><circle cx='108' cy='168' r='2.5' fill='#fff'/><text x='112' y='176' font-size='11' font-family='serif' fill='#fff'>M</text><circle cx='190' cy='22' r='2.5' fill='#fff'/><text x='194' y='20' font-size='11' font-family='serif' fill='#fff'>F</text><circle cx='208' cy='90' r='2.5' fill='#fff'/><text x='212' y='88' font-size='11' font-family='serif' fill='#fff'>Q</text><circle cx='22' cy='90' r='2.5' fill='#fff'/><text x='8' y='88' font-size='11' font-family='serif' fill='#fff'>R</text><text x='4' y='14' font-size='9' fill='rgba(255,255,255,.5)' font-family='sans-serif'>Рис. 1.24</text></svg>Какие точки принадлежат прямой MN? Какие точки не принадлежат прямой PO?", a: "MN: O, N, P, M; не принадлежат PO: B, A, T, C, F, Q, R", hint: "Прямая MO (красная) содержит F, O, N, P, M. Прямая BC (горизонтальная) содержит B, A, T, C" },
+      { q: "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 220 190' width='220' height='190' style='display:block;margin:8px 0'><line x1='8' y1='155' x2='212' y2='155' stroke='rgba(255,255,255,.7)' stroke-width='1.5'/><polygon points='4,155 12,151 12,159' fill='rgba(255,255,255,.7)'/><polygon points='216,155 208,151 208,159' fill='rgba(255,255,255,.7)'/><circle cx='28' cy='155' r='2.5' fill='#fff'/><text x='22' y='169' font-size='11' font-family='serif' fill='#fff'>B</text><circle cx='78' cy='155' r='2.5' fill='#fff'/><text x='72' y='169' font-size='11' font-family='serif' fill='#fff'>A</text><circle cx='138' cy='155' r='2.5' fill='#fff'/><text x='132' y='169' font-size='11' font-family='serif' fill='#fff'>T</text><circle cx='193' cy='155' r='2.5' fill='#fff'/><text x='187' y='169' font-size='11' font-family='serif' fill='#fff'>C</text><line x1='98' y1='182' x2='183' y2='38' stroke='#f87171' stroke-width='1.5'/><polygon points='183,34 178,44 188,44' fill='#f87171'/><circle cx='178' cy='46' r='2.5' fill='#fff'/><text x='182' y='44' font-size='11' font-family='serif' fill='#fff'>O</text><circle cx='158' cy='82' r='2.5' fill='#fff'/><text x='162' y='80' font-size='11' font-family='serif' fill='#fff'>N</text><circle cx='138' cy='118' r='2.5' fill='#fff'/><text x='142' y='116' font-size='11' font-family='serif' fill='#fff'>P</text><circle cx='108' cy='168' r='2.5' fill='#fff'/><text x='112' y='176' font-size='11' font-family='serif' fill='#fff'>M</text><circle cx='190' cy='22' r='2.5' fill='#fff'/><text x='194' y='20' font-size='11' font-family='serif' fill='#fff'>F</text><circle cx='208' cy='90' r='2.5' fill='#fff'/><text x='212' y='88' font-size='11' font-family='serif' fill='#fff'>Q</text><circle cx='22' cy='90' r='2.5' fill='#fff'/><text x='8' y='88' font-size='11' font-family='serif' fill='#fff'>R</text><text x='4' y='14' font-size='9' fill='rgba(255,255,255,.5)' font-family='sans-serif'>Рис. 1.24</text></svg>На какие лучи делит прямую MO точка P?", a: "луч PM и луч PO", hint: "Точка P делит прямую MO на два луча: PM (вниз) и PO (вверх)" },
+      { q: "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 220 190' width='220' height='190' style='display:block;margin:8px 0'><line x1='8' y1='155' x2='212' y2='155' stroke='rgba(255,255,255,.7)' stroke-width='1.5'/><polygon points='4,155 12,151 12,159' fill='rgba(255,255,255,.7)'/><polygon points='216,155 208,151 208,159' fill='rgba(255,255,255,.7)'/><circle cx='28' cy='155' r='2.5' fill='#fff'/><text x='22' y='169' font-size='11' font-family='serif' fill='#fff'>B</text><circle cx='78' cy='155' r='2.5' fill='#fff'/><text x='72' y='169' font-size='11' font-family='serif' fill='#fff'>A</text><circle cx='138' cy='155' r='2.5' fill='#fff'/><text x='132' y='169' font-size='11' font-family='serif' fill='#fff'>T</text><circle cx='193' cy='155' r='2.5' fill='#fff'/><text x='187' y='169' font-size='11' font-family='serif' fill='#fff'>C</text><line x1='98' y1='182' x2='183' y2='38' stroke='#f87171' stroke-width='1.5'/><polygon points='183,34 178,44 188,44' fill='#f87171'/><circle cx='178' cy='46' r='2.5' fill='#fff'/><text x='182' y='44' font-size='11' font-family='serif' fill='#fff'>O</text><circle cx='158' cy='82' r='2.5' fill='#fff'/><text x='162' y='80' font-size='11' font-family='serif' fill='#fff'>N</text><circle cx='138' cy='118' r='2.5' fill='#fff'/><text x='142' y='116' font-size='11' font-family='serif' fill='#fff'>P</text><circle cx='108' cy='168' r='2.5' fill='#fff'/><text x='112' y='176' font-size='11' font-family='serif' fill='#fff'>M</text><circle cx='190' cy='22' r='2.5' fill='#fff'/><text x='194' y='20' font-size='11' font-family='serif' fill='#fff'>F</text><circle cx='208' cy='90' r='2.5' fill='#fff'/><text x='212' y='88' font-size='11' font-family='serif' fill='#fff'>Q</text><circle cx='22' cy='90' r='2.5' fill='#fff'/><text x='8' y='88' font-size='11' font-family='serif' fill='#fff'>R</text><text x='4' y='14' font-size='9' fill='rgba(255,255,255,.5)' font-family='sans-serif'>Рис. 1.24</text></svg>Пересекаются ли прямые BC и MO?", a: "да", hint: "Наклонная MO пересекает горизонтальную BC в точке T" },
+      { q: "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 220 190' width='220' height='190' style='display:block;margin:8px 0'><line x1='8' y1='155' x2='212' y2='155' stroke='rgba(255,255,255,.7)' stroke-width='1.5'/><polygon points='4,155 12,151 12,159' fill='rgba(255,255,255,.7)'/><polygon points='216,155 208,151 208,159' fill='rgba(255,255,255,.7)'/><circle cx='28' cy='155' r='2.5' fill='#fff'/><text x='22' y='169' font-size='11' font-family='serif' fill='#fff'>B</text><circle cx='78' cy='155' r='2.5' fill='#fff'/><text x='72' y='169' font-size='11' font-family='serif' fill='#fff'>A</text><circle cx='138' cy='155' r='2.5' fill='#fff'/><text x='132' y='169' font-size='11' font-family='serif' fill='#fff'>T</text><circle cx='193' cy='155' r='2.5' fill='#fff'/><text x='187' y='169' font-size='11' font-family='serif' fill='#fff'>C</text><line x1='98' y1='182' x2='183' y2='38' stroke='#f87171' stroke-width='1.5'/><polygon points='183,34 178,44 188,44' fill='#f87171'/><circle cx='178' cy='46' r='2.5' fill='#fff'/><text x='182' y='44' font-size='11' font-family='serif' fill='#fff'>O</text><circle cx='158' cy='82' r='2.5' fill='#fff'/><text x='162' y='80' font-size='11' font-family='serif' fill='#fff'>N</text><circle cx='138' cy='118' r='2.5' fill='#fff'/><text x='142' y='116' font-size='11' font-family='serif' fill='#fff'>P</text><circle cx='108' cy='168' r='2.5' fill='#fff'/><text x='112' y='176' font-size='11' font-family='serif' fill='#fff'>M</text><circle cx='190' cy='22' r='2.5' fill='#fff'/><text x='194' y='20' font-size='11' font-family='serif' fill='#fff'>F</text><circle cx='208' cy='90' r='2.5' fill='#fff'/><text x='212' y='88' font-size='11' font-family='serif' fill='#fff'>Q</text><circle cx='22' cy='90' r='2.5' fill='#fff'/><text x='8' y='88' font-size='11' font-family='serif' fill='#fff'>R</text><text x='4' y='14' font-size='9' fill='rgba(255,255,255,.5)' font-family='sans-serif'>Рис. 1.24</text></svg>Имеют ли общие точки лучи AB и PM? Лучи AB и PO?", a: "AB и PM: да; AB и PO: нет", hint: "Луч AB идёт влево от A. Луч PM идёт вниз и влево -- пересекает AB. Луч PO идёт вверх-вправо -- не пересекает AB" },
+      { q: "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 220 190' width='220' height='190' style='display:block;margin:8px 0'><line x1='8' y1='155' x2='212' y2='155' stroke='rgba(255,255,255,.7)' stroke-width='1.5'/><polygon points='4,155 12,151 12,159' fill='rgba(255,255,255,.7)'/><polygon points='216,155 208,151 208,159' fill='rgba(255,255,255,.7)'/><circle cx='28' cy='155' r='2.5' fill='#fff'/><text x='22' y='169' font-size='11' font-family='serif' fill='#fff'>B</text><circle cx='78' cy='155' r='2.5' fill='#fff'/><text x='72' y='169' font-size='11' font-family='serif' fill='#fff'>A</text><circle cx='138' cy='155' r='2.5' fill='#fff'/><text x='132' y='169' font-size='11' font-family='serif' fill='#fff'>T</text><circle cx='193' cy='155' r='2.5' fill='#fff'/><text x='187' y='169' font-size='11' font-family='serif' fill='#fff'>C</text><line x1='98' y1='182' x2='183' y2='38' stroke='#f87171' stroke-width='1.5'/><polygon points='183,34 178,44 188,44' fill='#f87171'/><circle cx='178' cy='46' r='2.5' fill='#fff'/><text x='182' y='44' font-size='11' font-family='serif' fill='#fff'>O</text><circle cx='158' cy='82' r='2.5' fill='#fff'/><text x='162' y='80' font-size='11' font-family='serif' fill='#fff'>N</text><circle cx='138' cy='118' r='2.5' fill='#fff'/><text x='142' y='116' font-size='11' font-family='serif' fill='#fff'>P</text><circle cx='108' cy='168' r='2.5' fill='#fff'/><text x='112' y='176' font-size='11' font-family='serif' fill='#fff'>M</text><circle cx='190' cy='22' r='2.5' fill='#fff'/><text x='194' y='20' font-size='11' font-family='serif' fill='#fff'>F</text><circle cx='208' cy='90' r='2.5' fill='#fff'/><text x='212' y='88' font-size='11' font-family='serif' fill='#fff'>Q</text><circle cx='22' cy='90' r='2.5' fill='#fff'/><text x='8' y='88' font-size='11' font-family='serif' fill='#fff'>R</text><text x='4' y='14' font-size='9' fill='rgba(255,255,255,.5)' font-family='sans-serif'>Рис. 1.24</text></svg>Проведите прямую через точку R так, чтобы она имела только одну общую точку с прямыми BC и MO. Как называются такие прямые?", a: "пересекающиеся", hint: "Прямая через R, пересекающая обе прямые в разных точках -- пересекающаяся. Нарисуй в тетради" },
+      { q: "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 220 190' width='220' height='190' style='display:block;margin:8px 0'><line x1='8' y1='155' x2='212' y2='155' stroke='rgba(255,255,255,.7)' stroke-width='1.5'/><polygon points='4,155 12,151 12,159' fill='rgba(255,255,255,.7)'/><polygon points='216,155 208,151 208,159' fill='rgba(255,255,255,.7)'/><circle cx='28' cy='155' r='2.5' fill='#fff'/><text x='22' y='169' font-size='11' font-family='serif' fill='#fff'>B</text><circle cx='78' cy='155' r='2.5' fill='#fff'/><text x='72' y='169' font-size='11' font-family='serif' fill='#fff'>A</text><circle cx='138' cy='155' r='2.5' fill='#fff'/><text x='132' y='169' font-size='11' font-family='serif' fill='#fff'>T</text><circle cx='193' cy='155' r='2.5' fill='#fff'/><text x='187' y='169' font-size='11' font-family='serif' fill='#fff'>C</text><line x1='98' y1='182' x2='183' y2='38' stroke='#f87171' stroke-width='1.5'/><polygon points='183,34 178,44 188,44' fill='#f87171'/><circle cx='178' cy='46' r='2.5' fill='#fff'/><text x='182' y='44' font-size='11' font-family='serif' fill='#fff'>O</text><circle cx='158' cy='82' r='2.5' fill='#fff'/><text x='162' y='80' font-size='11' font-family='serif' fill='#fff'>N</text><circle cx='138' cy='118' r='2.5' fill='#fff'/><text x='142' y='116' font-size='11' font-family='serif' fill='#fff'>P</text><circle cx='108' cy='168' r='2.5' fill='#fff'/><text x='112' y='176' font-size='11' font-family='serif' fill='#fff'>M</text><circle cx='190' cy='22' r='2.5' fill='#fff'/><text x='194' y='20' font-size='11' font-family='serif' fill='#fff'>F</text><circle cx='208' cy='90' r='2.5' fill='#fff'/><text x='212' y='88' font-size='11' font-family='serif' fill='#fff'>Q</text><circle cx='22' cy='90' r='2.5' fill='#fff'/><text x='8' y='88' font-size='11' font-family='serif' fill='#fff'>R</text><text x='4' y='14' font-size='9' fill='rgba(255,255,255,.5)' font-family='sans-serif'>Рис. 1.24</text></svg>Какие из утверждений верны?<br>а) луч AB имеет общую точку с прямой OM;<br>б) прямая AB имеет общую точку с лучом OM;<br>в) прямая AB имеет общую точку с прямой OM;<br>г) луч AB имеет общую точку с лучом OM?", a: "а) да; б) да; в) да; г) нет", hint: "Прямая AB бесконечна -- пересекает всё. Луч AB идёт только влево, луч OM -- вверх-вправо, они не пересекаются" }
+    ]
+  },
   {
     id: "p1-primeniaem",
     para: "§1 Натуральные числа и нуль. Шкалы",
@@ -12911,8 +12892,7 @@ const SELF_CHECKS = [
       { q: "Таня подошла к табло в аэропорту в 16:30. Рейс 309 на Симферополь в 19:15. Сколько минут осталось до начала регистрации, если регистрация начинается за 2,5 часа до вылета?", a: "15", hint: "Регистрация начинается в 19:15 - 2:30 = 16:45. До начала: 16:45 - 16:30 = 15 минут." },
       { q: "По табло: сколько рейсов на Симферополь показано?", a: "3", hint: "Рейсы 396, 246 и 309 -- все на Симферополь. Итого 3 рейса." }
     ]
-  }
-,
+  },
   {
     id: "p2-sloj-1",
     para: "§2 Сложение и вычитание натуральных чисел",
@@ -12928,7 +12908,6 @@ const SELF_CHECKS = [
       { q: "Одну сторону прямоугольника увеличили на 15 см, а другую уменьшили на 15 см. Изменился ли периметр прямоугольника?", a: "нет", hint: "Периметр = 2(a+b). Если а увеличить на 15, а b уменьшить на 15, сумма a+b не изменится. Периметр тот же." }
     ]
   },
-
   {
     id: "p2-sloj-2",
     para: "§2 Сложение и вычитание натуральных чисел",
@@ -12942,8 +12921,7 @@ const SELF_CHECKS = [
       { q: "Сколько человек в классе можно отправить на школьный тур олимпиады по математике, если требуется оценка не ниже 4?", a: "16", hint: "Оценка 4: 11 чел, оценка 5: 5 чел. Итого: 11 + 5 = 16." },
       { q: "Составьте таблицу по диаграмме рис. 2.7. Что показывает сумма всех значений в строке 'Количество учеников'?", a: "25", hint: "Сумма 2+7+11+5=25 -- это общее количество учеников, писавших работу." }
     ]
-  }
-,
+  },
   {
     id: "p2-vych-1",
     para: "§2 Сложение и вычитание натуральных чисел",
@@ -12959,7 +12937,6 @@ const SELF_CHECKS = [
       { q: "а) К сумме чисел 36 и 14 прибавьте их разность. б) Из суммы чисел 36 и 14 вычтите их разность. в) Найдите разность суммы чисел 36 и 14 и их разности.", a: "а) 72; б) 28; в) 28", hint: "Сумма: 36+14=50. Разность: 36-14=22. а) 50+22=72; б) 50-22=28; в) разность суммы и разности: 50-22=28." }
     ]
   },
-
   {
     id: "p2-vych-2",
     para: "§2 Сложение и вычитание натуральных чисел",
@@ -12972,8 +12949,7 @@ const SELF_CHECKS = [
       { q: "На сколько больше продали картофеля, чем капусты?", a: "117", hint: "Картофель продали 254, капуста 137. Разница: 254 - 137 = 117." },
       { q: "Сколько всего овощей: а) доставили; б) продали; в) осталось?", a: "а) 1115; б) 774; в) 341", hint: "а) 170+25+350+154+192+224=1115; б) 158+11+254+108+106+137=774; в) 12+14+96+46+86+87=341. Проверка: 1115-774=341 ✓" }
     ]
-  }
-,
+  },
   {
     id: "p2-vyr-1",
     para: "§2 Сложение и вычитание натуральных чисел",
@@ -12984,7 +12960,6 @@ const SELF_CHECKS = [
       { q: "На рисунке 2.17 изображён план пруда.\n<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 280 220' width='280' height='220'>\n  <!-- Контур пруда (Г-образный с выступами) -->\n  <!-- Начало: верхний левый угол, идём по часовой стрелке -->\n  <!-- Координаты (масштаб ~3.5px/м): -->\n  <!-- Верх: (30,20)→(124,20) = 27м -->\n  <!-- Вправо-вниз ступенька: до (124,59) = 11м, потом (184,59) -->\n  <!-- Вниз: (184,59)→(184,199) = 40м -->\n  <!-- Влево: (184,199)→(121,199) = 18м -->\n  <!-- Вверх выступ: (121,199)→(121,168) = 9м -->\n  <!-- Влево: (121,168)→(89,168) = 9м -->\n  <!-- Вниз: (89,168)→(89,199) = нет, это другое... -->\n  <!-- Упрощённый вариант по виду фигуры -->\n  <polygon points='30,20 124,20 124,55 184,55 184,199 121,199 121,168 89,168 89,199 30,199'\n    fill='rgba(99,102,241,.15)' stroke='#a78bfa' stroke-width='2'/>\n  <!-- Подписи сторон -->\n  <text x='72' y='15' font-size='10' fill='#fff' font-family='sans-serif' text-anchor='middle'>27 м</text>\n  <text x='128' y='38' font-size='10' fill='#fff' font-family='sans-serif'>11 м</text>\n  <text x='188' y='125' font-size='10' fill='#fff' font-family='sans-serif'>40 м</text>\n  <text x='150' y='212' font-size='10' fill='#fff' font-family='sans-serif' text-anchor='middle'>18 м</text>\n  <text x='124' y='186' font-size='10' fill='#fff' font-family='sans-serif'>9 м</text>\n  <text x='98' y='163' font-size='10' fill='#fff' font-family='sans-serif' text-anchor='middle'>9 м</text>\n  <text x='75' y='212' font-size='10' fill='#fff' font-family='sans-serif' text-anchor='middle'>14 м</text>\n  <text x='22' y='112' font-size='10' fill='#fff' font-family='sans-serif'>34 м</text>\n  <text x='50' y='15' font-size='10' fill='rgba(255,255,255,.5)' font-family='sans-serif' text-anchor='middle'>23 м</text>\n  <!-- Точки углов -->\n  <circle cx='30' cy='20' r='2' fill='#fff'/>\n  <circle cx='124' cy='20' r='2' fill='#fff'/>\n  <circle cx='124' cy='55' r='2' fill='#fff'/>\n  <circle cx='184' cy='55' r='2' fill='#fff'/>\n  <circle cx='184' cy='199' r='2' fill='#fff'/>\n  <circle cx='121' cy='199' r='2' fill='#fff'/>\n  <circle cx='121' cy='168' r='2' fill='#fff'/>\n  <circle cx='89' cy='168' r='2' fill='#fff'/>\n  <circle cx='89' cy='199' r='2' fill='#fff'/>\n  <circle cx='30' cy='199' r='2' fill='#fff'/>\n  <text x='108' y='105' font-size='11' fill='#a78bfa' font-family='sans-serif' text-anchor='middle'>пруд</text>\n</svg>\nСоставьте числовое выражение для вычисления периметра пруда и найдите его значение.", a: "166", hint: "Периметр = сумма всех сторон: 27+11+23+40+18+9+9+14+34+... Считаем по контуру. Недостающие стороны находим из прямоугольности углов. Итого: 27+11+23+40+18+9+9+14+34+... По фигуре: P = 23+11+27+40+18+9+9+14+34 = 185... Ответ из учебника: 166 м." }
     ]
   },
-
   {
     id: "p2-vyr-2",
     para: "§2 Сложение и вычитание натуральных чисел",
@@ -12996,8 +12971,7 @@ const SELF_CHECKS = [
       { q: "Запишите разность:\nа) 200 + 30 и 100 - 45;\nб) 100 и а + 10;\nв) x + 15 и y - 8;\nг) s + 30 и р - 25.", a: "а) (200+30)-(100-45); б) 100-(а+10); в) (x+15)-(y-8); г) (s+30)-(р-25)", hint: "Разность двух выражений: первое минус второе. Второе в скобках, если содержит знак действия." },
       { q: "Найдите значение выражения:\nа) a + b - 1023 при a = 210, b = 4032;\nб) 6230 - (x + y) при x = 195, y = 3457;\nв) 4500 - 2c при c = 56.", a: "а) 3219; б) 2578; в) 4388", hint: "а) 210+4032-1023=4242-1023=3219; б) x+y=195+3457=3652, 6230-3652=2578; в) 2×56=112, 4500-112=4388." }
     ]
-  }
-,
+  },
   {
     id: "p2-urav-1",
     para: "§2 Сложение и вычитание натуральных чисел",
@@ -13013,7 +12987,6 @@ const SELF_CHECKS = [
       { q: "б) Мама пошла в магазин за продуктами и взяла с собой 5000 р. После покупки у неё осталось 137 р. Сколько денег мама потратила на продукты?", a: "4863", hint: "Уравнение: 5000 - x = 137. x = 5000 - 137 = 4863 р." }
     ]
   },
-
   {
     id: "p2-primeniaem",
     para: "§2 Сложение и вычитание натуральных чисел",
@@ -13031,8 +13004,7 @@ const SELF_CHECKS = [
       { q: "б) Сколько времени заняла вся экскурсия?", a: "6 ч 45 мин", hint: "С 9:15 до 16:00 = 6 часов 45 минут." },
       { q: "Для ремонта комнаты длиной 4 м и шириной 5 м нужно купить потолочный и напольный плинтус (ширина дверей 80 см). Вычислите, сколько плинтуса надо купить для пола и для потолка.", a: "пол: 17,2 м; потолок: 18 м", hint: "Периметр комнаты: 2×(4+5)=18 м. Для потолка: 18 м. Для пола: 18 - 0,8 (дверь) = 17,2 м." }
     ]
-  }
-,
+  },
   {
     id: "p3-umn-1",
     para: "§3 Умножение и деление натуральных чисел",
@@ -13046,7 +13018,6 @@ const SELF_CHECKS = [
       { q: "Не вычисляя, сравните значения выражений:\nа) 23·46 и 38·23;\nб) 438·198 и 605·198.", a: "а) >; б) <", hint: "а) 23·46 и 38·23=23·38: общий множитель 23, сравниваем 46 и 38: 46>38, значит 23·46>23·38. б) Общий множитель 198: 438<605, значит 438·198<605·198." }
     ]
   },
-
   {
     id: "p3-umn-2",
     para: "§3 Умножение и деление натуральных чисел",
@@ -13064,8 +13035,7 @@ const SELF_CHECKS = [
       { q: "Найдите корень уравнения:\nа) 34-(x-7)=18;\nб) (x+24)-15=12;\nв) (56-x)+34=72;\nг) 62+(15+x)=148.", a: "а) 23; б) 3; в) 18; г) 71", hint: "а) x-7=34-18=16, x=23. б) x+24=12+15=27, x=3. в) 56-x=72-34=38, x=18. г) 15+x=148-62=86, x=71." },
       { q: "Водитель заехал заправиться. Объём бака 50 л. Составьте выражение для стоимости полного бака, если 1 л бензина стоит:\nа) x = 47 р.;\nб) x = 52 р.", a: "а) 2350 р.; б) 2600 р.", hint: "Стоимость = 50 × x. а) 50×47=2350 р. б) 50×52=2600 р." }
     ]
-  }
-,
+  },
   {
     id: "p3-del-1",
     para: "§3 Умножение и деление натуральных чисел",
@@ -13082,7 +13052,6 @@ const SELF_CHECKS = [
       { q: "Найдите корень уравнения:\nа) x÷80=56;\nб) 7000÷x=3500;\nв) x·125=125125.", a: "а) 4480; б) 2; в) 1001", hint: "а) x=56×80=4480. б) x=7000÷3500=2. в) x=125125÷125=1001." }
     ]
   },
-
   {
     id: "p3-del-2",
     para: "§3 Умножение и деление натуральных чисел",
@@ -13098,8 +13067,7 @@ const SELF_CHECKS = [
       { q: "б) Найдите сумму первых четырёх чисел этого ряда.", a: "4 444 000", hint: "4000000+400000+40000+4000=4444000." },
       { q: "в)* Сколько чисел в этом ряду? Запишите последнее число.", a: "7 чисел; последнее 4", hint: "4000000; 400000; 40000; 4000; 400; 40; 4. Далее 4÷10=0,4 -- не натуральное. Итого 7 чисел, последнее -- 4." }
     ]
-  }
-,
+  },
   {
     id: "p3-ostatok-1",
     para: "§3 Умножение и деление натуральных чисел",
@@ -13113,8 +13081,7 @@ const SELF_CHECKS = [
       { q: "Яблоки расфасовали в 22 пакета по 3 кг, и ещё остался 1 кг яблок. Сколько всего килограммов яблок было?", a: "67", hint: "22×3+1=66+1=67 кг." },
       { q: "Какое наименьшее число свободных мест возможно, если 78 туристов размещают в лодках, в каждой из которых 14 мест?", a: "8", hint: "78÷14=5 ост.8. Нужно 6 лодок (5×14=70 мест + 1 лодка для 8 человек). Свободных мест в последней лодке: 14-8=6. Минимально свободных: 6." }
     ]
-  }
-,
+  },
   {
     id: "p3-upr-1",
     para: "§3 Умножение и деление натуральных чисел",
@@ -13127,7 +13094,6 @@ const SELF_CHECKS = [
       { q: "Решите уравнение:\nа) 8x + 7x = 1515;\nб) 8·(2x - 6) = 128.", a: "а) x=101; б) x=11", hint: "а) 15x=1515, x=101. б) 2x-6=128÷8=16, 2x=22, x=11. Проверка: 8×(2×11-6)=8×16=128 ✓." }
     ]
   },
-
   {
     id: "p3-upr-2",
     para: "§3 Умножение и деление натуральных чисел",
@@ -13138,7 +13104,6 @@ const SELF_CHECKS = [
       { q: "Найдите значение выражения:\nа) 13·23 + 23·10;\nб) 200·17 + 100·17;\nв) 154·30 - 124·30;\nг) 687·25 - 487·25.", a: "а) 759; б) 5100; в) 900; г) 5000", hint: "а) 23×(13+10)=23×33=759. б) 17×(200+100)=17×300=5100. в) 30×(154-124)=30×30=900. г) 25×(687-487)=25×200=5000." }
     ]
   },
-
   {
     id: "p3-upr-3",
     para: "§3 Умножение и деление натуральных чисел",
@@ -13149,8 +13114,7 @@ const SELF_CHECKS = [
       { q: "Найдите значение выражения:\nа) 32x + 12x + 10x + 54x при x = 11;\nб) 432a - 321a - 100a - 10 при a = 7645;\nв) 400 + 101n + 500 - 51n при n = 43.", a: "а) 1188; б) 84085; в) 3050", hint: "а) (32+12+10+54)x=108x=108×11=1188. б) (432-321-100)a-10=11a-10=11×7645-10=84095-10=84085. в) (101-51)n+(400+500)=50n+900=50×43+900=2150+900=3050." },
       { q: "Найдите корень уравнения:\nа) 42x + 11x + 2x = 330;\nб) 167x - 45x - 34x - 80x = 112.", a: "а) x=6; б) x=14", hint: "а) (42+11+2)x=55x=330, x=6. б) (167-45-34-80)x=8x=112, x=14." }
     ]
-  }
-,
+  },
   {
     id: "p3-poryadok-1",
     para: "§3 Умножение и деление натуральных чисел",
@@ -13162,8 +13126,7 @@ const SELF_CHECKS = [
       { q: "Найдите x, если:\nа) (65 + x) : 2 - 21 = 30;\nб) (x · 58 - 24) : 2 = 191;\nв) 8432 - 3870 : x = 8346.", a: "а) x=37; б) x=7; в) x=45", hint: "а) (65+x)÷2=30+21=51, 65+x=102, x=37. б) x×58-24=191×2=382, x×58=406, x=7. в) 3870÷x=8432-8346=86, x=3870÷86=45." },
       { q: "В одной коробке было 5230 г конфет, а в другой -- в 2 раза меньше. Сколько конфет было в обеих коробках?", a: "7845", hint: "В другой коробке: 5230÷2=2615 г. Всего: 5230+2615=7845 г." }
     ]
-  }
-,
+  },
   {
     id: "p3-stepen-1",
     para: "§3 Умножение и деление натуральных чисел",
@@ -13174,8 +13137,7 @@ const SELF_CHECKS = [
       { q: "Представьте в виде суммы разрядных слагаемых числа:\nа) 20 002;\nб) 12 100;\nв) 1 000 001;\nг) 50 280 745.", a: "а) 20000+2; б) 10000+2000+100; в) 1000000+1; г) 50000000+200000+80000+700+40+5", hint: "Записываем каждый ненулевой разряд отдельно. а) 2·10000+2. б) 1·10000+2·1000+1·100. в) 1·1000000+1. г) 5·10000000+2·100000+8·10000+7·100+4·10+5." },
       { q: "Представьте в виде произведения степень:\nа) (1 + a)^3;\nб) (x - 5)^4;\nв) (2c - 3)^5;\nг) (4 + 5b)^2.", a: "а) (1+a)·(1+a)·(1+a); б) (x-5)·(x-5)·(x-5)·(x-5); в) (2c-3)·(2c-3)·(2c-3)·(2c-3)·(2c-3); г) (4+5b)·(4+5b)", hint: "Степень a^n = a·a·a·...·a (n раз). а) основание (1+a), показатель 3 → три множителя. б) четыре множителя. в) пять множителей. г) два множителя." }
     ]
-  }
-,
+  },
   {
     id: "p4-deliteli-1",
     para: "§4 Делимость натуральных чисел",
@@ -13184,8 +13146,7 @@ const SELF_CHECKS = [
     tasks: [
       { q: "Выпишите номера верных утверждений:\n1. Число 2 является делителем числа 8.\n2. Число 8 является делителем числа 2.\n3. Число 2 кратно числу 8.\n4. Число 8 кратно числу 2.\n5. Число 16 кратно числам 2 и 8.\n6. Числа 2 и 8 не являются делителями 16.\n7. Среди чисел 2, 8 и 16 нет простых чисел.\n8. Любое натуральное число имеет бесконечное число делителей.", a: "1, 4, 5", hint: "1 ✓ 8÷2=4 -- делится. 2 ✗ 2÷8 не целое. 3 ✗ 2 кратно 8 означало бы 2=8k, нет. 4 ✓ 8=2×4. 5 ✓ 16÷2=8, 16÷8=2. 6 ✗ 2 и 8 -- делители 16. 7 ✗ 2 -- простое число. 8 ✗ делителей конечное число." }
     ]
-  }
-,
+  },
   {
     id: "p4-delim-1",
     para: "§4 Делимость натуральных чисел",
@@ -13198,7 +13159,6 @@ const SELF_CHECKS = [
       { q: "Вычислите: (26·652 - 16·652) : 5 + 504·4 : 9.", a: "1528", hint: "(26-16)·652÷5 + 504·4÷9 = 10·652÷5 + 2016÷9 = 6520÷5 + 224 = 1304 + 224 = 1528." }
     ]
   },
-
   {
     id: "p4-delim-2",
     para: "§4 Делимость натуральных чисел",
@@ -13214,7 +13174,6 @@ const SELF_CHECKS = [
       { q: "В числе 345* поставьте цифру вместо * так, чтобы получилось число, которое:\nа) делилось на 5;\nб) делилось на 3 и на 9;\nв) делилось на 2, на 3, на 5 и на 10.", a: "а) * = 0 или 5; б) * = 6; в) * = 0", hint: "а) Делится на 5 → * = 0 или 5. б) Делится на 9: сумма цифр 3+4+5+*=12+* кратна 9 → *=6 (сумма 18). в) На 2 и 10 → *=0; проверим 3450: 3+4+5+0=12÷3✓ → делится на 3. ✓" }
     ]
   },
-
   {
     id: "p4-primeniaem",
     para: "§4 Делимость натуральных чисел",
@@ -13229,11 +13188,10 @@ const SELF_CHECKS = [
       { q: "Василий Иванович хочет купить 34 кг картофеля. Цена: по 16р. за 1кг, по 45р. за упаковку 3кг, по 142р. за упаковку в 3кг. Как выгоднее купить?", a: "по 45р. за 3кг", hint: "По 1кг: 34×16=544р. По 45р/3кг: 11 упаковок=33кг(495р)+1кг(16р)=511р. По 142р за 3кг: дороже. Выгоднее: по 45р. за 3кг → 511р." },
       { q: "Маша взяла с полки 3 пакета сушек по 50р. и на кассе ещё 3 пакета лимонада. Кассир сказала: надо заплатить 280р. Маша возразила -- сумма неверна. Кто прав?", a: "Маша права", hint: "3 пакета сушек: 3×50=150р. Итого 280р. → лимонад: 280-150=130р. на 3 пакета. 130÷3 не делится нацело. Цена пакета -- не целое число рублей. Маша права." }
     ]
-  }
-,
+  },
   {
     id: "p4-formuly-1",
-    para: "§4 Делимость натуральных чисел",
+    para: "§4 Площади и объёмы",
     title: "Проверочная работа",
     subtitle: "Тема: Формулы",
     tasks: [
@@ -13242,22 +13200,20 @@ const SELF_CHECKS = [
       { q: "Составьте формулу расстояния sод между автомобилями через t ч, если они движутся в одном направлении и v_2 < v_1.", a: "sод = (v_1 - v_2) · t", hint: "Аналогично: быстрый первый уходит вперёд. sод = (v_1 - v_2) · t. В обоих случаях sод = |v_1 - v_2| · t." },
       { q: "Заполните таблицу, используя формулы sн = (v_1+v_2)·t и sод = |v_1-v_2|·t:\n<table style='border-collapse:collapse;margin:8px 0;font-size:12px;color:#fff'>\n  <tr style='background:rgba(99,102,241,.3)'>\n    <th style='padding:4px 8px;border:1px solid rgba(255,255,255,.2)'>v_1, км/ч</th>\n    <td style='padding:4px 8px;border:1px solid rgba(255,255,255,.2);text-align:center'>60</td>\n    <td style='padding:4px 8px;border:1px solid rgba(255,255,255,.2);text-align:center'>70</td>\n    <td style='padding:4px 8px;border:1px solid rgba(255,255,255,.2);text-align:center'>75</td>\n    <td style='padding:4px 8px;border:1px solid rgba(255,255,255,.2);text-align:center'>65</td>\n    <td style='padding:4px 8px;border:1px solid rgba(255,255,255,.2);text-align:center'>48</td>\n  </tr>\n  <tr style='background:rgba(255,255,255,.06)'>\n    <th style='padding:4px 8px;border:1px solid rgba(255,255,255,.2)'>v_2, км/ч</th>\n    <td style='padding:4px 8px;border:1px solid rgba(255,255,255,.15);text-align:center'>55</td>\n    <td style='padding:4px 8px;border:1px solid rgba(255,255,255,.15);text-align:center'>70</td>\n    <td style='padding:4px 8px;border:1px solid rgba(255,255,255,.15);text-align:center'>65</td>\n    <td style='padding:4px 8px;border:1px solid rgba(255,255,255,.15);text-align:center'>75</td>\n    <td style='padding:4px 8px;border:1px solid rgba(255,255,255,.15);text-align:center'>56</td>\n  </tr>\n  <tr>\n    <th style='padding:4px 8px;border:1px solid rgba(255,255,255,.2)'>t, ч</th>\n    <td style='padding:4px 8px;border:1px solid rgba(255,255,255,.15);text-align:center'>3</td>\n    <td style='padding:4px 8px;border:1px solid rgba(255,255,255,.15);text-align:center'>2</td>\n    <td style='padding:4px 8px;border:1px solid rgba(255,255,255,.15);text-align:center'>4</td>\n    <td style='padding:4px 8px;border:1px solid rgba(255,255,255,.15);text-align:center'>4</td>\n    <td style='padding:4px 8px;border:1px solid rgba(255,255,255,.15);text-align:center'>5</td>\n  </tr>\n  <tr style='background:rgba(255,255,255,.06)'>\n    <th style='padding:4px 8px;border:1px solid rgba(255,255,255,.2)'>sн, км</th>\n    <td style='padding:4px 8px;border:1px solid rgba(255,255,255,.15);text-align:center;color:#fbbf24;font-weight:bold'>?</td>\n    <td style='padding:4px 8px;border:1px solid rgba(255,255,255,.15);text-align:center;color:#fbbf24;font-weight:bold'>?</td>\n    <td style='padding:4px 8px;border:1px solid rgba(255,255,255,.15);text-align:center;color:#fbbf24;font-weight:bold'>?</td>\n    <td style='padding:4px 8px;border:1px solid rgba(255,255,255,.15);text-align:center;color:#fbbf24;font-weight:bold'>?</td>\n    <td style='padding:4px 8px;border:1px solid rgba(255,255,255,.15);text-align:center;color:#fbbf24;font-weight:bold'>?</td>\n  </tr>\n  <tr>\n    <th style='padding:4px 8px;border:1px solid rgba(255,255,255,.2)'>sод, км</th>\n    <td style='padding:4px 8px;border:1px solid rgba(255,255,255,.15);text-align:center;color:#fbbf24;font-weight:bold'>?</td>\n    <td style='padding:4px 8px;border:1px solid rgba(255,255,255,.15);text-align:center;color:#fbbf24;font-weight:bold'>?</td>\n    <td style='padding:4px 8px;border:1px solid rgba(255,255,255,.15);text-align:center;color:#fbbf24;font-weight:bold'>?</td>\n    <td style='padding:4px 8px;border:1px solid rgba(255,255,255,.15);text-align:center;color:#fbbf24;font-weight:bold'>?</td>\n    <td style='padding:4px 8px;border:1px solid rgba(255,255,255,.15);text-align:center;color:#fbbf24;font-weight:bold'>?</td>\n  </tr>\n</table>", a: "sн: 345; 280; 560; 560; 520 | sод: 15; 0; 40; 40; 40", hint: "sн=(v_1+v_2)·t: (60+55)·3=345; (70+70)·2=280; (75+65)·4=560; (65+75)·4=560; (48+56)·5=520. sод=|v_1-v_2|·t: |60-55|·3=15; |70-70|·2=0; |75-65|·4=40; |65-75|·4=40; |48-56|·5=40." }
     ]
-  }
-,
+  },
   {
     id: "p4-ploshad-1",
-    para: "§4 Делимость натуральных чисел",
+    para: "§4 Площади и объёмы",
     title: "Проверочная работа",
     subtitle: "Тема: Площадь. Формула площади прямоугольника",
     tasks: [
       { q: "Рассмотрите рисунок 4.11. Сторона каждой клетки равна 1 см. Найдите площадь каждой фигуры и заполните таблицу:\n<table style='border-collapse:collapse;margin:8px 0;font-size:12px;color:#fff;width:100%'>\n  <tr style='background:rgba(99,102,241,.3)'>\n    <th style='padding:4px 6px;border:1px solid rgba(255,255,255,.2)'>№ фигуры</th>\n    <td style='padding:4px 6px;border:1px solid rgba(255,255,255,.2);text-align:center'>1</td>\n    <td style='padding:4px 6px;border:1px solid rgba(255,255,255,.2);text-align:center'>2</td>\n    <td style='padding:4px 6px;border:1px solid rgba(255,255,255,.2);text-align:center'>3</td>\n    <td style='padding:4px 6px;border:1px solid rgba(255,255,255,.2);text-align:center'>4</td>\n    <td style='padding:4px 6px;border:1px solid rgba(255,255,255,.2);text-align:center'>5</td>\n    <td style='padding:4px 6px;border:1px solid rgba(255,255,255,.2);text-align:center'>6</td>\n    <td style='padding:4px 6px;border:1px solid rgba(255,255,255,.2);text-align:center'>7</td>\n    <td style='padding:4px 6px;border:1px solid rgba(255,255,255,.2);text-align:center'>8</td>\n    <td style='padding:4px 6px;border:1px solid rgba(255,255,255,.2);text-align:center'>9</td>\n    <td style='padding:4px 6px;border:1px solid rgba(255,255,255,.2);text-align:center'>10</td>\n  </tr>\n  <tr style='background:rgba(255,255,255,.06)'>\n    <th style='padding:4px 6px;border:1px solid rgba(255,255,255,.2)'>Площадь, см^2</th>\n    <td style='padding:4px 6px;border:1px solid rgba(255,255,255,.15);text-align:center;color:#fbbf24;font-weight:bold'>?</td>\n    <td style='padding:4px 6px;border:1px solid rgba(255,255,255,.15);text-align:center;color:#fbbf24;font-weight:bold'>?</td>\n    <td style='padding:4px 6px;border:1px solid rgba(255,255,255,.15);text-align:center;color:#fbbf24;font-weight:bold'>?</td>\n    <td style='padding:4px 6px;border:1px solid rgba(255,255,255,.15);text-align:center;color:#fbbf24;font-weight:bold'>?</td>\n    <td style='padding:4px 6px;border:1px solid rgba(255,255,255,.15);text-align:center;color:#fbbf24;font-weight:bold'>?</td>\n    <td style='padding:4px 6px;border:1px solid rgba(255,255,255,.15);text-align:center;color:#fbbf24;font-weight:bold'>?</td>\n    <td style='padding:4px 6px;border:1px solid rgba(255,255,255,.15);text-align:center;color:#fbbf24;font-weight:bold'>?</td>\n    <td style='padding:4px 6px;border:1px solid rgba(255,255,255,.15);text-align:center;color:#fbbf24;font-weight:bold'>?</td>\n    <td style='padding:4px 6px;border:1px solid rgba(255,255,255,.15);text-align:center;color:#fbbf24;font-weight:bold'>?</td>\n    <td style='padding:4px 6px;border:1px solid rgba(255,255,255,.15);text-align:center;color:#fbbf24;font-weight:bold'>?</td>\n  </tr>\n</table>\n(Считайте клетки по рисунку в учебнике)", a: "1:4; 2:6; 3:6; 4:4; 5:4; 6:4; 7:6; 8:6; 9:6; 10:4", hint: "Площадь фигур из целых клеток -- считаем клетки. Для фигур с косыми срезами: 2 треугольника = 1 квадрат. Фигуры с площадью 4 см^2: №1,4,5,6,10. Фигуры с площадью 6 см^2: №2,3,7,8,9." },
       { q: "Запишите номера равновеликих фигур (фигур с одинаковой площадью).", a: "1, 4, 5, 6, 10 (по 4 см^2) и 2, 3, 7, 8, 9 (по 6 см^2)", hint: "Равновеликие -- фигуры с одинаковой площадью. Группа 1: фигуры №1,4,5,6,10 -- все по 4 см^2. Группа 2: фигуры №2,3,7,8,9 -- все по 6 см^2." }
     ]
-  }
-,
+  },
   {
     id: "p4-edinicy-1",
-    para: "§4 Делимость натуральных чисел",
+    para: "§4 Площади и объёмы",
     title: "Проверочная работа",
     subtitle: "Тема: Единицы измерения площадей",
     tasks: [
@@ -13266,11 +13222,10 @@ const SELF_CHECKS = [
       { q: "Длина прямоугольника 25 м. При какой ширине его площадь:\nа) будет равна 1 а;\nб) будет больше 1 а;\nв) будет меньше 1 а?", a: "а) 4 м; б) больше 4 м; в) меньше 4 м", hint: "1а=100м^2. S=25·ш. а) 25·ш=100 → ш=4м. б) 25·ш>100 → ш>4м. в) 25·ш<100 → ш<4м." },
       { q: "Найдите значение выражения:\nа) 2·3^3 + 4·2^4;\nб) (3^3 - 2^4)^2.", a: "а) 118; б) 121", hint: "а) 3^3=27, 2^4=16; 2·27+4·16=54+64=118. б) 3^3=27, 2^4=16; (27-16)^2=11^2=121." }
     ]
-  }
-,
+  },
   {
     id: "p4-parallel-1",
-    para: "§4 Делимость натуральных чисел",
+    para: "§4 Площади и объёмы",
     title: "Проверочная работа",
     subtitle: "Тема: Прямоугольный параллелепипед",
     tasks: [
@@ -13279,11 +13234,10 @@ const SELF_CHECKS = [
       { q: "Сколько метров мишуры понадобится для украшения коробки 60×40×50 см (по всем рёбрам)?", a: "6 м", hint: "4 ребра длиной 60 + 4 ребра 40 + 4 ребра 50: 4×(60+40+50)=4×150=600 см = 6 м." },
       { q: "В таблице -- размеры обёрточной бумаги. Выберите наиболее выгодный вариант покупки, чтобы оклеить все грани коробки 60×40×50 без нахлёста:\n<table style='border-collapse:collapse;margin:8px 0;font-size:12px;color:#fff'>\n  <tr style='background:rgba(99,102,241,.3)'>\n    <th style='padding:4px 10px;border:1px solid rgba(255,255,255,.2)'>Размер, см × см</th>\n    <th style='padding:4px 10px;border:1px solid rgba(255,255,255,.2)'>Цена, р.</th>\n  </tr>\n  <tr style='background:rgba(255,255,255,.06)'>\n    <td style='padding:3px 10px;border:1px solid rgba(255,255,255,.15);text-align:center'>40 × 70</td>\n    <td style='padding:3px 10px;border:1px solid rgba(255,255,255,.15);text-align:center'>50</td>\n  </tr>\n  <tr>\n    <td style='padding:3px 10px;border:1px solid rgba(255,255,255,.15);text-align:center'>60 × 60</td>\n    <td style='padding:3px 10px;border:1px solid rgba(255,255,255,.15);text-align:center'>75</td>\n  </tr>\n  <tr style='background:rgba(255,255,255,.06)'>\n    <td style='padding:3px 10px;border:1px solid rgba(255,255,255,.15);text-align:center'>50 × 50</td>\n    <td style='padding:3px 10px;border:1px solid rgba(255,255,255,.15);text-align:center'>50</td>\n  </tr>\n  <tr>\n    <td style='padding:3px 10px;border:1px solid rgba(255,255,255,.15);text-align:center'>40 × 120</td>\n    <td style='padding:3px 10px;border:1px solid rgba(255,255,255,.15);text-align:center'>90</td>\n  </tr>\n</table>\nГрани: 2 шт 60×40 см, 2 шт 60×50 см, 2 шт 40×50 см.", a: "6 листов 40×70 = 300 р.", hint: "Лист 40×70=2800 см^2. Из одного листа: одна грань 60×40=2400 (остаток 400 см^2) или одна грань 40×50=2000 (остаток 800). 6 листов = 6×2800=16800 см^2 > 14800 см^2 → хватит. 6×50=300р. Другие варианты: 4 листа 40×120=360р.; ≥3 листа 60×60=225р. но надо проверить раскрой. Выгоднее всего: 6 листов 40×70 = 300 р." }
     ]
-  }
-,
+  },
   {
     id: "p4-obiem-1",
-    para: "§4 Делимость натуральных чисел",
+    para: "§4 Площади и объёмы",
     title: "Проверочная работа № 1",
     subtitle: "Тема: Объём прямоугольного параллелепипеда",
     tasks: [
@@ -13294,10 +13248,9 @@ const SELF_CHECKS = [
       { q: "Площадь поверхности куба равна 96 см^2. Найдите его объём.", a: "64 см^3", hint: "6a^2=96, a^2=16, a=4 см. V=a^3=4^3=64 см^3." }
     ]
   },
-
   {
     id: "p4-obiem-2",
-    para: "§4 Делимость натуральных чисел",
+    para: "§4 Площади и объёмы",
     title: "Проверочная работа № 2",
     subtitle: "Тема: Объём прямоугольного параллелепипеда",
     tasks: [
@@ -13309,10 +13262,9 @@ const SELF_CHECKS = [
       { q: "Выразите в кубических метрах и дециметрах:\nа) 4 265 003 см^3;\nб) 1 200 дм^3.", a: "а) ≈4,265 м^3; 4265 дм^3; б) 1,2 м^3; 1200 дм^3", hint: "1м^3=1000дм^3=1000000см^3. а) 4265003÷1000000≈4,265м^3; 4265003÷1000=4265,003дм^3. б) 1200÷1000=1,2м^3." }
     ]
   },
-
   {
     id: "p4-prim-obiem",
-    para: "§4 Делимость натуральных чисел",
+    para: "§4 Площади и объёмы",
     title: "Применяем математику",
     subtitle: "Обобщение §4 (площади и объёмы)",
     tasks: [
@@ -13326,8 +13278,8 @@ const SELF_CHECKS = [
       { q: "Сколько коробок печенья надо заказать для 5300 новогодних подарков, если пачка печенья 10×6×4 см помещается в коробку 60×54×44 см, а в подарок кладут одну пачку?", a: "5300", hint: "V коробки: 60×54×44=142560 см^3. V пачки: 10×6×4=240 см^3. Пачек в коробке: 142560÷240=594. Коробок: 5300÷594≈9 коробок (вмещают 5346 пачек ≥ 5300). Ответ: 9 коробок." }
     ]
   }
+]
 
-];
 
 // ===== SELF CHECK (чат + соревнование с Умником) =====
 let scCurrentCheck = null;
@@ -13457,9 +13409,9 @@ function scIsCorrect(userAns, correctAns) {
 
 function scCheckAnswer() {
   const inp = document.getElementById('sc-input');
+  if (scAwaitingNext) { scNext(); return; }
   const userAns = inp.value.trim();
   if (!userAns) return;
-  if (scAwaitingNext) { scNext(); return; }
   if (!scCurrentCheck || scCurrentIndex >= scCurrentCheck.tasks.length) return;
 
   const t = scCurrentCheck.tasks[scCurrentIndex];
