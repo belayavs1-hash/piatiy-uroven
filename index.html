@@ -3086,7 +3086,7 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
     <div id="tr-done-view" style="display:none">
       <div class="tg-finish">
         <div class="tg-finish-emoji" id="tg-finish-emoji">🏆</div>
-        <div class="tg-finish-title">Тренажёр пройден!</div>
+        <div class="tg-finish-title" id="tg-finish-title">Тренажёр пройден!</div>
         <div class="tg-finish-grid">
           <div class="tg-finish-cell"><div class="tg-fc-val" id="tr-done-correct">0/10</div><div class="tg-fc-lbl">Правильно</div></div>
           <div class="tg-finish-cell"><div class="tg-fc-val" id="tr-done-errors">0</div><div class="tg-fc-lbl">Ошибок</div></div>
@@ -9721,12 +9721,18 @@ function renderTrainers(highlightId) {
   const grid = document.getElementById('trainers-grid');
   if(!grid) return;
   grid.innerHTML = TRAINERS_DEF.map(tr => {
-    const stats = ST.trainerStats[tr.id] || {done:0};
+    const stats = ST.trainerStats[tr.id] || {done:0, best:0};
     const isHighlight = tr.id === highlightId;
+    const hasBest = stats.best > 0;
+    const bestPct = hasBest ? Math.round(stats.best / 10 * 100) : 0;
+    const bestColor = bestPct === 100 ? '#10b981' : bestPct >= 80 ? '#fbbf24' : '#f87171';
+    const btnLabel = stats.done ? '▶ Продолжить' : '▶ Начать';
     return `<div class="trainer-card${isHighlight ? ' trainer-card-highlight' : ''}" onclick="startTrainer('${tr.id}')">
       <span class="tr-icon">${tr.icon}</span>
       <div class="tr-name">${tr.name}</div>
-      <div class="tr-count">${tr.desc}${stats.done ? ` · ${stats.done} сессий` : ''}</div>
+      <div class="tr-count">${tr.desc}</div>
+      ${hasBest ? `<div style="font-size:11px;font-weight:800;color:${bestColor};margin-top:4px">Рекорд ${stats.best}/10</div>` : ''}
+      <div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:6px;font-weight:700">${btnLabel}</div>
     </div>`;
   }).join('');
 }
@@ -11435,9 +11441,10 @@ function diceAdvance() {
 }
 
 function endTrainer() {
-  if(!ST.trainerStats[currentTrainer.id]) ST.trainerStats[currentTrainer.id] = {done:0, correct:0};
+  if(!ST.trainerStats[currentTrainer.id]) ST.trainerStats[currentTrainer.id] = {done:0, correct:0, best:0};
   ST.trainerStats[currentTrainer.id].done++;
   ST.trainerStats[currentTrainer.id].correct = (ST.trainerStats[currentTrainer.id].correct || 0) + trCorrect;
+  if (trCorrect > (ST.trainerStats[currentTrainer.id].best || 0)) ST.trainerStats[currentTrainer.id].best = trCorrect;
   var total = trTasks.length;
   var hadExplanation = trErrors > 0; // объяснение показывалось если были ошибки
   if (!ST.trainerHistory) ST.trainerHistory = [];
@@ -11457,25 +11464,27 @@ function endTrainer() {
   var pct = Math.round(trCorrect / total * 100);
 
   // Эмодзи и рекомендация Умника по результату
-  var emoji, umnikText;
+  var emoji, finishTitle, umnikText;
   if (pct === 100) {
-    emoji = '🏆';
-    umnikText = 'Превосходно! Все ' + total + ' заданий выполнены без единой ошибки. Ты настоящий математик — попробуй более сложный тренажёр!';
+    emoji = '🏆'; finishTitle = 'Отлично! Тема усвоена';
+    umnikText = 'Все ' + total + ' заданий без единой ошибки! Попробуй более сложный тренажёр.';
   } else if (pct >= 80) {
-    emoji = '🥇';
-    umnikText = 'Отличный результат! Ошибки есть, но их мало. Нажми «Повторить ошибки» — и будет 100%.';
-  } else if (pct >= 60) {
-    emoji = '🥈';
-    umnikText = 'Хороший старт! Больше половины заданий выполнено верно. Повтори ошибки — прогресс уже виден.';
-  } else if (pct >= 40) {
-    emoji = '🥉';
-    umnikText = 'Тема требует тренировки. Не расстраивайся — правильно выполнено ' + trCorrect + ' из ' + total + '. Повтори ошибки и запусти тренажёр ещё раз.';
+    emoji = '🥇'; finishTitle = 'Хороший результат!';
+    umnikText = 'Верно ' + trCorrect + ' из ' + total + '. Нажми «Повторить ошибки» — и будет 100%.';
+  } else if (pct >= 50) {
+    emoji = '🥈'; finishTitle = 'Хороший старт, продолжай!';
+    umnikText = 'Верно ' + trCorrect + ' из ' + total + '. Повтори ошибки — прогресс уже виден.';
+  } else if (pct > 0) {
+    emoji = '💪'; finishTitle = 'Эту тему стоит разобрать с Умником';
+    umnikText = 'Верно только ' + trCorrect + ' из ' + total + '. Повтори правило, затем снова запусти тренажёр.';
   } else {
-    emoji = '💪';
-    umnikText = 'Тема пока сложная, но это нормально! Повтори правило в разделе «Правила», затем снова запусти этот тренажёр.';
+    emoji = '📖'; finishTitle = 'Эту тему стоит разобрать с Умником';
+    umnikText = 'Ни одного верного ответа — не страшно. Сначала разбери тему в «Карте тем», потом возвращайся сюда.';
   }
 
   document.getElementById('tg-finish-emoji').textContent = emoji;
+  var titleEl = document.getElementById('tg-finish-title');
+  if (titleEl) titleEl.textContent = finishTitle;
   document.getElementById('tr-done-correct').textContent = trCorrect + '/' + total;
   document.getElementById('tr-done-errors').textContent = trErrors;
   document.getElementById('tr-done-xp').textContent = '+' + trSessionXP + ' XP';
