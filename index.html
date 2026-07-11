@@ -12814,10 +12814,10 @@ const SELF_CHECKS = [
     title: "Проверочная работа № 1",
     subtitle: "Тема: Шкалы и координатная прямая",
     tasks: [
-      { q: "Отметьте на координатной прямой точки, соответствующие числам 0, 2, 5.", a: "0, 2, 5", hint: "Нарисуй числовую прямую и отметь точки над числами 0, 2 и 5" },
-      { q: "Отметьте на координатной прямой точки A(4) и B(7).", a: "A(4), B(7)", hint: "A стоит над числом 4, B -- над числом 7" },
+      { type:"numberline", min:0, max:10, q: "Отметьте на координатной прямой точки, соответствующие числам 0, 2, 5.", a: "0,2,5", hint: "Числовая прямая: нажми на числа 0, 2 и 5" },
+      { type:"numberline", min:0, max:10, marks:[{n:"A",v:null},{n:"B",v:null}], q: "Отметьте на координатной прямой точки A(4) и B(7).", a: "4,7", hint: "A над числом 4, B над числом 7" },
       { q: "Сколько единичных отрезков между точками A(4) и B(7)?", a: "3", hint: "7 - 4 = 3 единичных отрезка" },
-      { q: "Отметьте на координатной прямой точки, удалённые от точки B(7) на 2 единичных отрезка. Запишите их координаты.", a: "P(5) и R(9)", hint: "7 - 2 = 5 и 7 + 2 = 9. Две точки: P(5) и R(9)" },
+      { type:"numberline", min:0, max:12, marks:[{n:"B",v:7,fixed:true}], q: "Отметьте на координатной прямой точки, удалённые от точки B(7) на 2 единичных отрезка. Запишите их координаты.", a: "5,9", hint: "7-2=5 и 7+2=9 — две точки" },
       { q: "Сколько на координатной прямой точек, удалённых от точки B(7) на 7 единичных отрезков? на 9 единичных отрезков?", a: "на 7: 2 точки (0 и 14); на 9: 2 точки (-2 и 16) -- но отрицательных нет, значит 1 точка", hint: "7-7=0 и 7+7=14 → 2 точки. 7-9 = отрицательное (не на прямой), 7+9=16 → 1 точка" }
     ]
   },
@@ -13601,9 +13601,177 @@ function scShowQuestion() {
   scUpdateScores();
   scAwaitingNext = false;
   document.getElementById('sc-input').value = '';
-  document.getElementById('sc-input').disabled = false;
-  scAddMsg('bot', `<div style="font-size:11px;font-weight:800;color:rgba(255,255,255,.4);margin-bottom:6px">Вопрос ${scCurrentIndex+1} из ${total}</div>${t.q}`);
-  setTimeout(() => document.getElementById('sc-input').focus(), 100);
+  const inp = document.getElementById('sc-input');
+  inp.disabled = false;
+
+  if (t.type === 'numberline') {
+    const msgDiv = scAddMsg('bot', `<div style="font-size:11px;font-weight:800;color:rgba(255,255,255,.4);margin-bottom:6px">Вопрос ${scCurrentIndex+1} из ${total}</div>${t.q}`);
+    setTimeout(() => scRenderNumberLine(t, msgDiv), 50);
+    inp.disabled = true;
+    inp.placeholder = 'Нажми на числовую прямую ↑';
+  } else {
+    scAddMsg('bot', `<div style="font-size:11px;font-weight:800;color:rgba(255,255,255,.4);margin-bottom:6px">Вопрос ${scCurrentIndex+1} из ${total}</div>${t.q}`);
+    setTimeout(() => inp.focus(), 100);
+  }
+}
+
+let scNLPoints = []; // выбранные точки на числовой прямой
+
+function scRenderNumberLine(t, msgDiv) {
+  const min = t.min || 0, max = t.max || 10;
+  const required = t.a.split(',').map(s => parseFloat(s.trim()));
+  const fixed = (t.marks || []).filter(m => m.fixed);
+  scNLPoints = [];
+
+  const W = 300, H = 80, PAD = 20;
+  const range = max - min;
+  const toX = v => PAD + (v - min) / range * (W - PAD*2);
+
+  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  svg.setAttribute('width', '100%');
+  svg.style.cssText = 'display:block;margin:12px 0;cursor:crosshair;touch-action:manipulation;max-width:320px';
+
+  // Линия
+  const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+  line.setAttribute('x1', PAD); line.setAttribute('x2', W-PAD);
+  line.setAttribute('y1', 45); line.setAttribute('y2', 45);
+  line.setAttribute('stroke', 'rgba(255,255,255,.6)'); line.setAttribute('stroke-width', '2');
+  svg.appendChild(line);
+  // Стрелка
+  const arr = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+  arr.setAttribute('points', `${W-PAD},41 ${W-PAD+8},45 ${W-PAD},49`);
+  arr.setAttribute('fill', 'rgba(255,255,255,.6)'); svg.appendChild(arr);
+
+  // Деления и подписи
+  for (let v = min; v <= max; v++) {
+    const x = toX(v);
+    const tick = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    tick.setAttribute('x1', x); tick.setAttribute('x2', x);
+    tick.setAttribute('y1', 40); tick.setAttribute('y2', 50);
+    tick.setAttribute('stroke', 'rgba(255,255,255,.5)'); tick.setAttribute('stroke-width', '1');
+    svg.appendChild(tick);
+    const lbl = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    lbl.setAttribute('x', x); lbl.setAttribute('y', 65);
+    lbl.setAttribute('text-anchor', 'middle');
+    lbl.setAttribute('font-size', '10'); lbl.setAttribute('fill', 'rgba(255,255,255,.6)');
+    lbl.setAttribute('font-family', 'sans-serif');
+    lbl.textContent = v; svg.appendChild(lbl);
+  }
+
+  // Фиксированные точки
+  fixed.forEach(m => {
+    const x = toX(m.v);
+    const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    c.setAttribute('cx', x); c.setAttribute('cy', 45); c.setAttribute('r', 5);
+    c.setAttribute('fill', '#f59e0b'); svg.appendChild(c);
+    const lbl = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    lbl.setAttribute('x', x); lbl.setAttribute('y', 32);
+    lbl.setAttribute('text-anchor', 'middle');
+    lbl.setAttribute('font-size', '11'); lbl.setAttribute('fill', '#f59e0b');
+    lbl.setAttribute('font-family', 'serif'); lbl.setAttribute('font-weight', 'bold');
+    lbl.textContent = m.n + '(' + m.v + ')'; svg.appendChild(lbl);
+  });
+
+  // Слой кликов
+  const clickLayer = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+  clickLayer.setAttribute('x', PAD); clickLayer.setAttribute('y', 25);
+  clickLayer.setAttribute('width', W-PAD*2); clickLayer.setAttribute('height', 40);
+  clickLayer.setAttribute('fill', 'transparent');
+  svg.appendChild(clickLayer);
+
+  // Группа для пользовательских точек
+  const dotsG = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+  dotsG.id = 'sc-nl-dots'; svg.appendChild(dotsG);
+
+  function addDot(v) {
+    // Снять если уже есть
+    const idx = scNLPoints.indexOf(v);
+    if (idx !== -1) {
+      scNLPoints.splice(idx, 1);
+    } else {
+      if (scNLPoints.length >= required.length) return; // лимит
+      scNLPoints.push(v);
+    }
+    // Перерисовать точки
+    dotsG.innerHTML = '';
+    scNLPoints.forEach(pv => {
+      const x = toX(pv);
+      const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      c.setAttribute('cx', x); c.setAttribute('cy', 45); c.setAttribute('r', 6);
+      c.setAttribute('fill', '#10b981'); c.setAttribute('stroke', '#fff'); c.setAttribute('stroke-width', '1.5');
+      dotsG.appendChild(c);
+      const lbl = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      lbl.setAttribute('x', x); lbl.setAttribute('y', 20);
+      lbl.setAttribute('text-anchor', 'middle');
+      lbl.setAttribute('font-size', '11'); lbl.setAttribute('fill', '#10b981');
+      lbl.setAttribute('font-weight', 'bold'); lbl.setAttribute('font-family', 'sans-serif');
+      lbl.textContent = pv; dotsG.appendChild(lbl);
+    });
+    // Если набрали нужное количество — проверяем
+    if (scNLPoints.length === required.length) {
+      setTimeout(() => scCheckNL(t, required), 300);
+    }
+  }
+
+  function getVal(clientX, rect) {
+    const relX = clientX - rect.left;
+    const svgX = relX / rect.width * W;
+    const raw = min + (svgX - PAD) / (W - PAD*2) * range;
+    return Math.round(Math.max(min, Math.min(max, raw)));
+  }
+
+  clickLayer.addEventListener('click', e => {
+    const rect = svg.getBoundingClientRect();
+    addDot(getVal(e.clientX, rect));
+  });
+  clickLayer.addEventListener('touchend', e => {
+    e.preventDefault();
+    const rect = svg.getBoundingClientRect();
+    addDot(getVal(e.changedTouches[0].clientX, rect));
+  });
+
+  // Подсказка
+  const hint = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+  hint.setAttribute('x', W/2); hint.setAttribute('y', 13);
+  hint.setAttribute('text-anchor', 'middle');
+  hint.setAttribute('font-size', '9'); hint.setAttribute('fill', 'rgba(255,255,255,.35)');
+  hint.setAttribute('font-family', 'sans-serif');
+  hint.textContent = 'Нажми на нужные числа (' + required.length + ' точки)';
+  svg.appendChild(hint);
+
+  msgDiv.querySelector('.sc-bubble').appendChild(svg);
+}
+
+function scCheckNL(t, required) {
+  const sorted = [...scNLPoints].sort((a,b)=>a-b);
+  const reqSorted = [...required].sort((a,b)=>a-b);
+  const isOk = sorted.length === reqSorted.length && sorted.every((v,i) => v === reqSorted[i]);
+
+  const inp = document.getElementById('sc-input');
+  inp.disabled = true;
+  inp.value = sorted.join(', ');
+
+  scAddMsg('user', sorted.join(', '), isOk ? 'ok' : 'wrong');
+
+  if (isOk) {
+    scYouScore++;
+    scUpdateScores();
+    scAddMsg('bot', '✅ Верно! +1 очко тебе!');
+    addXP(10);
+    inp.value = '';
+    setTimeout(() => scNext(), 1200);
+  } else {
+    scShowTyping();
+    setTimeout(() => {
+      scHideTyping();
+      scUmnikScore++;
+      scUpdateScores();
+      scAddMsg('bot', `🧠 +1 мне! Ответ: <b>${t.a}</b><br><span style="font-size:13px;color:rgba(255,255,255,.7)">${t.hint}</span>`);
+      inp.value = '';
+      setTimeout(() => scNext(), 1800);
+    }, 1800);
+  }
 }
 
 const SC_WORDS = {
