@@ -12896,7 +12896,7 @@ const SELF_CHECKS = [
       { q: "У Миши с Сашей было 3 купюры по 200 р. Они купили 3 пакета пряников по 81 р. а) Сколько купюр они дали продавцу при покупке пряников?", a: "2", hint: "3 × 81 = 243 р. 243 р. > 200 р., нужно 2 купюры (400 р.)." },
       { q: "У Миши с Сашей было 3 купюры по 200 р. Они купили 3 пакета пряников по 81 р. Сдача потрачена на мороженое по 60 р. б) Сколько пачек мороженого купили дети?", a: "2", hint: "Сдача: 400 - 243 = 157 р. 157 ÷ 60 = 2 (остаток 37). Купили 2 пачки." },
       { q: "У Миши с Сашей было 3 купюры по 200 р. Купили 3 пакета пряников по 81 р., потратили сдачу на мороженое по 60 р. в) Сколько денег осталось после всех покупок?", a: "37", hint: "Сдача 157 р. - 2×60 = 157 - 120 = 37 р." },
-      { q: "По схеме (рис. 1.45) определите самый короткий путь из пункта T в пункт P. Расстояния: TB=208, BA=143, AP=276, TC=193, CB=243, CP=232. Какова длина пути?", a: "425", hint: "Пути: T→B→A→P = 208+143+276 = 627; T→C→P = 193+232 = 425; T→B→C→P = 208+243+232 = 683; T→C→B→A→P = 193+243+143+276 = 855. Кратчайший: T→C→P = 425 км." },
+      { q: "По схеме (рис. 1.45) определите самый короткий путь из пункта T в пункт P.\n<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 280 160' width='280' height='160' style='display:block;margin:8px 0'><line x1='30' y1='80' x2='120' y2='30' stroke='rgba(255,255,255,.5)' stroke-width='1.5'/><line x1='120' y1='30' x2='210' y2='80' stroke='rgba(255,255,255,.5)' stroke-width='1.5'/><line x1='210' y1='80' x2='250' y2='80' stroke='rgba(255,255,255,.5)' stroke-width='1.5'/><line x1='30' y1='80' x2='120' y2='130' stroke='rgba(255,255,255,.5)' stroke-width='1.5'/><line x1='120' y1='130' x2='210' y2='80' stroke='rgba(255,255,255,.5)' stroke-width='1.5'/><line x1='120' y1='30' x2='120' y2='130' stroke='rgba(255,255,255,.3)' stroke-width='1' stroke-dasharray='4,3'/><circle cx='30' cy='80' r='8' fill='#4f46e5'/><text x='30' y='84' text-anchor='middle' font-size='12' font-family='serif' font-weight='bold' fill='#fff'>T</text><circle cx='120' cy='30' r='8' fill='#374151'/><text x='120' y='34' text-anchor='middle' font-size='12' font-family='serif' font-weight='bold' fill='#fff'>B</text><circle cx='210' cy='80' r='8' fill='#374151'/><text x='210' y='84' text-anchor='middle' font-size='12' font-family='serif' font-weight='bold' fill='#fff'>A</text><circle cx='250' cy='80' r='8' fill='#10b981'/><text x='250' y='84' text-anchor='middle' font-size='12' font-family='serif' font-weight='bold' fill='#fff'>P</text><circle cx='120' cy='130' r='8' fill='#374151'/><text x='120' y='134' text-anchor='middle' font-size='12' font-family='serif' font-weight='bold' fill='#fff'>C</text><text x='68' y='48' font-size='9' fill='#fbbf24' font-family='sans-serif' text-anchor='middle'>208</text><text x='168' y='48' font-size='9' fill='rgba(255,255,255,.6)' font-family='sans-serif' text-anchor='middle'>143</text><text x='232' y='72' font-size='9' fill='rgba(255,255,255,.6)' font-family='sans-serif' text-anchor='middle'>276</text><text x='68' y='118' font-size='9' fill='#fbbf24' font-family='sans-serif' text-anchor='middle'>193</text><text x='168' y='118' font-size='9' fill='#fbbf24' font-family='sans-serif' text-anchor='middle'>232</text><text x='125' y='85' font-size='9' fill='rgba(255,255,255,.4)' font-family='sans-serif' text-anchor='middle'>243</text><text x='140' y='155' font-size='8' fill='rgba(255,255,255,.3)' font-family='sans-serif' text-anchor='middle'>Рис. 1.45</text></svg>Какова длина кратчайшего пути?", a: "425", hint: "Пути: T→B→A→P = 208+143+276 = 627; T→C→P = 193+232 = 425; T→B→C→P = 208+243+232 = 683. Кратчайший: T→C→P = 425 км." },
       { q: "Для поездки из T в P расход бензина 100 л на 100 км. Хватит ли 40 л бензина, если кратчайший путь 425 км?", a: "нет", hint: "Нужно 425 л бензина (100 л на 100 км). 40 л хватит только на 40 км. Не хватит." },
       { q: "Для изготовления поделки Лёше надо отмерять полоски бумаги шириной 3 см, 4 см, 2 см, 5 см. На линейке остались только деления 0, 7 и 10. Сможет ли он это сделать?", a: "да", hint: "7-0=7, 10-7=3✓, 10-0=10, 7-4=3→ 4=7-3✓, 5=10-5: нет. Но 2=7-5: 5=10-5 нет... Измеряем: 3=10-7✓, 4: нет прямо, но 4=7-3✓ (сначала 3, потом 7-3=4 отступ)." },
       { q: "Таня подошла к табло в аэропорту в 16:30. Рейс 309 на Симферополь в 19:15. Сколько минут осталось до начала регистрации, если регистрация начинается за 2,5 часа до вылета?", a: "15", hint: "Регистрация начинается в 19:15 - 2:30 = 16:45. До начала: 16:45 - 16:30 = 15 минут." },
@@ -13673,16 +13673,17 @@ function scRenderNumberLine(t, msgDiv) {
     lbl.textContent = m.n + '(' + m.v + ')'; svg.appendChild(lbl);
   });
 
-  // Слой кликов
-  const clickLayer = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-  clickLayer.setAttribute('x', PAD); clickLayer.setAttribute('y', 25);
-  clickLayer.setAttribute('width', W-PAD*2); clickLayer.setAttribute('height', 40);
-  clickLayer.setAttribute('fill', 'transparent');
-  svg.appendChild(clickLayer);
-
-  // Группа для пользовательских точек
+  // Группа для пользовательских точек (раньше клик-слоя чтобы не перекрывать)
   const dotsG = document.createElementNS('http://www.w3.org/2000/svg', 'g');
   dotsG.id = 'sc-nl-dots'; svg.appendChild(dotsG);
+
+  // Слой кликов — поверх всего, прозрачный
+  const clickLayer = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+  clickLayer.setAttribute('x', PAD); clickLayer.setAttribute('y', 15);
+  clickLayer.setAttribute('width', W-PAD*2); clickLayer.setAttribute('height', 55);
+  clickLayer.setAttribute('fill', 'transparent');
+  clickLayer.style.cursor = 'pointer';
+  svg.appendChild(clickLayer);
 
   function addDot(v) {
     // Снять если уже есть
@@ -13813,9 +13814,13 @@ function scWordsToNum(s) {
   return result.join(' ').trim();
 }
 
+const SC_UNITS = /\s*(пачек|пачки|пачка|штук|штуки|штука|рублей|рубля|рубль|р\.|копеек|копейки|метров|метра|метр|км|кг|кг\.|граммов|грамма|грамм|литров|литра|литр|л\.|часов|часа|час|минут|минуты|минута|мин|секунд|секунды|секунда|сек|дней|дня|день|человек|людей|раз|раза|очков|очка|очко|учеников|ученика|ученик|задач|задачи|задача|книг|книги|книга|купюр|купюры|купюра)\b/gi;
+
 function scNormAns(s) {
   const converted = scWordsToNum(String(s));
-  return converted.toLowerCase().replace(/[.,;:!?\s]/g,' ').replace(/\s+/g,' ').trim();
+  // убираем единицы измерения произнесённые голосом после числа
+  const stripped = converted.replace(SC_UNITS, '');
+  return stripped.toLowerCase().replace(/[.,;:!?\s]/g,' ').replace(/\s+/g,' ').trim();
 }
 
 function scIsCorrect(userAns, correctAns) {
