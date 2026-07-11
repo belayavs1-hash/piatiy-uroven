@@ -3306,6 +3306,7 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
       <button id="sc-mic-btn" onclick="scToggleMic()" style="padding:13px 15px;border-radius:14px;border:none;background:rgba(255,255,255,.12);color:#fff;font-size:18px;cursor:pointer;flex-shrink:0;transition:background .2s" title="Голосовой ввод">🎤</button>
       <input type="text" class="sc-inp" id="sc-input" placeholder="Твой ответ..." onkeydown="if(event.key==='Enter')scCheckAnswer()">
       <button class="sc-send-btn" onclick="scCheckAnswer()">→</button>
+      <button onclick="scSkip()" style="padding:13px 12px;border-radius:14px;border:none;background:rgba(255,255,255,.08);color:rgba(255,255,255,.5);font-size:12px;font-weight:800;cursor:pointer;flex-shrink:0;white-space:nowrap" title="Пропустить вопрос">⏭</button>
     </div>
   </div>
   <div class="bottom-nav">
@@ -13369,6 +13370,7 @@ function scUpdateScores() {
 
 let scRecognition = null;
 let scMicActive = false;
+let scMicGotFinal = false;
 
 function scInitMic() {
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -13377,6 +13379,12 @@ function scInitMic() {
   r.lang = 'ru-RU';
   r.continuous = false;
   r.interimResults = true;
+  r.maxAlternatives = 1;
+  r.onstart = () => {
+    scMicGotFinal = false;
+    document.getElementById('sc-mic-btn').innerHTML = '🔴';
+    document.getElementById('sc-mic-btn').style.background = '#ef4444';
+  };
   r.onresult = (e) => {
     const inp = document.getElementById('sc-input');
     let interim = '', final = '';
@@ -13384,34 +13392,52 @@ function scInitMic() {
       if (e.results[i].isFinal) final += e.results[i][0].transcript;
       else interim += e.results[i][0].transcript;
     }
-    inp.value = (final || interim).trim();
-    if (final) { scStopMic(); scCheckAnswer(); }
+    if (final) {
+      scMicGotFinal = true;
+      inp.value = final.trim();
+    } else {
+      inp.value = interim.trim();
+    }
   };
-  r.onerror = () => scStopMic();
-  r.onend = () => scStopMic();
+  r.onerror = (e) => { if (e.error !== 'aborted') scResetMicBtn(); };
+  r.onend = () => {
+    scMicActive = false;
+    scResetMicBtn();
+    if (scMicGotFinal) {
+      scMicGotFinal = false;
+      setTimeout(() => scCheckAnswer(), 50);
+    }
+  };
   return r;
 }
 
+function scResetMicBtn() {
+  const btn = document.getElementById('sc-mic-btn');
+  if (btn) { btn.innerHTML = '🎤'; btn.style.background = 'rgba(255,255,255,.12)'; }
+  const inp = document.getElementById('sc-input');
+  if (inp && !inp.value) inp.placeholder = 'Твой ответ...';
+}
+
 function scToggleMic() {
-  if (scMicActive) { scStopMic(); return; }
+  if (scMicActive) {
+    scMicActive = false;
+    if (scRecognition) { try { scRecognition.stop(); } catch(e){} }
+    return;
+  }
   const inp = document.getElementById('sc-input');
   if (inp.disabled) return;
   scRecognition = scInitMic();
   if (!scRecognition) { inp.placeholder = 'Микрофон недоступен'; return; }
   scMicActive = true;
-  document.getElementById('sc-mic-btn').innerHTML = '🔴';
-  document.getElementById('sc-mic-btn').style.background = '#ef4444';
   inp.placeholder = 'Говори...';
   inp.value = '';
-  scRecognition.start();
+  try { scRecognition.start(); } catch(e) { scMicActive = false; }
 }
 
 function scStopMic() {
   scMicActive = false;
-  const btn = document.getElementById('sc-mic-btn');
-  if (btn) { btn.innerHTML = '🎤'; btn.style.background = 'rgba(255,255,255,.12)'; }
-  const inp = document.getElementById('sc-input');
-  if (inp) inp.placeholder = 'Твой ответ...';
+  scMicGotFinal = false;
+  scResetMicBtn();
   if (scRecognition) { try { scRecognition.stop(); } catch(e){} scRecognition = null; }
 }
 
@@ -13509,6 +13535,21 @@ function scNext() {
   } else {
     scShowQuestion();
   }
+}
+
+function scSkip() {
+  const inp = document.getElementById('sc-input');
+  if (inp.disabled) return;
+  const t = scCurrentCheck && scCurrentCheck.tasks[scCurrentIndex];
+  if (!t) return;
+  scStopMic();
+  inp.disabled = true;
+  scUmnikScore++;
+  scUpdateScores();
+  scAddMsg('bot', `⏭ Пропущено. Ответ: <b>${t.a}</b><br><span style="font-size:13px;color:rgba(255,255,255,.6)">${t.hint}</span>`);
+  inp.value = '';
+  inp.placeholder = '...';
+  setTimeout(() => scNext(), 1800);
 }
 
 function scFinish() {
