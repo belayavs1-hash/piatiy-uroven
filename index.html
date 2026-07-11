@@ -13606,7 +13606,49 @@ function scShowQuestion() {
   setTimeout(() => document.getElementById('sc-input').focus(), 100);
 }
 
-function scNormAns(s) { return String(s).toLowerCase().replace(/[.,;:!?\s]/g,' ').replace(/\s+/g,' ').trim(); }
+const SC_WORDS = {
+  'ноль':0,'нуль':0,'один':1,'одна':1,'одно':1,'два':2,'две':2,'три':3,'четыре':4,
+  'пять':5,'шесть':6,'семь':7,'восемь':8,'девять':9,'десять':10,'одиннадцать':11,
+  'двенадцать':12,'тринадцать':13,'четырнадцать':14,'пятнадцать':15,'шестнадцать':16,
+  'семнадцать':17,'восемнадцать':18,'девятнадцать':19,'двадцать':20,'тридцать':30,
+  'сорок':40,'пятьдесят':50,'шестьдесят':60,'семьдесят':70,'восемьдесят':80,
+  'девяносто':90,'сто':100,'двести':200,'триста':300,'четыреста':400,'пятьсот':500,
+  'шестьсот':600,'семьсот':700,'восемьсот':800,'девятьсот':900,'тысяча':1000,
+  'тысячи':1000,'тысяч':1000,'миллион':1000000,'миллиона':1000000,'миллионов':1000000,
+  'да':'да','нет':'нет','равно':'=','равны':'=','больше':'>','меньше':'<'
+};
+
+function scWordsToNum(s) {
+  // Конвертирует слова-числительные в цифры внутри строки
+  // «три кг» → «3 кг», «двадцать пять» → «25»
+  let words = s.toLowerCase().split(/\s+/);
+  let result = [];
+  let numAcc = 0;
+  let inNum = false;
+  for (let i = 0; i < words.length; i++) {
+    const w = words[i];
+    if (SC_WORDS[w] !== undefined && typeof SC_WORDS[w] === 'number') {
+      const v = SC_WORDS[w];
+      if (v >= 1000) { numAcc = (numAcc || 1) * v; }
+      else if (v >= 100) { numAcc += Math.floor(numAcc % 1000 / 100 === 0 ? 1 : 0) * 0 + v; numAcc = numAcc + v; }
+      else { numAcc += v; }
+      inNum = true;
+    } else if (SC_WORDS[w] !== undefined) {
+      if (inNum) { result.push(String(numAcc)); numAcc = 0; inNum = false; }
+      result.push(SC_WORDS[w]);
+    } else {
+      if (inNum) { result.push(String(numAcc)); numAcc = 0; inNum = false; }
+      result.push(w);
+    }
+  }
+  if (inNum) result.push(String(numAcc));
+  return result.join(' ').trim();
+}
+
+function scNormAns(s) {
+  const converted = scWordsToNum(String(s));
+  return converted.toLowerCase().replace(/[.,;:!?\s]/g,' ').replace(/\s+/g,' ').trim();
+}
 
 function scIsCorrect(userAns, correctAns) {
   const u = scNormAns(userAns);
