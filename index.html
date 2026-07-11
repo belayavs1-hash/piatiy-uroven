@@ -3297,7 +3297,8 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
       <div id="sc-done-title" style="font-size:22px;font-weight:900;color:#fff;margin-bottom:8px">Проверочная пройдена!</div>
       <div id="sc-done-sub" style="font-size:15px;color:rgba(255,255,255,.8);margin-bottom:24px"></div>
       <div id="sc-done-result" style="background:rgba(255,255,255,.07);border-radius:16px;padding:18px;margin-bottom:20px;font-size:14px;line-height:1.8;color:rgba(255,255,255,.9)"></div>
-      <button class="btn-primary" onclick="showSCList()">← К списку тем</button>
+      <button class="btn-primary" onclick="scRestart()" style="margin-bottom:10px">🔄 Повторить</button>
+      <button class="btn-primary" onclick="showSCList()" style="background:rgba(255,255,255,.1)">← К списку тем</button>
     </div>
   </div>
   <!-- Фиксированная строка ввода -->
@@ -13964,7 +13965,24 @@ function scFinish() {
   if (scYouScore > scUmnikScore) addXP(30);
 }
 
-
+function scRestart() {
+  if (!scCurrentCheck) return;
+  const id = scCurrentCheck.id;
+  scCurrentIndex = 0;
+  scYouScore = 0;
+  scUmnikScore = 0;
+  scAwaitingNext = false;
+  document.getElementById('sc-done-view').style.display = 'none';
+  document.getElementById('sc-session-view').style.display = '';
+  document.getElementById('sc-input-wrap').style.display = '';
+  document.getElementById('sc-nav-title').textContent = scCurrentCheck.title;
+  document.getElementById('sc-scorebar').style.display = 'flex';
+  document.getElementById('sc-score-top').style.display = 'flex';
+  document.getElementById('sc-chat').innerHTML = '';
+  scUpdateScores();
+  scAddMsg('bot', '⚔️ Начинаем соревнование! Я — Умник 🧠<br>Кто ответит правильно — получает очко. Ты против меня!<br><b>' + scCurrentCheck.subtitle + '</b>');
+  setTimeout(() => scShowQuestion(), 800);
+}
 
 // ── Умник-чат ──
 let umnikHistory = [];
