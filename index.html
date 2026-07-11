@@ -3303,6 +3303,7 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
   <!-- Фиксированная строка ввода -->
   <div id="sc-input-wrap" style="display:none;position:fixed;bottom:60px;left:0;right:0;padding:10px 14px;background:rgba(14,11,36,.95);backdrop-filter:blur(10px);border-top:1px solid rgba(255,255,255,.08);z-index:50">
     <div class="sc-input-row">
+      <button id="sc-mic-btn" onclick="scToggleMic()" style="padding:13px 15px;border-radius:14px;border:none;background:rgba(255,255,255,.12);color:#fff;font-size:18px;cursor:pointer;flex-shrink:0;transition:background .2s" title="Голосовой ввод">🎤</button>
       <input type="text" class="sc-inp" id="sc-input" placeholder="Твой ответ..." onkeydown="if(event.key==='Enter')scCheckAnswer()">
       <button class="sc-send-btn" onclick="scCheckAnswer()">→</button>
     </div>
@@ -13366,28 +13367,53 @@ function scUpdateScores() {
   document.getElementById('sc-prog-fill').style.width = pct + '%';
 }
 
-let scVoice = null;
-function scGetVoice() {
-  if (scVoice) return scVoice;
-  const voices = speechSynthesis.getVoices();
-  scVoice = voices.find(v => v.lang.startsWith('ru') && v.localService) ||
-            voices.find(v => v.lang.startsWith('ru')) || voices[0] || null;
-  return scVoice;
+let scRecognition = null;
+let scMicActive = false;
+
+function scInitMic() {
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRecognition) return null;
+  const r = new SpeechRecognition();
+  r.lang = 'ru-RU';
+  r.continuous = false;
+  r.interimResults = true;
+  r.onresult = (e) => {
+    const inp = document.getElementById('sc-input');
+    let interim = '', final = '';
+    for (let i = e.resultIndex; i < e.results.length; i++) {
+      if (e.results[i].isFinal) final += e.results[i][0].transcript;
+      else interim += e.results[i][0].transcript;
+    }
+    inp.value = (final || interim).trim();
+    if (final) { scStopMic(); scCheckAnswer(); }
+  };
+  r.onerror = () => scStopMic();
+  r.onend = () => scStopMic();
+  return r;
 }
-function scSpeak(text, rate) {
-  if (!window.speechSynthesis) return;
-  const clean = text.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
-  if (!clean) return;
-  speechSynthesis.cancel();
-  const u = new SpeechSynthesisUtterance(clean);
-  u.lang = 'ru-RU';
-  u.rate = rate || 1;
-  u.pitch = 1;
-  const v = scGetVoice();
-  if (v) u.voice = v;
-  speechSynthesis.speak(u);
+
+function scToggleMic() {
+  if (scMicActive) { scStopMic(); return; }
+  const inp = document.getElementById('sc-input');
+  if (inp.disabled) return;
+  scRecognition = scInitMic();
+  if (!scRecognition) { inp.placeholder = 'Микрофон недоступен'; return; }
+  scMicActive = true;
+  document.getElementById('sc-mic-btn').innerHTML = '🔴';
+  document.getElementById('sc-mic-btn').style.background = '#ef4444';
+  inp.placeholder = 'Говори...';
+  inp.value = '';
+  scRecognition.start();
 }
-speechSynthesis.onvoiceschanged = () => { scVoice = null; };
+
+function scStopMic() {
+  scMicActive = false;
+  const btn = document.getElementById('sc-mic-btn');
+  if (btn) { btn.innerHTML = '🎤'; btn.style.background = 'rgba(255,255,255,.12)'; }
+  const inp = document.getElementById('sc-input');
+  if (inp) inp.placeholder = 'Твой ответ...';
+  if (scRecognition) { try { scRecognition.stop(); } catch(e){} scRecognition = null; }
+}
 
 function scAddMsg(role, html, extraCls) {
   const chat = document.getElementById('sc-chat');
@@ -13423,7 +13449,6 @@ function scShowQuestion() {
   document.getElementById('sc-input').value = '';
   document.getElementById('sc-input').disabled = false;
   scAddMsg('bot', `<div style="font-size:11px;font-weight:800;color:rgba(255,255,255,.4);margin-bottom:6px">Вопрос ${scCurrentIndex+1} из ${total}</div>${t.q}`);
-  scSpeak('Вопрос ' + (scCurrentIndex+1) + '. ' + t.q, 0.95);
   setTimeout(() => document.getElementById('sc-input').focus(), 100);
 }
 
@@ -13451,7 +13476,6 @@ function scCheckAnswer() {
     scYouScore++;
     scUpdateScores();
     scAddMsg('bot', '✅ Верно! +1 очко тебе!');
-    scSpeak('Верно! Молодец!', 1.1);
     addXP(10);
     inp.value = '';
     inp.placeholder = '...';
@@ -13465,7 +13489,6 @@ function scCheckAnswer() {
       scUpdateScores();
       const umnikMsg = `🧠 +1 мне! Ответ: <b>${t.a}</b><br><span style="font-size:13px;color:rgba(255,255,255,.7)">${t.hint}</span>`;
       scAddMsg('bot', umnikMsg);
-      scSpeak('Плюс один мне! Правильный ответ: ' + t.a, 1);
       inp.value = '';
       inp.placeholder = '...';
       setTimeout(() => scNext(), 1800);
@@ -13474,6 +13497,7 @@ function scCheckAnswer() {
 }
 
 function scNext() {
+  scStopMic();
   scCurrentIndex++;
   const inp = document.getElementById('sc-input');
   inp.value = '';
