@@ -11696,7 +11696,7 @@ function renderMistakes() {
     + '<div class="err-summary-btns">'
     + (needRepeat > 0 ? '<button class="err-summary-btn primary" onclick="errStartTrain()">⚡ Повторить ошибки</button>' : '')
     + '<button class="err-summary-btn secondary" onclick="errExplainFirst()">🧑‍🏫 Разобрать с Умником</button>'
-    + '<button class="err-summary-btn secondary" onclick="errFilterSet(\'repeat\')">🔴 Только сложные</button>'
+    + '<button class="err-summary-btn secondary" onclick="errFilterSet(\'repeat\')">🔴 Встречались снова</button>'
     + '</div>'
     + '</div>';
 
@@ -11726,13 +11726,13 @@ function renderMistakes() {
     var icon = errTopicIcon(topic);
     var fixedInTopic = all.filter(function(m){ return m.topic===topic && m.status==='fixed'; }).length;
     var pct = Math.round(fixedInTopic/cnt*100);
-    var barColor = cnt>=4?'#ef4444':cnt>=2?'#f97316':'#22c55e';
-    var statusText = cnt>=4?'повторить обязательно':cnt>=2?'нужно закрепить':'почти понял';
+    var severity = cnt>=4?'повторить обязательно':cnt>=2?'нужно закрепить':'почти понял';
+    var barColor = pct>=80?'#22c55e':pct>=40?'#f97316':'#ef4444';
     return '<div class="err-topic-row" onclick="errFilterSet(\'topic:' + topic + '\')">'
       + '<div class="err-topic-icon">' + icon + '</div>'
-      + '<div class="err-topic-info"><div class="err-topic-name">' + topic + '</div><div class="err-topic-count">' + cnt + ' ошибок · ' + statusText + '</div></div>'
-      + '<div class="err-topic-bar-wrap"><div class="err-topic-bar" style="width:' + pct + '%;background:' + barColor + '"></div></div>'
-      + '<div style="font-size:11px;color:#94a3b8;margin-left:6px;flex-shrink:0">' + pct + '%</div>'
+      + '<div class="err-topic-info"><div class="err-topic-name">' + topic + '</div><div class="err-topic-count">' + cnt + ' ошибок · ' + severity + '</div></div>'
+      + '<div class="err-topic-bar-wrap"><div class="err-topic-bar" style="width:' + (pct||4) + '%;background:' + barColor + '"></div></div>'
+      + '<div style="font-size:11px;color:#94a3b8;margin-left:6px;flex-shrink:0">' + pct + '% исправлено</div>'
       + '</div>';
   }).join('');
   document.getElementById('err-by-topic-card').innerHTML =
@@ -11912,12 +11912,11 @@ function errCloseExplain() {
 function errSimilarTask(idx) {
   var m = (ST.mistakes||[])[idx];
   if (!m) return;
-  var tr = (TRAINERS_DEF||[]).find(function(d){ return d.name===m.topic; });
-  if (!tr) { errCloseExplain(); showScreen('screen-trainers'); return; }
-
+  var trId = errFindTrainer(m.topic);
+  if (!trId) trId = 'add';
   var tasks = [];
-  try { tasks = generateTrainerTasks(tr.id, 3); } catch(e){}
-  if (!tasks.length) { errCloseExplain(); startTrainer(tr.id); return; }
+  try { tasks = generateTrainerTasks(trId, 3); } catch(e){}
+  if (!tasks.length) { errCloseExplain(); return; }
 
   // Сохраняем idx чтобы при правильном ответе отметить ошибку исправленной
   var similarCorrect = 0;
@@ -12041,24 +12040,38 @@ function errStartTrain() {
   errTrainCorrect = 0;
   errTrainFixed = [];
 
-  // Берём до 5 реальных ошибочных тем и генерируем задания
-  var usedTopics = [];
-  errItems.slice(0,5).forEach(function(m) {
-    var tr = (TRAINERS_DEF||[]).find(function(d){ return d.name===m.topic; });
-    if (tr) {
-      var tasks = generateTasks(tr.id, 2);
-      tasks.forEach(function(t){ errTrainTasks.push({task:t, trId:tr.id, mistakeRef:m, type:'mistake'}); });
-      if (!usedTopics.includes(tr.id)) usedTopics.push(tr.id);
-    }
+  // Берём до 5 ошибок и генерируем задания через маппинг
+  var usedTrainers = [];
+  errItems.slice(0, 5).forEach(function(m) {
+    var trId = errFindTrainer(m.topic);
+    if (!trId) return;
+    var tasks = generateTasks(trId, 2);
+    tasks.forEach(function(t){ errTrainTasks.push({task:t, trId:trId, mistakeRef:m, type:'mistake'}); });
+    if (!usedTrainers.includes(trId)) usedTrainers.push(trId);
   });
-  // Добавляем до 10 заданий
-  while (errTrainTasks.length < 10 && usedTopics.length > 0) {
-    var trId = usedTopics[errTrainTasks.length % usedTopics.length];
-    var t2 = generateTasks(trId, 1);
-    if (t2.length) errTrainTasks.push({task:t2[0], trId:trId, type:'similar'});
+
+  // Добиваем до 10, но без бесконечного цикла
+  if (usedTrainers.length > 0) {
+    var attempts = 0;
+    var idx = 0;
+    while (errTrainTasks.length < 10 && attempts < 30) {
+      var trId2 = usedTrainers[idx % usedTrainers.length];
+      var t2 = generateTasks(trId2, 1);
+      if (t2.length) errTrainTasks.push({task:t2[0], trId:trId2, type:'similar'});
+      idx++;
+      attempts++;
+    }
   }
-  errTrainTasks = errTrainTasks.slice(0,10);
-  if (errTrainTasks.length === 0) { alert('Нет заданий для тренировки.'); return; }
+
+  errTrainTasks = errTrainTasks.slice(0, 10);
+
+  if (errTrainTasks.length === 0) {
+    // Нет совпадений по теме — запускаем универсальный тренажёр
+    var fallbackId = 'add';
+    var fallbackTasks = generateTasks(fallbackId, 10);
+    fallbackTasks.forEach(function(t){ errTrainTasks.push({task:t, trId:fallbackId, type:'similar'}); });
+    if (errTrainTasks.length === 0) { alert('Нет заданий для тренировки.'); return; }
+  }
 
   document.getElementById('err-train-overlay').style.display = 'block';
   errTrainRender();
@@ -12136,10 +12149,14 @@ function errTrainFinish() {
   else if (fixedCount > 0) umnik = 'Отлично! Ты исправил ' + fixedCount + ' ошибок. ' + (remaining>0?'Осталось ещё немного — не останавливайся!':'Все ошибки закрыты!');
   else umnik = 'Почти получилось! Давай повторим ещё раз — с каждым разом становится легче.';
 
+  var resultTitle = errTrainCorrect === total ? 'Все ошибки исправлены!' :
+                    errTrainCorrect >= Math.ceil(total * 0.7) ? 'Хороший результат!' :
+                    errTrainCorrect >= Math.ceil(total * 0.4) ? 'Неплохо, продолжаем!' :
+                    'Нужно ещё поработать';
   document.getElementById('err-train-body').innerHTML =
     '<div class="err-result-card">'
     + '<div class="err-result-emoji">' + (errTrainCorrect===total?'🏆':errTrainCorrect>=total/2?'🥇':'💪') + '</div>'
-    + '<div class="err-result-title">Ошибки разобраны!</div>'
+    + '<div class="err-result-title">' + resultTitle + '</div>'
     + '<div class="err-result-grid">'
     + '<div class="err-result-cell"><div class="err-result-val">' + errTrainCorrect + '/' + total + '</div><div class="err-result-lbl">правильно</div></div>'
     + '<div class="err-result-cell"><div class="err-result-val" style="color:#16a34a">' + fixedCount + '</div><div class="err-result-lbl">исправлено ошибок</div></div>'
@@ -12160,6 +12177,51 @@ function generateTasks(trId, count) {
   try {
     return generateTrainerTasks(trId, count) || [];
   } catch(e) { return []; }
+}
+
+// Маппинг тем учебника → id тренажёра
+var TOPIC_TO_TRAINER = {
+  'Цифры и числа':                              'add',
+  'Числовая информация в таблицах':             'add',
+  'Отрезок и его длина. Ломаная. Многоугольник':'perim',
+  'Периметр':                                   'perim',
+  'Площадь':                                    'area',
+  'Площадь. Единицы площади':                   'area',
+  'Объём. Единицы объёма':                      'geo_t',
+  'Натуральные числа':                          'add',
+  'Сложение натуральных чисел':                 'add',
+  'Вычитание натуральных чисел':                'sub',
+  'Умножение натуральных чисел':                'mul',
+  'Деление натуральных чисел':                  'div',
+  'Обыкновенные дроби':                         'cmp',
+  'Сравнение дробей':                           'cmp',
+  'Сложение дробей':                            'fradd',
+  'Вычитание дробей':                           'frsub',
+  'Десятичные дроби':                           'decadd',
+  'Сложение и вычитание десятичных дробей':     'decadd',
+  'Умножение и деление десятичных дробей':      'decmul',
+  'Задачи на движение':                         'speed',
+  'Скорость. Время. Расстояние':                'speed',
+  'Квадрат числа':                              'pow',
+  'Куб числа':                                  'pow3',
+  'Задачи':                                     'tasknat',
+  'Задачи на части':                            'tasknat',
+  'Геометрические фигуры':                      'geo_t',
+};
+
+// Найти id тренажёра по теме ошибки
+function errFindTrainer(topic) {
+  if (!topic) return null;
+  // Точное совпадение с именем тренажёра
+  var byName = TRAINERS_DEF.find(function(d){ return d.name === topic; });
+  if (byName) return byName.id;
+  // Маппинг
+  if (TOPIC_TO_TRAINER[topic]) return TOPIC_TO_TRAINER[topic];
+  // Частичное совпадение
+  var lower = topic.toLowerCase();
+  var partial = TRAINERS_DEF.find(function(d){ return lower.includes(d.name.toLowerCase()) || d.name.toLowerCase().includes(lower.split(' ')[0]); });
+  if (partial) return partial.id;
+  return null;
 }
 
 // ===== CHEATSHEET =====
