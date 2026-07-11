@@ -3194,6 +3194,24 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
   </div>
 </div>
 
+<!-- ===== ДОСТИЖЕНИЯ ===== -->
+<div id="screen-achievements" class="screen">
+  <nav class="top-nav">
+    <button class="nav-back" onclick="showScreen('screen-home')">← Назад</button>
+    <div class="nav-logo">🏆 Достижения</div>
+    <div class="nav-xp" id="nav-xp-ach">⭐ 0 XP</div>
+  </nav>
+  <div class="screen-body" style="max-width:600px">
+    <div id="ach-content"></div>
+  </div>
+  <div class="bottom-nav">
+    <a onclick="showScreen('screen-home')"><span class="icon">🏠</span>Главная</a>
+    <a onclick="showScreen('screen-map')"><span class="icon">🗺</span>Темы</a>
+    <a onclick="showScreen('screen-trainers')"><span class="icon">⚡</span>Тренажёры</a>
+    <a onclick="showScreen('screen-mistakes')"><span class="icon">🔍</span>Ошибки</a>
+  </div>
+</div>
+
 <!-- ===== PARENT ===== -->
 <div id="screen-parent" class="screen">
   <nav class="top-nav">
@@ -7794,6 +7812,7 @@ function showScreen(id) {
   if(id === 'screen-profile') { const el = document.getElementById('profile-name-label'); if(el && ST.user) el.textContent = ST.user.name || ''; }
   if(id === 'screen-funfacts') renderFunFacts();
   if(id === 'screen-mistakes') renderMistakes();
+  if(id === 'screen-achievements') renderAchievements();
   if(id === 'screen-cheatsheet') renderCheatsheet();
   if(id === 'screen-already-solved') fillAlreadySolved();
   if(id === 'screen-photo-check') fillPhotoCheck();
@@ -12222,6 +12241,66 @@ function errFindTrainer(topic) {
   var partial = TRAINERS_DEF.find(function(d){ return lower.includes(d.name.toLowerCase()) || d.name.toLowerCase().includes(lower.split(' ')[0]); });
   if (partial) return partial.id;
   return null;
+}
+
+// ===== ACHIEVEMENTS =====
+function renderAchievements() {
+  var xpEl = document.getElementById('nav-xp-ach');
+  if (xpEl) xpEl.textContent = '⭐ ' + ST.xp + ' XP';
+
+  var unlocked = ACHIEVEMENTS.filter(function(a){ return (ST.achievements||[]).includes(a.id); });
+  var locked   = ACHIEVEMENTS.filter(function(a){ return !(ST.achievements||[]).includes(a.id); });
+
+  var html = '';
+
+  // Прогресс-шапка
+  var pct = ACHIEVEMENTS.length ? Math.round(unlocked.length / ACHIEVEMENTS.length * 100) : 0;
+  html += '<div style="background:linear-gradient(135deg,#1e1b4b,#312e81);border-radius:20px;padding:20px;margin-bottom:16px;text-align:center">'
+    + '<div style="font-size:40px;margin-bottom:8px">🏆</div>'
+    + '<div style="font-size:22px;font-weight:900;color:#fff">' + unlocked.length + ' из ' + ACHIEVEMENTS.length + '</div>'
+    + '<div style="font-size:13px;color:rgba(255,255,255,.6);margin-bottom:12px">достижений открыто</div>'
+    + '<div style="background:rgba(255,255,255,.15);border-radius:8px;height:8px;overflow:hidden">'
+    +   '<div style="width:' + pct + '%;height:100%;background:linear-gradient(90deg,#fbbf24,#f59e0b);border-radius:8px;transition:width .4s"></div>'
+    + '</div>'
+    + '</div>';
+
+  // Открытые
+  if (unlocked.length > 0) {
+    html += '<div style="font-size:12px;font-weight:900;color:#64748b;text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Открыто · ' + unlocked.length + '</div>';
+    html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px">';
+    unlocked.forEach(function(a) {
+      html += '<div style="background:#fff;border-radius:16px;padding:16px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.06)">'
+        + '<div style="font-size:36px;margin-bottom:8px">' + a.icon + '</div>'
+        + '<div style="font-size:13px;font-weight:900;color:#1e293b;margin-bottom:4px">' + a.name + '</div>'
+        + '<div style="font-size:11px;color:#64748b">' + a.desc + '</div>'
+        + '</div>';
+    });
+    html += '</div>';
+  }
+
+  // Заблокированные
+  if (locked.length > 0) {
+    html += '<div style="font-size:12px;font-weight:900;color:#64748b;text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Ещё не открыто · ' + locked.length + '</div>';
+    html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">';
+    locked.forEach(function(a) {
+      html += '<div style="background:#f8fafc;border-radius:16px;padding:16px;text-align:center;border:2px dashed #e2e8f0">'
+        + '<div style="font-size:36px;margin-bottom:8px;filter:grayscale(1);opacity:.35">' + a.icon + '</div>'
+        + '<div style="font-size:13px;font-weight:900;color:#94a3b8;margin-bottom:4px">' + a.name + '</div>'
+        + '<div style="font-size:11px;color:#cbd5e1">' + a.desc + '</div>'
+        + '</div>';
+    });
+    html += '</div>';
+  }
+
+  if (unlocked.length === 0) {
+    html += '<div style="text-align:center;padding:30px 0;color:#94a3b8">'
+      + '<div style="font-size:40px;margin-bottom:12px">🌱</div>'
+      + '<div style="font-size:15px;font-weight:700">Пока пусто</div>'
+      + '<div style="font-size:13px;margin-top:8px">Решай задания и тренажёры — достижения откроются сами!</div>'
+      + '</div>';
+  }
+
+  document.getElementById('ach-content').innerHTML = html;
 }
 
 // ===== CHEATSHEET =====
