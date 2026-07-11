@@ -3136,7 +3136,7 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
 <!-- ===== МОИ ОШИБКИ ===== -->
 <div id="screen-mistakes" class="screen">
   <nav class="top-nav">
-    <button class="nav-back" onclick="showScreen('screen-home')">← Назад</button>
+    <button class="nav-back" onclick="ST.user&&ST.user.role==='parent'?showScreen('screen-parent'):showScreen('screen-home')">← Назад</button>
     <div class="nav-logo">🔍 Мои ошибки</div>
     <div class="nav-xp" id="nav-xp-mistakes">⭐ 0 XP</div>
   </nav>
