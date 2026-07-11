@@ -12195,248 +12195,173 @@ function parGoBack() {
 }
 
 // ===== PARENT =====
+var parPeriod = 'week'; // 'week' | 'month' | 'all'
+
 function renderParent() {
-  // Показываем имя ученика (не родителя)
   var name = ST.studentName || (ST.user && ST.user.role === 'student' && ST.user.name) || 'Ученик';
-  var xpEl = document.getElementById('nav-xp-par');
-  if (xpEl) xpEl.textContent = '⭐ ' + ST.xp + ' XP';
 
-  // ── Данные для расчётов ──────────────────────────────────────────────
-  var totalSolved  = Object.keys(ST.solvedTasks).length;
-  var totalCorrect = Object.values(ST.solvedTasks).filter(function(s){ return s.correct; }).length;
   var hist = ST.trainerHistory || [];
-  var rHist = ST.ruleHistory || [];
-
-  // Занятия на этой неделе (по истории тренажёров)
-  var weekMs = 7 * 24 * 3600 * 1000;
   var now = Date.now();
-  var weekSessions = hist.filter(function(h){
-    var d = new Date(h.date.split('.').reverse().join('-'));
-    return (now - d.getTime()) < weekMs;
-  }).length;
-  var weekXP = hist.filter(function(h){
-    var d = new Date(h.date.split('.').reverse().join('-'));
-    return (now - d.getTime()) < weekMs;
-  }).reduce(function(s,h){ return s + (h.xp||0); }, 0);
-  var weekCorrect = hist.filter(function(h){
-    var d = new Date(h.date.split('.').reverse().join('-'));
-    return (now - d.getTime()) < weekMs;
-  }).reduce(function(s,h){ return s + (h.correct||0); }, 0);
-  var weekTotal = hist.filter(function(h){
-    var d = new Date(h.date.split('.').reverse().join('-'));
-    return (now - d.getTime()) < weekMs;
-  }).reduce(function(s,h){ return s + (h.total||0); }, 0);
+  var periodMs = parPeriod === 'week' ? 7*24*3600*1000 : parPeriod === 'month' ? 30*24*3600*1000 : Infinity;
+  var periodLabel = parPeriod === 'week' ? 'за неделю' : parPeriod === 'month' ? 'за месяц' : 'за всё время';
 
-  // Серия дней (из streak последних тренажёров)
-  var bestStreak = hist.reduce(function(m,h){ return Math.max(m, h.streak||0); }, 0);
+  function inPeriod(h) {
+    if (parPeriod === 'all') return true;
+    var d = new Date(h.date.split('.').reverse().join('-'));
+    return (now - d.getTime()) < periodMs;
+  }
 
-  // Темы с ошибками и успехами для Умника
+  var periodHist   = hist.filter(inPeriod);
+  var periodSessions = periodHist.length;
+  var periodTotal    = periodHist.reduce(function(s,h){ return s+(h.total||0); },0);
+  var periodCorrect  = periodHist.reduce(function(s,h){ return s+(h.correct||0); },0);
+  var periodXP       = periodHist.reduce(function(s,h){ return s+(h.xp||0); },0);
+  // Время: оцениваем ~3 мин на тренажёр
+  var periodMinutes  = periodSessions * 3 + Object.keys(ST.solvedTasks).length * 1;
+
   var mistakeTopics = {};
   (ST.mistakes || []).forEach(function(m){ mistakeTopics[m.topic] = (mistakeTopics[m.topic]||0)+1; });
   var topMistake = Object.keys(mistakeTopics).sort(function(a,b){ return mistakeTopics[b]-mistakeTopics[a]; })[0] || '';
-  var goodTopics = TOPICS_MAP.reduce(function(acc, block){
-    block.topics.forEach(function(t){
-      if ((ST.topicProgress[t.id]||0) >= 80) acc.push(t.name);
-    });
-    return acc;
-  }, []);
 
-  // Статус недели
-  var weekPct = weekTotal > 0 ? Math.round(weekCorrect/weekTotal*100) : 0;
-  var statusClass = weekPct >= 80 ? 'great' : weekPct >= 50 ? 'good' : 'warn';
-  var statusText  = weekPct >= 80 ? '🌟 Отличная неделя! Можно хвалить от души' :
-                    weekPct >= 50 ? '👍 Хороший прогресс — продолжаем' :
-                    weekSessions === 0 ? '💤 На этой неделе занятий пока не было' :
-                    '💪 Есть над чем поработать — всё получится';
-
-  // ── 1. Итог недели ──────────────────────────────────────────────────
+  // ── 1. Шапка: имя + выбор периода ───────────────────────────────────
   document.getElementById('par-week-card').innerHTML =
     '<div class="par-card">'
-    + '<div class="par-week-name">' + name + ' · 5 класс</div>'
-    + '<div class="par-week-sub">Кабинет родителя</div>'
-    + '<div class="par-week-grid">'
-    + '<div class="par-week-cell"><div class="par-week-val">' + weekSessions + '</div><div class="par-week-lbl">занятий на неделе</div></div>'
-    + '<div class="par-week-cell"><div class="par-week-val">' + weekTotal + '</div><div class="par-week-lbl">заданий решено</div></div>'
-    + '<div class="par-week-cell"><div class="par-week-val">' + weekCorrect + '</div><div class="par-week-lbl">правильных</div></div>'
-    + '<div class="par-week-cell"><div class="par-week-val">' + bestStreak + '</div><div class="par-week-lbl">серия дней 🔥</div></div>'
-    + '<div class="par-week-cell"><div class="par-week-val">' + ST.xp + '</div><div class="par-week-lbl">XP всего ⭐</div></div>'
-    + '<div class="par-week-cell"><div class="par-week-val">' + weekXP + '</div><div class="par-week-lbl">XP за неделю</div></div>'
+    + '<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:14px">'
+    +   '<div><div class="par-week-name">' + name + ' · 5 класс</div>'
+    +   '<div style="font-size:13px;color:#64748b">Прогресс ученика</div></div>'
+    +   '<div style="display:flex;gap:6px">'
+    +   ['week','month','all'].map(function(p){ var lbl=p==='week'?'Неделя':p==='month'?'Месяц':'Всё время'; return '<button onclick="parPeriod=\''+p+'\';renderParent()" style="padding:5px 10px;border-radius:8px;border:1.5px solid '+(parPeriod===p?'#2563eb':'#e2e8f0')+';background:'+(parPeriod===p?'#2563eb':'#fff')+';color:'+(parPeriod===p?'#fff':'#64748b')+';font-size:12px;font-weight:700;cursor:pointer">'+lbl+'</button>'; }).join('')
+    +   '</div>'
     + '</div>'
-    + '<div class="par-week-status ' + statusClass + '">' + statusText + '</div>'
+    + '<div class="par-week-grid">'
+    + '<div class="par-week-cell"><div class="par-week-val">' + periodSessions + '</div><div class="par-week-lbl">тренажёров ' + periodLabel + '</div></div>'
+    + '<div class="par-week-cell"><div class="par-week-val">' + periodTotal + '</div><div class="par-week-lbl">заданий решено</div></div>'
+    + '<div class="par-week-cell"><div class="par-week-val" style="color:#16a34a">' + periodCorrect + '</div><div class="par-week-lbl">правильных</div></div>'
+    + '<div class="par-week-cell"><div class="par-week-val">' + periodXP + '</div><div class="par-week-lbl">XP ' + periodLabel + ' ⭐</div></div>'
+    + '<div class="par-week-cell"><div class="par-week-val">~' + periodMinutes + '</div><div class="par-week-lbl">минут занятий</div></div>'
+    + '<div class="par-week-cell"><div class="par-week-val">' + ST.xp + '</div><div class="par-week-lbl">XP всего ⭐</div></div>'
+    + '</div>'
     + '</div>';
 
-  // ── 2. Умник заметил ────────────────────────────────────────────────
-  var umnikMsg;
-  if (goodTopics.length > 0 && topMistake) {
-    umnikMsg = name + ' хорошо разбирается в теме «' + goodTopics[0] + '», но чаще всего ошибается в разделе «' + topMistake + '». Рекомендую повторить это вместе.';
-  } else if (goodTopics.length > 0) {
-    umnikMsg = name + ' уверенно справляется с темой «' + goodTopics[0] + '». Ошибок почти нет — можно двигаться дальше!';
+  // ── 2. Рекомендация родителю (Умник заметил) ────────────────────────
+  var umnikMsg, umnikSub;
+  if (periodSessions === 0) {
+    umnikMsg = 'На этой неделе занятий пока не было.';
+    umnikSub = 'Попробуйте вместе открыть приложение и пройти один тренажёр — это займёт 5 минут.';
   } else if (topMistake) {
-    umnikMsg = 'Чаще всего ошибки встречаются в теме «' + topMistake + '». Советую разобрать правило и пройти тренажёр ещё раз.';
+    umnikMsg = 'Чаще всего ошибки в теме «' + topMistake + '» — ' + mistakeTopics[topMistake] + ' раз.';
+    umnikSub = 'Попросите ' + name + ' объяснить вам это правило своими словами — это лучший способ проверить понимание.';
   } else {
-    umnikMsg = 'Занятия только начались. Пройдите первые темы — и я смогу дать точные рекомендации.';
+    umnikMsg = name + ' занимается регулярно и делает мало ошибок.';
+    umnikSub = 'Хвалите за каждый завершённый тренажёр — мотивация важнее оценок.';
   }
   document.getElementById('par-umnik-card').innerHTML =
     '<div class="par-card">'
-    + '<div class="par-card-title">🧑‍🏫 Умник заметил</div>'
-    + '<div class="par-umnik-text">«' + umnikMsg + '»</div>'
-    + '<div class="par-umnik-btns">'
-    + (topMistake ? '<button class="par-umnik-btn" onclick="showScreen(\'screen-mistakes\')">🔁 Повторить ошибки</button>' : '')
-    + '<button class="par-umnik-btn" onclick="showScreen(\'screen-trainers\')">⚡ Назначить тренировку</button>'
-    + '<button class="par-umnik-btn" onclick="showScreen(\'screen-cheatsheet\')">📋 Открыть шпаргалку</button>'
-    + '</div>'
+    + '<div class="par-card-title">🧑‍🏫 Рекомендация</div>'
+    + '<div style="font-size:15px;font-weight:800;color:#1e293b;margin-bottom:6px">' + umnikMsg + '</div>'
+    + '<div style="font-size:13px;color:#64748b;line-height:1.5">' + umnikSub + '</div>'
     + '</div>';
 
-  // ── 3. Прогресс по темам ────────────────────────────────────────────
-  var topicsRows = TOPICS_MAP.map(function(block) {
+  // ── 3. Темы: расшифровка по статусу ─────────────────────────────────
+  var topicsHtml = TOPICS_MAP.map(function(block) {
     var rows = block.topics.map(function(t) {
       var prog = ST.topicProgress[t.id] || 0;
       var errCount = mistakeTopics[t.name] || 0;
-      var statusCls, statusLbl, barColor;
-      if (prog === 0)         { statusCls='new';    statusLbl='ещё не проходили'; barColor='#e2e8f0'; }
-      else if (errCount > 1)  { statusCls='repeat'; statusLbl='нужно повторить'; barColor='#ef4444'; }
-      else if (prog >= 80)    { statusCls='done';   statusLbl='освоено ✓';       barColor='#22c55e'; }
-      else                    { statusCls='going';  statusLbl='в процессе';      barColor='#3b82f6'; }
-      return '<div class="par-topic-row">'
-        + '<div class="par-topic-name" title="' + t.name + '">' + t.name + '</div>'
-        + '<div class="par-topic-bar-wrap"><div class="par-topic-bar" style="width:' + prog + '%;background:' + barColor + '"></div></div>'
-        + '<div class="par-topic-status ' + statusCls + '">' + (prog===0?'—':prog+'% · ') + statusLbl + '</div>'
-        + (prog > 0 ? '<button class="par-topic-repeat-btn" onclick="showScreen(\'screen-map\')">↻</button>' : '')
+      var icon, label, color;
+      if (prog === 0)        { icon='○'; label='пока не изучалась'; color='#94a3b8'; }
+      else if (errCount > 2) { icon='⚠'; label='нужно повторить';   color='#dc2626'; }
+      else if (prog >= 80)   { icon='✓'; label='уверенно';           color='#16a34a'; }
+      else                   { icon='→'; label='в процессе';         color='#2563eb'; }
+      return '<div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid #f1f5f9">'
+        + '<span style="width:18px;text-align:center;font-weight:900;color:'+color+'">'+icon+'</span>'
+        + '<span style="flex:1;font-size:14px;color:#1e293b">'+t.name+'</span>'
+        + '<span style="font-size:12px;font-weight:700;color:'+color+'">'+label+'</span>'
         + '</div>';
     }).join('');
-    return '<div style="margin-bottom:6px;font-size:12px;font-weight:900;color:#94a3b8;text-transform:uppercase;letter-spacing:.06em">' + block.icon + ' ' + block.block + '</div>' + rows;
-  }).join('<div style="height:10px"></div>');
+    return '<div style="margin:12px 0 4px;font-size:11px;font-weight:900;color:#94a3b8;text-transform:uppercase;letter-spacing:.06em">'
+      + block.icon + ' ' + block.block + '</div>' + rows;
+  }).join('');
   document.getElementById('par-topics-card').innerHTML =
-    '<div class="par-card"><div class="par-card-title">📊 Прогресс по темам</div>' + topicsRows + '</div>';
+    '<div class="par-card"><div class="par-card-title">📊 Темы</div>' + topicsHtml + '</div>';
 
-  // ── 4. Последние ошибки ─────────────────────────────────────────────
-  var mistakes = (ST.mistakes || []).slice().reverse().slice(0, 5);
-  var errHtml = mistakes.length === 0
-    ? '<div style="color:#16a34a;font-size:15px;font-weight:700">🎉 Ошибок пока нет — ' + name + ' справляется отлично!</div>'
-    : mistakes.map(function(m) {
-        var fixMap = {
-          'trainer_wrong': 'Пройти тренажёр по этой теме ещё раз',
-          'check_wrong':   'Разобрать задание с Умником',
-          'hw_wrong':      'Повторить правило из шпаргалки'
-        };
-        return '<div class="par-err-item">'
-          + '<div class="par-err-topic">' + (m.topic||'Неизвестная тема') + '</div>'
-          + '<div class="par-err-desc">Тип: ' + (m.type==='trainer_wrong'?'тренажёр':m.type==='check_wrong'?'проверочная':'домашка') + '</div>'
-          + '<div class="par-err-fix">💡 ' + (fixMap[m.type]||'Повторить тему') + '</div>'
-          + '<div class="par-err-meta"><span class="par-err-date">' + (m.date||'') + '</span>'
-          + '<button class="par-err-btn" onclick="showScreen(\'screen-map\')">Разобрать с Умником</button></div>'
+  // ── 4. Где ошибается ────────────────────────────────────────────────
+  var errTopics = Object.keys(mistakeTopics).sort(function(a,b){ return mistakeTopics[b]-mistakeTopics[a]; }).slice(0,5);
+  var errHtml = errTopics.length === 0
+    ? '<div style="color:#16a34a;font-weight:700">🎉 Ошибок пока нет!</div>'
+    : errTopics.map(function(topic) {
+        var cnt = mistakeTopics[topic];
+        var severity = cnt >= 5 ? 'повторить обязательно' : cnt >= 3 ? 'нужно закрепить' : 'редкая ошибка';
+        var color = cnt >= 5 ? '#dc2626' : cnt >= 3 ? '#ea580c' : '#64748b';
+        return '<div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid #f1f5f9">'
+          + '<span style="flex:1;font-size:14px;color:#1e293b">'+topic+'</span>'
+          + '<span style="font-size:12px;font-weight:700;color:'+color+'">'+cnt+'× · '+severity+'</span>'
           + '</div>';
       }).join('');
   document.getElementById('par-mistakes-card').innerHTML =
-    '<div class="par-card"><div class="par-card-title">🔍 Последние ошибки</div>' + errHtml + '</div>';
+    '<div class="par-card"><div class="par-card-title">🔍 Где ошибается</div>' + errHtml + '</div>';
 
-  // ── 5. Что повторить сейчас ─────────────────────────────────────────
-  var needRepeat = TOPICS_MAP.reduce(function(acc, block) {
-    block.topics.forEach(function(t) {
-      var p = ST.topicProgress[t.id] || 0;
-      if (p > 0 && p < 80) acc.push(t);
+  // ── 5. Что повторить ────────────────────────────────────────────────
+  var repeatList = [];
+  // Темы с ошибками
+  errTopics.slice(0,2).forEach(function(t){ repeatList.push({ icon:'⚠', name:t, why:'есть ошибки' }); });
+  // Темы в процессе (< 80%)
+  TOPICS_MAP.forEach(function(block){
+    block.topics.forEach(function(t){
+      var p = ST.topicProgress[t.id]||0;
+      if (p > 0 && p < 80 && !repeatList.find(function(r){ return r.name===t.name; }))
+        repeatList.push({ icon:'→', name:t.name, why:'не закончена' });
     });
-    return acc;
-  }, []);
-  var recTopic   = needRepeat[0] || TOPICS_MAP[0].topics[0];
-  var recTrainer = TRAINERS_DEF.find(function(t){ return t.shell==='umnik'; }) || TRAINERS_DEF[0];
+  });
+  var repeatHtml = repeatList.length === 0
+    ? '<div style="color:#16a34a;font-weight:700">Всё изученное усвоено хорошо 👍</div>'
+    : repeatList.slice(0,4).map(function(r){
+        return '<div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid #f1f5f9">'
+          + '<span style="font-size:16px">'+r.icon+'</span>'
+          + '<span style="flex:1;font-size:14px;color:#1e293b">'+r.name+'</span>'
+          + '<span style="font-size:12px;color:#64748b">'+r.why+'</span>'
+          + '</div>';
+      }).join('');
   document.getElementById('par-recommend-card').innerHTML =
-    '<div class="par-card"><div class="par-card-title">🎯 Что повторить сейчас</div>'
-    + '<div class="par-rec-item" onclick="showScreen(\'screen-map\')">'
-    + '<div class="par-rec-icon">📖</div><div class="par-rec-body"><div class="par-rec-label">Тема на сегодня</div><div class="par-rec-name">' + recTopic.name + '</div></div><div class="par-rec-arrow">›</div></div>'
-    + '<div class="par-rec-item" onclick="showScreen(\'screen-trainers\')">'
-    + '<div class="par-rec-icon">⚡</div><div class="par-rec-body"><div class="par-rec-label">Тренажёр</div><div class="par-rec-name">' + recTrainer.icon + ' ' + recTrainer.name + '</div></div><div class="par-rec-arrow">›</div></div>'
-    + '<div class="par-rec-item" onclick="showScreen(\'screen-cheatsheet\')">'
-    + '<div class="par-rec-icon">📋</div><div class="par-rec-body"><div class="par-rec-label">Шпаргалка</div><div class="par-rec-name">Правила и формулы §1–§7</div></div><div class="par-rec-arrow">›</div></div>'
-    + '</div>';
+    '<div class="par-card"><div class="par-card-title">🎯 Что стоит повторить</div>' + repeatHtml + '</div>';
 
-  // ── 6. История тренажёров ───────────────────────────────────────────
-  var histHtml = hist.length === 0
-    ? '<div style="color:#94a3b8;font-size:14px">Пока не пройден ни один тренажёр.</div>'
-    : hist.slice(0, 10).map(function(h) {
-        var pct = Math.round(h.correct / h.total * 100);
-        var medal = pct===100?'🏆':pct>=80?'🥇':pct>=60?'🥈':pct>=40?'🥉':'💪';
-        var comment = pct===100?'Идеально!':pct>=80?'Почти без ошибок':pct>=60?'Хороший результат':'Нужно повторить';
-        return '<div class="par-hist-row">'
-          + '<div class="par-hist-head"><span class="par-hist-name">' + medal + ' ' + h.name + '</span><span class="par-hist-date">' + h.date + '</span></div>'
-          + '<div class="par-hist-tags">'
-          + '<span class="par-hist-tag ok">✅ ' + h.correct + ' из ' + h.total + '</span>'
-          + (h.errors > 0 ? '<span class="par-hist-tag err">❌ ' + h.errors + ' ошибок</span>' : '<span class="par-hist-tag ok">🎯 без ошибок</span>')
-          + '<span class="par-hist-tag xp">⭐ +' + h.xp + ' XP</span>'
-          + '<span class="par-hist-tag">🔥 серия ' + h.streak + '</span>'
-          + '<span class="par-hist-tag">' + comment + '</span>'
-          + '</div>'
-          + '</div>';
-      }).join('');
+  // ── 6. Динамика занятий по дням ─────────────────────────────────────
+  var days = {};
+  hist.forEach(function(h){ days[h.date] = (days[h.date]||0) + 1; });
+  var dayKeys = Object.keys(days).sort().slice(-14);
+  var maxVal  = Math.max.apply(null, dayKeys.map(function(d){ return days[d]; })) || 1;
+  var dynHtml = dayKeys.length === 0
+    ? '<div style="color:#94a3b8;font-size:14px">Пока нет данных.</div>'
+    : '<div style="display:flex;align-items:flex-end;gap:4px;height:50px;margin:12px 0">'
+      + dayKeys.map(function(d){
+          var h = Math.round(days[d]/maxVal*100);
+          var short = d.split('.').slice(0,2).join('.');
+          return '<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px">'
+            + '<div style="width:100%;height:'+h+'%;background:#3b82f6;border-radius:3px 3px 0 0;min-height:4px"></div>'
+            + '<div style="font-size:8px;color:#94a3b8;white-space:nowrap">'+short+'</div>'
+            + '</div>';
+        }).join('')
+      + '</div>'
+      + '<div style="font-size:12px;color:#64748b">Занятий в день (последние ' + dayKeys.length + ' дней)</div>';
   document.getElementById('par-trainer-hist-card').innerHTML =
-    '<div class="par-card"><div class="par-card-title">⚡ История тренажёров</div>' + histHtml + '</div>';
+    '<div class="par-card"><div class="par-card-title">📈 Динамика занятий</div>' + dynHtml + '</div>';
 
-  // ── 6б. История мини-тестов ─────────────────────────────────────────
-  var ruleHistHtml = rHist.length === 0
-    ? '<div style="color:#94a3b8;font-size:14px">Мини-тесты по правилам пока не проходились.</div>'
-    : rHist.slice(0, 10).map(function(h) {
-        var pct = Math.round(h.correct / h.total * 100);
-        var medal = pct===100?'🏆':pct>=80?'🥇':pct>=60?'🥈':'💪';
-        return '<div class="par-hist-row">'
-          + '<div class="par-hist-head"><span class="par-hist-name">' + medal + ' ' + h.topic + '</span><span class="par-hist-date">' + h.date + '</span></div>'
-          + '<div class="par-hist-tags">'
-          + '<span class="par-hist-tag ok">✅ ' + h.correct + ' из ' + h.total + '</span>'
-          + (h.correct === h.total ? '<span class="par-hist-tag ok">🎯 без ошибок</span>' : '<span class="par-hist-tag err">❌ ' + (h.total - h.correct) + ' ошибок</span>')
-          + '<span class="par-hist-tag xp">⭐ +' + h.xp + ' XP</span>'
-          + '</div>'
-          + '</div>';
-      }).join('');
-  document.getElementById('par-rule-hist-card').innerHTML =
-    '<div class="par-card"><div class="par-card-title">📖 Мини-тесты (правила)</div>' + ruleHistHtml + '</div>';
-
-  // ── 7. Домашка и проверочные ────────────────────────────────────────
-  var hwSolved  = Object.keys(ST.solvedTasks).length;
-  var hwCorrect = Object.values(ST.solvedTasks).filter(function(s){ return s.correct; }).length;
-  var hwErrors  = hwSolved - hwCorrect;
-  var scDone = (ST.selfCheckResults || []).length;
-  var scAvg  = scDone > 0 ? Math.round((ST.selfCheckResults||[]).reduce(function(s,r){ return s+(r.pct||0); },0)/scDone) : 0;
-  document.getElementById('par-hw-card').innerHTML =
-    '<div class="par-card"><div class="par-card-title">📚 Домашка и проверочные</div>'
-    + '<div class="par-week-grid">'
-    + '<div class="par-week-cell"><div class="par-week-val">' + hwSolved + '</div><div class="par-week-lbl">заданий решено</div></div>'
-    + '<div class="par-week-cell"><div class="par-week-val" style="color:#16a34a">' + hwCorrect + '</div><div class="par-week-lbl">правильных</div></div>'
-    + '<div class="par-week-cell"><div class="par-week-val" style="color:#dc2626">' + hwErrors + '</div><div class="par-week-lbl">с ошибками</div></div>'
-    + '<div class="par-week-cell"><div class="par-week-val">' + scDone + '</div><div class="par-week-lbl">проверочных</div></div>'
-    + '<div class="par-week-cell"><div class="par-week-val">' + (scAvg||'—') + (scDone?'%':'') + '</div><div class="par-week-lbl">средний балл</div></div>'
-    + '<div class="par-week-cell"><div class="par-week-val">' + (ST.hintsUsed||0) + '</div><div class="par-week-lbl">подсказок</div></div>'
-    + '</div></div>';
-
-  // ── 8. Достижения ───────────────────────────────────────────────────
+  // ── 7. Достижения ───────────────────────────────────────────────────
   var unlocked = ACHIEVEMENTS.filter(function(a){ return ST.achievements.includes(a.id); });
   var locked   = ACHIEVEMENTS.filter(function(a){ return !ST.achievements.includes(a.id); });
-  var achHtml  = '<div class="par-card"><div class="par-card-title">🏅 Достижения</div>'
-    + (unlocked.length > 0
-      ? '<div class="par-ach-section"><div class="par-ach-section-title">Открыто · ' + unlocked.length + '</div><div class="par-ach-grid">'
-        + unlocked.map(function(a){ return '<div class="par-ach-item"><div class="par-ach-emoji">' + a.icon + '</div><div class="par-ach-name">' + a.name + '</div><div class="par-ach-desc">' + a.desc + '</div></div>'; }).join('')
-        + '</div></div>' : '')
-    + '<div class="par-ach-section"><div class="par-ach-section-title">Ближайшие цели</div><div class="par-ach-grid">'
-    + locked.slice(0, 4).map(function(a){ return '<div class="par-ach-item next"><div class="par-ach-emoji">' + a.icon + '</div><div class="par-ach-name">' + a.name + '</div><div class="par-ach-desc">' + a.desc + '</div></div>'; }).join('')
+  document.getElementById('par-rule-hist-card').innerHTML =
+    '<div class="par-card"><div class="par-card-title">🏅 Достижения</div>'
+    + (unlocked.length === 0 ? '<div style="color:#94a3b8;font-size:14px;margin-bottom:10px">Ещё не открыто ни одного.</div>'
+      : '<div class="par-ach-section"><div class="par-ach-section-title">Открыто · ' + unlocked.length + '</div><div class="par-ach-grid">'
+        + unlocked.map(function(a){ return '<div class="par-ach-item"><div class="par-ach-emoji">'+a.icon+'</div><div class="par-ach-name">'+a.name+'</div></div>'; }).join('')
+        + '</div></div>')
+    + '<div class="par-ach-section"><div class="par-ach-section-title">Следующие цели</div><div class="par-ach-grid">'
+    + locked.slice(0,3).map(function(a){ return '<div class="par-ach-item next"><div class="par-ach-emoji">'+a.icon+'</div><div class="par-ach-name">'+a.name+'</div><div class="par-ach-desc">'+a.desc+'</div></div>'; }).join('')
     + '</div></div></div>';
-  document.getElementById('par-ach-card').innerHTML = achHtml;
 
-  // ── 9. Настройки родителя ───────────────────────────────────────────
-  if (!ST.parSettings) ST.parSettings = { weekGoal: 4, difficulty: 'normal', report: 'week' };
-  var ps = ST.parSettings;
-  document.getElementById('par-settings-card').innerHTML =
-    '<div class="par-card"><div class="par-card-title">⚙️ Настройки</div>'
-    + '<div class="par-set-row"><div><div class="par-set-label">Цель занятий в неделю</div><div class="par-set-sub">Сейчас: ' + weekSessions + ' из ' + ps.weekGoal + '</div></div>'
-    + '<div class="par-set-ctrl">'
-    + [3,4,5,7].map(function(n){ return '<button class="par-set-btn' + (ps.weekGoal===n?' active':'') + '" onclick="parSetWeekGoal(' + n + ')">' + n + '</button>'; }).join('')
-    + '</div></div>'
-    + '<div class="par-set-row"><div><div class="par-set-label">Уровень сложности</div><div class="par-set-sub">Влияет на генерацию заданий</div></div>'
-    + '<div class="par-set-ctrl">'
-    + ['easy','normal','hard'].map(function(d){ var lbl=d==='easy'?'Лёгкий':d==='normal'?'Средний':'Сложный'; return '<button class="par-set-btn' + (ps.difficulty===d?' active':'') + '" onclick="parSetDifficulty(\'' + d + '\')">' + lbl + '</button>'; }).join('')
-    + '</div></div>'
-    + '<div class="par-set-row"><div><div class="par-set-label">Отчёт родителю</div><div class="par-set-sub">Напоминание проверить прогресс</div></div>'
-    + '<div class="par-set-ctrl">'
-    + [['day','Каждый день'],['week','Раз в неделю']].map(function(r){ return '<button class="par-set-btn' + (ps.report===r[0]?' active':'') + '" onclick="parSetReport(\'' + r[0] + '\')">' + r[1] + '</button>'; }).join('')
-    + '</div></div>'
-    + '</div>';
+  // карточки без содержимого — очищаем
+  document.getElementById('par-hw-card').innerHTML = '';
+  document.getElementById('par-ach-card').innerHTML = '';
+  document.getElementById('par-settings-card').innerHTML = '';
 }
 
 function parSetWeekGoal(n) { if(!ST.parSettings)ST.parSettings={}; ST.parSettings.weekGoal=n; lsSave(); renderParent(); }
