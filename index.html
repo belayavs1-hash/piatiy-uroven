@@ -13409,9 +13409,8 @@ function scIsCorrect(userAns, correctAns) {
 
 function scCheckAnswer() {
   const inp = document.getElementById('sc-input');
-  if (scAwaitingNext) { scNext(); return; }
   const userAns = inp.value.trim();
-  if (!userAns) return;
+  if (!userAns || inp.disabled) return;
   if (!scCurrentCheck || scCurrentIndex >= scCurrentCheck.tasks.length) return;
 
   const t = scCurrentCheck.tasks[scCurrentIndex];
@@ -13423,9 +13422,11 @@ function scCheckAnswer() {
   if (isOk) {
     scYouScore++;
     scUpdateScores();
-    scAddMsg('bot', '✅ Верно! Молодец — ты опередил меня!');
+    scAddMsg('bot', '✅ Верно! +1 очко тебе!');
     addXP(10);
-    scShowNext();
+    inp.value = '';
+    inp.placeholder = '...';
+    setTimeout(() => scNext(), 1200);
   } else {
     // Умник "думает" и отвечает через 1.8с
     scShowTyping();
@@ -13433,25 +13434,19 @@ function scCheckAnswer() {
       scHideTyping();
       scUmnikScore++;
       scUpdateScores();
-      const umnikMsg = `🧠 Правильный ответ: <b>${t.a}</b><br><span style="font-size:13px;color:rgba(255,255,255,.7)">${t.hint}</span>`;
+      const umnikMsg = `🧠 +1 мне! Ответ: <b>${t.a}</b><br><span style="font-size:13px;color:rgba(255,255,255,.7)">${t.hint}</span>`;
       scAddMsg('bot', umnikMsg);
-      scShowNext();
+      inp.value = '';
+      inp.placeholder = '...';
+      setTimeout(() => scNext(), 1800);
     }, 1800);
   }
-}
-
-function scShowNext() {
-  scAwaitingNext = true;
-  const inp = document.getElementById('sc-input');
-  inp.value = '';
-  inp.placeholder = 'Нажми Enter — следующий вопрос';
-  inp.disabled = false;
-  setTimeout(() => inp.focus(), 100);
 }
 
 function scNext() {
   scCurrentIndex++;
   const inp = document.getElementById('sc-input');
+  inp.value = '';
   inp.placeholder = 'Твой ответ...';
   inp.disabled = false;
   scAwaitingNext = false;
