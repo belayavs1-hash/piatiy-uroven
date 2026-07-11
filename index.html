@@ -2580,26 +2580,26 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
     <div class="h-sidebar-bottom">
       <!-- Серия -->
       <div class="h-streak">
-        <div class="h-streak-title"><span>🔥 Серия: 7 дней</span><span>🎁</span></div>
-        <div class="h-streak-dots">
-          <span class="h-streak-dot done"></span>
-          <span class="h-streak-dot done"></span>
-          <span class="h-streak-dot done"></span>
-          <span class="h-streak-dot done"></span>
-          <span class="h-streak-dot done"></span>
+        <div class="h-streak-title"><span id="home-streak-label">🔥 Серия: 0 дней</span><span>🎁</span></div>
+        <div class="h-streak-dots" id="home-streak-dots">
+          <span class="h-streak-dot"></span>
+          <span class="h-streak-dot"></span>
+          <span class="h-streak-dot"></span>
+          <span class="h-streak-dot"></span>
+          <span class="h-streak-dot"></span>
           <span class="h-streak-dot"></span>
         </div>
       </div>
       <!-- Уровень -->
       <div class="h-level">
         <div class="h-level-row">
-          <div class="h-level-hex">5</div>
+          <div class="h-level-hex" id="home-level-num">1</div>
           <div>
-            <div class="h-level-label">До следующего уровня</div>
-            <div class="h-level-xp" id="home-level-xp">882 XP</div>
+            <div class="h-level-label" id="home-level-label">До уровня 2</div>
+            <div class="h-level-xp" id="home-level-xp">0 XP</div>
           </div>
         </div>
-        <div class="h-level-bar"><div class="h-level-bar-fill" style="width:48%"></div></div>
+        <div class="h-level-bar"><div class="h-level-bar-fill" id="home-level-bar" style="width:0%"></div></div>
       </div>
       <!-- Переключатель темы -->
       <div class="h-theme-toggle" onclick="toggleHomeTheme()">
@@ -2849,7 +2849,7 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
   <div class="bottom-nav">
     <a onclick="showScreen('screen-homework')"><span class="icon">📚</span>Домашка</a>
     <a onclick="showScreen('screen-map')"><span class="icon">🗺</span>Темы</a>
-    <a onclick="showScreen('screen-trainers')"><span class="icon">⚡</span>Трени</a>
+    <a onclick="showScreen('screen-trainers')"><span class="icon">⚡</span>Тренажёры</a>
     <a onclick="showScreen('screen-parent')"><span class="icon">🏆</span>Прогресс</a>
   </div>
 </div>
@@ -2858,7 +2858,7 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
 <div id="screen-already-solved" class="screen">
   <nav class="top-nav">
     <button class="nav-back" onclick="showScreen('screen-homework')">← Назад</button>
-    <div class="nav-logo">✅ Я уже решил</div>
+    <div class="nav-logo">✅ Я решил сам</div>
     <div class="nav-xp" id="nav-xp-as">⭐ 0 XP</div>
     <div class="nav-menu">
       <a onclick="showScreen('screen-home')">🏠 На главную</a>
@@ -2872,8 +2872,8 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
         <div onclick="goToCheckFromHW()" style="padding:22px 14px;border-radius:20px;border:2px solid #4f46e5;background:#f5f3ff;cursor:pointer;text-align:center;transition:all .2s" onmouseover="this.style.background='#ede9fe';this.style.transform='translateY(-2px)'" onmouseout="this.style.background='#f5f3ff';this.style.transform=''">
           <div style="font-size:36px;margin-bottom:10px">✍️</div>
-          <div style="font-size:15px;font-weight:900;color:#1e1b4b">Написать ответ</div>
-          <div style="font-size:12px;color:#6366f1;margin-top:4px;font-weight:600">Введу итоговый ответ</div>
+          <div style="font-size:15px;font-weight:900;color:#1e1b4b">Ввести ответ</div>
+          <div style="font-size:12px;color:#6366f1;margin-top:4px;font-weight:600">Напишу ответ</div>
         </div>
         <div onclick="showScreen('screen-photo-check')" style="padding:22px 14px;border-radius:20px;border:2px solid #0891b2;background:#ecfeff;cursor:pointer;text-align:center;transition:all .2s" onmouseover="this.style.background='#cffafe';this.style.transform='translateY(-2px)'" onmouseout="this.style.background='#ecfeff';this.style.transform=''">
           <div style="font-size:36px;margin-bottom:10px">📷</div>
@@ -2886,7 +2886,7 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
   <div class="bottom-nav">
     <a onclick="showScreen('screen-homework')" class="active"><span class="icon">📚</span>Домашка</a>
     <a onclick="showScreen('screen-map')"><span class="icon">🗺</span>Темы</a>
-    <a onclick="showScreen('screen-trainers')"><span class="icon">⚡</span>Трени</a>
+    <a onclick="showScreen('screen-trainers')"><span class="icon">⚡</span>Тренажёры</a>
     <a onclick="showScreen('screen-parent')"><span class="icon">🏆</span>Прогресс</a>
   </div>
 </div>
@@ -2914,7 +2914,7 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
         </label>
         <img id="photo-preview-img" style="max-width:100%;max-height:300px;border-radius:14px;display:none;margin-top:16px;border:2px solid #e2e8f0;box-shadow:0 4px 16px rgba(0,0,0,.1)" alt="Твоё решение">
         <div id="photo-preview-actions" style="display:none;margin-top:16px;gap:10px;justify-content:center">
-          <button onclick="clearPhotoCheck()" class="btn-ghost">🔄 Переснять</button>
+          <button onclick="clearPhotoCheck()" class="btn-ghost">🔄 Заменить фото</button>
           <button onclick="checkPhotoSolution()" class="btn-check" style="padding:13px 24px">✅ Проверить по фото</button>
         </div>
       </div>
@@ -2924,7 +2924,7 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
   <div class="bottom-nav">
     <a onclick="showScreen('screen-homework')" class="active"><span class="icon">📚</span>Домашка</a>
     <a onclick="showScreen('screen-map')"><span class="icon">🗺</span>Темы</a>
-    <a onclick="showScreen('screen-trainers')"><span class="icon">⚡</span>Трени</a>
+    <a onclick="showScreen('screen-trainers')"><span class="icon">⚡</span>Тренажёры</a>
     <a onclick="showScreen('screen-parent')"><span class="icon">🏆</span>Прогресс</a>
   </div>
 </div>
@@ -2944,7 +2944,7 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
   </nav>
   <div class="screen-body">
     <div class="screen-title">Карта тем</div>
-    <div class="screen-subtitle">Маршрут повторения — отдельно от домашних заданий</div>
+    <div class="screen-subtitle">Здесь можно повторить тему, потренироваться и закрыть пробелы</div>
     <div id="map-content"></div>
   </div>
   <div class="bottom-nav">
@@ -3000,7 +3000,7 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
     <div id="rule-phase-done" style="display:none">
       <div class="rule-done-card">
         <div class="rule-done-icon">🎉</div>
-        <div class="rule-done-title">Тема повторена!</div>
+        <div class="rule-done-title">Ты повторила тему!</div>
         <div class="rule-done-score" id="rule-done-score"></div>
         <button class="rule-next-btn" onclick="ruleDoneToTrain()">⚡ К тренажёру →</button>
         <button class="rule-next-btn rule-next-btn-sec" onclick="showScreen('screen-map')">← К карте тем</button>
@@ -3042,7 +3042,7 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
         <div class="tg-start-title" id="tr-start-title">Тренажёр</div>
         <div class="tg-start-shell" id="tr-start-shell"></div>
         <div class="tg-start-rule">10 заданий · XP · Серия · Ошибки</div>
-        <button class="tg-finish-btn" onclick="launchTrainer()" style="margin-top:20px">🚀 Начать!</button>
+        <button class="tg-finish-btn" onclick="launchTrainer()" style="margin-top:20px">🚀 Начать тренировку</button>
         <button class="tg-finish-btn sec" onclick="showTrainerList()">← Назад</button>
       </div>
     </div>
@@ -3075,9 +3075,9 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
           <div class="tg-choices" id="tg-choices" style="display:none"></div>
           <!-- Упс! — 2-я попытка -->
           <div class="tg-oops" id="tg-oops" style="display:none">
-            <div class="tg-oops-title">😵 Упс! Не угадал</div>
+            <div class="tg-oops-title">🤔 Пока неверно</div>
             <div class="tg-oops-hint" id="tg-oops-hint"></div>
-            <button class="tg-retry-btn" onclick="tgRetry()">🔄 Попробую ещё раз</button>
+            <button class="tg-retry-btn" onclick="tgRetry()">🔄 Попробовать ещё раз</button>
           </div>
           <div class="tg-status" id="tg-status"></div>
         </div>
@@ -3107,7 +3107,7 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
   <div class="bottom-nav">
     <a onclick="showScreen('screen-homework')"><span class="icon">📚</span>Домашка</a>
     <a onclick="showScreen('screen-map')"><span class="icon">🗺</span>Темы</a>
-    <a onclick="showScreen('screen-trainers')" class="active"><span class="icon">⚡</span>Трени</a>
+    <a onclick="showScreen('screen-trainers')" class="active"><span class="icon">⚡</span>Тренажёры</a>
     <a onclick="showScreen('screen-parent')"><span class="icon">🏆</span>Прогресс</a>
   </div>
 </div>
@@ -3128,7 +3128,7 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
   <div class="bottom-nav">
     <a onclick="showScreen('screen-home')"><span class="icon">🏠</span>Главная</a>
     <a onclick="showScreen('screen-mistakes')"><span class="icon">🔍</span>Ошибки</a>
-    <a onclick="showScreen('screen-trainers')"><span class="icon">⚡</span>Трени</a>
+    <a onclick="showScreen('screen-trainers')"><span class="icon">⚡</span>Тренажёры</a>
     <a onclick="showScreen('screen-parent')"><span class="icon">🏆</span>Прогресс</a>
   </div>
 </div>
@@ -3169,7 +3169,7 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
   <div class="bottom-nav">
     <a onclick="showScreen('screen-home')"><span class="icon">🏠</span>Главная</a>
     <a onclick="showScreen('screen-cheatsheet')"><span class="icon">📋</span>Шпаргалка</a>
-    <a onclick="showScreen('screen-trainers')"><span class="icon">⚡</span>Трени</a>
+    <a onclick="showScreen('screen-trainers')"><span class="icon">⚡</span>Тренажёры</a>
     <a onclick="showScreen('screen-parent')"><span class="icon">🏆</span>Прогресс</a>
   </div>
 </div>
@@ -3189,7 +3189,7 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
   <div class="bottom-nav">
     <a onclick="showScreen('screen-home')"><span class="icon">🏠</span>Главная</a>
     <a onclick="showScreen('screen-funfacts')"><span class="icon">🔍</span>Ошибки</a>
-    <a onclick="showScreen('screen-trainers')"><span class="icon">⚡</span>Трени</a>
+    <a onclick="showScreen('screen-trainers')"><span class="icon">⚡</span>Тренажёры</a>
     <a onclick="showScreen('screen-parent')"><span class="icon">🏆</span>Прогресс</a>
   </div>
 </div>
@@ -3222,7 +3222,7 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
   <div class="bottom-nav">
     <a onclick="showScreen('screen-homework')"><span class="icon">📚</span>Домашка</a>
     <a onclick="showScreen('screen-map')"><span class="icon">🗺</span>Темы</a>
-    <a onclick="showScreen('screen-trainers')"><span class="icon">⚡</span>Трени</a>
+    <a onclick="showScreen('screen-trainers')"><span class="icon">⚡</span>Тренажёры</a>
     <a onclick="showScreen('screen-parent')" class="active"><span class="icon">🏆</span>Прогресс</a>
   </div>
 </div>
@@ -3328,7 +3328,7 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
     <div class="done-big" id="done-icon">🎉</div>
     <div class="done-title" id="done-title">Молодец!</div>
     <div class="done-sub" id="done-sub">Задание выполнено</div>
-    <div class="done-xp" id="done-xp">+20 XP ⭐</div>
+    <div class="done-xp" id="done-xp">+10 XP ⭐</div>
     <div class="done-btns">
       <button class="btn-primary" onclick="showScreen('screen-homework')">📚 Следующее задание</button>
       <button class="btn-secondary" onclick="showScreen('screen-home')" style="background:#fff">🏠 На главную</button>
@@ -7711,7 +7711,7 @@ const SHELL_DESC = {
   archer: "🎯 Стрелок\n10 выстрелов по мишени. С первого раза — попадание в центр +10 XP. Со второй попытки — +6 XP. После подсказки — +3 XP.",
   pirate: "🏴‍☠️ Пират\n10 шагов к сундуку с сокровищами. За каждый верный ответ получаешь монеты. Найди все — сундук откроется!",
   umnik:  "🧑‍🏫 Умник\n10 шагов тренировки. Ошибся — Умник даст подсказку. Ошибся снова — покажет пошаговый разбор.",
-  dice:   "🎲 Кубик\n10 бросков кубика. Выпало 1–2: простое задание. 3–4: среднее. 5: сложное. 6: бонус +20 XP!"
+  dice:   "🎲 Кубик\n10 бросков кубика. Выпало 1–2: простое задание. 3–4: среднее. 5–6: сложное. Верный ответ с первой попытки — +10 XP."
 };
 
 const ACHIEVEMENTS = [
@@ -7787,7 +7787,7 @@ function showScreen(id) {
   updateAllXP();
   if(id === 'screen-parent') renderParent();
   if(id === 'screen-homework') updateTopics();
-  if(id === 'screen-profile') { const el = document.getElementById('profile-name-label'); if(el && ST.user) el.textContent = ST.user; }
+  if(id === 'screen-profile') { const el = document.getElementById('profile-name-label'); if(el && ST.user) el.textContent = ST.user.name || ''; }
   if(id === 'screen-funfacts') renderFunFacts();
   if(id === 'screen-mistakes') renderMistakes();
   if(id === 'screen-cheatsheet') renderCheatsheet();
@@ -7905,12 +7905,57 @@ async function checkPhotoSolution() {
   }
 }
 
+function calcLevel(xp) {
+  // 100 XP на уровень 1→2, потом каждый уровень на 50 XP больше
+  let lvl = 1, need = 100, acc = 0;
+  while (acc + need <= xp) { acc += need; lvl++; need += 50; }
+  return { lvl, current: xp - acc, need, pct: Math.round((xp - acc) / need * 100) };
+}
+
+function calcStreak() {
+  // Серия: считаем по trainerHistory — сколько разных дней подряд до сегодня
+  const hist = ST.trainerHistory || [];
+  if (!hist.length) return 0;
+  const days = [...new Set(hist.map(h => h.date))].sort().reverse();
+  const today = new Date().toLocaleDateString('ru');
+  let streak = 0;
+  let d = new Date();
+  for (let i = 0; i < 30; i++) {
+    const ds = d.toLocaleDateString('ru');
+    if (days.includes(ds)) { streak++; d.setDate(d.getDate() - 1); }
+    else if (i === 0) { d.setDate(d.getDate() - 1); } // сегодня ещё не занимался — ок
+    else break;
+  }
+  return streak;
+}
+
+function updateHomeLevel() {
+  const { lvl, current, need, pct } = calcLevel(ST.xp);
+  const streak = calcStreak();
+  const lvlEl = document.getElementById('home-level-num');
+  const lblEl = document.getElementById('home-level-label');
+  const xpEl  = document.getElementById('home-level-xp');
+  const barEl = document.getElementById('home-level-bar');
+  const strEl = document.getElementById('home-streak-label');
+  const dotsEl= document.getElementById('home-streak-dots');
+  if (lvlEl) lvlEl.textContent = lvl;
+  if (lblEl) lblEl.textContent = `До уровня ${lvl + 1}`;
+  if (xpEl)  xpEl.textContent  = `${current} / ${need} XP`;
+  if (barEl) barEl.style.width = pct + '%';
+  if (strEl) strEl.textContent = `🔥 Серия: ${streak} ${streak === 1 ? 'день' : streak >= 2 && streak <= 4 ? 'дня' : 'дней'}`;
+  if (dotsEl) {
+    const dots = dotsEl.querySelectorAll('.h-streak-dot');
+    dots.forEach((d, i) => d.classList.toggle('done', i < Math.min(streak, 6)));
+  }
+}
+
 function updateAllXP() {
   const xpStr = `⭐ ${ST.xp} XP`;
   ['nav-xp-home','nav-xp-hw','nav-xp-wt','nav-xp-chk','nav-xp-map','nav-xp-tr','nav-xp-par','nav-xp-as','nav-xp-ph'].forEach(id => {
     const el = document.getElementById(id);
     if(el) el.textContent = xpStr;
   });
+  updateHomeLevel();
 }
 
 // ===== STARS (фигуры: круг, квадрат, ромб, треугольник) =====
@@ -7946,11 +7991,16 @@ function selectInputMode(btn) {
   btn.classList.add('selected');
 }
 function doLogin() {
-  const name = document.getElementById('login-name').value.trim() || 'Маша';
+  const name = document.getElementById('login-name').value.trim() || 'Ученик';
   const roleBtn = document.querySelector('.role-btn.selected');
   const role = roleBtn ? roleBtn.dataset.role : 'student';
   const modeBtn = document.querySelector('.input-mode-btn.selected');
   const inputMode = modeBtn ? modeBtn.dataset.mode : 'text';
+  // Если входит другой ученик — сбрасываем весь прогресс
+  const prevName = ST.user && ST.user.name;
+  if (prevName && prevName !== name) {
+    ST = { user: null, xp: 0, solvedTasks: {}, topicProgress: {}, mistakes: [], achievements: [], hintsUsed: 0, selfSolved: 0, trainerStats: {}, trainerHistory: [], ruleHistory: [], selfCheckResults: [], parSettings: null, history: [] };
+  }
   ST.user = { name, role, inputMode };
   lsSave();
   renderHome();
@@ -8015,6 +8065,7 @@ function renderHome() {
   if(navXp) navXp.textContent = `⭐ ${ST.xp} XP`;
   const navName = document.getElementById('home-nav-name');
   if(navName) navName.textContent = `${ST.user.name} • 5 класс`;
+  updateHomeLevel();
   // Плашка «Хочу всё знать» — показываем кол-во ошибок
   var errSub = document.getElementById('banner-know-sub');
   if (errSub) {
@@ -8227,7 +8278,7 @@ function findTask() {
     <div class="task-text">${task.text}</div>
     ${getTaskSvgHtml(task.id)}
     <button class="btn-find" onclick="goToWalkthroughFromHW()" style="margin-bottom:10px"><img src="umnik_avatar2.png" style="width:32px;height:32px;object-fit:contain;vertical-align:middle;margin-right:8px;filter:drop-shadow(0 0 4px rgba(147,197,253,.6))"> Разобрать с Умником</button>
-    <button class="btn-secondary" onclick="showScreen('screen-already-solved')" style="width:100%">✅ Я уже решил</button>
+    <button class="btn-secondary" onclick="showScreen('screen-already-solved')" style="width:100%">✅ Я решил сам</button>
   </div>`;
 }
 
