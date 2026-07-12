@@ -18124,6 +18124,164 @@ const SELF_CHECKS = [
         hint: "Острый: 0° < α < 90°. После ×2: 0° < 2α < 180°. Это может быть острый (если α < 45°), прямой (если α = 45°) или тупой (если 45° < α < 90°). Все три варианта возможны."
       }
     ]
+  },
+
+  {
+    id: "p7-primenjaem-1",
+    para: "§7 Инструменты для вычислений и измерений",
+    title: "Применяем математику",
+    subtitle: "Обобщение §7 — рабочее место и радар",
+    tasks: [
+      {
+        q: `<b>Задача 1. Правильная высота рабочего места.</b>
+<div style="margin:10px 0;overflow-x:auto">
+<table style="border-collapse:collapse;width:100%;font-size:12px;text-align:center">
+  <tr style="background:#1e3a5f;color:#e2e8f0">
+    <th style="padding:7px 6px;border:1px solid #334155;text-align:left">Параметр</th>
+    <th style="padding:7px 6px;border:1px solid #334155">100–115 см</th>
+    <th style="padding:7px 6px;border:1px solid #334155">115–130 см</th>
+    <th style="padding:7px 6px;border:1px solid #334155">130–145 см</th>
+    <th style="padding:7px 6px;border:1px solid #334155">145–160 см</th>
+    <th style="padding:7px 6px;border:1px solid #334155">160–175 см</th>
+  </tr>
+  <tr style="background:#0f172a">
+    <td style="padding:7px 6px;border:1px solid #334155;text-align:left">Высота стола, см</td>
+    <td style="padding:7px 6px;border:1px solid #334155">46</td>
+    <td style="padding:7px 6px;border:1px solid #334155">52</td>
+    <td style="padding:7px 6px;border:1px solid #334155">58</td>
+    <td style="padding:7px 6px;border:1px solid #334155">64</td>
+    <td style="padding:7px 6px;border:1px solid #334155">76</td>
+  </tr>
+  <tr style="background:#0f1f3d">
+    <td style="padding:7px 6px;border:1px solid #334155;text-align:left">Высота сиденья, см</td>
+    <td style="padding:7px 6px;border:1px solid #334155">26</td>
+    <td style="padding:7px 6px;border:1px solid #334155">30</td>
+    <td style="padding:7px 6px;border:1px solid #334155">34</td>
+    <td style="padding:7px 6px;border:1px solid #334155">38</td>
+    <td style="padding:7px 6px;border:1px solid #334155">46</td>
+  </tr>
+  <tr style="background:#0f172a">
+    <td style="padding:7px 6px;border:1px solid #334155;text-align:left">Глубина сиденья, см</td>
+    <td style="padding:7px 6px;border:1px solid #334155">26</td>
+    <td style="padding:7px 6px;border:1px solid #334155">29</td>
+    <td style="padding:7px 6px;border:1px solid #334155">33</td>
+    <td style="padding:7px 6px;border:1px solid #334155">36</td>
+    <td style="padding:7px 6px;border:1px solid #334155">40</td>
+  </tr>
+</table>
+</div>
+Измерь свой рост. Мой рост — 140 см (пример). <b>Какая высота стола мне подходит?</b>`,
+        a: "58 см (диапазон 130–145 см)",
+        hint: "При росте 130–145 см высота стола = 58 см."
+      },
+      {
+        q: "<b>Какая высота сиденья?</b> (рост 140 см)",
+        a: "34 см",
+        hint: "При росте 130–145 см высота сиденья = 34 см."
+      },
+      {
+        q: "<b>Какая глубина сиденья?</b> (рост 140 см)",
+        a: "33 см",
+        hint: "При росте 130–145 см глубина сиденья = 33 см."
+      },
+      {
+        q: "На сколько высота стола больше высоты сиденья при росте 140 см?",
+        a: "24 см",
+        hint: "58 − 34 = 24 см."
+      },
+      {
+        q: "Во сколько раз высота стола больше глубины сиденья при росте 140 см?",
+        a: "≈ 1,76",
+        hint: "58 ÷ 33 ≈ 1,76."
+      },
+      {
+        q: `<b>Задача 2. Радар (рис. 7.23).</b>
+<svg width="220" height="220" viewBox="0 0 220 220" style="display:block;margin:8px auto">
+  <!-- фон -->
+  <circle cx="110" cy="110" r="105" fill="#0a1628" stroke="#1e3a5f" stroke-width="2"/>
+  <!-- концентрические окружности: 50, 100, 150, 200 км — радиусы 25, 50, 75, 100 пикселей -->
+  <circle cx="110" cy="110" r="25" fill="none" stroke="#1e4d2b" stroke-width="1"/>
+  <circle cx="110" cy="110" r="50" fill="none" stroke="#1e4d2b" stroke-width="1"/>
+  <circle cx="110" cy="110" r="75" fill="none" stroke="#1e4d2b" stroke-width="1"/>
+  <circle cx="110" cy="110" r="100" fill="none" stroke="#1e4d2b" stroke-width="1.5"/>
+  <!-- лучи через 30° -->
+  <line x1="110" y1="110" x2="110" y2="10" stroke="#1e4d2b" stroke-width="0.8"/>
+  <line x1="110" y1="110" x2="160" y2="23" stroke="#1e4d2b" stroke-width="0.8"/>
+  <line x1="110" y1="110" x2="197" y2="60" stroke="#1e4d2b" stroke-width="0.8"/>
+  <line x1="110" y1="110" x2="210" y2="110" stroke="#1e4d2b" stroke-width="0.8"/>
+  <line x1="110" y1="110" x2="197" y2="160" stroke="#1e4d2b" stroke-width="0.8"/>
+  <line x1="110" y1="110" x2="160" y2="197" stroke="#1e4d2b" stroke-width="0.8"/>
+  <line x1="110" y1="110" x2="110" y2="210" stroke="#1e4d2b" stroke-width="0.8"/>
+  <line x1="110" y1="110" x2="60" y2="197" stroke="#1e4d2b" stroke-width="0.8"/>
+  <line x1="110" y1="110" x2="23" y2="160" stroke="#1e4d2b" stroke-width="0.8"/>
+  <line x1="110" y1="110" x2="10" y2="110" stroke="#1e4d2b" stroke-width="0.8"/>
+  <line x1="110" y1="110" x2="23" y2="60" stroke="#1e4d2b" stroke-width="0.8"/>
+  <line x1="110" y1="110" x2="60" y2="23" stroke="#1e4d2b" stroke-width="0.8"/>
+  <!-- подписи углов -->
+  <text x="107" y="7" fill="#64748b" font-size="9" text-anchor="middle">0°</text>
+  <text x="163" y="18" fill="#64748b" font-size="9">30°</text>
+  <text x="200" y="55" fill="#64748b" font-size="9">60°</text>
+  <text x="213" y="113" fill="#64748b" font-size="9">90°</text>
+  <text x="200" y="167" fill="#64748b" font-size="9">120°</text>
+  <text x="155" y="205" fill="#64748b" font-size="9">150°</text>
+  <text x="100" y="218" fill="#64748b" font-size="9">180°</text>
+  <text x="40" y="205" fill="#64748b" font-size="9">210°</text>
+  <text x="5" y="167" fill="#64748b" font-size="9">240°</text>
+  <text x="3" y="113" fill="#64748b" font-size="9">270°</text>
+  <text x="5" y="55" fill="#64748b" font-size="9">300°</text>
+  <text x="42" y="18" fill="#64748b" font-size="9">330°</text>
+  <!-- подписи расстояний -->
+  <text x="113" y="88" fill="#334155" font-size="8">50</text>
+  <text x="113" y="63" fill="#334155" font-size="8">100</text>
+  <text x="113" y="38" fill="#334155" font-size="8">150</text>
+  <text x="113" y="13" fill="#334155" font-size="8">200</text>
+  <!-- аэропорт — центр -->
+  <circle cx="110" cy="110" r="5" fill="#60a5fa" stroke="white" stroke-width="1.5"/>
+  <!-- зелёные точки — вылетающие (примерные позиции) -->
+  <circle cx="135" cy="65" r="5" fill="#4ade80"/>
+  <circle cx="80" cy="75" r="5" fill="#4ade80"/>
+  <circle cx="150" cy="130" r="5" fill="#4ade80"/>
+  <!-- красные точки — прилетающие -->
+  <circle cx="155" cy="85" r="5" fill="#f87171"/>
+  <circle cx="85" cy="155" r="5" fill="#f87171"/>
+  <circle cx="130" cy="175" r="5" fill="#f87171"/>
+  <!-- легенда -->
+  <circle cx="20" cy="195" r="4" fill="#4ade80"/>
+  <text x="28" y="199" fill="#64748b" font-size="9">вылет</text>
+  <circle cx="65" cy="195" r="4" fill="#f87171"/>
+  <text x="73" y="199" fill="#64748b" font-size="9">прилёт</text>
+</svg>
+На экране радара окружности соответствуют расстояниям 50, 100, 150, 200 км. Угол между лучами — 30°.<br>
+<b>а) Красная точка на 60° и ~100 км. Опишите её положение.</b>`,
+        a: "угол 60°, удалённость ~100 км",
+        hint: "Красная точка у луча 60° на второй окружности (100 км)."
+      },
+      {
+        q: "<b>б) Красная точка на 210° и ~150 км. Опишите её положение.</b>",
+        a: "угол 210°, удалённость ~150 км",
+        hint: "Красная точка у луча 210° на третьей окружности (150 км)."
+      },
+      {
+        q: "<b>в) Красная точка на 150° и ~75 км. Опишите её положение.</b>",
+        a: "угол 150°, удалённость ~75 км (между 50 и 100 км)",
+        hint: "Между второй и третьей окружностями у луча 150° — примерно 75 км."
+      },
+      {
+        q: "<b>г) Какой угол (кратный 30°) соответствует направлению строго на восток (вправо)?</b>",
+        a: "90°",
+        hint: "0° — вверх (север). По часовой стрелке 90° — восток."
+      },
+      {
+        q: "<b>д) Самолёт находится на расстоянии 150 км под углом 330°. В каком направлении относительно аэропорта он летит?</b>",
+        a: "330° — северо-запад",
+        hint: "330° = 360° − 30°. Это направление северо-запад (немного левее севера)."
+      },
+      {
+        q: "<b>е) Чем отличаются зелёные и красные точки на радаре?</b>",
+        a: "зелёные — вылетающие самолёты, красные — прилетающие",
+        hint: "По условию: зелёные точки — вылетевшие самолёты, красные — прилетающие."
+      }
+    ]
   }
 
 ];
