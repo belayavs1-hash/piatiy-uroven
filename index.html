@@ -2757,7 +2757,10 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
           <div class="h-card-title">Проверочные</div>
           <div class="h-card-desc">Проверочные работы по темам учебника</div>
         </div>
-        <button class="h-test-btn" onclick="showScreen('screen-self-check')" style="height:52px">Выбрать проверочную →</button>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="h-test-btn" onclick="showScreen('screen-self-check')" style="height:44px;flex:1">Выбрать проверочную →</button>
+          <button class="h-test-btn" onclick="showScreen('screen-final-test')" style="height:44px;flex:1;background:linear-gradient(135deg,#7c3aed,#4f46e5)">🎯 Итоговый тест</button>
+        </div>
       </article>
 
       <!-- Учебник -->
@@ -3302,6 +3305,24 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
     <a onclick="showScreen('screen-map')"><span class="icon">🗺</span>Темы</a>
     <a onclick="showScreen('screen-trainers')"><span class="icon">⚡</span>Тренажёры</a>
     <a onclick="showScreen('screen-mistakes')"><span class="icon">🔍</span>Ошибки</a>
+  </div>
+</div>
+
+<!-- ===== ИТОГОВЫЙ ТЕСТ ===== -->
+<div id="screen-final-test" class="screen">
+  <nav class="top-nav">
+    <button class="nav-back" onclick="showScreen('screen-home')">← Назад</button>
+    <div class="nav-logo">🎯 Итоговый тест</div>
+    <div class="nav-xp" id="nav-xp-ft">⭐ 0 XP</div>
+  </nav>
+  <div class="screen-body" style="max-width:640px">
+    <div id="ft-content"></div>
+  </div>
+  <div class="bottom-nav">
+    <a onclick="showScreen('screen-home')"><span class="icon">🏠</span>Главная</a>
+    <a onclick="showScreen('screen-map')"><span class="icon">🗺</span>Темы</a>
+    <a onclick="showScreen('screen-self-check')"><span class="icon">✅</span>Проверка</a>
+    <a onclick="showScreen('screen-achievements')"><span class="icon">🏆</span>Достижения</a>
   </div>
 </div>
 
@@ -8662,7 +8683,7 @@ function showScreen(id) {
   // Защита ролей: ученик не может зайти в кабинет родителя
   if (id === 'screen-parent' && ST.user && ST.user.role !== 'parent') return;
   // Родитель не может зайти на экраны ученика
-  const studentScreens = ['screen-home','screen-homework','screen-map','screen-trainers','screen-self-check','screen-walkthrough','screen-already-solved','screen-photo-check','screen-cheatsheet','screen-funfacts','screen-achievements','screen-profile'];
+  const studentScreens = ['screen-home','screen-homework','screen-map','screen-trainers','screen-self-check','screen-walkthrough','screen-already-solved','screen-photo-check','screen-cheatsheet','screen-funfacts','screen-achievements','screen-profile','screen-final-test'];
   if (studentScreens.includes(id) && ST.user && ST.user.role === 'parent') return;
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
@@ -8675,6 +8696,7 @@ function showScreen(id) {
   if(id === 'screen-funfacts') renderFunFacts();
   if(id === 'screen-mistakes') { try { renderMistakes(); } catch(e) { console.error('renderMistakes error:', e); } }
   if(id === 'screen-achievements') { try { renderAchievements(); } catch(e) { console.error('renderAchievements error:', e); } }
+  if(id === 'screen-final-test') { try { renderFinalTest(); } catch(e) { console.error('renderFinalTest error:', e); } }
   if(id === 'screen-cheatsheet') { var _si=document.getElementById('cs-search'); if(_si) _si.value=''; renderCheatsheet(); }
   if(id === 'screen-already-solved') fillAlreadySolved();
   if(id === 'screen-photo-check') fillPhotoCheck();
@@ -13287,6 +13309,231 @@ function achGetProgress(a) {
   }
   return null;
 }
+
+// ===== ИТОГОВЫЙ ТЕСТ =====
+var FT_STATE = { idx: 0, score: 0, answers: [], started: false };
+
+var FINAL_QUESTIONS = [
+  { type:'choice', q:'Что такое натуральный ряд?', opts:['Ряд всех целых чисел','Ряд натуральных чисел: 1, 2, 3, … бесконечно','Ряд чисел от 0 до 100','Ряд чётных чисел'], a:1, hint:'Натуральный ряд: 1, 2, 3, 4, … — бесконечная последовательность.' },
+  { type:'choice', q:'Почему нашу систему счисления называют позиционной?', opts:['Потому что в ней 10 цифр','Потому что значение цифры зависит от её позиции (разряда) в числе','Потому что числа пишутся слева направо','Потому что она придумана в Позиции'], a:1, hint:'Позиционная — значит значение цифры зависит от её места (позиции) в числе.' },
+  { type:'truefalse', q:'Правда ли, что при сравнении двухзначного и трёхзначного натурального числа трёхзначное всегда больше?', a:true, hint:'Да — у трёхзначного числа больше разрядов, значит оно больше любого двухзначного.' },
+  { type:'choice', q:'Точка M(m) расположена левее точки N(n) на координатной прямой. Что можно сказать о числах m и n?', opts:['m > n','m = n','m < n','Нельзя сказать'], a:2, hint:'Чем левее точка — тем меньше число. M левее N → m < n.' },
+  { type:'choice', q:'Как сравнить две обыкновенные дроби с разными знаменателями?', opts:['Сравнить числители','Привести к общему знаменателю, затем сравнить числители','Сравнить знаменатели','Разделить одну на другую'], a:1, hint:'Нужно привести дроби к общему знаменателю, потом сравнить числители.' },
+  { type:'match', q:'Соотнесите компонент и действие:', left:['Слагаемое','Уменьшаемое','Множитель','Делитель'], right:['Сложение','Вычитание','Умножение','Деление'], a:[0,1,2,3], hint:'Слагаемые складываются, уменьшаемое и вычитаемое — вычитаются, множители перемножаются, делимое делится на делитель.' },
+  { type:'choice', q:'Как найти неизвестное вычитаемое?', opts:['Вычесть разность из уменьшаемого','Прибавить разность к уменьшаемому','Вычесть уменьшаемое из разности','Прибавить уменьшаемое к разности'], a:0, hint:'Вычитаемое = уменьшаемое − разность.' },
+  { type:'choice', q:'Какими свойствами обладает число 0 при сложении?', opts:['a + 0 = 0','a + 0 = a','a · 0 = a','0 + 0 = 1'], a:1, hint:'При сложении с нулём число не изменяется: a + 0 = a.' },
+  { type:'truefalse', q:'Правда ли, что квадрат числа — это то же самое, что число умножить само на себя?', a:true, hint:'Да: a² = a × a.' },
+  { type:'choice', q:'В выражении без скобок, содержащем сложение и умножение, что выполняется первым?', opts:['Сложение','Умножение','Слева направо','Зависит от чисел'], a:1, hint:'Умножение (и деление) выполняются раньше сложения и вычитания.' },
+  { type:'choice', q:'Что такое буквенное выражение?', opts:['Выражение только из букв','Выражение, содержащее буквы — обозначения чисел','Уравнение с буквой','Формула площади'], a:1, hint:'Буквенное выражение содержит буквы, обозначающие числа, например 2a + 3b.' },
+  { type:'truefalse', q:'Правда ли, что формула — это равенство, выражающее зависимость между величинами?', a:true, hint:'Да: формула записывает закономерность, например P = 2(a+b).' },
+  { type:'choice', q:'Что значит решить уравнение?', opts:['Упростить выражение','Найти все значения переменной, при которых равенство верно','Вычислить обе части','Доказать тождество'], a:1, hint:'Решить уравнение — найти значение x, при котором равенство выполняется.' },
+  { type:'choice', q:'Сформулируйте переместительный (коммутативный) закон сложения:', opts:['a + b = a − b','a + b = b + a','a · b = a + b','a + (b + c) = (a + b) + c'], a:1, hint:'Переместительный: a + b = b + a (слагаемые можно менять местами).' },
+  { type:'choice', q:'Как называется свойство: a · (b + c) = a · b + a · c?', opts:['Переместительное','Сочетательное','Распределительное','Коммутативное'], a:2, hint:'Распределительный закон умножения относительно сложения.' },
+  { type:'choice', q:'Какое число называют чётным?', opts:['Делящееся на 3','Делящееся на 2 без остатка','Оканчивающееся на 1','Большее нуля'], a:1, hint:'Чётное — делится на 2 без остатка: 2, 4, 6, …' },
+  { type:'choice', q:'Что такое кратное натурального числа?', opts:['Делитель числа','Число, которое делит данное','Число, которое делится на данное без остатка','Остаток от деления'], a:2, hint:'Кратное числа n — любое число, которое делится на n без остатка.' },
+  { type:'choice', q:'Признак делимости на 3:', opts:['Число оканчивается на 3','Последние две цифры делятся на 3','Сумма цифр делится на 3','Число больше 3'], a:2, hint:'На 3 делится число, у которого сумма цифр кратна 3.' },
+  { type:'choice', q:'Что такое обыкновенная дробь?', opts:['Запись вида a,b','Запись вида a/b, где a — числитель, b — знаменатель','Целое число','Отношение двух десятичных дробей'], a:1, hint:'Дробь a/b: a — числитель, b — знаменатель.' },
+  { type:'choice', q:'Какая дробь называется правильной?', opts:['Числитель больше знаменателя','Числитель меньше знаменателя','Числитель равен знаменателю','Знаменатель равен 1'], a:1, hint:'Правильная дробь: числитель < знаменатель (значение меньше 1).' },
+  { type:'truefalse', q:'Правда ли, что при приписывании нулей справа к десятичной дроби её значение не изменяется?', a:true, hint:'Да: 0,5 = 0,50 = 0,500 — значение не меняется.' },
+  { type:'choice', q:'Как сравнивают десятичные дроби?', opts:['По количеству цифр после запятой','Начиная со старшего разряда, слева направо','По знаменателю','По сумме цифр'], a:1, hint:'Сравниваем разряд за разрядом, начиная с целой части.' },
+  { type:'choice', q:'Сформулируйте основное свойство дроби:', opts:['Числитель и знаменатель можно менять местами','При умножении числителя и знаменателя на одно число дробь не изменяется','При сложении числителей дробь увеличивается','Знаменатель всегда больше числителя'], a:1, hint:'a/b = (a·n)/(b·n) — умножение числителя и знаменателя на одно и то же число не меняет дробь.' },
+  { type:'choice', q:'Что такое десятичная дробь?', opts:['Любая дробь','Дробь, знаменатель которой — степень числа 10','Дробь с числителем 10','Число с запятой'], a:1, hint:'Десятичная дробь: знаменатель — 10, 100, 1000 и т.д. Например, 3/10 = 0,3.' },
+  { type:'choice', q:'Что значит округлить число до тысячных?', opts:['Оставить три знака после запятой','Оставить три цифры в числе','Умножить на 1000','Разделить на 1000'], a:0, hint:'Округлить до тысячных — оставить три знака после запятой.' },
+  { type:'choice', q:'Чему равно количество прямых, проходящих через две точки?', opts:['0','1','2','Бесконечно много'], a:1, hint:'Через две точки проходит единственная прямая.' },
+  { type:'choice', q:'Какую фигуру называют углом?', opts:['Пересечение двух прямых','Фигура, образованная двумя лучами с общим началом','Часть плоскости','Замкнутая кривая'], a:1, hint:'Угол — это фигура, образованная двумя лучами (сторонами) с общим началом (вершиной).' },
+  { type:'match', q:'Соотнесите вид угла и его меру:', left:['Острый','Прямой','Тупой','Развёрнутый'], right:['Меньше 90°','Равен 90°','Между 90° и 180°','Равен 180°'], a:[0,1,2,3], hint:'Острый < 90° < тупой < 180° = развёрнутый.' },
+  { type:'choice', q:'Какие многоугольники вы знаете?', opts:['Только треугольники и квадраты','Треугольники, четырёхугольники, пятиугольники и т.д.','Только правильные многоугольники','Многоугольники с чётным числом сторон'], a:1, hint:'Многоугольник — замкнутая ломаная. Бывают треугольники, четырёхугольники, пятиугольники…' },
+  { type:'truefalse', q:'Правда ли, что равновеликие фигуры — это фигуры с одинаковой площадью?', a:true, hint:'Да: равновеликие фигуры имеют равные площади, но могут иметь разную форму.' },
+  { type:'choice', q:'Что такое окружность?', opts:['Вся закрашенная область','Множество всех точек плоскости, равноудалённых от центра','Диаметр круга','Хорда'], a:1, hint:'Окружность — линия (множество точек, равноудалённых от центра). Круг — область внутри.' },
+  { type:'choice', q:'Что такое сектор круга?', opts:['Хорда','Дуга','Часть круга, ограниченная двумя радиусами и дугой','Половина диаметра'], a:2, hint:'Сектор — "кусочек пирога": часть круга между двумя радиусами.' },
+  { type:'choice', q:'Формула периметра прямоугольника:', opts:['P = a · b','P = 2 · (a + b)','P = 4a','P = a² + b²'], a:1, hint:'P = 2(a + b), где a и b — стороны прямоугольника.' },
+  { type:'choice', q:'Формула объёма прямоугольного параллелепипеда:', opts:['V = a + b + c','V = a · b · c','V = 2(ab + bc + ac)','V = a³'], a:1, hint:'V = длина × ширина × высота = a · b · c.' },
+  { type:'choice', q:'Формула площади квадрата со стороной a:', opts:['S = 4a','S = a + a','S = a²','S = 2a²'], a:2, hint:'Площадь квадрата: S = a × a = a².' },
+  { type:'truefalse', q:'Правда ли, что куб — это частный случай прямоугольного параллелепипеда?', a:true, hint:'Да: куб — прямоугольный параллелепипед, у которого все три стороны равны.' },
+  { type:'choice', q:'Что такое четвёртый лишний? Выберите лишнее среди видов дробей:', opts:['Правильная дробь','Неправильная дробь','Смешанное число','Натуральное число'], a:3, hint:'Натуральное число — не дробь. Остальные: правильная, неправильная дробь и смешанное число — всё виды дробей.' },
+  { type:'choice', q:'Найдите лишнее среди способов сравнения дробей:', opts:['Привести к общему знаменателю','Привести к общему числителю','Перемножить числители','Изобразить на координатной прямой'], a:2, hint:'Перемножение числителей не является способом сравнения дробей.' },
+  { type:'truefalse', q:'Правда ли, что при сложении дробей с одинаковыми знаменателями знаменатель остаётся прежним?', a:true, hint:'Да: a/n + b/n = (a+b)/n.' },
+  { type:'choice', q:'Как найти произведение двух дробей?', opts:['Числители сложить, знаменатели сложить','Числители перемножить, знаменатели перемножить','Числитель одной умножить на знаменатель другой','Сложить числители, перемножить знаменатели'], a:1, hint:'a/b · c/d = (a·c)/(b·d).' },
+  { type:'choice', q:'Как разделить дробь на дробь?', opts:['Числители поделить, знаменатели поделить','Умножить первую дробь на обратную вторую','Числитель одной на знаменатель другой','Вычесть вторую из первой'], a:1, hint:'a/b ÷ c/d = a/b · d/c (умножить на обратную дробь).' },
+  { type:'choice', q:'Что такое признак делимости на 9?', opts:['Число оканчивается на 9','Сумма цифр делится на 9','Последние две цифры делятся на 9','Число больше 9'], a:1, hint:'На 9 делится число, у которого сумма цифр кратна 9.' },
+  { type:'truefalse', q:'Правда ли, что десятичную дробь можно перевести в обыкновенную?', a:true, hint:'Да: 0,25 = 25/100 = 1/4.' },
+  { type:'choice', q:'Как складывают десятичные дроби?', opts:['Дописывают нули и складывают как натуральные, запятая под запятой','Складывают числители','Складывают только целые части','Переводят в обыкновенные и складывают'], a:0, hint:'Выравнивают количество знаков после запятой (дописывают нули) и складывают столбиком, запятая под запятой.' },
+  { type:'choice', q:'Как умножают десятичную дробь на 10, 100, 1000?', opts:['Дописывают ноль','Сдвигают запятую вправо на 1, 2, 3 знака','Сдвигают запятую влево','Умножают числитель'], a:1, hint:'Умножение на 10ⁿ — сдвиг запятой вправо на n позиций.' },
+  { type:'choice', q:'Как делят число на десятичную дробь?', opts:['Делят числитель на знаменатель','Умножают делимое и делитель на одинаковую степень 10, чтобы убрать запятую у делителя','Переставляют делитель в числитель','Складывают делимое и делитель'], a:1, hint:'3,6 ÷ 0,12: умножим оба на 100 → 360 ÷ 12 = 30.' },
+  { type:'choice', q:'Что такое прикидка результата?', opts:['Точное вычисление','Оценка результата через округление чисел до вычисления','Нахождение остатка','Округление результата'], a:1, hint:'Прикидка — приблизительная оценка: округляем числа, вычисляем «на глаз», проверяем разумность ответа.' },
+  { type:'choice', q:'С помощью какого инструмента измеряют углы?', opts:['Линейки','Транспортира','Циркуля','Угольника'], a:1, hint:'Транспортир — инструмент для измерения и построения углов.' },
+  { type:'truefalse', q:'Правда ли, что диаметр окружности в два раза больше радиуса?', a:true, hint:'Да: d = 2r.' }
+];
+
+function renderFinalTest() {
+  var xpEl = document.getElementById('nav-xp-ft');
+  if(xpEl) xpEl.textContent = '⭐ ' + ST.xp + ' XP';
+  var el = document.getElementById('ft-content');
+  if(!el) return;
+
+  if(!FT_STATE.started) {
+    el.innerHTML = '<div style="text-align:center;padding:20px 0">'
+      + '<div style="font-size:56px;margin-bottom:12px">🎯</div>'
+      + '<h2 style="margin:0 0 8px;font-size:22px">Итоговый тест</h2>'
+      + '<p style="color:var(--muted);margin:0 0 6px">48 вопросов по всему курсу 5 класса</p>'
+      + '<p style="color:var(--muted);font-size:13px;margin:0 0 24px">Выбор ответа · Верно/Неверно · Соотнеси</p>'
+      + '<button onclick="ftStart()" style="padding:14px 32px;background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;border:none;border-radius:14px;font-size:17px;font-weight:700;cursor:pointer;width:100%;max-width:320px">Начать тест →</button>'
+      + '</div>';
+    return;
+  }
+  ftRenderQuestion(el);
+}
+
+function ftStart() {
+  FT_STATE = { idx: 0, score: 0, answers: [], started: true, answered: false };
+  renderFinalTest();
+}
+
+function ftRenderQuestion(el) {
+  var q = FINAL_QUESTIONS[FT_STATE.idx];
+  var total = FINAL_QUESTIONS.length;
+  var pct = Math.round((FT_STATE.idx / total) * 100);
+  var html = '<div style="margin-bottom:16px">'
+    + '<div style="display:flex;justify-content:space-between;font-size:13px;color:var(--muted);margin-bottom:6px">'
+    + '<span>Вопрос ' + (FT_STATE.idx+1) + ' из ' + total + '</span>'
+    + '<span>✅ ' + FT_STATE.score + '</span>'
+    + '</div>'
+    + '<div style="height:6px;background:rgba(255,255,255,0.1);border-radius:3px">'
+    + '<div style="height:6px;background:linear-gradient(90deg,#7c3aed,#4f46e5);border-radius:3px;width:' + pct + '%"></div>'
+    + '</div></div>';
+
+  html += '<div style="background:rgba(255,255,255,0.05);border-radius:16px;padding:18px;margin-bottom:14px">'
+    + '<div style="font-size:15px;font-weight:600;line-height:1.5;margin-bottom:4px">';
+
+  // Метка типа
+  var typeLabel = q.type === 'truefalse' ? '🔵 Правда или ложь?' : q.type === 'match' ? '🔄 Соотнеси' : '🔢 Выбери ответ';
+  html += '<div style="font-size:11px;color:#7c3aed;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">' + typeLabel + '</div>';
+  html += q.q + '</div></div>';
+
+  html += '<div id="ft-options">';
+
+  if(q.type === 'choice') {
+    q.opts.forEach(function(opt, i) {
+      html += '<button onclick="ftAnswer(' + i + ')" style="display:block;width:100%;text-align:left;padding:12px 16px;margin-bottom:8px;background:rgba(255,255,255,0.06);border:1.5px solid rgba(255,255,255,0.12);border-radius:12px;color:inherit;font-size:14px;cursor:pointer">'
+        + '<span style="font-weight:700;color:#7c3aed;margin-right:8px">' + ['А','Б','В','Г'][i] + '.</span>' + opt + '</button>';
+    });
+  } else if(q.type === 'truefalse') {
+    html += '<div style="display:flex;gap:10px">';
+    html += '<button onclick="ftAnswer(true)" style="flex:1;padding:14px;background:rgba(34,197,94,0.15);border:1.5px solid rgba(34,197,94,0.3);border-radius:12px;color:#4ade80;font-size:16px;font-weight:700;cursor:pointer">✅ Правда</button>';
+    html += '<button onclick="ftAnswer(false)" style="flex:1;padding:14px;background:rgba(239,68,68,0.15);border:1.5px solid rgba(239,68,68,0.3);border-radius:12px;color:#f87171;font-size:16px;font-weight:700;cursor:pointer">❌ Ложь</button>';
+    html += '</div>';
+  } else if(q.type === 'match') {
+    html += '<div style="font-size:13px;color:var(--muted);margin-bottom:10px">Нажимай на левый пункт, затем на правый — соединяй пары</div>';
+    html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px" id="ft-match-grid">';
+    q.left.forEach(function(l, i) {
+      html += '<button onclick="ftMatchSelect(\'L\','+i+')" id="ftL'+i+'" style="padding:10px;background:rgba(124,58,237,0.15);border:1.5px solid rgba(124,58,237,0.3);border-radius:10px;color:inherit;font-size:13px;cursor:pointer">' + l + '</button>';
+    });
+    q.right.forEach(function(r, i) {
+      html += '<button onclick="ftMatchSelect(\'R\','+i+')" id="ftR'+i+'" style="padding:10px;background:rgba(79,70,229,0.15);border:1.5px solid rgba(79,70,229,0.3);border-radius:10px;color:inherit;font-size:13px;cursor:pointer">' + r + '</button>';
+    });
+    html += '</div><div id="ft-match-pairs" style="margin-top:10px;font-size:13px;color:var(--muted)"></div>';
+    html += '<button onclick="ftMatchSubmit()" style="margin-top:10px;width:100%;padding:12px;background:linear-gradient(135deg,#7c3aed,#4f46e5);border:none;border-radius:12px;color:#fff;font-size:15px;font-weight:700;cursor:pointer">Проверить →</button>';
+  }
+
+  html += '</div><div id="ft-feedback" style="margin-top:12px"></div>';
+  el.innerHTML = html;
+
+  // Инициализируем состояние match
+  window._ftMatch = { selL: null, selR: null, pairs: [] };
+}
+
+function ftMatchSelect(side, idx) {
+  var m = window._ftMatch;
+  if(side === 'L') {
+    m.selL = idx;
+    document.querySelectorAll('[id^="ftL"]').forEach(function(b){ b.style.background='rgba(124,58,237,0.15)'; });
+    var el = document.getElementById('ftL'+idx);
+    if(el) el.style.background='rgba(124,58,237,0.4)';
+  } else {
+    m.selR = idx;
+    if(m.selL !== null) {
+      m.pairs.push([m.selL, m.selR]);
+      var pEl = document.getElementById('ft-match-pairs');
+      var q = FINAL_QUESTIONS[FT_STATE.idx];
+      if(pEl) pEl.innerHTML += '<div>• ' + q.left[m.selL] + ' → ' + q.right[m.selR] + '</div>';
+      document.getElementById('ftL'+m.selL).disabled = true;
+      document.getElementById('ftR'+m.selR).disabled = true;
+      m.selL = null; m.selR = null;
+    }
+  }
+}
+
+function ftMatchSubmit() {
+  var q = FINAL_QUESTIONS[FT_STATE.idx];
+  var m = window._ftMatch;
+  var correct = true;
+  if(m.pairs.length !== q.left.length) { correct = false; }
+  else {
+    m.pairs.forEach(function(p){ if(q.a[p[0]] !== p[1]) correct = false; });
+  }
+  ftShowFeedback(correct, q.hint);
+}
+
+function ftAnswer(userAns) {
+  if(FT_STATE.answered) return;
+  var q = FINAL_QUESTIONS[FT_STATE.idx];
+  var correct = (userAns === q.a);
+  ftShowFeedback(correct, q.hint);
+}
+
+function ftShowFeedback(correct, hint) {
+  FT_STATE.answered = true;
+  if(correct) FT_STATE.score++;
+  FT_STATE.answers.push(correct);
+
+  var fb = document.getElementById('ft-feedback');
+  if(!fb) return;
+  var color = correct ? '#4ade80' : '#f87171';
+  var icon = correct ? '✅' : '❌';
+  var msg = correct ? 'Верно!' : 'Не совсем.';
+  fb.innerHTML = '<div style="background:rgba(255,255,255,0.05);border-radius:12px;padding:14px;border-left:3px solid ' + color + '">'
+    + '<div style="color:' + color + ';font-weight:700;font-size:15px;margin-bottom:4px">' + icon + ' ' + msg + '</div>'
+    + '<div style="font-size:13px;color:var(--muted)">' + hint + '</div>'
+    + '</div>'
+    + '<button onclick="ftNext()" style="margin-top:10px;width:100%;padding:13px;background:linear-gradient(135deg,#7c3aed,#4f46e5);border:none;border-radius:12px;color:#fff;font-size:15px;font-weight:700;cursor:pointer">'
+    + (FT_STATE.idx + 1 < FINAL_QUESTIONS.length ? 'Следующий вопрос →' : 'Посмотреть результат 🎯') + '</button>';
+}
+
+function ftNext() {
+  FT_STATE.idx++;
+  FT_STATE.answered = false;
+  if(FT_STATE.idx >= FINAL_QUESTIONS.length) {
+    ftShowResult();
+    return;
+  }
+  var el = document.getElementById('ft-content');
+  if(el) ftRenderQuestion(el);
+}
+
+function ftShowResult() {
+  var el = document.getElementById('ft-content');
+  if(!el) return;
+  var total = FINAL_QUESTIONS.length;
+  var score = FT_STATE.score;
+  var pct = Math.round(score / total * 100);
+  var grade, gradeColor, emoji;
+  if(pct >= 90) { grade='Отлично! 🌟'; gradeColor='#4ade80'; emoji='🏆'; }
+  else if(pct >= 70) { grade='Хорошо! 👍'; gradeColor='#facc15'; emoji='😊'; }
+  else if(pct >= 50) { grade='Неплохо, ещё поработай'; gradeColor='#fb923c'; emoji='📚'; }
+  else { grade='Нужно повторить материал'; gradeColor='#f87171'; emoji='💪'; }
+
+  el.innerHTML = '<div style="text-align:center;padding:20px 0">'
+    + '<div style="font-size:64px;margin-bottom:12px">' + emoji + '</div>'
+    + '<h2 style="margin:0 0 6px;font-size:24px;color:' + gradeColor + '">' + grade + '</h2>'
+    + '<p style="font-size:18px;color:var(--muted);margin:0 0 6px">Правильных ответов: <b style="color:#fff">' + score + '</b> из <b>' + total + '</b></p>'
+    + '<div style="font-size:32px;font-weight:900;color:' + gradeColor + ';margin:12px 0">' + pct + '%</div>'
+    + '<div style="height:10px;background:rgba(255,255,255,0.1);border-radius:5px;margin:0 0 24px">'
+    + '<div style="height:10px;background:' + gradeColor + ';border-radius:5px;width:' + pct + '%"></div></div>'
+    + '<button onclick="ftStart()" style="display:block;width:100%;padding:14px;background:linear-gradient(135deg,#7c3aed,#4f46e5);border:none;border-radius:14px;color:#fff;font-size:16px;font-weight:700;cursor:pointer;margin-bottom:10px">🔄 Пройти снова</button>'
+    + '<button onclick="showScreen(\'screen-home\')" style="display:block;width:100%;padding:12px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:14px;color:inherit;font-size:15px;cursor:pointer">← На главную</button>'
+    + '</div>';
+}
+// ===== КОНЕЦ ИТОГОВОГО ТЕСТА =====
 
 function renderAchievements() {
   var xpEl = document.getElementById('nav-xp-ach');
