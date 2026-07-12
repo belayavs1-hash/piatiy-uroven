@@ -2863,7 +2863,7 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
 <div id="screen-already-solved" class="screen">
   <nav class="top-nav">
     <button class="nav-back" onclick="showScreen('screen-homework')">← Назад</button>
-    <div class="nav-logo">✅ Я решил сам</div>
+    <div class="nav-logo">✅ Проверить решение</div>
     <div class="nav-xp" id="nav-xp-as">⭐ 0 XP</div>
     <div class="nav-menu">
       <a onclick="showScreen('screen-home')">🏠 На главную</a>
@@ -2883,7 +2883,7 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
         <div onclick="showScreen('screen-photo-check')" style="padding:22px 14px;border-radius:20px;border:2px solid #0891b2;background:#ecfeff;cursor:pointer;text-align:center;transition:all .2s" onmouseover="this.style.background='#cffafe';this.style.transform='translateY(-2px)'" onmouseout="this.style.background='#ecfeff';this.style.transform=''">
           <div style="font-size:36px;margin-bottom:10px">📷</div>
           <div style="font-size:15px;font-weight:900;color:#0c4a6e">Сфотографировать тетрадь</div>
-          <div style="font-size:12px;color:#0891b2;margin-top:4px;font-weight:600">Умник проверит по фото</div>
+          <div style="font-size:12px;color:#0891b2;margin-top:4px;font-weight:600">Так Умник точнее найдёт ошибку</div>
         </div>
       </div>
     </div>
@@ -3005,7 +3005,7 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
     <div id="rule-phase-done" style="display:none">
       <div class="rule-done-card">
         <div class="rule-done-icon">🎉</div>
-        <div class="rule-done-title">Ты повторила тему!</div>
+        <div class="rule-done-title" id="rule-done-title">Проверка завершена</div>
         <div class="rule-done-score" id="rule-done-score"></div>
         <button class="rule-next-btn" onclick="ruleDoneToTrain()">⚡ К тренажёру →</button>
         <button class="rule-next-btn rule-next-btn-sec" onclick="showScreen('screen-map')">← К карте тем</button>
@@ -3091,9 +3091,9 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
     <div id="tr-done-view" style="display:none">
       <div class="tg-finish">
         <div class="tg-finish-emoji" id="tg-finish-emoji">🏆</div>
-        <div class="tg-finish-title" id="tg-finish-title">Тренажёр пройден!</div>
+        <div class="tg-finish-title" id="tg-finish-title">Результаты</div>
         <div class="tg-finish-grid">
-          <div class="tg-finish-cell"><div class="tg-fc-val" id="tr-done-correct">0/10</div><div class="tg-fc-lbl">Правильно</div></div>
+          <div class="tg-finish-cell"><div class="tg-fc-val" id="tr-done-correct">0/10</div><div class="tg-fc-lbl">Правильных ответов</div></div>
           <div class="tg-finish-cell"><div class="tg-fc-val" id="tr-done-errors">0</div><div class="tg-fc-lbl">Ошибок</div></div>
           <div class="tg-finish-cell"><div class="tg-fc-val" id="tr-done-xp">+0 XP</div><div class="tg-fc-lbl">Заработано</div></div>
           <div class="tg-finish-cell"><div class="tg-fc-val" id="tr-done-streak">0</div><div class="tg-fc-lbl">Лучшая серия</div></div>
@@ -7905,7 +7905,7 @@ async function checkPhotoSolution() {
         <div class="r-icon">🏆</div>
         <div class="r-text">Умник проверил — всё правильно!</div>
         <div class="result-answer" style="margin-top:8px">${data.comment || ''}</div>
-        <button class="btn-check" style="margin-top:14px;width:100%" onclick="showDone('🏆','Решил сам!','Задание ${currentTask ? currentTask.id : ''} выполнено',25)">Отлично! →</button>
+        <button class="btn-check" style="margin-top:14px;width:100%" onclick="showDone('🏆','Отлично!','Задание ${currentTask ? currentTask.id : ''} выполнено',25)">Отлично! →</button>
       </div>`;
       addXP(25);
       if(currentTask) markSolved(currentTask.id, {attempts:1, withHints:false, correct:true});
@@ -8353,7 +8353,7 @@ function findTask() {
     <div class="task-text">${task.text}</div>
     ${getTaskSvgHtml(task.id)}
     <button class="btn-find" onclick="goToWalkthroughFromHW()" style="margin-bottom:10px"><img src="umnik_avatar2.png" style="width:32px;height:32px;object-fit:contain;vertical-align:middle;margin-right:8px;filter:drop-shadow(0 0 4px rgba(147,197,253,.6))"> Разобрать с Умником</button>
-    <button class="btn-secondary" onclick="showScreen('screen-already-solved')" style="width:100%">✅ Я решил сам</button>
+    <button class="btn-secondary" onclick="showScreen('screen-already-solved')" style="width:100%">✅ Проверить моё решение</button>
   </div>`;
 }
 
@@ -9182,8 +9182,8 @@ function checkSolution() {
   if(correct) {
     resultEl.innerHTML = `<div class="result-ok">
       <div class="r-icon">🏆</div>
-      <div class="r-text">Правильно! Решил сам!</div>
-      <button class="btn-check" style="margin-top:14px;width:100%" onclick="showDone('🏆','Решил сам!','Задание ${currentTask.id} выполнено',25)">Отлично! →</button>
+      <div class="r-text">Верно! Задание выполнено!</div>
+      <button class="btn-check" style="margin-top:14px;width:100%" onclick="showDone('🏆','Отлично!','Задание ${currentTask.id} выполнено',25)">Отлично! →</button>
     </div>`;
     addXP(25);
     ST.selfSolved++;
@@ -9214,7 +9214,8 @@ function checkSolution() {
     </div>`;
     addMistake(currentTask.topic, 'check_wrong');
     grantAchievement('found_error');
-    document.getElementById('chk-after').style.display = 'block';
+    document.getElementById('chk-after').style.display = 'none';
+    setTimeout(function() { goToWalkthrough(); }, 1200);
   }
 }
 
@@ -9764,6 +9765,11 @@ function ruleFinishQuiz() {
   document.getElementById('rule-q-bar').style.width = '100%';
   var pct = Math.round(correct / total * 100);
   var medal = pct === 100 ? '🏆' : pct >= 80 ? '🥇' : pct >= 60 ? '🥈' : '💪';
+  var doneTitle = pct === 100 ? 'Всё верно! Тема усвоена 🎉' :
+                  pct >= 80  ? 'Хороший результат!' :
+                  pct >= 60  ? 'Неплохо, но есть над чем поработать' :
+                               'Стоит повторить эту тему ещё раз';
+  document.getElementById('rule-done-title').textContent = doneTitle;
   document.getElementById('rule-done-score').innerHTML =
     medal + ' Правильных ответов: <b>' + correct + ' из ' + total + '</b> · +' + xpGained + ' XP ⭐';
 }
