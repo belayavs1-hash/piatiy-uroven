@@ -12616,21 +12616,24 @@ function renderParent() {
   var periodMs = parPeriod === 'week' ? 7*24*3600*1000 : parPeriod === 'month' ? 30*24*3600*1000 : Infinity;
 
   // Диапазон дат для подписи (#17)
+  var MONTHS_RU = ['янв','фев','мар','апр','мая','июн','июл','авг','сен','окт','ноя','дек'];
+  var MONTHS_FULL = ['январь','февраль','март','апрель','май','июнь','июль','август','сентябрь','октябрь','ноябрь','декабрь'];
   function periodDateRange() {
     if (parPeriod === 'all') return 'за всё время';
     var d = new Date();
-    var end = d.toLocaleDateString('ru-RU',{day:'numeric',month:'long'});
     if (parPeriod === 'week') {
-      var s = new Date(d - 6*24*3600*1000);
-      return s.toLocaleDateString('ru-RU',{day:'numeric',month:'short'}) + ' — ' + end;
+      var s = new Date(now - 6*24*3600*1000);
+      return s.getDate() + ' ' + MONTHS_RU[s.getMonth()] + ' — ' + d.getDate() + ' ' + MONTHS_RU[d.getMonth()];
     } else {
-      return d.toLocaleDateString('ru-RU',{month:'long',year:'numeric'});
+      return MONTHS_FULL[d.getMonth()] + ' ' + d.getFullYear();
     }
   }
 
   function inPeriod(h) {
     if (parPeriod === 'all') return true;
+    if (!h.date) return false;
     var d = new Date(h.date.split('.').reverse().join('-'));
+    if (isNaN(d.getTime())) return false;
     return (now - d.getTime()) < periodMs;
   }
 
