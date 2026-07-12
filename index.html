@@ -3188,7 +3188,7 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
   </div>
   <div class="bottom-nav">
     <a onclick="showScreen('screen-home')"><span class="icon">🏠</span>Главная</a>
-    <a onclick="showScreen('screen-funfacts')"><span class="icon">🔍</span>Ошибки</a>
+    <a onclick="showScreen('screen-mistakes')"><span class="icon">🔍</span>Ошибки</a>
     <a onclick="showScreen('screen-trainers')"><span class="icon">⚡</span>Тренажёры</a>
     <a onclick="showScreen('screen-achievements')"><span class="icon">🏆</span>Достижения</a>
   </div>
@@ -8127,30 +8127,30 @@ function toggleHomeTheme() {
 }
 
 // Поиск задания с главной страницы (единое поле)
+function normalizeTaskNum(raw) {
+  // убираем пробелы, заменяем запятую на точку
+  return raw.replace(/\s+/g, '').replace(',', '.');
+}
+
 function homeHwInput(inp) {
-  // нормализуем: заменяем запятую на точку
-  inp.value = inp.value.replace(',','.');
+  inp.value = inp.value.replace(',', '.').replace(/\s+/g, '');
 }
 
 function homeHwGo() {
-  const raw = document.getElementById('home-hw-num').value.trim().replace(',','.');
-  if(!raw) return;
+  const raw = normalizeTaskNum(document.getElementById('home-hw-num').value.trim());
+  if (!raw) return;
 
-  // нормализуем: "5103" → "5.103", "5.103" → "5.103"
-  let query = raw;
-  if(!/\./.test(query) && query.length > 1) {
-    // попробуем найти по частичному совпадению — ищем по id
-  }
+  const found = TASKS.find(t => t.id === raw) ||
+    TASKS.find(t => t.id.replace('.', '') === raw.replace('.', ''));
 
-  const found = TASKS.find(t => t.id === query) ||
-    TASKS.find(t => t.id.replace('.','') === query.replace('.',''));
-
-  if(!found) {
+  if (!found) {
     const hint = document.getElementById('home-hw-hint');
     if (hint) {
-      hint.textContent = `❌ Задание «${raw}» не найдено.`;
+      // подсказываем ближайшие номера
+      const similar = TASKS.filter(t => t.id.startsWith(raw.split('.')[0] + '.')).slice(0, 3).map(t => t.id).join(', ');
+      hint.innerHTML = `❌ Задание «${raw}» не найдено.` + (similar ? ` Есть: ${similar}` : ' Проверь номер.');
       hint.style.color = '#ef4444';
-      setTimeout(() => { hint.textContent = ''; hint.style.color = ''; }, 3000);
+      setTimeout(() => { hint.textContent = ''; hint.style.color = ''; }, 4000);
     }
     return;
   }
@@ -8264,7 +8264,7 @@ function updateTopics() {
 }
 
 function findTask() {
-  const num = document.getElementById('hw-num').value.trim().replace(',', '.');
+  const num = normalizeTaskNum(document.getElementById('hw-num').value.trim());
   if (!num) { alert('Введи номер задания, например: 1.1'); return; }
   // Принимаем как "1.5" так и просто "5" при выбранном §1
   let taskId = num;
@@ -8291,11 +8291,14 @@ function findTask() {
   const task = TASKS.find(t => t.id === taskId);
   const col = document.getElementById('hw-result-col');
   if (!task) {
-    const available = TASKS.slice(0, 5).map(t => t.id).join(', ');
+    const para = taskId.split('.')[0];
+    const similar = TASKS.filter(t => t.id.startsWith(para + '.')).slice(0, 4).map(t => t.id).join(', ');
     col.innerHTML = `<div class="white-card" style="border:2px solid var(--red);text-align:center;padding:32px 20px">
       <div style="font-size:36px;margin-bottom:12px">😕</div>
       <div style="font-size:16px;font-weight:800;color:var(--ink)">Задание ${taskId} не найдено</div>
-      <div style="font-size:13px;color:var(--ink3);margin-top:8px">Введи номер как в учебнике: <b>1.1</b>, <b>2.43</b> и т.д.</div>
+      <div style="font-size:13px;color:var(--ink3);margin-top:8px">Введи номер как в учебнике: <b>1.14</b>, <b>2.43</b> и т.д.</div>
+      ${similar ? `<div style="font-size:12px;color:#6366f1;margin-top:10px;font-weight:700">В §${para} есть: ${similar}…</div>` : ''}
+      <div style="font-size:12px;color:var(--ink3);margin-top:6px">Формат: цифра, точка, номер — <b>без пробелов</b></div>
     </div>`;
     return;
   }
@@ -12307,8 +12310,15 @@ function renderAchievements() {
 function renderCheatsheet() {
   const el = document.getElementById('cs-cards');
   if (!el) return;
-  el.innerHTML = CHEATSHEET.map((sec, idx) => `
-    <div class="cs-section">
+
+  // Быстрая навигация по разделам
+  const nav = `<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px;padding:12px;background:rgba(255,255,255,.04);border-radius:14px">
+    ${CHEATSHEET.map((sec, i) => `<a href="#cs-sec-${i}" onclick="event.preventDefault();document.getElementById('cs-sec-${i}').scrollIntoView({behavior:'smooth',block:'start'})"
+      style="padding:5px 12px;border-radius:20px;background:rgba(79,70,229,.18);color:#a5b4fc;font-size:12px;font-weight:800;cursor:pointer;text-decoration:none;border:1px solid rgba(79,70,229,.3)">${sec.icon} ${sec.section}</a>`).join('')}
+  </div>`;
+
+  el.innerHTML = nav + CHEATSHEET.map((sec, idx) => `
+    <div class="cs-section" id="cs-sec-${idx}">
       <div class="cs-section-header"><span>${sec.icon}</span>${sec.section}</div>
       ${sec.rules.map(r => `
         <div class="cs-rule">
@@ -12323,6 +12333,7 @@ function renderCheatsheet() {
         ${sec.tips.map(t => `<div class="cs-tip-item">${t}</div>`).join('')}
       </div>
     ` : ''}
+    <div style="text-align:right;margin-bottom:8px"><a href="#cs-sec-0" onclick="event.preventDefault();document.getElementById('cs-cards').scrollIntoView({behavior:'smooth',block:'start'})" style="font-size:11px;color:rgba(255,255,255,.3);cursor:pointer;text-decoration:none">↑ наверх</a></div>
   `).join('');
 }
 
@@ -14096,7 +14107,39 @@ function scFinish() {
   document.getElementById('sc-input-wrap').style.display = 'none';
   document.getElementById('sc-done-view').style.display = '';
   const total = scCurrentCheck.tasks.length;
+  const pct = Math.round(scYouScore / total * 100);
+
+  // Сохраняем в localStorage (для прогресс-бара в списке)
   localStorage.setItem('sc_done_' + scCurrentCheck.id, scYouScore);
+
+  // Сохраняем в ST — для кабинета родителя и достижений
+  if (!ST.selfCheckResults) ST.selfCheckResults = [];
+  ST.selfCheckResults.push({
+    id: scCurrentCheck.id,
+    title: scCurrentCheck.title,
+    para: scCurrentCheck.para,
+    score: scYouScore,
+    total: total,
+    pct: pct,
+    date: new Date().toLocaleDateString('ru')
+  });
+
+  // Записываем ошибки в «Мои ошибки»
+  const errs = total - scYouScore;
+  if (errs > 0) {
+    addMistake(scCurrentCheck.title || 'Проверочная', 'check_wrong', {
+      source: 'Проверочная · ' + (scCurrentCheck.para || ''),
+      task: scCurrentCheck.subtitle,
+      correctAnswer: scYouScore + '/' + total
+    });
+  }
+
+  // Достижения
+  if (pct === 100) grantAchievement('no_give_up');
+  if ((ST.selfCheckResults || []).length >= 3) grantAchievement('found_error');
+
+  lsSave();
+
   let icon, title, sub;
   if (scYouScore > scUmnikScore) { icon='🏆'; title='Ты победил!'; sub=`Умник повержён! ${scYouScore}:${scUmnikScore}`; }
   else if (scYouScore === scUmnikScore) { icon='🤝'; title='Ничья!'; sub=`${scYouScore}:${scUmnikScore} — хорошая борьба!`; }
@@ -14104,11 +14147,11 @@ function scFinish() {
   document.getElementById('sc-done-icon').textContent = icon;
   document.getElementById('sc-done-title').textContent = title;
   document.getElementById('sc-done-sub').textContent = sub;
-  const errs = total - scYouScore;
   document.getElementById('sc-done-result').innerHTML =
     `Правильных ответов: <b style="color:#10b981">${scYouScore}</b> из ${total}<br>` +
     (errs > 0 ? `Ошибок: <b style="color:#f87171">${errs}</b> — повтори задания ещё раз!` : '🎉 Все ответы верны!');
   if (scYouScore > scUmnikScore) addXP(30);
+  updateAllXP();
 }
 
 function scRestart() {
