@@ -1416,29 +1416,37 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
   margin-bottom: 32px;
 }
 .trainer-card {
-  background: #fff;
+  background: rgba(255,255,255,.07);
+  border: 1px solid rgba(255,255,255,.1);
   border-radius: 18px;
   padding: 20px 16px;
   text-align: center;
   cursor: pointer;
-  transition: transform .2s, box-shadow .2s;
+  transition: transform .2s, box-shadow .2s, background .2s;
+  position: relative;
+  overflow: hidden;
 }
-.trainer-card:hover { transform: translateY(-4px); box-shadow: 0 12px 30px rgba(0,0,0,.2); }
+.trainer-card::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:3px; border-radius:18px 18px 0 0;
+  background: linear-gradient(90deg,#4f46e5,#7c3aed);
+}
+.trainer-card:hover { transform: translateY(-4px); background:rgba(255,255,255,.12); box-shadow: 0 12px 30px rgba(0,0,0,.35); }
 .trainer-card-highlight {
-  background: linear-gradient(135deg, #fef3c7, #fde68a) !important;
-  border: 2.5px solid #f59e0b !important;
-  box-shadow: 0 0 0 4px rgba(245,158,11,.3) !important;
+  background: rgba(245,158,11,.15) !important;
+  border: 2px solid #f59e0b !important;
+  box-shadow: 0 0 0 4px rgba(245,158,11,.25) !important;
   animation: trainerPulse 1.2s ease-in-out 3;
 }
+.trainer-card-highlight::before { background: linear-gradient(90deg,#f59e0b,#fbbf24) !important; }
 @keyframes trainerPulse {
-  0%,100% { box-shadow: 0 0 0 4px rgba(245,158,11,.3); transform: scale(1.04); }
-  50%      { box-shadow: 0 0 0 10px rgba(245,158,11,.0); transform: scale(1.06); }
+  0%,100% { box-shadow: 0 0 0 4px rgba(245,158,11,.25); transform: scale(1.03); }
+  50%      { box-shadow: 0 0 0 10px rgba(245,158,11,.0); transform: scale(1.05); }
 }
-.trainer-card-highlight .tr-name { color: #92400e !important; }
-.trainer-card-highlight .tr-count { color: #b45309 !important; }
+.trainer-card-highlight .tr-name { color: #fbbf24 !important; }
+.trainer-card-highlight .tr-count { color: rgba(251,191,36,.7) !important; }
 .tr-icon { font-size: 32px; margin-bottom: 10px; display: block; }
-.tr-name { font-size: 13px; font-weight: 800; color: var(--ink); margin-bottom: 4px; }
-.tr-count { font-size: 11px; color: var(--ink3); }
+.tr-name { font-size: 13px; font-weight: 800; color: #fff; margin-bottom: 4px; line-height:1.3; min-height:32px; display:flex; align-items:center; justify-content:center; }
+.tr-count { font-size: 11px; color: rgba(255,255,255,.5); }
 .tr-ext { display: inline-block; margin-left: 4px; font-size: 10px; color: #6366f1; font-weight: 700; }
 
 /* ===== TRAINER GAME ===== */
@@ -2442,12 +2450,18 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
 .rule-done-title { font-size:22px; font-weight:900; color:#fff; margin-bottom:8px; }
 .rule-done-score { font-size:15px; color:rgba(255,255,255,.6); margin-bottom:24px; }
 
-/* ===== ИНДИКАТОРЫ НА ПЛАШКЕ ===== */
-.map-topic-dots { display:flex; gap:5px; margin-top:8px; }
-.map-dot { height:4px; flex:1; border-radius:2px; background:rgba(255,255,255,.12); transition:background .4s; }
-.map-dot.done-rule { background:#818cf8; }
-.map-dot.done-quiz { background:#10b981; }
-.map-dot.done-train { background:#f59e0b; }
+/* ===== ШАГИ ТЕМЫ ===== */
+.map-steps { display:flex; gap:6px; margin-top:10px; align-items:center; flex-wrap:wrap; }
+.map-step-item { display:flex; align-items:center; gap:4px; font-size:11px; font-weight:700; }
+.map-step-icon { width:18px; height:18px; border-radius:50%; border:1.5px solid rgba(255,255,255,.2); display:flex; align-items:center; justify-content:center; font-size:9px; flex-shrink:0; }
+.map-step-item.done-rule .map-step-icon { background:#818cf8; border-color:#818cf8; }
+.map-step-item.done-quiz .map-step-icon { background:#10b981; border-color:#10b981; }
+.map-step-item.done-train .map-step-icon { background:#f59e0b; border-color:#f59e0b; }
+.map-step-label { color:rgba(255,255,255,.45); }
+.map-step-item.done-rule .map-step-label,
+.map-step-item.done-quiz .map-step-label,
+.map-step-item.done-train .map-step-label { color:rgba(255,255,255,.8); }
+.map-step-sep { color:rgba(255,255,255,.2); font-size:10px; margin:0 2px; }
 
 /* ===== КАРТА ТЕМ — ПРАВИЛА ===== */
 .map-topic-btns { display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; }
@@ -2458,6 +2472,9 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
 .map-btn-train:hover { background:rgba(245,158,11,.32); box-shadow:0 0 18px rgba(245,158,11,.5); }
 .map-btn-check { background:rgba(99,102,241,.15); border:1px solid rgba(99,102,241,.4); color:#818cf8; }
 .map-btn-check:hover { background:rgba(99,102,241,.28); }
+/* Блокировка последующих шагов */
+.map-btn-check.locked { opacity:.4; cursor:not-allowed; pointer-events:none; }
+.map-btn-train.locked { opacity:.4; cursor:not-allowed; pointer-events:none; }
 .map-quiz-item { background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.07); border-radius:10px; padding:10px 12px; margin-bottom:8px; }
 .map-quiz-num { font-size:10px; font-weight:900; color:rgba(255,255,255,.35); text-transform:uppercase; letter-spacing:1px; margin-bottom:4px; }
 .map-rule-btn { margin-top:8px; padding:5px 12px; border-radius:12px; border:1px solid rgba(250,204,21,.35); background:rgba(250,204,21,.08); color:#fbbf24; font-size:12px; font-weight:800; cursor:pointer; transition:all .2s; }
@@ -7743,8 +7760,8 @@ const TRAINERS_DEF = [
   {id:"add3",   icon:"🔢", name:"Сложение 3 чисел",   desc:"Трёхзначные",                shell:"pirate"},
   {id:"chain",  icon:"🔗", name:"Цепочка",            desc:"Последовательные действия",  shell:"pirate"},
   {id:"cmp",    icon:"⚖️", name:"Сравнение дробей",   desc:"Одинаковые знаменатели",     shell:"umnik"},
-  {id:"fradd",  icon:"½",  name:"Сложение дробей",    desc:"Равные знаменатели",         shell:"umnik"},
-  {id:"frsub",  icon:"⅓",  name:"Вычитание дробей",   desc:"Равные знаменатели",         shell:"umnik"},
+  {id:"fradd",  icon:"½",  name:"Сложение дробей",    desc:"Одинаковые знаменатели",     shell:"umnik"},
+  {id:"frsub",  icon:"⅓",  name:"Вычитание дробей",   desc:"Одинаковые знаменатели",     shell:"umnik"},
   {id:"perim",  icon:"📐", name:"Периметр",            desc:"Прямоугольник",              shell:"umnik"},
   {id:"area",   icon:"⬛", name:"Площадь",             desc:"Прямоугольник",              shell:"umnik"},
   {id:"speed",  icon:"🚂", name:"Задачи на движение",  desc:"Скорость × время",           shell:"pirate"},
@@ -7753,8 +7770,8 @@ const TRAINERS_DEF = [
   {id:"pow3",   icon:"🎲", name:"Куб числа",            desc:"Числа от 1 до 10",           shell:"archer"},
   {id:"fradd2", icon:"🔵", name:"Сложение дробей ★",   desc:"Разные знаменатели",         shell:"umnik"},
   {id:"frsub2", icon:"🟠", name:"Вычитание дробей ★",  desc:"Разные знаменатели",         shell:"umnik"},
-  {id:"decadd", icon:"🔹", name:"Десят. + −",           desc:"Сложение и вычитание",       shell:"archer"},
-  {id:"decmul", icon:"🔸", name:"Десят. × ÷",           desc:"Умножение и деление",        shell:"archer"},
+  {id:"decadd", icon:"🔹", name:"Десятичные: + −",       desc:"Сложение и вычитание",       shell:"archer"},
+  {id:"decmul", icon:"🔸", name:"Десятичные: × ÷",       desc:"Умножение и деление",        shell:"archer"},
   {id:"tasknat",icon:"📝", name:"Задачи: числа",        desc:"Цена, время, части",         shell:"pirate"},
   {id:"taskfr", icon:"📊", name:"Задачи: дроби",        desc:"Часть от числа",             shell:"pirate"},
   {id:"geo_t",  icon:"📐", name:"Геом. задачи",          desc:"Периметр, площадь, объём",  shell:"pirate"},
@@ -9359,19 +9376,34 @@ function renderMap() {
     var topicsHtml = block.topics.map(function(t) {
       var prog = ST.topicProgress[t.id] || 0;
       var ruleKey = Object.keys(TOPIC_RULES).find(function(k){ return k === t.name; }) || '';
-      var d1 = mapDotClass(t.id, 1);
-      var d2 = mapDotClass(t.id, 2);
-      var d3 = mapDotClass(t.id, 3);
+      var mp = ST.mapProgress ? (ST.mapProgress[t.id] || 0) : 0;
+      var step1done = mp >= 1; // Теория пройдена
+      var step2done = mp >= 2; // Практика пройдена
+      var step3done = mp >= 3; // Тренажёр пройден
+      // Шаги с подписями
+      var s1cls = step1done ? 'map-step-item done-rule' : 'map-step-item';
+      var s2cls = step2done ? 'map-step-item done-quiz' : 'map-step-item';
+      var s3cls = step3done ? 'map-step-item done-train' : 'map-step-item';
+      var stepsHtml = '<div class="map-steps">' +
+        '<div class="' + s1cls + '"><div class="map-step-icon">' + (step1done ? '✓' : '○') + '</div><span class="map-step-label">Теория</span></div>' +
+        '<span class="map-step-sep">›</span>' +
+        '<div class="' + s2cls + '"><div class="map-step-icon">' + (step2done ? '✓' : '○') + '</div><span class="map-step-label">Практика</span></div>' +
+        '<span class="map-step-sep">›</span>' +
+        '<div class="' + s3cls + '"><div class="map-step-icon">' + (step3done ? '✓' : '○') + '</div><span class="map-step-label">Тренажёр</span></div>' +
+        '</div>';
+      // Кнопки — следующий шаг разблокирован только после предыдущего
+      var lockPractice = !step1done ? ' locked' : '';
+      var lockTrain    = !step2done ? ' locked' : '';
       return '<div class="map-topic-row" data-id="' + t.id + '" data-rule="' + ruleKey + '">' +
         '<div style="flex:1">' +
         '<div class="map-topic-name">' + t.name + '</div>' +
         '<div class="map-topic-desc">' + t.desc + '</div>' +
         '<div class="map-topic-btns">' +
-        '<button class="map-btn-study" onclick="topicStudyFromRow(this)">📖 Повтори</button>' +
-        '<button class="map-btn-check" onclick="topicStudyFromRow(this)">✅ Закрепи</button>' +
-        '<button class="map-btn-train" onclick="topicTrainFromRow(this)">⚡ Тренажёр</button>' +
+        '<button class="map-btn-study" onclick="topicStudyFromRow(this)">📖 Теория</button>' +
+        '<button class="map-btn-check' + lockPractice + '" onclick="topicStudyFromRow(this)">✅ Практика</button>' +
+        '<button class="map-btn-train' + lockTrain + '" onclick="topicTrainFromRow(this)">⚡ Тренажёр</button>' +
         '</div>' +
-        '<div class="map-topic-dots"><div class="' + d1 + '"></div><div class="' + d2 + '"></div><div class="' + d3 + '"></div></div>' +
+        stepsHtml +
         '</div>' +
         '<div class="prog-pill">' + prog + '%</div>' +
         '</div>';
@@ -9916,18 +9948,26 @@ function renderTrainers(highlightId) {
   const grid = document.getElementById('trainers-grid');
   if(!grid) return;
   grid.innerHTML = TRAINERS_DEF.map(tr => {
-    const stats = ST.trainerStats[tr.id] || {done:0, best:0};
+    const stats = ST.trainerStats[tr.id] || {done:0, best:0, errors:0};
     const isHighlight = tr.id === highlightId;
     const hasBest = stats.best > 0;
     const bestPct = hasBest ? Math.round(stats.best / 10 * 100) : 0;
     const bestColor = bestPct === 100 ? '#10b981' : bestPct >= 80 ? '#fbbf24' : '#f87171';
-    const btnLabel = stats.done ? '▶ Продолжить' : '▶ Начать';
+    const errCount  = stats.lastErrors || 0;
+    let resultHtml;
+    if (!hasBest) {
+      resultHtml = `<div style="font-size:11px;color:rgba(255,255,255,.3);margin-top:6px;font-weight:700">Ещё не пройдено</div>`;
+    } else {
+      const errLine = errCount > 0
+        ? `<div style="font-size:10px;color:#f87171;margin-top:2px">Ошибок для повторения: ${errCount}</div>`
+        : `<div style="font-size:10px;color:#10b981;margin-top:2px">Без ошибок ✓</div>`;
+      resultHtml = `<div style="font-size:11px;font-weight:800;color:${bestColor};margin-top:6px">Лучший результат: ${stats.best}/10</div>${errLine}`;
+    }
     return `<div class="trainer-card${isHighlight ? ' trainer-card-highlight' : ''}" onclick="startTrainer('${tr.id}')">
       <span class="tr-icon">${tr.icon}</span>
       <div class="tr-name">${tr.name}</div>
       <div class="tr-count">${tr.desc}</div>
-      ${hasBest ? `<div style="font-size:11px;font-weight:800;color:${bestColor};margin-top:4px">Рекорд ${stats.best}/10</div>` : ''}
-      <div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:6px;font-weight:700">${btnLabel}</div>
+      ${resultHtml}
     </div>`;
   }).join('');
 }
@@ -11636,10 +11676,14 @@ function diceAdvance() {
 }
 
 function endTrainer() {
-  if(!ST.trainerStats[currentTrainer.id]) ST.trainerStats[currentTrainer.id] = {done:0, correct:0, best:0};
-  ST.trainerStats[currentTrainer.id].done++;
-  ST.trainerStats[currentTrainer.id].correct = (ST.trainerStats[currentTrainer.id].correct || 0) + trCorrect;
-  if (trCorrect > (ST.trainerStats[currentTrainer.id].best || 0)) ST.trainerStats[currentTrainer.id].best = trCorrect;
+  if(!ST.trainerStats[currentTrainer.id]) ST.trainerStats[currentTrainer.id] = {done:0, correct:0, best:0, errors:0};
+  const ts = ST.trainerStats[currentTrainer.id];
+  ts.done++;
+  ts.correct = (ts.correct || 0) + trCorrect;
+  if (trCorrect > (ts.best || 0)) ts.best = trCorrect;
+  ts.errors = Math.max(0, (ts.errors || 0) + trErrors - (ts.done > 1 ? 0 : 0));
+  // Храним ошибки последней сессии (для «повторения»)
+  ts.lastErrors = trErrors;
   var total = trTasks.length;
   var hadExplanation = trErrors > 0; // объяснение показывалось если были ошибки
   if (!ST.trainerHistory) ST.trainerHistory = [];
