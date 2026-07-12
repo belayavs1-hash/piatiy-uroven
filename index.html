@@ -7635,6 +7635,7 @@ const FUN_FACTS = [
 
 const CHEATSHEET = [
   {
+    para: "§1 Натуральные числа и нуль. Шкалы",
     section: "Натуральные числа",
     icon: "🔢",
     rules: [
@@ -7647,6 +7648,7 @@ const CHEATSHEET = [
     tips: ["Не путай число и цифру: цифры — это «буквы» для записи чисел","Нуль важен в записи числа: 305 и 35 — разные числа","Большое число удобно делить на группы по три цифры справа налево: 12 345 678"]
   },
   {
+    para: "§2 Сложение и вычитание натуральных чисел",
     section: "Сложение и вычитание",
     icon: "➕",
     rules: [
@@ -7657,6 +7659,7 @@ const CHEATSHEET = [
     tips: ["Чтобы проверить вычитание — сложи разность и вычитаемое","Неизвестное слагаемое: из суммы вычти известное слагаемое","Складывай удобными группами: ищи пары, которые дают круглые числа"]
   },
   {
+    para: "§3 Умножение и деление натуральных чисел",
     section: "Умножение и деление",
     icon: "✖️",
     rules: [
@@ -7669,6 +7672,7 @@ const CHEATSHEET = [
     tips: ["Чтобы проверить деление — умножь частное на делитель","На 0 делить нельзя никогда! Но 0 делить на число можно: 0 ÷ 5 = 0","Распределительный закон помогает считать устно: 6×23 = 6×20 + 6×3"]
   },
   {
+    para: "§1 Натуральные числа и нуль. Шкалы",
     section: "Длина и единицы",
     icon: "📏",
     rules: [
@@ -7679,6 +7683,7 @@ const CHEATSHEET = [
     tips: ["1 км = 1000 м — километр для больших расстояний","Миллиметр — для очень маленьких объектов","Периметр — это сумма всех сторон, обходи фигуру по контуру"]
   },
   {
+    para: "§4 Площадь",
     section: "Площадь",
     icon: "⬛",
     rules: [
@@ -7689,6 +7694,7 @@ const CHEATSHEET = [
     tips: ["Площадь — сколько квадратных единиц помещается внутри фигуры","Не путай периметр (длина контура) и площадь (размер поверхности)","При переводе площади: 1 дм² = 100 см² (умножай на 100, не на 10!)"]
   },
   {
+    para: "§5 Обыкновенные дроби",
     section: "Дроби обыкновенные",
     icon: "½",
     rules: [
@@ -7700,6 +7706,7 @@ const CHEATSHEET = [
     tips: ["Знаменатель — на сколько частей делим, числитель — сколько берём","Правильная дробь: числитель меньше знаменателя","Складывать дроби можно только с одинаковыми знаменателями"]
   },
   {
+    para: "§6 Десятичные дроби",
     section: "Десятичные дроби",
     icon: "0.5",
     rules: [
@@ -7710,6 +7717,7 @@ const CHEATSHEET = [
   }
 ,
   {
+    para: "§7 Уравнения",
     section: "Уравнения",
     icon: "🔍",
     rules: [
@@ -7723,6 +7731,7 @@ const CHEATSHEET = [
     tips: ["Не путай число и цифру: цифры — это «буквы» для записи чисел","Нуль важен в записи числа: 305 и 35 — разные числа","Большое число удобно делить на группы по три цифры справа налево: 12 345 678"]
   },
   {
+    para: "§3 Умножение и деление натуральных чисел",
     section: "Порядок действий",
     icon: "🔢",
     rules: [
@@ -7732,6 +7741,7 @@ const CHEATSHEET = [
     tips: ["Скобки — сначала всегда","Умножение и деление «сильнее» сложения и вычитания","Если сомневаешься — пронумеруй действия над примером"]
   },
   {
+    para: "§4 Площадь",
     section: "Единицы измерения",
     icon: "⚖️",
     rules: [
@@ -7743,6 +7753,7 @@ const CHEATSHEET = [
     tips: ["Перед вычислениями приведи все величины к одной единице","В ответе вернись к тем единицам, которые просит задача","Складывать можно только одинаковые величины: метры с метрами, граммы с граммами"]
   },
   {
+    para: "§1 Натуральные числа и нуль. Шкалы",
     section: "Шкала и координатная прямая",
     icon: "📐",
     rules: [
@@ -7753,6 +7764,7 @@ const CHEATSHEET = [
     tips: ["Сначала найди цену деления, потом считай","Правее на числовой прямой — всегда больше","Координата — это адрес точки, одно число точно определяет её место"]
   },
   {
+    para: "§1 Натуральные числа и нуль. Шкалы",
     section: "Геометрия: фигуры",
     icon: "📐",
     rules: [
@@ -12569,34 +12581,62 @@ function renderAchievements() {
 
 // ===== CHEATSHEET =====
 function renderCheatsheet() {
-  const el = document.getElementById('cs-cards');
+  var el = document.getElementById('cs-cards');
   if (!el) return;
 
-  // Быстрая навигация по разделам
-  const nav = `<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px;padding:12px;background:rgba(255,255,255,.04);border-radius:14px">
-    ${CHEATSHEET.map((sec, i) => `<a href="#cs-sec-${i}" onclick="event.preventDefault();document.getElementById('cs-sec-${i}').scrollIntoView({behavior:'smooth',block:'start'})"
-      style="padding:5px 12px;border-radius:20px;background:rgba(79,70,229,.18);color:#a5b4fc;font-size:12px;font-weight:800;cursor:pointer;text-decoration:none;border:1px solid rgba(79,70,229,.3)">${sec.icon} ${sec.section}</a>`).join('')}
-  </div>`;
+  // Группируем секции по параграфам
+  var byPara = {};
+  var paraOrder = [];
+  CHEATSHEET.forEach(function(sec) {
+    var p = sec.para || 'Другое';
+    if (!byPara[p]) { byPara[p] = []; paraOrder.push(p); }
+    byPara[p].push(sec);
+  });
 
-  el.innerHTML = nav + CHEATSHEET.map((sec, idx) => `
-    <div class="cs-section" id="cs-sec-${idx}">
-      <div class="cs-section-header" onclick="this.parentElement.classList.toggle('collapsed')"><span>${sec.icon} ${sec.section}</span><span style="font-size:13px;opacity:.5">▾</span></div>
-      <div class="cs-section-body">${sec.rules.map(r => `
-        <div class="cs-rule">
-          <div class="cs-rule-name">${r.name}</div>
-          <div class="cs-rule-text">${r.text}</div>
-        </div>
-      `).join('')}
-    ${sec.tips && sec.tips.length ? `
-      <div class="cs-tips">
-        <div class="cs-tips-header"><img src="umnik_transparent_real.png" alt="" class="cs-umnik-img"><span>💡 Как не ошибиться</span></div>
-        ${sec.tips.map(t => `<div class="cs-tip-item">${t}</div>`).join('')}
-      </div>
-    ` : ''}
-    <div style="text-align:right;margin-bottom:8px"><a href="#cs-sec-0" onclick="event.preventDefault();document.getElementById('cs-cards').scrollIntoView({behavior:'smooth',block:'start'})" style="font-size:11px;color:rgba(255,255,255,.3);cursor:pointer;text-decoration:none">↑ наверх</a></div>
-    </div>
-    </div>
-  `).join('');
+  // Быстрая навигация по параграфам
+  var nav = '<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px;padding:12px;background:rgba(255,255,255,.04);border-radius:14px">';
+  paraOrder.forEach(function(p, i) {
+    nav += '<a onclick="event.preventDefault();var el=document.getElementById(\'cs-para-' + i + '\');el.scrollIntoView({behavior:\'smooth\',block:\'start\'})"'
+      + ' style="padding:5px 12px;border-radius:20px;background:rgba(79,70,229,.18);color:#a5b4fc;font-size:12px;font-weight:800;cursor:pointer;text-decoration:none;border:1px solid rgba(79,70,229,.3)">'
+      + p.split(' ')[0] + ' ' + (p.split(' ')[1] || '') + '</a>';
+  });
+  nav += '</div>';
+
+  var html = nav;
+
+  paraOrder.forEach(function(p, pi) {
+    // Параграф-аккордеон
+    html += '<div id="cs-para-' + pi + '" style="margin-bottom:8px">';
+    html += '<div onclick="var b=this.nextElementSibling;var a=this.querySelector(\'.cs-para-arrow\');b.style.display=b.style.display===\'none\'?\'block\':\'none\';a.style.transform=b.style.display===\'none\'?\'rotate(-90deg)\':\'\'"'
+      + ' style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:rgba(99,102,241,.12);border:1.5px solid rgba(99,102,241,.3);border-radius:14px;cursor:pointer;user-select:none">'
+      + '<span style="font-size:14px;font-weight:900;color:#a5b4fc">' + p + '</span>'
+      + '<span class="cs-para-arrow" style="font-size:12px;color:rgba(255,255,255,.4);transition:transform .2s">▾</span>'
+      + '</div>';
+    html += '<div style="padding:4px 0 8px">';
+
+    byPara[p].forEach(function(sec) {
+      // Тема внутри параграфа (свёртываемая)
+      html += '<div class="cs-section" style="margin-top:6px">';
+      html += '<div class="cs-section-header" onclick="this.parentElement.classList.toggle(\'collapsed\')">'
+        + '<span>' + sec.icon + ' ' + sec.section + '</span>'
+        + '<span style="font-size:13px;opacity:.5">▾</span>'
+        + '</div>';
+      html += '<div class="cs-section-body">';
+      sec.rules.forEach(function(r) {
+        html += '<div class="cs-rule"><div class="cs-rule-name">' + r.name + '</div><div class="cs-rule-text">' + r.text + '</div></div>';
+      });
+      if (sec.tips && sec.tips.length) {
+        html += '<div class="cs-tips"><div class="cs-tips-header"><img src="umnik_transparent_real.png" alt="" class="cs-umnik-img"><span>💡 Как не ошибиться</span></div>';
+        sec.tips.forEach(function(t) { html += '<div class="cs-tip-item">' + t + '</div>'; });
+        html += '</div>';
+      }
+      html += '</div></div>'; // cs-section-body, cs-section
+    });
+
+    html += '</div></div>'; // параграф-body, параграф-wrapper
+  });
+
+  el.innerHTML = html;
 }
 
 function parGoBack() {
@@ -14010,18 +14050,55 @@ function renderSelfCheckList() {
   var grid = document.getElementById('sc-cards');
   if (!grid) return;
   var byPara = {};
+  var paraOrder = [];
   SELF_CHECKS.forEach(function(ch) {
     var p = ch.para || 'Другие';
-    if (!byPara[p]) byPara[p] = [];
+    if (!byPara[p]) { byPara[p] = []; paraOrder.push(p); }
     byPara[p].push(ch);
   });
+  // Определяем первый параграф с активностью (в процессе или не начат)
+  var firstActiveIdx = 0;
+  paraOrder.forEach(function(para, pi) {
+    var hasInProgress = byPara[para].some(function(ch) {
+      var done = parseInt(localStorage.getItem('sc_done_' + ch.id)) || 0;
+      var total = ch.tasks ? ch.tasks.length : 0;
+      return done > 0 && done < total;
+    });
+    if (hasInProgress && pi < firstActiveIdx) firstActiveIdx = pi;
+  });
   var html = '';
-  Object.keys(byPara).sort().forEach(function(para) {
-    // Заголовок параграфа — акцентная полоска + цвет
-    html += '<div style="display:flex;align-items:center;gap:10px;margin:20px 0 10px">'
-      + '<div style="width:3px;height:16px;background:linear-gradient(180deg,#6366f1,#a78bfa);border-radius:2px;flex-shrink:0"></div>'
-      + '<div style="font-size:11px;font-weight:900;color:#a5b4fc;text-transform:uppercase;letter-spacing:.08em">' + para + '</div>'
+  paraOrder.forEach(function(para, pi) {
+    var paraId = 'sc-para-' + pi;
+    var bodyId = 'sc-para-body-' + pi;
+    var isOpen = pi === firstActiveIdx || pi === 0;
+    // Считаем прогресс параграфа для шапки
+    var paraTotal = 0, paraDone = 0;
+    byPara[para].forEach(function(ch) {
+      var total = ch.tasks ? ch.tasks.length : 0;
+      var done = parseInt(localStorage.getItem('sc_done_' + ch.id)) || 0;
+      paraTotal += total; paraDone += Math.min(done, total);
+    });
+    var paraFinished = byPara[para].filter(function(ch) {
+      var total = ch.tasks ? ch.tasks.length : 0;
+      return total > 0 && (parseInt(localStorage.getItem('sc_done_' + ch.id)) || 0) >= total;
+    }).length;
+    var paraCount = byPara[para].filter(function(ch) { return ch.tasks && ch.tasks.length > 0; }).length;
+    var badgeHtml = paraFinished > 0
+      ? '<span style="font-size:11px;color:#34d399;font-weight:700;margin-left:8px">' + paraFinished + '/' + paraCount + ' ✓</span>'
+      : '<span style="font-size:11px;color:rgba(255,255,255,.35);margin-left:8px">' + paraCount + ' работ</span>';
+    html += '<div id="' + paraId + '" style="margin-bottom:8px">';
+    // Заголовок-аккордеон
+    html += '<div onclick="var b=document.getElementById(\'' + bodyId + '\');var open=b.style.display!==\'none\';b.style.display=open?\'none\':\'block\';this.querySelector(\'.sc-para-arrow\').style.transform=open?\'rotate(-90deg)\':\'\'"'
+      + ' style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:rgba(99,102,241,.12);border:1.5px solid rgba(99,102,241,.28);border-radius:14px;cursor:pointer;user-select:none">'
+      + '<div style="display:flex;align-items:center;gap:8px">'
+      + '<div style="width:3px;height:18px;background:linear-gradient(180deg,#6366f1,#a78bfa);border-radius:2px;flex-shrink:0"></div>'
+      + '<span style="font-size:13px;font-weight:900;color:#a5b4fc">' + para + '</span>'
+      + badgeHtml
+      + '</div>'
+      + '<span class="sc-para-arrow" style="font-size:12px;color:rgba(255,255,255,.4);transition:transform .2s' + (isOpen ? '' : ';transform:rotate(-90deg)') + '">▾</span>'
       + '</div>';
+    html += '<div id="' + bodyId + '" style="display:' + (isOpen ? 'block' : 'none') + ';padding:6px 0 2px">';
+
     byPara[para].forEach(function(ch) {
       var savedDone  = parseInt(localStorage.getItem('sc_done_'  + ch.id)) || 0;
       var savedScore = parseInt(localStorage.getItem('sc_score_' + ch.id)) || 0;
@@ -14062,6 +14139,8 @@ function renderSelfCheckList() {
         + '<div style="font-size:18px;flex-shrink:0;color:rgba(255,255,255,.25)">›</div>'
         + '</div>';
     });
+
+    html += '</div></div>'; // body параграфа + wrapper параграфа
   });
   grid.innerHTML = html;
 }
