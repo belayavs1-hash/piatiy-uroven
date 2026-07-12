@@ -637,6 +637,30 @@ body.theme-dark .h-step { opacity:.85; color:#c8d8ff; }
 
 /* 4 нижних тайла */
 .h-tiles { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; margin-top: 28px; }
+
+/* ===== МОБИЛЬНАЯ АДАПТАЦИЯ ГЛАВНОЙ (≤ 900px) ===== */
+@media (max-width: 900px) {
+  .h-hero { grid-template-columns: 1fr; gap: 10px; }
+  .h-hero > div:first-child { grid-column: 1; }
+  .h-mascot { display: none; }
+  .h-content { grid-template-columns: 1fr 1fr; margin-top: 0; }
+  .h-content > article { height: auto; min-height: 220px; }
+  .h-tiles { grid-template-columns: repeat(2, 1fr); }
+  .h-greeting { font-size: 26px; }
+}
+@media (max-width: 600px) {
+  .h-main { padding: 10px 10px 80px; }
+  .h-hero { gap: 8px; }
+  .h-content { grid-template-columns: 1fr; margin-top: 0; gap: 10px; }
+  .h-content > article { height: auto; min-height: 0; }
+  .h-tiles { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .h-greeting { font-size: 22px; }
+  .h-sub { font-size: 14px; }
+  .h-tile { padding: 14px 14px 12px; }
+  .h-tile-emoji { font-size: 22px; }
+  .h-tile-name { font-size: 14px; }
+  .h-tile-desc { font-size: 12px; }
+}
 .h-tile {
   background: var(--h-tile-bg);
   border: 1px solid var(--h-tile-border);
@@ -667,7 +691,8 @@ body.theme-light .h-tile.pink { background: linear-gradient(135deg,#fff,#fff5fc)
 body.theme-dark .h-tile.pink { background: rgba(236,73,217,.08); }
 .h-tile-emoji { font-size: 28px; margin-bottom: 8px; display: block; }
 .h-tile-name { font-size: 16px; font-weight: 900; color: var(--h-ink); margin-bottom: 3px; transition: color .3s; }
-.h-tile-desc { font-size: 12px; color: var(--h-muted); line-height: 1.35; transition: color .3s; }
+.h-tile-desc { font-size: 13px; color: var(--h-ink); opacity: .7; line-height: 1.35; transition: color .3s, opacity .3s; }
+body.theme-dark .h-tile-desc { opacity: .85; }
 .h-tile-arrow {
   width: 38px; height: 38px; border-radius: 50%;
   display: grid; place-items: center;
@@ -2661,7 +2686,7 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
             <span class="h-banner-emoji">📋</span>
             <div class="h-banner-text">
               <div class="h-banner-title">Шпаргалки</div>
-              <div class="h-banner-sub">Правила и формулы §1–§7</div>
+              <div class="h-banner-sub">Правила и формулы по темам учебника</div>
             </div>
           </button>
         </div>
@@ -2684,13 +2709,13 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
         <div>
           <div class="h-card-icon">📖</div>
           <div class="h-card-title">Домашка</div>
-          <div class="h-card-desc">Введи номер задания из учебника §1–§7</div>
+          <div class="h-card-desc">Введи номер задания из учебника</div>
         </div>
         <div style="display:flex;flex-direction:column;gap:10px">
           <div style="font-size:12px;color:var(--h-muted);min-height:14px" id="home-hw-hint"></div>
-          <input class="h-hw-input" id="home-hw-num" type="text" placeholder="Например: 1.5"
+          <input class="h-hw-input" id="home-hw-num" type="text" placeholder="Например: 1.5 или 4.182"
             oninput="homeHwInput(this)" onkeydown="if(event.key==='Enter')homeHwGo()">
-          <button class="h-hw-btn" onclick="homeHwGo()" style="width:100%;height:52px;font-size:16px">Найти →</button>
+          <button class="h-hw-btn" onclick="homeHwGo()" style="width:100%;height:52px;font-size:16px">Открыть задание →</button>
         </div>
       </article>
 
@@ -2699,9 +2724,9 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
         <div>
           <div class="h-card-icon">✓</div>
           <div class="h-card-title">Проверочные</div>
-          <div class="h-card-desc">Тест по каждой теме §1–§7 с автопроверкой</div>
+          <div class="h-card-desc">Проверочные работы по темам учебника</div>
         </div>
-        <button class="h-test-btn" onclick="showScreen('screen-self-check')" style="height:52px">Начать тест →</button>
+        <button class="h-test-btn" onclick="showScreen('screen-self-check')" style="height:52px">Выбрать проверочную →</button>
       </article>
 
       <!-- Учебник -->
@@ -2721,26 +2746,24 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
               <div style="color:var(--h-muted);font-size:18px;line-height:1;padding-left:9px">↓</div>
               <div style="display:flex;align-items:center;gap:6px">
                 <span style="width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#8c6bff,#42c8ff);color:#fff;font-size:11px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0">2</span>
-                <span style="font-size:13px;color:var(--h-ink);font-weight:600">Читай объяснение Умника</span>
+                <span style="font-size:13px;color:var(--h-ink);font-weight:600">Выбери: разобрать или проверить</span>
               </div>
               <div style="color:var(--h-muted);font-size:18px;line-height:1;padding-left:9px">↓</div>
               <div style="display:flex;align-items:center;gap:6px">
                 <span style="width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#8c6bff,#42c8ff);color:#fff;font-size:11px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0">3</span>
-                <span style="font-size:13px;color:var(--h-ink);font-weight:600">Реши задачу сам</span>
+                <span style="font-size:13px;color:var(--h-ink);font-weight:600">Реши сам или с Умником</span>
               </div>
               <div style="color:var(--h-muted);font-size:18px;line-height:1;padding-left:9px">↓</div>
               <div style="display:flex;align-items:center;gap:6px">
                 <span style="width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#22c572,#0ea55e);color:#fff;font-size:11px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0">4</span>
-                <span style="font-size:13px;color:var(--h-ink);font-weight:600">Проверь и получи XP</span>
+                <span style="font-size:13px;color:var(--h-ink);font-weight:600">Получи результат и XP</span>
               </div>
             </div>
           </div>
         </div>
-        <div style="height:52px;display:flex;flex-direction:column;justify-content:center;padding-top:10px;border-top:1px solid var(--h-line)">
-          <div class="h-book-progress" style="font-size:13px;font-weight:800">
-            <span style="white-space:nowrap">Глава 1 · §2</span>
-            <div class="h-book-bar" style="height:8px"><span style="width:36%"></span></div>
-            <span>36%</span>
+        <div style="display:flex;flex-direction:column;justify-content:center;padding-top:10px;border-top:1px solid var(--h-line)">
+          <div class="h-book-progress" style="font-size:13px;font-weight:800" id="home-book-progress">
+            <span style="white-space:nowrap;color:var(--h-muted);font-size:12px">Прогресс ещё не начат</span>
           </div>
         </div>
       </article>
@@ -2752,7 +2775,7 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
         <div>
           <span class="h-tile-emoji">🌍</span>
           <div class="h-tile-name">Карта тем</div>
-          <div class="h-tile-desc">Повторить тему и закрыть пробелы.</div>
+          <div class="h-tile-desc">Повторяй темы и закрывай пробелы</div>
         </div>
         <div class="h-tile-arrow">›</div>
       </div>
@@ -2760,7 +2783,7 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
         <div>
           <span class="h-tile-emoji">⚡</span>
           <div class="h-tile-name">Тренажёры</div>
-          <div class="h-tile-desc">Короткие тренировки на 5–7 минут.</div>
+          <div class="h-tile-desc">Тренировки на 5–7 минут</div>
         </div>
         <div class="h-tile-arrow" style="color:#f39b16">›</div>
       </div>
@@ -2768,7 +2791,7 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
         <div>
           <span class="h-tile-emoji">🧩</span>
           <div class="h-tile-name">Мои ошибки</div>
-          <div class="h-tile-desc">Разбери места, где чаще всего ошибаешься.</div>
+          <div class="h-tile-desc">Разбери места, где ошибаешься чаще всего</div>
         </div>
         <div class="h-tile-arrow" style="color:#22a465">›</div>
       </div>
@@ -2776,7 +2799,7 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
         <div>
           <span class="h-tile-emoji">🏆</span>
           <div class="h-tile-name">Достижения</div>
-          <div class="h-tile-desc">Значки, рекорды и твой прогресс.</div>
+          <div class="h-tile-desc">Значки, рекорды и прогресс</div>
         </div>
         <div class="h-tile-arrow" style="color:#dd4fc7">›</div>
       </div>
@@ -8200,13 +8223,35 @@ function toggleLoginMic() {
 // ===== HOME =====
 function renderHome() {
   if(!ST.user) return;
-  document.getElementById('home-greeting').textContent = `Привет, ${ST.user.name}! 👋`;
+  const greetName = ST.studentName || (ST.user.role === 'student' ? ST.user.name : null);
+  document.getElementById('home-greeting').textContent = greetName ? `Привет, ${greetName}! 👋` : 'Привет! 👋';
   document.getElementById('home-xp').textContent = `⭐ ${ST.xp} XP заработано`;
   const navXp = document.getElementById('nav-xp-home');
   if(navXp) navXp.textContent = `⭐ ${ST.xp} XP`;
   const navName = document.getElementById('home-nav-name');
   if(navName) navName.textContent = `${ST.user.name} • 5 класс`;
   updateHomeLevel();
+  // Прогресс учебника — считаем по решённым заданиям
+  (function() {
+    const solved = ST.solvedTasks || {};
+    const total = Object.keys(solved).length;
+    const el = document.getElementById('home-book-progress');
+    if (!el) return;
+    if (total === 0) {
+      el.innerHTML = `<span style="white-space:nowrap;color:var(--h-muted);font-size:12px">Прогресс ещё не начат</span>`;
+      return;
+    }
+    // Находим последнюю решённую главу
+    const paras = Object.keys(solved).map(id => id.split('.')[0]).filter(Boolean);
+    const lastPara = paras.sort().pop();
+    const TASKS_IN_PARA = { '1':213, '2':200, '3':400, '4':100, '5':100, '6':80, '7':80 };
+    const paraTotal = TASKS_IN_PARA[lastPara] || 100;
+    const paraCount = paras.filter(p => p === lastPara).length;
+    const pct = Math.min(100, Math.round(paraCount / paraTotal * 100));
+    el.innerHTML = `<span style="white-space:nowrap">§${lastPara} · ${total} задан.</span>
+      <div class="h-book-bar" style="height:8px;flex:1"><span style="width:${pct}%"></span></div>
+      <span>${pct}%</span>`;
+  })();
   // Плашка «Хочу всё знать» — показываем кол-во ошибок
   var errSub = document.getElementById('banner-know-sub');
   if (errSub) {
