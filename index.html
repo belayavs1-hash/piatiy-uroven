@@ -8287,7 +8287,7 @@ function renderHome() {
     errSub.textContent = 'Интересные факты о числах и математике';
   }
   // восстановить тему
-  const saved = localStorage.getItem('homeTheme') || 'light';
+  const saved = localStorage.getItem('homeTheme') || 'dark';
   applyHomeTheme(saved);
   spawnAmbientClouds();
 }
