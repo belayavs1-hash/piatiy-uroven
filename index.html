@@ -4,7 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Пятый Уровень — ИИ-репетитор</title>
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="preload" as="style" onload="this.rel='stylesheet'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet"></noscript>
 <style>
 :root {
   --blue: #2563EB;
@@ -2490,6 +2491,19 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
 .map-quiz-btn { padding:8px 16px; border-radius:12px; border:none; background:#4f46e5; color:#fff; font-weight:800; cursor:pointer; }
 .map-quiz-result { font-size:13px; min-height:16px; }
 </style>
+<script>
+// Убрать мигание экрана входа если пользователь уже залогинен
+(function(){
+  try {
+    var st = JSON.parse(localStorage.getItem('piatiy_uroven_v2') || '{}');
+    if (st && st.user) {
+      document.write('<style>#screen-login{display:none!important}</style>');
+    }
+    var theme = localStorage.getItem('homeTheme') || 'dark';
+    if (theme === 'dark') document.write('<style>body{}</style>'); // placeholder для инициализации
+  } catch(e) {}
+})();
+</script>
 </head>
 <body class="on-login theme-light">
 
