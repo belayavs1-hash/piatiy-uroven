@@ -3254,7 +3254,6 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
   </nav>
   <div class="screen-body" style="max-width:600px">
     <div class="screen-title">Шпаргалка</div>
-    <div class="screen-subtitle">Правила и формулы по всем темам §1–§7</div>
     <div id="cs-cards"></div>
   </div>
   <div class="bottom-nav">
@@ -12593,16 +12592,7 @@ function renderCheatsheet() {
     byPara[p].push(sec);
   });
 
-  // Быстрая навигация по параграфам
-  var nav = '<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px;padding:12px;background:rgba(255,255,255,.04);border-radius:14px">';
-  paraOrder.forEach(function(p, i) {
-    nav += '<a onclick="event.preventDefault();var el=document.getElementById(\'cs-para-' + i + '\');el.scrollIntoView({behavior:\'smooth\',block:\'start\'})"'
-      + ' style="padding:5px 12px;border-radius:20px;background:rgba(79,70,229,.18);color:#a5b4fc;font-size:12px;font-weight:800;cursor:pointer;text-decoration:none;border:1px solid rgba(79,70,229,.3)">'
-      + p.split(' ')[0] + ' ' + (p.split(' ')[1] || '') + '</a>';
-  });
-  nav += '</div>';
-
-  var html = nav;
+  var html = '';
 
   paraOrder.forEach(function(p, pi) {
     // Параграф-аккордеон
