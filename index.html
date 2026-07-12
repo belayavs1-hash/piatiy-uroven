@@ -3253,7 +3253,7 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
     <div class="nav-xp" id="nav-xp-cs">⭐ 0 XP</div>
   </nav>
   <div class="screen-body" style="max-width:600px">
-    <div class="screen-title">Шпаргалка</div>
+    <div class="screen-title">Шпаргалки</div>
     <div id="cs-cards"></div>
   </div>
   <div class="bottom-nav">
@@ -12599,7 +12599,10 @@ function renderCheatsheet() {
     html += '<div id="cs-para-' + pi + '" style="margin-bottom:8px">';
     html += '<div onclick="var b=this.nextElementSibling;var a=this.querySelector(\'.cs-para-arrow\');b.style.display=b.style.display===\'none\'?\'block\':\'none\';a.style.transform=b.style.display===\'none\'?\'rotate(-90deg)\':\'\'"'
       + ' style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:rgba(99,102,241,.12);border:1.5px solid rgba(99,102,241,.3);border-radius:14px;cursor:pointer;user-select:none">'
-      + '<span style="font-size:14px;font-weight:900;color:#a5b4fc">' + p + '</span>'
+      + '<div style="display:flex;align-items:center;gap:8px">'
+      + '<span style="font-size:11px;font-weight:900;color:#6366f1;background:rgba(99,102,241,.18);border-radius:6px;padding:2px 7px;flex-shrink:0">' + (p.match(/^(§\d+)/) ? p.match(/^(§\d+)/)[1] : '') + '</span>'
+      + '<span style="font-size:14px;font-weight:900;color:#a5b4fc">' + p.replace(/^§\d+\s*/, '') + '</span>'
+      + '</div>'
       + '<span class="cs-para-arrow" style="font-size:12px;color:rgba(255,255,255,.4);transition:transform .2s">▾</span>'
       + '</div>';
     html += '<div style="padding:4px 0 8px">';
@@ -14081,8 +14084,8 @@ function renderSelfCheckList() {
     html += '<div onclick="var b=document.getElementById(\'' + bodyId + '\');var open=b.style.display!==\'none\';b.style.display=open?\'none\':\'block\';this.querySelector(\'.sc-para-arrow\').style.transform=open?\'rotate(-90deg)\':\'\'"'
       + ' style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:rgba(99,102,241,.12);border:1.5px solid rgba(99,102,241,.28);border-radius:14px;cursor:pointer;user-select:none">'
       + '<div style="display:flex;align-items:center;gap:8px">'
-      + '<div style="width:3px;height:18px;background:linear-gradient(180deg,#6366f1,#a78bfa);border-radius:2px;flex-shrink:0"></div>'
-      + '<span style="font-size:13px;font-weight:900;color:#a5b4fc">' + para + '</span>'
+      + '<span style="font-size:11px;font-weight:900;color:#6366f1;background:rgba(99,102,241,.18);border-radius:6px;padding:2px 7px;flex-shrink:0">' + (para.match(/^(§\d+)/) ? para.match(/^(§\d+)/)[1] : '') + '</span>'
+      + '<span style="font-size:13px;font-weight:900;color:#a5b4fc">' + para.replace(/^§\d+\s*/, '') + '</span>'
       + badgeHtml
       + '</div>'
       + '<span class="sc-para-arrow" style="font-size:12px;color:rgba(255,255,255,.4);transition:transform .2s' + (isOpen ? '' : ';transform:rotate(-90deg)') + '">▾</span>'
