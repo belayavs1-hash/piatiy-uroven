@@ -2510,22 +2510,24 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
         <button class="btn-mic" id="login-mic-btn" onclick="toggleLoginMic()">🎤</button>
       </div>
 
-      <label class="login-label">Кто ты?</label>
-      <div class="role-row">
-        <button class="role-btn selected" data-role="student" onclick="selectRole(this)">
-          <div class="role-photo"><img src="uchenik.png" alt="Ученик" loading="eager" decoding="sync" style="object-position:center 40%"></div>
-          <div class="role-info-block">
-            <div class="role-label-name">Ученик</div>
-            <p class="role-hint">Учусь сам</p>
-          </div>
-        </button>
-        <button class="role-btn" data-role="parent" onclick="selectRole(this)">
-          <div class="role-photo"><img src="mama.png" alt="Родитель" loading="eager" decoding="sync" style="object-position:center 50%"></div>
-          <div class="role-info-block">
-            <div class="role-label-name">Родитель</div>
-            <p class="role-hint">Помогаю и слежу за успехами</p>
-          </div>
-        </button>
+      <!-- скрытый input для роли — управляется через JS -->
+      <input type="hidden" id="login-role" value="student">
+
+      <!-- Пин-оверлей для родителя -->
+      <div id="parent-pin-overlay" style="display:none;position:fixed;inset:0;z-index:500;background:rgba(3,8,58,.96);display:none;align-items:center;justify-content:center;flex-direction:column;gap:16px">
+        <div style="font-size:28px;font-weight:900;color:#fff">🔐 Вход для родителей</div>
+        <div style="font-size:14px;color:rgba(255,255,255,.6);margin-bottom:8px">Введите пин-код</div>
+        <div style="display:flex;gap:10px">
+          <input id="parent-pin-input" type="password" inputmode="numeric" maxlength="4" placeholder="••••"
+            style="width:120px;text-align:center;font-size:28px;font-weight:900;letter-spacing:8px;padding:12px 16px;border-radius:14px;border:2px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:#fff;font-family:inherit;outline:none"
+            onkeydown="if(event.key==='Enter')checkParentPin()">
+        </div>
+        <div id="parent-pin-error" style="font-size:13px;color:#f87171;min-height:18px"></div>
+        <div style="display:flex;gap:10px;margin-top:4px">
+          <button onclick="checkParentPin()" style="padding:12px 28px;border-radius:12px;border:none;background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff;font-size:15px;font-weight:800;cursor:pointer">Войти</button>
+          <button onclick="closeParentPin()" style="padding:12px 28px;border-radius:12px;border:1.5px solid rgba(255,255,255,.2);background:transparent;color:rgba(255,255,255,.7);font-size:15px;font-weight:700;cursor:pointer">Отмена</button>
+        </div>
+        <div style="font-size:11px;color:rgba(255,255,255,.3);margin-top:8px">Первый вход: пин <b style="color:rgba(255,255,255,.5)">0000</b></div>
       </div>
 
       <label class="login-label" style="margin-top:16px">Как будешь отвечать?</label>
@@ -2545,6 +2547,9 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
       </div>
 
       <button class="btn-primary" onclick="doLogin()">Поехали! 🚀</button>
+      <div style="text-align:center;margin-top:14px">
+        <button onclick="openParentPin()" style="background:none;border:none;color:rgba(255,255,255,.3);font-size:12px;cursor:pointer;font-family:inherit;padding:4px 8px">👨‍👩‍👧 Вход для родителей</button>
+      </div>
     </div>
   </div>
 
@@ -2661,7 +2666,7 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
       <article class="h-card purple" style="justify-content:space-between">
         <div>
           <div class="h-card-icon">📖</div>
-          <div class="h-card-title">Домашка по номеру</div>
+          <div class="h-card-title">Домашка</div>
           <div class="h-card-desc">Введи номер задания из учебника §1–§7</div>
         </div>
         <div style="display:flex;flex-direction:column;gap:10px">
@@ -2672,11 +2677,11 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
         </div>
       </article>
 
-      <!-- Проверь себя -->
+      <!-- Проверочные -->
       <article class="h-card green" style="justify-content:space-between">
         <div>
           <div class="h-card-icon">✓</div>
-          <div class="h-card-title">Проверь себя</div>
+          <div class="h-card-title">Проверочные</div>
           <div class="h-card-desc">Тест по каждой теме §1–§7 с автопроверкой</div>
         </div>
         <button class="h-test-btn" onclick="showScreen('screen-self-check')" style="height:52px">Начать тест →</button>
@@ -2776,7 +2781,7 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
 <div id="screen-homework" class="screen">
   <nav class="top-nav">
     <button class="nav-back" onclick="showScreen('screen-home')">← Назад</button>
-    <div class="nav-logo">📚 Домашка по номеру</div>
+    <div class="nav-logo">📚 Домашка</div>
     <div class="nav-xp" id="nav-xp-hw">⭐ 0 XP</div>
     <div class="nav-menu"><a onclick="showScreen('screen-home')">🏠 На главную</a></div>
   </nav>
@@ -3269,7 +3274,7 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
 <div id="screen-self-check" class="screen">
   <nav class="top-nav">
     <button class="nav-back" id="sc-nav-back" onclick="scNavBack()">← Назад</button>
-    <div class="nav-logo" id="sc-nav-title">✅ Проверь себя</div>
+    <div class="nav-logo" id="sc-nav-title">✅ Проверочные</div>
     <div id="sc-score-top" style="display:none;font-size:13px;font-weight:800;color:#fff;gap:8px;align-items:center">
       <span id="sc-top-you" style="color:#10b981">Ты: 0</span>
       <span style="color:rgba(255,255,255,.4)">vs</span>
@@ -3277,14 +3282,14 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
     </div>
     <div class="nav-menu">
       <a onclick="showScreen('screen-homework')">📚 Домашка</a>
-      <a onclick="showScreen('screen-self-check')" class="active">✅ Проверь себя</a>
+      <a onclick="showScreen('screen-self-check')" class="active">✅ Проверочные</a>
       <a onclick="showScreen('screen-achievements')">🏆 Достижения</a>
     </div>
   </nav>
   <div class="screen-body">
     <!-- Список работ -->
     <div id="sc-list-view">
-      <div class="screen-title">Проверь себя</div>
+      <div class="screen-title">Проверочные</div>
       <div class="screen-subtitle">Выбери тему — сыграй с Умником 🧠</div>
       <div id="sc-cards"></div>
     </div>
@@ -8013,14 +8018,42 @@ function selectInputMode(btn) {
   document.querySelectorAll('.input-mode-btn').forEach(b => b.classList.remove('selected'));
   btn.classList.add('selected');
 }
+// ── Пин-код родителя ──
+var PARENT_PIN_KEY = 'piatiy_parent_pin';
+function getParentPin() { return localStorage.getItem(PARENT_PIN_KEY) || '0000'; }
+
+function openParentPin() {
+  const ov = document.getElementById('parent-pin-overlay');
+  ov.style.display = 'flex';
+  document.getElementById('parent-pin-input').value = '';
+  document.getElementById('parent-pin-error').textContent = '';
+  setTimeout(() => document.getElementById('parent-pin-input').focus(), 100);
+}
+function closeParentPin() {
+  document.getElementById('parent-pin-overlay').style.display = 'none';
+}
+function checkParentPin() {
+  const entered = document.getElementById('parent-pin-input').value.trim();
+  if (entered === getParentPin()) {
+    closeParentPin();
+    document.getElementById('login-role').value = 'parent';
+    doLogin();
+    document.getElementById('login-role').value = 'student'; // сбрасываем после входа
+  } else {
+    document.getElementById('parent-pin-error').textContent = '❌ Неверный пин-код';
+    document.getElementById('parent-pin-input').value = '';
+    document.getElementById('parent-pin-input').focus();
+  }
+}
+
 function freshST() {
   return { user: null, studentName: null, xp: 0, solvedTasks: {}, topicProgress: {}, mistakes: [], achievements: [], hintsUsed: 0, selfSolved: 0, trainerStats: {}, trainerHistory: [], ruleHistory: [], selfCheckResults: [], parSettings: null, history: [] };
 }
 
 function doLogin() {
   const name = document.getElementById('login-name').value.trim() || 'Ученик';
-  const roleBtn = document.querySelector('.role-btn.selected');
-  const role = roleBtn ? roleBtn.dataset.role : 'student';
+  const roleInput = document.getElementById('login-role');
+  const role = roleInput ? roleInput.value : 'student';
   const modeBtn = document.querySelector('.input-mode-btn.selected');
   const inputMode = modeBtn ? modeBtn.dataset.mode : 'text';
 
@@ -13674,7 +13707,7 @@ function showSCList() {
   document.getElementById('sc-session-view').style.display = 'none';
   document.getElementById('sc-done-view').style.display = 'none';
   document.getElementById('sc-input-wrap').style.display = 'none';
-  document.getElementById('sc-nav-title').textContent = '✅ Проверь себя';
+  document.getElementById('sc-nav-title').textContent = '✅ Проверочные';
   document.getElementById('sc-scorebar').style.display = 'none';
   document.getElementById('sc-score-top').style.display = 'none';
   renderSelfCheckList();
