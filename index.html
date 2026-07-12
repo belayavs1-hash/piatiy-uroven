@@ -3201,6 +3201,12 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
     <button class="nav-back" onclick="ST.user&&ST.user.role==='parent'?showScreen('screen-parent'):showScreen('screen-home')">← Назад</button>
     <div class="nav-logo">🔍 Мои ошибки</div>
     <div class="nav-xp" id="nav-xp-mistakes">⭐ 0 XP</div>
+    <div class="nav-menu">
+      <a onclick="showScreen('screen-homework')">📖 Домашка</a>
+      <a onclick="showScreen('screen-map')">🗺 Темы</a>
+      <a onclick="showScreen('screen-trainers')">⚡ Тренажёры</a>
+      <a onclick="showScreen('screen-achievements')">🏆 Достижения</a>
+    </div>
   </nav>
   <div class="err-body">
     <div id="err-summary-card"></div>
@@ -3229,8 +3235,8 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
     <div class="err-body" id="err-train-body"></div>
   </div>
   <div class="bottom-nav">
-    <a onclick="showScreen('screen-home')"><span class="icon">🏠</span>Главная</a>
-    <a onclick="showScreen('screen-cheatsheet')"><span class="icon">📋</span>Шпаргалка</a>
+    <a onclick="showScreen('screen-homework')"><span class="icon">📚</span>Домашка</a>
+    <a onclick="showScreen('screen-map')"><span class="icon">🗺</span>Темы</a>
     <a onclick="showScreen('screen-trainers')"><span class="icon">⚡</span>Тренажёры</a>
     <a onclick="showScreen('screen-achievements')"><span class="icon">🏆</span>Достижения</a>
   </div>
@@ -11898,11 +11904,16 @@ function renderMistakes() {
   // ── 1. Итоговая карточка ──
   if (total === 0) {
     document.getElementById('err-summary-card').innerHTML =
-      '<div class="err-card"><div class="err-empty">'
-      + '<div class="err-empty-emoji">🏆</div>'
-      + '<div class="err-empty-title">Ошибок пока нет!</div>'
-      + '<div class="err-empty-text">Умник говорит: «Отлично! Сейчас список пустой. Когда появятся трудные задания, я сохраню их здесь и помогу разобраться».</div>'
-      + '<button class="err-summary-btn primary" onclick="showScreen(\'screen-trainers\')">Перейти к тренажёрам</button>'
+      '<div class="err-card"><div class="err-empty" style="display:flex;gap:24px;align-items:flex-start;text-align:left;padding:28px 20px">'
+      + '<img src="umnik_avatar2.png" alt="Умник" style="width:72px;height:72px;object-fit:contain;flex-shrink:0;filter:drop-shadow(0 4px 12px rgba(99,102,241,.35))" onerror="this.outerHTML=\'<div style=\\\'font-size:56px;flex-shrink:0\\\'>🧐</div>\'">'
+      + '<div style="flex:1">'
+      + '<div class="err-empty-title" style="color:var(--ink,#1e293b);text-align:left">Здесь пока нет ошибок — отлично!</div>'
+      + '<div class="err-empty-text" style="text-align:left">Когда встретится трудное задание, я сохраню его сюда и помогу разобраться.<br><br><span style="font-size:13px;opacity:.7">Ошибки — это задания, которые стоит повторить. После правильного повторного решения они исчезнут из списка.</span></div>'
+      + '<div style="display:flex;gap:10px;flex-wrap:wrap">'
+      + '<button class="err-summary-btn primary" onclick="showScreen(\'screen-homework\')">📖 Перейти к домашке</button>'
+      + '<button class="err-summary-btn" onclick="showScreen(\'screen-trainers\')" style="background:rgba(245,158,11,.12);border-color:rgba(245,158,11,.4);color:#f59e0b">⚡ Открыть тренажёры</button>'
+      + '</div>'
+      + '</div>'
       + '</div></div>';
     ['err-filters-bar','err-by-topic-card','err-list-card','err-closed-card','err-recommend-card'].forEach(function(id){
       var el = document.getElementById(id); if(el) el.innerHTML = '';
