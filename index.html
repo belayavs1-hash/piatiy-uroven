@@ -14049,7 +14049,13 @@ function renderSelfCheckList() {
         + '</div>';
     });
   });
-  grid.innerHTML = html || '<div style="color:rgba(255,255,255,.4);padding:20px;text-align:center">Загрузка...</div>';
+  if (!html) {
+    html = '<div style="color:#f87171;padding:16px;background:rgba(255,0,0,.1);border-radius:12px;margin:12px 0">'
+      + '⚠️ Список пуст. SELF_CHECKS.length = ' + SELF_CHECKS.length
+      + ', keys: ' + Object.keys(byPara).length
+      + '</div>';
+  }
+  grid.innerHTML = html;
 }
 
 function showSCList() {
