@@ -7716,7 +7716,7 @@ const CHEATSHEET = [
   }
 ,
   {
-    para: "§7 Уравнения",
+    para: "§2 Сложение и вычитание натуральных чисел",
     section: "Уравнения",
     icon: "🔍",
     rules: [
@@ -7869,17 +7869,10 @@ let trErrorTasks = [];     // задачи с ошибками для повто
 // ===== INIT =====
 lsLoad();
 spawnAmbientClouds();
-if(ST.user) {
-  if (ST.user.role === 'parent') {
-    renderParent();
-    showScreen('screen-parent');
-  } else {
-    renderHome();
-    showScreen('screen-home');
-  }
-} else {
-  showScreen('screen-login');
-}
+// Всегда показываем экран входа при загрузке страницы
+ST.user = null;
+lsSave();
+showScreen('screen-login');
 renderMap();
 renderTrainers();
 
