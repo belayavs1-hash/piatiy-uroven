@@ -14004,17 +14004,20 @@ function scNavBack() {
 
 function renderSelfCheckList() {
   const grid = document.getElementById('sc-cards');
+  if (!grid) { console.error('sc-cards not found'); return; }
   // Группируем по параграфу (_topicNum уже проставлен глобально)
   const byPara = {};
+  try {
   SELF_CHECKS.forEach(ch => {
     const p = ch.para || 'Другие';
     if (!byPara[p]) byPara[p] = [];
     byPara[p].push(ch);
   });
+  } catch(e) { console.error('SELF_CHECKS grouping error:', e); grid.innerHTML = '<div style="color:red">Ошибка группировки: '+e.message+'</div>'; return; }
   let html = '';
   Object.keys(byPara).sort().forEach(para => {
     html += `<div style="font-size:12px;font-weight:900;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.06em;margin:16px 0 8px">${para}</div>`;
-    byPara[para].forEach(ch => {
+    byPara[para].forEach(ch => { try {
       const savedDone  = parseInt(localStorage.getItem('sc_done_'  + ch.id)) || 0;
       const savedScore = parseInt(localStorage.getItem('sc_score_' + ch.id)) || 0;
       const total = ch.tasks.length;
@@ -14049,7 +14052,7 @@ function renderSelfCheckList() {
         </div>
         <div style="font-size:20px;flex-shrink:0;color:rgba(255,255,255,.3)">›</div>
       </div>`;
-    });
+    } catch(e) { console.error('SC card error for', ch && ch.id, e); html += '<div style="color:orange;padding:8px">Ошибка карточки: '+e.message+'</div>'; } });
   });
   grid.innerHTML = html;
 }
