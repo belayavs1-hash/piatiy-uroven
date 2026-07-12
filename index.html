@@ -13381,11 +13381,16 @@ function renderCheatsheet() {
 
   if (query.length >= 2) {
     // Ищем по названию карточки, тексту, названию темы и параграфа
+    // Поиск по границам слова: «луч» не должен находиться внутри «получается»
+    var stripHtml = function(s) { return s.replace(/<[^>]*>/g, ' '); };
+    var qEsc = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    // Граница слова в кириллице: перед/после — не буква и не цифра
+    var wordRe = new RegExp('(^|[^а-яёa-z0-9])' + qEsc + '([^а-яёa-z0-9]|$)', 'i');
     var results = [];
     CHEATSHEET.forEach(function(sec) {
       sec.rules.forEach(function(r) {
-        var haystack = [sec.para, sec.section, r.name, r.text].join(' ').toLowerCase();
-        if (haystack.indexOf(query) !== -1) {
+        var haystack = [sec.para, sec.section, r.name, stripHtml(r.text)].join(' ').toLowerCase();
+        if (wordRe.test(haystack)) {
           results.push({ sec: sec, rule: r });
         }
       });
