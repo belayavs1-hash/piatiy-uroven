@@ -7881,12 +7881,12 @@ function showScreen(id) {
   document.body.classList.toggle('on-login', id === 'screen-login');
   window.scrollTo(0, 0);
   updateAllXP();
-  if(id === 'screen-parent') renderParent();
+  if(id === 'screen-parent') { try { renderParent(); } catch(e) { console.error('renderParent error:', e); } }
   if(id === 'screen-homework') updateTopics();
   if(id === 'screen-profile') { const el = document.getElementById('profile-name-label'); if(el && ST.user) el.textContent = ST.user.name || ''; }
   if(id === 'screen-funfacts') renderFunFacts();
-  if(id === 'screen-mistakes') renderMistakes();
-  if(id === 'screen-achievements') renderAchievements();
+  if(id === 'screen-mistakes') { try { renderMistakes(); } catch(e) { console.error('renderMistakes error:', e); } }
+  if(id === 'screen-achievements') { try { renderAchievements(); } catch(e) { console.error('renderAchievements error:', e); } }
   if(id === 'screen-cheatsheet') renderCheatsheet();
   if(id === 'screen-already-solved') fillAlreadySolved();
   if(id === 'screen-photo-check') fillPhotoCheck();
