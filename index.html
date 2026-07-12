@@ -2617,11 +2617,11 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
     <!-- Hero: приветствие + робот -->
     <div class="h-hero">
       <div>
-        <div class="h-greeting" id="home-greeting">Привет, Маша! 👋</div>
+        <div class="h-greeting" id="home-greeting">Привет! 👋</div>
         <div class="h-sub">Что будем делать сегодня?</div>
         <div class="h-xp">
           <strong id="home-xp">⭐ 0 XP заработано</strong>
-          <div class="h-xp-line"><span style="width:58%"></span></div>
+          <div class="h-xp-line"><span style="width:0%"></span></div>
           <span class="h-xp-sparkle">✦ ✨</span>
         </div>
         <!-- Плашки — та же ширина что и XP, умник и карточки не трогаем -->
@@ -8013,19 +8013,29 @@ function selectInputMode(btn) {
   document.querySelectorAll('.input-mode-btn').forEach(b => b.classList.remove('selected'));
   btn.classList.add('selected');
 }
+function freshST() {
+  return { user: null, studentName: null, xp: 0, solvedTasks: {}, topicProgress: {}, mistakes: [], achievements: [], hintsUsed: 0, selfSolved: 0, trainerStats: {}, trainerHistory: [], ruleHistory: [], selfCheckResults: [], parSettings: null, history: [] };
+}
+
 function doLogin() {
   const name = document.getElementById('login-name').value.trim() || 'Ученик';
   const roleBtn = document.querySelector('.role-btn.selected');
   const role = roleBtn ? roleBtn.dataset.role : 'student';
   const modeBtn = document.querySelector('.input-mode-btn.selected');
   const inputMode = modeBtn ? modeBtn.dataset.mode : 'text';
-  // Если входит другой ученик — сбрасываем прогресс
+
   const prev = ST.user;
-  if (prev && prev.name !== name && prev.role === 'student' && role === 'student') {
-    ST = { user: null, xp: 0, solvedTasks: {}, topicProgress: {}, mistakes: [], achievements: [], hintsUsed: 0, selfSolved: 0, trainerStats: {}, trainerHistory: [], ruleHistory: [], selfCheckResults: [], parSettings: null, history: [] };
+  // Сбрасываем ST если входит другой ученик (или первый раз вошёл ученик после пустого состояния)
+  const prevStudentName = ST.studentName;
+  if (role === 'student') {
+    if (!prev || (prev.role === 'student' && prev.name !== name)) {
+      ST = freshST();
+    }
+    ST.studentName = name; // всегда обновляем имя ученика
   }
+  // Родитель не трогает ST-прогресс ученика, только входит в свой кабинет
+
   ST.user = { name, role, inputMode };
-  if (role === 'student') ST.studentName = name; // сохраняем имя ученика для кабинета родителя
   lsSave();
   if (role === 'parent') {
     renderParent();
