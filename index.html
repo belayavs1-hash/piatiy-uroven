@@ -3330,7 +3330,7 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
     <!-- Список работ -->
     <div id="sc-list-view">
       <div class="screen-title">Проверочные</div>
-      <div class="screen-subtitle">Выбери тему — сыграй с Умником 🧠</div>
+      <div class="screen-subtitle">Выбери тему и проверь свои знания вместе с Умником 🧠</div>
       <div id="sc-cards"></div>
     </div>
     <!-- Чат-сессия -->
@@ -13780,6 +13780,17 @@ const SELF_CHECKS = [
 
 
 
+// Нумерация проверочных по теме (вычисляем один раз)
+(function() {
+  var numByTopic = {};
+  SELF_CHECKS.forEach(function(ch) {
+    var topic = ch.subtitle || ch.title;
+    if (!numByTopic[topic]) numByTopic[topic] = 0;
+    numByTopic[topic]++;
+    ch._topicNum = numByTopic[topic];
+  });
+})();
+
 // ===== SELF CHECK (чат + соревнование с Умником) =====
 let scCurrentCheck = null;
 let scCurrentIndex = 0;
@@ -13793,7 +13804,7 @@ function scNavBack() {
 
 function renderSelfCheckList() {
   const grid = document.getElementById('sc-cards');
-  // группируем по параграфу
+  // Группируем по параграфу (_topicNum уже проставлен глобально)
   const byPara = {};
   SELF_CHECKS.forEach(ch => {
     const p = ch.para || 'Другие';
@@ -13804,17 +13815,39 @@ function renderSelfCheckList() {
   Object.keys(byPara).sort().forEach(para => {
     html += `<div style="font-size:12px;font-weight:900;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.06em;margin:16px 0 8px">${para}</div>`;
     byPara[para].forEach(ch => {
-      const done = (parseInt(localStorage.getItem('sc_done_' + ch.id)) || 0);
+      const savedDone  = parseInt(localStorage.getItem('sc_done_'  + ch.id)) || 0;
+      const savedScore = parseInt(localStorage.getItem('sc_score_' + ch.id)) || 0;
       const total = ch.tasks.length;
-      const pct = Math.round(done / total * 100);
-      html += `<div onclick="startSelfCheck('${ch.id}')" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:14px 16px;margin-bottom:10px;cursor:pointer;display:flex;align-items:center;gap:12px">
-        <div style="width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,#4f46e5,#7c3aed);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">⚡</div>
+      const isFinished = savedDone >= total;
+      const inProgress = savedDone > 0 && !isFinished;
+      // Заголовок: «Цифры и числа · проверочная №1»
+      const topic = ch.subtitle ? ch.subtitle.replace(/^Тема:\s*/i, '') : ch.title;
+      const cardTitle = `${topic} · проверочная №${ch._topicNum}`;
+      // Статус прогресса
+      let progressHtml = '';
+      if (isFinished) {
+        progressHtml = `
+          <div style="margin-top:6px">
+            <div style="height:4px;background:rgba(255,255,255,.1);border-radius:2px;margin-bottom:4px"><div style="height:100%;width:100%;background:#10b981;border-radius:2px"></div></div>
+            <div style="font-size:12px;color:#10b981;font-weight:700">${total} из ${total} · Завершено &nbsp;·&nbsp; Результат: ${savedScore}/${total}</div>
+          </div>`;
+      } else if (inProgress) {
+        progressHtml = `
+          <div style="margin-top:6px">
+            <div style="height:4px;background:rgba(255,255,255,.1);border-radius:2px;margin-bottom:4px"><div style="height:100%;width:${Math.round(savedDone/total*100)}%;background:#f59e0b;border-radius:2px"></div></div>
+            <div style="font-size:12px;color:#f59e0b;font-weight:700">${savedDone} из ${total} · Продолжить</div>
+          </div>`;
+      }
+      const iconBg = isFinished ? 'linear-gradient(135deg,#059669,#10b981)' : 'linear-gradient(135deg,#4f46e5,#7c3aed)';
+      const iconChar = isFinished ? '✅' : '⚡';
+      html += `<div onclick="startSelfCheck('${ch.id}')" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,${isFinished?'.2':'.1'});border-radius:16px;padding:14px 16px;margin-bottom:10px;cursor:pointer;display:flex;align-items:center;gap:12px;transition:background .15s" onmouseover="this.style.background='rgba(255,255,255,.1)'" onmouseout="this.style.background='rgba(255,255,255,.06)'">
+        <div style="width:40px;height:40px;border-radius:12px;background:${iconBg};display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">${iconChar}</div>
         <div style="flex:1;min-width:0">
-          <div style="font-size:15px;font-weight:900;color:#fff;margin-bottom:2px">${ch.title}</div>
-          <div style="font-size:12px;color:rgba(255,255,255,.5)">${ch.subtitle} · ${total} вопросов</div>
-          ${done > 0 ? `<div style="height:3px;background:rgba(255,255,255,.1);border-radius:2px;margin-top:6px"><div style="height:100%;width:${pct}%;background:#10b981;border-radius:2px"></div></div>` : ''}
+          <div style="font-size:15px;font-weight:900;color:#fff;margin-bottom:1px">${cardTitle}</div>
+          <div style="font-size:12px;color:rgba(255,255,255,.45)">${total} вопросов</div>
+          ${progressHtml}
         </div>
-        <div style="font-size:20px;flex-shrink:0">${pct===100?'✅':'→'}</div>
+        <div style="font-size:20px;flex-shrink:0;color:rgba(255,255,255,.3)">›</div>
       </div>`;
     });
   });
@@ -13836,21 +13869,31 @@ function showSCList() {
 function startSelfCheck(id) {
   scCurrentCheck = SELF_CHECKS.find(c => c.id === id);
   if(!scCurrentCheck) return;
-  scCurrentIndex = 0;
-  scYouScore = 0;
-  scUmnikScore = 0;
+  const total = scCurrentCheck.tasks.length;
+  const savedDone  = parseInt(localStorage.getItem('sc_done_'  + id)) || 0;
+  const savedScore = parseInt(localStorage.getItem('sc_score_' + id)) || 0;
+  const resume = savedDone > 0 && savedDone < total;
+  scCurrentIndex = resume ? savedDone : 0;
+  scYouScore     = resume ? savedScore : 0;
+  scUmnikScore   = 0;
   scAwaitingNext = false;
+  // Заголовок в шапке: «Цифры и числа · №1»
+  const topic = scCurrentCheck.subtitle ? scCurrentCheck.subtitle.replace(/^Тема:\s*/i, '') : scCurrentCheck.title;
+  const navTitle = `${topic} · №${scCurrentCheck._topicNum || '?'}`;
   document.getElementById('sc-list-view').style.display = 'none';
   document.getElementById('sc-session-view').style.display = '';
   document.getElementById('sc-done-view').style.display = 'none';
   document.getElementById('sc-input-wrap').style.display = '';
-  document.getElementById('sc-nav-title').textContent = scCurrentCheck.title;
+  document.getElementById('sc-nav-title').textContent = navTitle;
   document.getElementById('sc-scorebar').style.display = 'flex';
   document.getElementById('sc-score-top').style.display = 'flex';
   document.getElementById('sc-chat').innerHTML = '';
   scUpdateScores();
-  // Приветствие Умника
-  scAddMsg('bot', '⚔️ Начинаем соревнование! Я — Умник 🧠<br>Кто ответит правильно — получает очко. Ты против меня!<br><b>' + scCurrentCheck.subtitle + '</b>');
+  if (resume) {
+    scAddMsg('bot', `▶️ Продолжаем! Ты уже ответил(а) на ${savedDone} из ${total} вопросов.<br><b>${topic}</b>`);
+  } else {
+    scAddMsg('bot', '⚔️ Начинаем! Я — Умник 🧠 · Кто правильно — получает очко.<br><b>' + topic + '</b>');
+  }
   setTimeout(() => scShowQuestion(), 800);
 }
 
@@ -14245,6 +14288,11 @@ function scNext() {
   if (scCurrentIndex >= scCurrentCheck.tasks.length) {
     scFinish();
   } else {
+    // Сохраняем промежуточный прогресс
+    if (scCurrentCheck) {
+      localStorage.setItem('sc_done_'  + scCurrentCheck.id, scCurrentIndex);
+      localStorage.setItem('sc_score_' + scCurrentCheck.id, scYouScore);
+    }
     scShowQuestion();
   }
 }
@@ -14273,7 +14321,8 @@ function scFinish() {
   const pct = Math.round(scYouScore / total * 100);
 
   // Сохраняем в localStorage (для прогресс-бара в списке)
-  localStorage.setItem('sc_done_' + scCurrentCheck.id, scYouScore);
+  localStorage.setItem('sc_done_'  + scCurrentCheck.id, total);    // сколько вопросов прошли
+  localStorage.setItem('sc_score_' + scCurrentCheck.id, scYouScore); // сколько правильных
 
   // Сохраняем в ST — для кабинета родителя и достижений
   if (!ST.selfCheckResults) ST.selfCheckResults = [];
