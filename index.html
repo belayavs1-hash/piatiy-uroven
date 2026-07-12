@@ -2411,6 +2411,7 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
 .rq-match-btn.rq-matched  { border-color:#10b981; background:rgba(16,185,129,.2); opacity:.7; cursor:default; }
 .rq-match-btn.rq-shake { animation:rqShake .4s ease; }
 @keyframes rqShake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
+@keyframes spin { to { transform: rotate(360deg); } }
 .rule-done-card { background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.1); border-radius:20px; padding:32px 24px; text-align:center; margin-bottom:16px; }
 .rule-done-icon { font-size:52px; margin-bottom:12px; }
 .rule-done-title { font-size:22px; font-weight:900; color:#fff; margin-bottom:8px; }
@@ -2502,11 +2503,30 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
     <!-- Контент на белом поле fon2 -->
     <div class="login-fon2-body">
 
-      <label class="login-label">Как тебя зовут?</label>
+      <!-- Карточки выбора роли -->
+      <label class="login-label">Кто ты?</label>
+      <div class="role-row" style="margin-bottom:18px">
+        <button class="role-btn selected" id="role-btn-student" onclick="selectRole(this,'student')">
+          <div class="role-photo"><img src="student.jpg" alt="Ученик" onerror="this.parentNode.innerHTML='<div style=\'font-size:56px;line-height:230px\'>🧑‍🎓</div>'"></div>
+          <div class="role-info-block">
+            <div class="role-label-name">Ученик</div>
+            <div class="role-hint">Решаю задачи и зарабатываю XP</div>
+          </div>
+        </button>
+        <button class="role-btn" id="role-btn-parent" onclick="selectRole(this,'parent')">
+          <div class="role-photo"><img src="parent.jpg" alt="Родитель" onerror="this.parentNode.innerHTML='<div style=\'font-size:56px;line-height:230px\'>👨‍👩‍👧</div>'"></div>
+          <div class="role-info-block">
+            <div class="role-label-name">Родитель</div>
+            <div class="role-hint">Смотрю прогресс ребёнка</div>
+          </div>
+        </button>
+      </div>
+
+      <label class="login-label" id="login-name-label">Как тебя зовут?</label>
       <div class="login-name-row">
         <input type="text" class="login-input" id="login-name"
           placeholder="Например: Маша" maxlength="30"
-          onkeydown="if(event.key==='Enter')doLogin()">
+          onkeydown="if(event.key==='Enter')loginByRole()">
         <button class="btn-mic" id="login-mic-btn" onclick="toggleLoginMic()">🎤</button>
       </div>
 
@@ -2514,7 +2534,7 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
       <input type="hidden" id="login-role" value="student">
 
       <!-- Пин-оверлей для родителя -->
-      <div id="parent-pin-overlay" style="display:none;position:fixed;inset:0;z-index:500;background:rgba(3,8,58,.96);display:none;align-items:center;justify-content:center;flex-direction:column;gap:16px">
+      <div id="parent-pin-overlay" style="display:none;position:fixed;inset:0;z-index:500;background:rgba(3,8,58,.96);align-items:center;justify-content:center;flex-direction:column;gap:16px">
         <div style="font-size:28px;font-weight:900;color:#fff">🔐 Вход для родителей</div>
         <div style="font-size:14px;color:rgba(255,255,255,.6);margin-bottom:8px">Введите пин-код</div>
         <div style="display:flex;gap:10px">
@@ -2530,8 +2550,8 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
         <div style="font-size:11px;color:rgba(255,255,255,.3);margin-top:8px">Первый вход: пин <b style="color:rgba(255,255,255,.5)">0000</b></div>
       </div>
 
-      <label class="login-label" style="margin-top:16px">Как будешь отвечать?</label>
-      <div class="input-mode-row">
+      <label class="login-label" style="margin-top:16px" id="input-mode-label">Как будешь отвечать?</label>
+      <div class="input-mode-row" id="input-mode-row">
         <button class="input-mode-btn selected" data-mode="text" onclick="selectInputMode(this)">
           <span class="input-mode-icon">⌨️</span>
           <span class="input-mode-name">Текст</span>
@@ -2546,10 +2566,7 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
         </button>
       </div>
 
-      <button class="btn-primary" onclick="doLogin()">Поехали! 🚀</button>
-      <div style="text-align:center;margin-top:14px">
-        <button onclick="openParentPin()" style="background:none;border:none;color:rgba(255,255,255,.3);font-size:12px;cursor:pointer;font-family:inherit;padding:4px 8px">👨‍👩‍👧 Вход для родителей</button>
-      </div>
+      <button class="btn-primary" id="login-go-btn" onclick="loginByRole()">Поехали! 🚀</button>
     </div>
   </div>
 
@@ -7868,6 +7885,24 @@ function clearPhotoCheck() {
   if(res) res.innerHTML='';
 }
 
+function setPhotoStatus(type, extraText) {
+  const res = document.getElementById('photo-check-result');
+  const s = {
+    uploading: { bg:'rgba(37,99,235,.1)', border:'rgba(37,99,235,.2)', color:'#1e40af', icon:'📤', text:'Фото загружается…' },
+    reading:   { bg:'rgba(124,58,237,.1)', border:'rgba(124,58,237,.2)', color:'#5b21b6', icon:'🔍', text:'Идёт распознавание…' },
+    blurry:    { bg:'rgba(251,191,36,.12)', border:'rgba(251,191,36,.35)', color:'#92400e', icon:'🌫', text:'Фото размыто — попробуй сфотографировать чётче' },
+    cropped:   { bg:'rgba(251,191,36,.12)', border:'rgba(251,191,36,.35)', color:'#92400e', icon:'✂️', text:'Решение обрезано — попробуй захватить всё поле' },
+    multi:     { bg:'rgba(251,191,36,.12)', border:'rgba(251,191,36,.35)', color:'#92400e', icon:'📋', text:'Найдено несколько заданий — сфотографируй только одно' },
+    unread:    { bg:'rgba(220,38,38,.1)', border:'rgba(220,38,38,.3)', color:'#dc2626', icon:'📝', text:'Не удалось прочитать запись — напиши разборчивее или введи ответ вручную' },
+    error:     { bg:'rgba(220,38,38,.1)', border:'rgba(220,38,38,.3)', color:'#dc2626', icon:'⚠️', text:'Произошла ошибка загрузки — попробуй ещё раз' },
+  }[type] || { bg:'rgba(37,99,235,.1)', border:'rgba(37,99,235,.2)', color:'#1e40af', icon:'⏳', text:type };
+  const spinner = (type === 'uploading' || type === 'reading') ?
+    `<span style="display:inline-block;animation:spin 1s linear infinite;margin-right:8px">⏳</span>` : '';
+  res.innerHTML = `<div style="padding:16px;border-radius:14px;background:${s.bg};border:2px solid ${s.border};color:${s.color};font-weight:700;margin-top:14px;text-align:center;line-height:1.5">
+    ${spinner}${s.icon} ${extraText || s.text}
+  </div>`;
+}
+
 async function checkPhotoSolution() {
   const img = document.getElementById('photo-preview-img');
   if(!img || !img.src || img.style.display==='none') {
@@ -7875,7 +7910,7 @@ async function checkPhotoSolution() {
     return;
   }
   const res = document.getElementById('photo-check-result');
-  res.innerHTML = `<div style="padding:14px;border-radius:14px;background:rgba(37,99,235,.1);border:2px solid rgba(37,99,235,.2);color:var(--ink2);font-weight:700;margin-top:14px;text-align:center">🔍 Умник читает твоё решение…</div>`;
+  setPhotoStatus('uploading');
 
   try {
     // Конвертируем img в base64
@@ -7884,6 +7919,8 @@ async function checkPhotoSolution() {
     canvas.height = img.naturalHeight || img.height;
     canvas.getContext('2d').drawImage(img, 0, 0);
     const base64 = canvas.toDataURL('image/jpeg', 0.8).split(',')[1];
+
+    setPhotoStatus('reading');
 
     const response = await fetch('/api/check-photo', {
       method: 'POST',
@@ -7895,12 +7932,22 @@ async function checkPhotoSolution() {
       })
     });
 
+    if (!response.ok) { setPhotoStatus('error'); return; }
+
     const data = await response.json();
 
-    if (data.error) throw new Error(data.error);
+    if (data.error) {
+      // Специфичные ошибки от API
+      const errLow = (data.error || '').toLowerCase();
+      if (errLow.includes('blur') || errLow.includes('размыт')) { setPhotoStatus('blurry'); return; }
+      if (errLow.includes('crop') || errLow.includes('обрез')) { setPhotoStatus('cropped'); return; }
+      if (errLow.includes('multi') || errLow.includes('несколько')) { setPhotoStatus('multi'); return; }
+      if (errLow.includes('read') || errLow.includes('прочит')) { setPhotoStatus('unread'); return; }
+      setPhotoStatus('error', `⚠️ ${data.error}`);
+      return;
+    }
 
     if (data.correct) {
-      // Всё правильно
       res.innerHTML = `<div class="result-ok" style="margin-top:14px">
         <div class="r-icon">🏆</div>
         <div class="r-text">Умник проверил — всё правильно!</div>
@@ -7910,7 +7957,6 @@ async function checkPhotoSolution() {
       addXP(25);
       if(currentTask) markSolved(currentTask.id, {attempts:1, withHints:false, correct:true});
     } else {
-      // Есть ошибки — показываем и предлагаем разобрать
       _lastDoneParts = data.parts_done || [];
       const donePartsStr = _lastDoneParts.length > 0
         ? `<div style="margin-top:6px;font-size:13px;color:#059669">✅ Пункты ${_lastDoneParts.join(', ')} — верно!</div>`
@@ -7926,10 +7972,11 @@ async function checkPhotoSolution() {
       if(currentTask) addMistake(currentTask.topic, 'photo_wrong');
     }
   } catch(e) {
-    res.innerHTML = `<div style="padding:14px;border-radius:14px;background:rgba(220,38,38,.1);border:2px solid rgba(220,38,38,.3);color:#dc2626;font-weight:700;margin-top:14px;text-align:center">⚠️ Ошибка: ${e.message}<br><small style="font-weight:400;color:#6b7280">Попробуй ещё раз или разбери с Умником</small></div>
+    setPhotoStatus('error');
+    res.insertAdjacentHTML('beforeend', `
     <button class="btn-find" style="margin-top:12px;width:100%;display:flex;align-items:center;justify-content:center;gap:10px" onclick="openWalkthrough(currentTask,'screen-photo-check',true)">
       <img src="umnik_avatar2.png" style="width:28px;height:28px;object-fit:contain;filter:drop-shadow(0 0 4px rgba(147,197,253,.6))"> Разобрать с Умником
-    </button>`;
+    </button>`);
   }
 }
 
@@ -8010,10 +8057,32 @@ function updateAllXP() {
 })();
 
 // ===== LOGIN =====
-function selectRole(btn) {
+var _selectedRole = 'student';
+
+function selectRole(btn, role) {
   document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('selected'));
   btn.classList.add('selected');
+  _selectedRole = role;
+  // Метка поля имени: для родителя — «Имя ребёнка»
+  const lbl = document.getElementById('login-name-label');
+  if (lbl) lbl.textContent = role === 'parent' ? 'Имя ребёнка' : 'Как тебя зовут?';
+  // Режим ответа не нужен родителю — скрываем
+  const modeLabel = document.getElementById('input-mode-label');
+  const modeRow = document.getElementById('input-mode-row');
+  if (modeLabel) modeLabel.style.display = role === 'parent' ? 'none' : '';
+  if (modeRow) modeRow.style.display = role === 'parent' ? 'none' : '';
+  const btn2 = document.getElementById('login-go-btn');
+  if (btn2) btn2.textContent = role === 'parent' ? '🔐 Войти как родитель' : 'Поехали! 🚀';
 }
+
+function loginByRole() {
+  if (_selectedRole === 'parent') {
+    openParentPin();
+  } else {
+    doLogin();
+  }
+}
+
 function selectInputMode(btn) {
   document.querySelectorAll('.input-mode-btn').forEach(b => b.classList.remove('selected'));
   btn.classList.add('selected');
