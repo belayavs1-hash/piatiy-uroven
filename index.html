@@ -3268,6 +3268,12 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
     <button class="nav-back" onclick="showScreen('screen-home')">← Назад</button>
     <div class="nav-logo">🏆 Достижения</div>
     <div class="nav-xp" id="nav-xp-ach">⭐ 0 XP</div>
+    <div class="nav-menu">
+      <a onclick="showScreen('screen-homework')">📖 Домашка</a>
+      <a onclick="showScreen('screen-map')">🗺 Темы</a>
+      <a onclick="showScreen('screen-trainers')">⚡ Тренажёры</a>
+      <a onclick="showScreen('screen-mistakes')">🔍 Ошибки</a>
+    </div>
   </nav>
   <div class="screen-body" style="max-width:600px">
     <div id="ach-content"></div>
@@ -7794,14 +7800,14 @@ const SHELL_DESC = {
 };
 
 const ACHIEVEMENTS = [
-  {id:"solved_self", icon:"🏆", name:"Решил сам", desc:"Первое самостоятельное решение"},
-  {id:"no_give_up", icon:"💪", name:"Не сдался", desc:"3 попытки подряд"},
-  {id:"found_error", icon:"🔍", name:"Нашёл ошибку", desc:"Обнаружил свою ошибку"},
-  {id:"fraction_master", icon:"½", name:"Мастер дробей", desc:"5 задач по дробям"},
-  {id:"geometer", icon:"📐", name:"Геометр", desc:"5 задач по геометрии"},
-  {id:"calculator", icon:"🧮", name:"Вычислитель", desc:"10 задач на счёт"},
-  {id:"task_day", icon:"⭐", name:"Задача дня", desc:"Задание дня разобрано"},
-  {id:"streak5", icon:"🔥", name:"5 дней подряд", desc:"Занимался 5 дней подряд"}
+  {id:"solved_self",     icon:"🏆", name:"Решил сам",       desc:"Первое самостоятельное решение",    goal:1,  xp:20, progKey:"selfSolved"},
+  {id:"no_give_up",      icon:"💪", name:"Не сдался",       desc:"Сделай 3 попытки подряд",           goal:3,  xp:15, progKey:"hintsUsed"},
+  {id:"found_error",     icon:"🔍", name:"Нашёл ошибку",    desc:"Обнаружи свою ошибку",              goal:1,  xp:10, progKey:null},
+  {id:"fraction_master", icon:"½",  name:"Мастер дробей",   desc:"Реши 5 заданий по дробям",          goal:5,  xp:25, progKey:null},
+  {id:"geometer",        icon:"📐", name:"Юный геометр",    desc:"Реши 5 заданий по геометрии",       goal:5,  xp:25, progKey:null},
+  {id:"calculator",      icon:"🧮", name:"Вычислитель",      desc:"Реши 10 заданий на счёт",           goal:10, xp:30, progKey:null},
+  {id:"task_day",        icon:"⭐", name:"Задача дня",       desc:"Разбери задание дня с Умником",     goal:1,  xp:15, progKey:null},
+  {id:"streak5",         icon:"🔥", name:"5 дней подряд",   desc:"Занимайся 5 дней подряд",           goal:5,  xp:50, progKey:null}
 ];
 
 // ===== STATE =====
@@ -12465,18 +12471,36 @@ function errFindTrainer(topic) {
 }
 
 // ===== ACHIEVEMENTS =====
+function achGetProgress(a) {
+  if (!a.goal || a.goal <= 1) return null;
+  if (a.id === 'no_give_up')      return Math.min(ST.hintsUsed || 0, a.goal);
+  if (a.id === 'streak5')         return Math.min(calcStreak(), a.goal);
+  if (a.id === 'calculator')      return Math.min(Object.keys(ST.solvedTasks||{}).length, a.goal);
+  if (a.id === 'fraction_master') {
+    var fr = Object.keys(ST.solvedTasks||{}).filter(function(id){ var t=TASKS.find(function(x){return x.id===id;}); return t&&(t.topic||'').toLowerCase().includes('дроб'); });
+    return Math.min(fr.length, a.goal);
+  }
+  if (a.id === 'geometer') {
+    var gk = ['периметр','площадь','геом','объём'];
+    var gi = Object.keys(ST.solvedTasks||{}).filter(function(id){ var t=TASKS.find(function(x){return x.id===id;}); return t&&gk.some(function(k){return (t.topic||'').toLowerCase().includes(k);}); });
+    return Math.min(gi.length, a.goal);
+  }
+  return null;
+}
+
 function renderAchievements() {
   var xpEl = document.getElementById('nav-xp-ach');
   if (xpEl) xpEl.textContent = '⭐ ' + ST.xp + ' XP';
 
-  var unlocked = ACHIEVEMENTS.filter(function(a){ return (ST.achievements||[]).includes(a.id); });
-  var locked   = ACHIEVEMENTS.filter(function(a){ return !(ST.achievements||[]).includes(a.id); });
+  var unlockedIds = ST.achievements || [];
+  var unlocked = ACHIEVEMENTS.filter(function(a){ return unlockedIds.includes(a.id); });
+  var locked   = ACHIEVEMENTS.filter(function(a){ return !unlockedIds.includes(a.id); });
 
   var html = '';
 
   // Прогресс-шапка
   var pct = ACHIEVEMENTS.length ? Math.round(unlocked.length / ACHIEVEMENTS.length * 100) : 0;
-  html += '<div style="background:linear-gradient(135deg,#1e1b4b,#312e81);border-radius:20px;padding:20px;margin-bottom:16px;text-align:center">'
+  html += '<div style="background:linear-gradient(135deg,#1e1b4b,#312e81);border-radius:20px;padding:20px;margin-bottom:20px;text-align:center">'
     + '<div style="font-size:40px;margin-bottom:8px">🏆</div>'
     + '<div style="font-size:22px;font-weight:900;color:#fff">' + unlocked.length + ' из ' + ACHIEVEMENTS.length + '</div>'
     + '<div style="font-size:13px;color:rgba(255,255,255,.6);margin-bottom:12px">достижений открыто</div>'
@@ -12485,38 +12509,54 @@ function renderAchievements() {
     + '</div>'
     + '</div>';
 
-  // Открытые
+  function achCard(a, isOpen) {
+    var prog = achGetProgress(a);
+    var progHtml = '';
+    if (!isOpen && prog !== null) {
+      var pp = Math.round(prog / a.goal * 100);
+      progHtml = '<div style="margin-top:8px">'
+        + '<div style="font-size:11px;color:rgba(255,255,255,.5);margin-bottom:4px">' + prog + ' из ' + a.goal + '</div>'
+        + '<div style="height:4px;background:rgba(255,255,255,.1);border-radius:2px"><div style="height:100%;width:' + pp + '%;background:#4f46e5;border-radius:2px;transition:width .3s"></div></div>'
+        + '</div>';
+    }
+    var rewardHtml = '<div style="font-size:11px;color:' + (isOpen ? '#fbbf24' : 'rgba(255,255,255,.35)') + ';margin-top:6px;font-weight:700">+' + (a.xp||15) + ' XP</div>';
+    if (isOpen) {
+      return '<div style="background:rgba(79,70,229,.2);border:1.5px solid rgba(99,102,241,.5);border-radius:16px;padding:16px;text-align:center">'
+        + '<div style="font-size:32px;margin-bottom:6px">' + a.icon + '</div>'
+        + '<div style="font-size:14px;font-weight:900;color:#fff;margin-bottom:3px">' + a.name + '</div>'
+        + '<div style="font-size:12px;color:rgba(255,255,255,.7);line-height:1.4">' + a.desc + '</div>'
+        + rewardHtml
+        + '<div style="font-size:11px;color:#10b981;margin-top:5px;font-weight:700">✓ Открыто</div>'
+        + '</div>';
+    } else {
+      return '<div style="background:rgba(255,255,255,.05);border:1.5px dashed rgba(255,255,255,.15);border-radius:16px;padding:16px;text-align:center">'
+        + '<div style="font-size:32px;margin-bottom:6px;opacity:.4">' + a.icon + '</div>'
+        + '<div style="font-size:14px;font-weight:900;color:rgba(255,255,255,.85);margin-bottom:3px">' + a.name + '</div>'
+        + '<div style="font-size:12px;color:rgba(255,255,255,.6);line-height:1.4">' + a.desc + '</div>'
+        + rewardHtml
+        + progHtml
+        + '</div>';
+    }
+  }
+
   if (unlocked.length > 0) {
-    html += '<div style="font-size:12px;font-weight:900;color:#64748b;text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Открыто · ' + unlocked.length + '</div>';
+    html += '<div style="font-size:12px;font-weight:900;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Открыто · ' + unlocked.length + '</div>';
     html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px">';
-    unlocked.forEach(function(a) {
-      html += '<div style="background:#fff;border-radius:16px;padding:16px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.06)">'
-        + '<div style="font-size:36px;margin-bottom:8px">' + a.icon + '</div>'
-        + '<div style="font-size:13px;font-weight:900;color:#1e293b;margin-bottom:4px">' + a.name + '</div>'
-        + '<div style="font-size:11px;color:#64748b">' + a.desc + '</div>'
-        + '</div>';
-    });
+    unlocked.forEach(function(a){ html += achCard(a, true); });
     html += '</div>';
   }
 
-  // Заблокированные
   if (locked.length > 0) {
-    html += '<div style="font-size:12px;font-weight:900;color:#64748b;text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Ещё не открыто · ' + locked.length + '</div>';
+    html += '<div style="font-size:12px;font-weight:900;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Ещё не открыто · ' + locked.length + '</div>';
     html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">';
-    locked.forEach(function(a) {
-      html += '<div style="background:#f8fafc;border-radius:16px;padding:16px;text-align:center;border:2px dashed #e2e8f0">'
-        + '<div style="font-size:36px;margin-bottom:8px;filter:grayscale(1);opacity:.35">' + a.icon + '</div>'
-        + '<div style="font-size:13px;font-weight:900;color:#94a3b8;margin-bottom:4px">' + a.name + '</div>'
-        + '<div style="font-size:11px;color:#cbd5e1">' + a.desc + '</div>'
-        + '</div>';
-    });
+    locked.forEach(function(a){ html += achCard(a, false); });
     html += '</div>';
   }
 
-  if (unlocked.length === 0) {
-    html += '<div style="text-align:center;padding:30px 0;color:#94a3b8">'
+  if (ACHIEVEMENTS.length === 0) {
+    html += '<div style="text-align:center;padding:30px 0;color:rgba(255,255,255,.4)">'
       + '<div style="font-size:40px;margin-bottom:12px">🌱</div>'
-      + '<div style="font-size:15px;font-weight:700">Пока пусто</div>'
+      + '<div style="font-size:15px;font-weight:700;color:rgba(255,255,255,.7)">Пока пусто</div>'
       + '<div style="font-size:13px;margin-top:8px">Решай задания и тренажёры — достижения откроются сами!</div>'
       + '</div>';
   }
