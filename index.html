@@ -3387,7 +3387,7 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
     <div id="sc-score-top" style="display:none;font-size:13px;font-weight:800;color:#fff;gap:8px;align-items:center">
       <span id="sc-top-you" style="color:#10b981">Ты: 0</span>
       <span style="color:rgba(255,255,255,.4)">vs</span>
-      <span id="sc-top-umnik" style="color:#818cf8">🧠 0</span>
+      <span id="sc-top-umnik" style="color:#818cf8"><img src="umnik_avatar2.png" style="width:16px;height:16px;object-fit:cover;border-radius:50%;vertical-align:middle"> 0</span>
     </div>
     <div class="nav-menu">
       <a onclick="showScreen('screen-homework')">📚 Домашка</a>
@@ -3399,7 +3399,7 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
     <!-- Список работ -->
     <div id="sc-list-view">
       <div class="screen-title">Проверочные</div>
-      <div class="screen-subtitle">Выбери тему и проверь свои знания вместе с Умником 🧠</div>
+      <div class="screen-subtitle">Выбери тему и проверь свои знания вместе с Умником <img src="umnik_avatar2.png" style="width:18px;height:18px;object-fit:cover;border-radius:50%;vertical-align:middle"></div>
       <div id="sc-cards"></div>
     </div>
     <!-- Чат-сессия -->
@@ -3411,7 +3411,7 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
         <span style="font-size:16px">⚔️</span>
         <span class="sc-score-you">Ты: <span id="sc-you-score">0</span></span>
         <span class="sc-score-vs">vs</span>
-        <span class="sc-score-umnik">🧠 Умник: <span id="sc-umnik-score">0</span></span>
+        <span class="sc-score-umnik"><img src="umnik_avatar2.png" style="width:18px;height:18px;object-fit:cover;border-radius:50%;vertical-align:middle"> Умник: <span id="sc-umnik-score">0</span></span>
         <span id="sc-q-counter" style="margin-left:auto;color:rgba(255,255,255,.5);font-weight:700"></span>
       </div>
       <div id="sc-chat" class="sc-chat"></div>
@@ -18946,7 +18946,7 @@ function startSelfCheck(id) {
   if (resume) {
     scAddMsg('bot', `▶️ Продолжаем! Ты уже ответил(а) на ${savedDone} из ${total} вопросов.<br><b>${topic}</b>`);
   } else {
-    scAddMsg('bot', '⚔️ Начинаем! Я — Умник 🧠 · Кто правильно — получает очко.<br><b>' + topic + '</b>');
+    scAddMsg('bot', '⚔️ Начинаем! Я — Умник <img src="umnik_avatar2.png" style="width:18px;height:18px;object-fit:cover;border-radius:50%;vertical-align:middle"> · Кто правильно — получает очко.<br><b>' + topic + '</b>');
   }
   setTimeout(() => scShowQuestion(), 800);
 }
@@ -18955,7 +18955,7 @@ function scUpdateScores() {
   document.getElementById('sc-you-score').textContent = scYouScore;
   document.getElementById('sc-umnik-score').textContent = scUmnikScore;
   document.getElementById('sc-top-you').textContent = 'Ты: ' + scYouScore;
-  document.getElementById('sc-top-umnik').textContent = '🧠 ' + scUmnikScore;
+  document.getElementById('sc-top-umnik').innerHTML = '<img src="umnik_avatar2.png" style="width:16px;height:16px;object-fit:cover;border-radius:50%;vertical-align:middle"> ' + scUmnikScore;
   const total = scCurrentCheck ? scCurrentCheck.tasks.length : 1;
   document.getElementById('sc-q-counter').textContent = (scCurrentIndex + 1) + '/' + total;
   const pct = scCurrentCheck ? Math.round(scCurrentIndex / total * 100) : 0;
@@ -19234,7 +19234,7 @@ function scCheckNL(t, required) {
       scHideTyping();
       scUmnikScore++;
       scUpdateScores();
-      scAddMsg('bot', `🧠 +1 мне! Ответ: <b>${t.a}</b><br><span style="font-size:13px;color:rgba(255,255,255,.7)">${t.hint}</span>`);
+      scAddMsg('bot', `<img src="umnik_avatar2.png" style="width:18px;height:18px;object-fit:cover;border-radius:50%;vertical-align:middle"> +1 мне! Ответ: <b>${t.a}</b><br><span style="font-size:13px;color:rgba(255,255,255,.7)">${t.hint}</span>`);
       inp.value = '';
       setTimeout(() => scNext(), 1800);
     }, 1800);
@@ -19322,7 +19322,7 @@ function scCheckAnswer() {
       scHideTyping();
       scUmnikScore++;
       scUpdateScores();
-      const umnikMsg = `🧠 +1 мне! Ответ: <b>${t.a}</b><br><span style="font-size:13px;color:rgba(255,255,255,.7)">${t.hint}</span>`;
+      const umnikMsg = `<img src="umnik_avatar2.png" style="width:18px;height:18px;object-fit:cover;border-radius:50%;vertical-align:middle"> +1 мне! Ответ: <b>${t.a}</b><br><span style="font-size:13px;color:rgba(255,255,255,.7)">${t.hint}</span>`;
       scAddMsg('bot', umnikMsg);
       inp.value = '';
       inp.placeholder = '...';
@@ -19409,8 +19409,8 @@ function scFinish() {
   let icon, title, sub;
   if (scYouScore > scUmnikScore) { icon='🏆'; title='Ты победил!'; sub=`Умник повержён! ${scYouScore}:${scUmnikScore}`; }
   else if (scYouScore === scUmnikScore) { icon='🤝'; title='Ничья!'; sub=`${scYouScore}:${scUmnikScore} — хорошая борьба!`; }
-  else { icon='🧠'; title='Умник победил!'; sub=`Ты ${scYouScore}, Умник ${scUmnikScore} — попробуй снова!`; }
-  document.getElementById('sc-done-icon').textContent = icon;
+  else { icon='<img src="umnik_avatar2.png" style="width:64px;height:64px;object-fit:cover;border-radius:50%">'; title='Умник победил!'; sub=`Ты ${scYouScore}, Умник ${scUmnikScore} — попробуй снова!`; }
+  document.getElementById('sc-done-icon').innerHTML = icon;
   document.getElementById('sc-done-title').textContent = title;
   document.getElementById('sc-done-sub').textContent = sub;
   document.getElementById('sc-done-result').innerHTML =
@@ -19435,7 +19435,7 @@ function scRestart() {
   document.getElementById('sc-score-top').style.display = 'flex';
   document.getElementById('sc-chat').innerHTML = '';
   scUpdateScores();
-  scAddMsg('bot', '⚔️ Начинаем соревнование! Я — Умник 🧠<br>Кто ответит правильно — получает очко. Ты против меня!<br><b>' + scCurrentCheck.subtitle + '</b>');
+  scAddMsg('bot', '⚔️ Начинаем соревнование! Я — Умник <img src="umnik_avatar2.png" style="width:18px;height:18px;object-fit:cover;border-radius:50%;vertical-align:middle"><br>Кто ответит правильно — получает очко. Ты против меня!<br><b>' + scCurrentCheck.subtitle + '</b>');
   setTimeout(() => scShowQuestion(), 800);
 }
 
