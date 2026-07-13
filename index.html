@@ -13422,16 +13422,30 @@ function ftRenderQuestion(el) {
     html += '<button onclick="ftAnswer(false)" style="flex:1;padding:14px;background:rgba(239,68,68,0.15);border:1.5px solid rgba(239,68,68,0.3);border-radius:12px;color:#f87171;font-size:16px;font-weight:700;cursor:pointer">❌ Ложь</button>';
     html += '</div>';
   } else if(q.type === 'match') {
-    html += '<div style="font-size:13px;color:#94a3b8;margin-bottom:10px">Нажимай на левый пункт, затем на правый — соединяй пары</div>';
-    html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px" id="ft-match-grid">';
+    var letters = ['А','Б','В','Г'];
+    // Справа: А/Б/В/Г — перемешиваем чтобы не в том же порядке
+    var rightLabels = q.right.map(function(r,i){ return {letter: letters[i], text: r, idx: i}; });
+    // Перемешать rightLabels (fisher-yates на основе хэша вопроса)
+    var seed = q.q.length % 4;
+    var shuffled = rightLabels.slice();
+    for(var s=shuffled.length-1;s>0;s--){ var j=(s+seed)%s||0; var tmp=shuffled[s];shuffled[s]=shuffled[j];shuffled[j]=tmp; }
+    html += '<div style="margin-bottom:12px">';
+    // Легенда: А=... Б=... В=... Г=...
+    html += '<div style="font-size:12px;color:#64748b;margin-bottom:10px;line-height:1.8">';
+    shuffled.forEach(function(r){ html += '<span style="margin-right:12px"><b style="color:#a78bfa">' + r.letter + '</b> — ' + r.text + '</span>'; });
+    html += '</div>';
+    // Строки: 1. Слагаемое → [select А/Б/В/Г]
     q.left.forEach(function(l, i) {
-      html += '<button onclick="ftMatchSelect(\'L\','+i+')" id="ftL'+i+'" style="padding:10px;background:rgba(124,58,237,0.15);border:1.5px solid rgba(124,58,237,0.3);border-radius:10px;color:#e2e8f0;font-size:13px;cursor:pointer">' + l + '</button>';
+      html += '<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">'
+        + '<span style="font-size:13px;font-weight:700;color:#a78bfa;min-width:16px">' + (i+1) + '.</span>'
+        + '<span style="flex:1;font-size:14px;color:#e2e8f0">' + l + '</span>'
+        + '<select id="ftSel'+i+'" style="background:#1e1b4b;border:1.5px solid rgba(124,58,237,0.5);border-radius:8px;color:#e2e8f0;font-size:14px;padding:6px 10px;cursor:pointer;min-width:52px">'
+        + '<option value="">—</option>';
+      shuffled.forEach(function(r){ html += '<option value="'+r.idx+'">'+r.letter+'</option>'; });
+      html += '</select></div>';
     });
-    q.right.forEach(function(r, i) {
-      html += '<button onclick="ftMatchSelect(\'R\','+i+')" id="ftR'+i+'" style="padding:10px;background:rgba(79,70,229,0.15);border:1.5px solid rgba(79,70,229,0.3);border-radius:10px;color:#e2e8f0;font-size:13px;cursor:pointer">' + r + '</button>';
-    });
-    html += '</div><div id="ft-match-pairs" style="margin-top:10px;font-size:13px;color:#94a3b8"></div>';
-    html += '<button onclick="ftMatchSubmit()" style="margin-top:10px;width:100%;padding:12px;background:linear-gradient(135deg,#7c3aed,#4f46e5);border:none;border-radius:12px;color:#fff;font-size:15px;font-weight:700;cursor:pointer">Проверить →</button>';
+    html += '</div>';
+    html += '<button onclick="ftMatchSubmit()" style="margin-top:4px;width:100%;padding:12px;background:linear-gradient(135deg,#7c3aed,#4f46e5);border:none;border-radius:12px;color:#fff;font-size:15px;font-weight:700;cursor:pointer">Проверить →</button>';
   }
 
   html += '</div><div id="ft-feedback" style="margin-top:12px"></div>';
@@ -13464,11 +13478,11 @@ function ftMatchSelect(side, idx) {
 
 function ftMatchSubmit() {
   var q = FINAL_QUESTIONS[FT_STATE.idx];
-  var m = window._ftMatch;
   var correct = true;
-  if(m.pairs.length !== q.left.length) { correct = false; }
-  else {
-    m.pairs.forEach(function(p){ if(q.a[p[0]] !== p[1]) correct = false; });
+  for(var i=0;i<q.left.length;i++){
+    var sel = document.getElementById('ftSel'+i);
+    if(!sel || sel.value === '') { correct = false; break; }
+    if(parseInt(sel.value) !== q.a[i]) { correct = false; }
   }
   ftShowFeedback(correct, q.hint);
 }
