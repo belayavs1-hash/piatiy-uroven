@@ -2377,6 +2377,9 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
 .fact-icon { font-size: 32px; flex-shrink: 0; line-height: 1; }
 .fact-title { font-size: 15px; font-weight: 900; color: #fff; margin-bottom: 6px; }
 .fact-text { font-size: 14px; color: rgba(255,255,255,.75); line-height: 1.55; }
+.cs-tab { background:rgba(255,255,255,.07); border:1.5px solid rgba(255,255,255,.14); border-radius:10px; padding:6px 14px; font-size:13px; font-weight:700; color:rgba(255,255,255,.7); cursor:pointer; transition:all .18s; }
+.cs-tab:hover { background:rgba(129,140,248,.18); border-color:#818cf8; color:#c7d2fe; }
+.cs-tab.cs-tab-active { background:linear-gradient(135deg,#6366f1,#818cf8); border-color:transparent; color:#fff; }
 .cs-section { margin-bottom: 20px; }
 .cs-section-header { display: flex; align-items: center; gap: 10px; font-size: 15px; font-weight: 900; color: var(--gold); margin-bottom: 8px; padding: 11px 16px; background: rgba(250,204,21,.08); border: 1px solid rgba(250,204,21,.22); border-radius: 14px; cursor: pointer; user-select: none; justify-content: space-between; }
 .cs-section-header .cs-arrow { font-size: 16px; color: rgba(255,255,255,.6); transition: transform .2s; }
@@ -2799,6 +2802,7 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
           <div class="h-book-progress" style="font-size:13px;font-weight:800" id="home-book-progress">
             <span style="white-space:nowrap;color:var(--h-muted);font-size:12px">Прогресс ещё не начат</span>
           </div>
+          <div id="home-para-bars" style="margin-top:10px;display:flex;flex-direction:column;gap:5px"></div>
         </div>
       </article>
     </div>
@@ -2843,12 +2847,15 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
 </div>
 
 <!-- ===== PROFILE ===== -->
-<div id="screen-profile" class="screen" style="background:var(--bg);min-height:100vh;align-items:center;justify-content:center;flex-direction:column;gap:20px;padding:40px">
-  <div style="font-size:64px">👤</div>
-  <div style="font-size:28px;font-weight:900;color:var(--ink)" id="profile-name-label">Привет!</div>
-  <div style="font-size:16px;color:var(--ink-muted);margin-top:-10px">Ты в приложении «Пятый уровень»</div>
-  <button onclick="showScreen('screen-home')" style="margin-top:8px;padding:14px 32px;border-radius:14px;background:linear-gradient(135deg,#406fff,#8a4fff);color:#fff;border:none;font-family:inherit;font-size:17px;font-weight:900;cursor:pointer">🏠 На главную</button>
-  <button onclick="doLogout()" style="padding:12px 32px;border-radius:14px;background:none;border:2px solid #e05555;color:#e05555;font-family:inherit;font-size:16px;font-weight:800;cursor:pointer">← Выйти из аккаунта</button>
+<div id="screen-profile" class="screen">
+  <nav class="top-nav">
+    <button class="nav-back" onclick="showScreen('screen-home')">← Назад</button>
+    <div class="nav-logo">👤 Мой профиль</div>
+    <div class="nav-xp" id="nav-xp-prof">⭐ 0 XP</div>
+  </nav>
+  <div class="screen-body" style="max-width:560px">
+    <div id="profile-content"></div>
+  </div>
 </div>
 
 <!-- ===== HOMEWORK ===== -->
@@ -3273,6 +3280,16 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
       <input id="cs-search" type="search" placeholder="Найти правило…" oninput="renderCheatsheet()"
         style="width:100%;box-sizing:border-box;padding:12px 14px 12px 40px;border-radius:14px;border:1.5px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);color:#fff;font-size:15px;font-weight:600;outline:none;-webkit-appearance:none"
         onfocus="this.style.borderColor='#818cf8'" onblur="this.style.borderColor='rgba(255,255,255,.12)'">
+    </div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px">
+      <button class="cs-tab cs-tab-active" onclick="csSetPara(0)">Все</button>
+      <button class="cs-tab" onclick="csSetPara(1)">§1</button>
+      <button class="cs-tab" onclick="csSetPara(2)">§2</button>
+      <button class="cs-tab" onclick="csSetPara(3)">§3</button>
+      <button class="cs-tab" onclick="csSetPara(4)">§4</button>
+      <button class="cs-tab" onclick="csSetPara(5)">§5</button>
+      <button class="cs-tab" onclick="csSetPara(6)">§6</button>
+      <button class="cs-tab" onclick="csSetPara(7)">§7</button>
     </div>
     <div id="cs-cards"></div>
   </div>
@@ -8616,14 +8633,42 @@ const SHELL_DESC = {
 };
 
 const ACHIEVEMENTS = [
-  {id:"solved_self",     icon:"🏆", name:"Решил сам",       desc:"Первое самостоятельное решение",    goal:1,  xp:20, progKey:"selfSolved"},
-  {id:"no_give_up",      icon:"💪", name:"Не сдался",       desc:"Сделай 3 попытки подряд",           goal:3,  xp:15, progKey:"hintsUsed"},
-  {id:"found_error",     icon:"🔍", name:"Нашёл ошибку",    desc:"Обнаружи свою ошибку",              goal:1,  xp:10, progKey:null},
-  {id:"fraction_master", icon:"½",  name:"Мастер дробей",   desc:"Реши 5 заданий по дробям",          goal:5,  xp:25, progKey:null},
-  {id:"geometer",        icon:"📐", name:"Юный геометр",    desc:"Реши 5 заданий по геометрии",       goal:5,  xp:25, progKey:null},
-  {id:"calculator",      icon:"🧮", name:"Вычислитель",      desc:"Реши 10 заданий на счёт",           goal:10, xp:30, progKey:null},
-  {id:"task_day",        icon:"⭐", name:"Задача дня",       desc:"Разбери задание дня с Умником",     goal:1,  xp:15, progKey:null},
-  {id:"streak5",         icon:"🔥", name:"5 дней подряд",   desc:"Занимайся 5 дней подряд",           goal:5,  xp:50, progKey:null}
+  // ── Первые шаги ──
+  {id:"first_step",      icon:"🚀", name:"Первый уровень",        desc:"Реши первое задание в приложении",                 goal:1,  xp:10,  progKey:"selfSolved",  cat:"start"},
+  {id:"solved_self",     icon:"💡", name:"Сам разобрался",        desc:"Реши задание без единой подсказки",                goal:1,  xp:20,  progKey:"selfSolved",  cat:"start"},
+  {id:"first_check",     icon:"✅", name:"Первый зачёт",          desc:"Пройди первую проверочную работу",                 goal:1,  xp:25,  progKey:"selfChecks",  cat:"start"},
+  // ── §1 Натуральные числа ──
+  {id:"number_row",      icon:"🔢", name:"Знаю натуральный ряд",  desc:"Реши 10 заданий из §1 (Числа и шкалы)",          goal:10, xp:30,  progKey:"para1",       cat:"para1"},
+  {id:"table_reader",    icon:"📊", name:"Читаю таблицы",         desc:"Реши 5 заданий с таблицами из §1",                goal:5,  xp:20,  progKey:"para1",       cat:"para1"},
+  // ── §2 Сложение и вычитание ──
+  {id:"plus_minus",      icon:"➕", name:"Считаю в уме",          desc:"Реши 15 заданий из §2 (Сложение и вычитание)",    goal:15, xp:35,  progKey:"para2",       cat:"para2"},
+  {id:"equation_solver", icon:"🔣", name:"Ловец уравнений",       desc:"Реши 10 заданий из §2",                           goal:10, xp:30,  progKey:"para2",       cat:"para2"},
+  // ── §3 Умножение и деление ──
+  {id:"multiply",        icon:"✖️", name:"Таблица — моя стихия",  desc:"Реши 10 заданий на умножение из §3",              goal:10, xp:35,  progKey:"para3",       cat:"para3"},
+  {id:"remainder",       icon:"🍕", name:"Делёж с остатком",      desc:"Реши 20 заданий из §3",                           goal:20, xp:25,  progKey:"para3",       cat:"para3"},
+  {id:"degree",          icon:"⚡", name:"Степенной разряд",      desc:"Реши 5 заданий на степени из §3",                 goal:5,  xp:20,  progKey:"para3",       cat:"para3"},
+  // ── §4 Площадь и объём ──
+  {id:"area_finder",     icon:"📐", name:"Юный планиметр",        desc:"Реши 5 заданий на площадь из §4",                 goal:5,  xp:30,  progKey:"para4",       cat:"para4"},
+  {id:"volume_finder",   icon:"📦", name:"Мастер объёма",         desc:"Реши 10 заданий из §4 (Площадь и объём)",         goal:10, xp:30,  progKey:"para4",       cat:"para4"},
+  // ── §5 Дроби ──
+  {id:"fraction_start",  icon:"½",  name:"Дроби — не страшно",    desc:"Реши 5 заданий с обыкновенными дробями из §5",    goal:5,  xp:25,  progKey:"para5",       cat:"para5"},
+  {id:"fraction_master", icon:"🎯", name:"Дробный мастер",        desc:"Реши 20 заданий с дробями из §5",                 goal:20, xp:50,  progKey:"para5",       cat:"para5"},
+  {id:"common_denom",    icon:"🔗", name:"Общий знаменатель",     desc:"Реши 30 заданий из §5",                           goal:30, xp:40,  progKey:"para5",       cat:"para5"},
+  // ── §6 Десятичные дроби ──
+  {id:"decimal_start",   icon:"🔹", name:"Запятая на месте",      desc:"Реши 5 заданий с десятичными дробями из §6",      goal:5,  xp:25,  progKey:"para6",       cat:"para6"},
+  {id:"decimal_master",  icon:"💎", name:"Десятичный ас",         desc:"Реши 20 заданий с десятичными дробями из §6",     goal:20, xp:50,  progKey:"para6",       cat:"para6"},
+  {id:"rounding",        icon:"🎲", name:"Прикинул точно",        desc:"Реши 30 заданий из §6",                           goal:30, xp:40,  progKey:"para6",       cat:"para6"},
+  // ── §7 Углы и транспортир ──
+  {id:"angle_finder",    icon:"📏", name:"Умею измерять углы",    desc:"Реши 3 задания на транспортир из §7",             goal:3,  xp:20,  progKey:"para7",       cat:"para7"},
+  {id:"geometer",        icon:"🔭", name:"Пятый уровень — пройден!", desc:"Реши 10 заданий из §7 — финал учебника!",      goal:10, xp:100, progKey:"para7",       cat:"para7"},
+  // ── Серии ──
+  {id:"streak3",         icon:"🔥", name:"3 дня подряд",          desc:"Занимайся 3 дня без пропуска",                    goal:3,  xp:30,  progKey:"streakDays",  cat:"streak"},
+  {id:"streak5",         icon:"🌋", name:"Неделя без остановок",  desc:"Заниматься 5 дней подряд — настоящий ритм",       goal:5,  xp:50,  progKey:"streakDays",  cat:"streak"},
+  {id:"streak10",        icon:"💥", name:"10 дней — это сила!",   desc:"10 дней подряд — ты на Пятом уровне!",            goal:10, xp:100, progKey:"streakDays",  cat:"streak"},
+  // ── Умник и настойчивость ──
+  {id:"umnik_fan",       icon:"🤖", name:"Друг Умника",           desc:"Поговори с Умником 5 раз",                        goal:5,  xp:20,  progKey:"umnikChats",  cat:"umnik"},
+  {id:"no_give_up",      icon:"💪", name:"Упорство побеждает",    desc:"Попробуй решить задание 3 раза",                  goal:3,  xp:15,  progKey:"hintsUsed",   cat:"umnik"},
+  {id:"clean_sheet",     icon:"🌟", name:"Чистая работа",         desc:"Пройди проверочную без ошибок с первого раза",    goal:1,  xp:40,  progKey:"cleanChecks", cat:"check"},
 ];
 
 // ===== STATE =====
@@ -8692,12 +8737,13 @@ function showScreen(id) {
   updateAllXP();
   if(id === 'screen-parent') { try { renderParent(); } catch(e) { console.error('renderParent error:', e); } }
   if(id === 'screen-homework') updateTopics();
-  if(id === 'screen-profile') { const el = document.getElementById('profile-name-label'); if(el && ST.user) el.textContent = ST.user.name || ''; }
+  if(id === 'screen-home') { try { updateParaProgress(); } catch(e) {} }
+  if(id === 'screen-profile') { renderProfile(); }
   if(id === 'screen-funfacts') renderFunFacts();
   if(id === 'screen-mistakes') { try { renderMistakes(); } catch(e) { console.error('renderMistakes error:', e); } }
   if(id === 'screen-achievements') { try { renderAchievements(); } catch(e) { console.error('renderAchievements error:', e); } }
   if(id === 'screen-final-test') { try { renderFinalTest(); } catch(e) { console.error('renderFinalTest error:', e); } }
-  if(id === 'screen-cheatsheet') { var _si=document.getElementById('cs-search'); if(_si) _si.value=''; renderCheatsheet(); }
+  if(id === 'screen-cheatsheet') { var _si=document.getElementById('cs-search'); if(_si) _si.value=''; _csPara=0; document.querySelectorAll('.cs-tab').forEach(function(b,i){ b.classList.toggle('cs-tab-active',i===0); }); renderCheatsheet(); }
   if(id === 'screen-already-solved') fillAlreadySolved();
   if(id === 'screen-photo-check') fillPhotoCheck();
   if(id === 'screen-self-check') showSCList();
@@ -13294,19 +13340,19 @@ function errFindTrainer(topic) {
 
 // ===== ACHIEVEMENTS =====
 function achGetProgress(a) {
-  if (!a.goal || a.goal <= 1) return null;
-  if (a.id === 'no_give_up')      return Math.min(ST.hintsUsed || 0, a.goal);
-  if (a.id === 'streak5')         return Math.min(calcStreak(), a.goal);
-  if (a.id === 'calculator')      return Math.min(Object.keys(ST.solvedTasks||{}).length, a.goal);
-  if (a.id === 'fraction_master') {
-    var fr = Object.keys(ST.solvedTasks||{}).filter(function(id){ var t=TASKS.find(function(x){return x.id===id;}); return t&&(t.topic||'').toLowerCase().includes('дроб'); });
-    return Math.min(fr.length, a.goal);
+  if(!a.progKey) return null;
+  // Прогресс по параграфу
+  if(a.progKey && a.progKey.match(/^para(\d+)$/)) {
+    var p = a.progKey.replace('para','');
+    var cnt = Object.keys(ST.solvedTasks||{}).filter(function(id){ return id.indexOf(p+'.')===0; }).length;
+    return Math.min(cnt, a.goal);
   }
-  if (a.id === 'geometer') {
-    var gk = ['периметр','площадь','геом','объём'];
-    var gi = Object.keys(ST.solvedTasks||{}).filter(function(id){ var t=TASKS.find(function(x){return x.id===id;}); return t&&gk.some(function(k){return (t.topic||'').toLowerCase().includes(k);}); });
-    return Math.min(gi.length, a.goal);
-  }
+  if(a.progKey === 'selfSolved')   return Math.min(ST.selfSolved||0, a.goal);
+  if(a.progKey === 'hintsUsed')    return Math.min(ST.hintsUsed||0, a.goal);
+  if(a.progKey === 'selfChecks')   return Math.min((ST.selfCheckResults||[]).length, a.goal);
+  if(a.progKey === 'umnikChats')   return Math.min(ST.umnikChats||0, a.goal);
+  if(a.progKey === 'cleanChecks')  return Math.min(ST.cleanChecks||0, a.goal);
+  if(a.progKey === 'streakDays')   return Math.min(ST.streakDays||calcStreak(), a.goal);
   return null;
 }
 
@@ -13548,6 +13594,143 @@ function ftShowResult() {
 }
 // ===== КОНЕЦ ИТОГОВОГО ТЕСТА =====
 
+
+
+function updateParaProgress() {
+  var el = document.getElementById('home-para-bars');
+  if(!el) return;
+  var PARA_TOTALS = {1:215,2:235,3:430,4:188,5:457,6:225,7:54};
+  var PARA_SHORT = {1:'§1',2:'§2',3:'§3',4:'§4',5:'§5',6:'§6',7:'§7'};
+  var PARA_COLORS = {1:'#6366f1',2:'#10b981',3:'#f59e0b',4:'#ef4444',5:'#8b5cf6',6:'#06b6d4',7:'#ec4899'};
+  var taskPara = {};
+  Object.keys(ST.solvedTasks||{}).forEach(function(id){
+    var m = id.match(/^(\d+)\./);
+    if(m) { var p=m[1]; taskPara[p]=(taskPara[p]||0)+1; }
+  });
+  var html = '';
+  [1,2,3,4,5,6,7].forEach(function(p){
+    var done = taskPara[p]||0;
+    var total = PARA_TOTALS[p];
+    var pct = Math.min(100, Math.round(done/total*100));
+    html += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:5px">';
+    html += '<span style="font-size:10px;font-weight:800;color:' + PARA_COLORS[p] + ';min-width:22px">' + PARA_SHORT[p] + '</span>';
+    html += '<div style="flex:1;background:rgba(255,255,255,.1);border-radius:3px;height:5px;overflow:hidden">';
+    html += '<div style="width:' + pct + '%;height:100%;background:' + PARA_COLORS[p] + ';border-radius:3px"></div></div>';
+    html += '<span style="font-size:10px;color:#475569;min-width:28px;text-align:right">' + pct + '%</span>';
+    html += '</div>';
+  });
+  el.innerHTML = html;
+}
+function renderProfile() {
+  var xpEl = document.getElementById('nav-xp-prof');
+  if(xpEl) xpEl.textContent = '⭐ ' + ST.xp + ' XP';
+  var el = document.getElementById('profile-content');
+  if(!el) return;
+
+  var name = (ST.user && ST.user.name) || 'Ученик';
+  var xp = ST.xp || 0;
+  // Уровень: каждые 200 XP = 1 уровень
+  var level = Math.floor(xp / 200) + 1;
+  var levelXP = xp % 200;
+  var levelPct = Math.round(levelXP / 200 * 100);
+
+  var solved = Object.keys(ST.solvedTasks || {}).length;
+  var checks = (ST.selfCheckResults || []).length;
+  var mistakes = (ST.mistakes || []).filter(function(m){ return !m.closed; }).length;
+  var achCount = (ST.achievements || []).length;
+  var achTotal = ACHIEVEMENTS.length;
+
+  // Серия — из trainerHistory
+  var streakDays = 0;
+  var hist = ST.trainerHistory || [];
+  for(var i=0;i<hist.length;i++){ if(hist[i].errors===0||hist[i].correct>0) streakDays++; else break; }
+
+  // Прогресс по параграфам
+  var paraProgress = {};
+  var taskPara = {};
+  // Считаем задания по параграфам из solvedTasks
+  Object.keys(ST.solvedTasks||{}).forEach(function(id){
+    var m = id.match(/^(\d+)\./);
+    if(m) { var p=m[1]; taskPara[p]=(taskPara[p]||0)+1; }
+  });
+
+  var PARA_TOTALS = {1:215,2:235,3:430,4:188,5:457,6:225,7:54};
+  var PARA_NAMES = {1:'§1 Числа и шкалы',2:'§2 Сложение и вычитание',3:'§3 Умножение и деление',4:'§4 Площадь и объём',5:'§5 Дроби',6:'§6 Десятичные дроби',7:'§7 Углы'};
+  var PARA_COLORS = {1:'#6366f1',2:'#10b981',3:'#f59e0b',4:'#ef4444',5:'#8b5cf6',6:'#06b6d4',7:'#ec4899'};
+
+  var html = '';
+
+  // ── Шапка профиля ──
+  html += '<div style="background:linear-gradient(135deg,#1e1b4b,#312e81);border-radius:20px;padding:24px 20px;margin-bottom:16px;text-align:center">';
+  html += '<div style="font-size:52px;margin-bottom:8px">🎓</div>';
+  html += '<div style="font-size:22px;font-weight:900;color:#fff;margin-bottom:2px">' + name + '</div>';
+  html += '<div style="font-size:13px;color:rgba(255,255,255,.5);margin-bottom:16px">Уровень ' + level + ' · Пятый Уровень</div>';
+  // XP прогресс до следующего уровня
+  html += '<div style="font-size:12px;color:rgba(255,255,255,.5);margin-bottom:6px">До уровня ' + (level+1) + ': ' + levelXP + ' / 200 XP</div>';
+  html += '<div style="background:rgba(255,255,255,.15);border-radius:8px;height:10px;overflow:hidden">';
+  html += '<div style="width:' + levelPct + '%;height:100%;background:linear-gradient(90deg,#fbbf24,#f59e0b);border-radius:8px;transition:width .4s"></div>';
+  html += '</div></div>';
+
+  // ── Статистика: 4 плашки ──
+  html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">';
+  function statCard(icon, val, label, color) {
+    return '<div style="background:rgba(255,255,255,0.06);border-radius:14px;padding:16px 12px;text-align:center">'
+      + '<div style="font-size:24px;margin-bottom:4px">' + icon + '</div>'
+      + '<div style="font-size:22px;font-weight:900;color:' + color + '">' + val + '</div>'
+      + '<div style="font-size:11px;color:#94a3b8;font-weight:700">' + label + '</div>'
+      + '</div>';
+  }
+  html += statCard('⭐', xp, 'всего XP', '#fbbf24');
+  html += statCard('📝', solved, 'заданий решено', '#4ade80');
+  html += statCard('✅', checks, 'проверочных', '#60a5fa');
+  html += statCard('🔥', streakDays + ' дн.', 'серия', '#fb923c');
+  html += '</div>';
+
+  // ── Прогресс по параграфам ──
+  html += '<div style="background:rgba(255,255,255,0.06);border-radius:16px;padding:16px;margin-bottom:16px">';
+  html += '<div style="font-size:13px;font-weight:900;color:#94a3b8;text-transform:uppercase;letter-spacing:.06em;margin-bottom:14px">Прогресс по темам</div>';
+  [1,2,3,4,5,6,7].forEach(function(p){
+    var done = taskPara[p] || 0;
+    var total = PARA_TOTALS[p];
+    var pct = Math.min(100, Math.round(done/total*100));
+    var color = PARA_COLORS[p];
+    html += '<div style="margin-bottom:10px">';
+    html += '<div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">';
+    html += '<span style="color:#e2e8f0;font-weight:700">' + PARA_NAMES[p] + '</span>';
+    html += '<span style="color:#64748b">' + done + ' / ' + total + '</span>';
+    html += '</div>';
+    html += '<div style="background:rgba(255,255,255,.1);border-radius:4px;height:6px;overflow:hidden">';
+    html += '<div style="width:' + pct + '%;height:100%;background:' + color + ';border-radius:4px;transition:width .4s"></div>';
+    html += '</div></div>';
+  });
+  html += '</div>';
+
+  // ── Достижения ──
+  html += '<div style="background:rgba(255,255,255,0.06);border-radius:16px;padding:16px;margin-bottom:16px">';
+  html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">';
+  html += '<div style="font-size:13px;font-weight:900;color:#94a3b8;text-transform:uppercase;letter-spacing:.06em">Достижения</div>';
+  html += '<div style="font-size:13px;color:#fbbf24;font-weight:700">' + achCount + ' / ' + achTotal + '</div>';
+  html += '</div>';
+  var unlockedAch = ACHIEVEMENTS.filter(function(a){ return (ST.achievements||[]).includes(a.id); });
+  if(unlockedAch.length === 0){
+    html += '<div style="text-align:center;padding:12px;color:#475569;font-size:13px">Пока нет — первое будет твоим скоро!</div>';
+  } else {
+    html += '<div style="display:flex;flex-wrap:wrap;gap:8px">';
+    unlockedAch.forEach(function(a){
+      html += '<div style="background:rgba(250,204,21,.12);border:1px solid rgba(250,204,21,.25);border-radius:10px;padding:6px 10px;font-size:13px" title="' + a.name + ': ' + a.desc + '">';
+      html += '<span style="margin-right:4px">' + a.icon + '</span><span style="color:#e2e8f0;font-weight:700">' + a.name + '</span></div>';
+    });
+    html += '</div>';
+  }
+  html += '</div>';
+
+  // ── Кнопки ──
+  html += '<button onclick="showScreen('screen-achievements')" style="display:block;width:100%;padding:13px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:12px;color:#e2e8f0;font-size:14px;font-weight:700;cursor:pointer;margin-bottom:8px">🏆 Все достижения →</button>';
+  html += '<button onclick="doLogout()" style="display:block;width:100%;padding:12px;background:none;border:1.5px solid rgba(239,68,68,.4);border-radius:12px;color:#f87171;font-size:14px;font-weight:700;cursor:pointer">← Выйти из аккаунта</button>';
+
+  el.innerHTML = html;
+}
+
 function renderAchievements() {
   var xpEl = document.getElementById('nav-xp-ach');
   if (xpEl) xpEl.textContent = '⭐ ' + ST.xp + ' XP';
@@ -13629,6 +13812,13 @@ function renderAchievements() {
 var csActivePara = null;
 var csActiveTopic = null;
 
+
+var _csPara = 0;
+function csSetPara(p) {
+  _csPara = p;
+  document.querySelectorAll('.cs-tab').forEach(function(b,i){ b.classList.toggle('cs-tab-active', i===p); });
+  renderCheatsheet();
+}
 function renderCheatsheet() {
   var el = document.getElementById('cs-cards');
   if (!el) return;
@@ -13648,6 +13838,7 @@ function renderCheatsheet() {
     var wordRe = new RegExp('(^|[^а-яёa-z0-9])' + qEsc + '([^а-яёa-z0-9]|$)', 'i');
     var results = [];
     CHEATSHEET.forEach(function(sec) {
+      if(_csPara && !sec.para.includes('§'+_csPara)) return;
       sec.rules.forEach(function(r) {
         var haystack = [sec.para, sec.section, r.name, stripHtml(r.text)].join(' ').toLowerCase();
         if (wordRe.test(haystack)) {
@@ -13689,6 +13880,7 @@ function renderCheatsheet() {
   var byPara = {};
   var paraOrder = [];
   CHEATSHEET.forEach(function(sec) {
+    if(_csPara && !sec.para.includes('§'+_csPara)) return;
     var p = sec.para || 'Другое';
     if (!byPara[p]) { byPara[p] = []; paraOrder.push(p); }
     byPara[p].push(sec);
