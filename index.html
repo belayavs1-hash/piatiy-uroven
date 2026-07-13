@@ -15166,12 +15166,12 @@ const SELF_CHECKS = [
       },
       {
         q: "Проведена окружность с центром O и радиусом 4 см. Точка N находится на расстоянии 5 см от центра O. Где лежит точка N?",
-        a: "вне круга",
+        a: "вне круга|за окружностью|снаружи|за пределами",
         hint: "5 см > 4 см (радиус). Значит N находится за пределами окружности — вне круга."
       },
       {
         q: "Проведена окружность с центром O и радиусом 4 см. Точка K находится на расстоянии 3 см от центра O. Где лежит точка K?",
-        a: "внутри круга",
+        a: "внутри круга|внутри|в круге",
         hint: "3 см < 4 см (радиус). Значит K лежит внутри круга, ограниченного окружностью."
       },
       {
@@ -19040,7 +19040,7 @@ function scAddMsg(role, html, extraCls) {
   const chat = document.getElementById('sc-chat');
   const div = document.createElement('div');
   div.className = 'sc-msg ' + role;
-  const avatar = role === 'bot' ? '<div class="sc-avatar umnik"><img src="umnik_prygaet.png" style="width:22px;height:22px;object-fit:contain" onerror="this.outerHTML=\'🤖\'"></div>' : '';
+  const avatar = role === 'bot' ? '<div class="sc-avatar umnik"><img src="umnik_avatar2.png" style="width:32px;height:32px;object-fit:cover;border-radius:50%" onerror="this.style.display=\'none\'"></div>' : '';
   const bubbleCls = 'sc-bubble' + (extraCls ? ' ' + extraCls : '');
   div.innerHTML = (role === 'bot' ? avatar : '') + `<div class="${bubbleCls}">${html}</div>` + (role === 'user' ? avatar : '');
   if (role === 'bot') div.querySelector('.sc-avatar').style.cssText = 'width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#4f46e5,#7c3aed);display:flex;align-items:center;justify-content:center;flex-shrink:0';
@@ -19054,7 +19054,7 @@ function scShowTyping() {
   const div = document.createElement('div');
   div.className = 'sc-msg bot';
   div.id = 'sc-typing';
-  div.innerHTML = '<div class="sc-avatar umnik" style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#4f46e5,#7c3aed);display:flex;align-items:center;justify-content:center;flex-shrink:0"><img src="umnik_prygaet.png" style="width:22px;height:22px;object-fit:contain" onerror="this.outerHTML=\'🤖\'"></div><div class="sc-bubble"><div class="sc-typing"><span></span><span></span><span></span></div></div>';
+  div.innerHTML = '<div class="sc-avatar umnik" style="width:32px;height:32px;border-radius:50%;overflow:hidden;flex-shrink:0"><img src="umnik_avatar2.png" style="width:32px;height:32px;object-fit:cover;border-radius:50%"></div><div class="sc-bubble"><div class="sc-typing"><span></span><span></span><span></span></div></div>';
   chat.appendChild(div);
   chat.scrollTop = chat.scrollHeight;
 }
@@ -19738,7 +19738,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <div id="screen-umnik" class="screen">
   <div class="umnik-header">
     <button onclick="showScreen(window._umnikFrom||'screen-homework')" style="background:none;border:none;color:rgba(255,255,255,.7);font-size:22px;cursor:pointer;padding:0;line-height:1">←</button>
-    <div class="umnik-avatar"><img src="umnik_prygaet.png" style="width:26px;height:26px;object-fit:contain" onerror="this.outerHTML='🤖'"></div>
+    <div class="umnik-avatar" style="overflow:hidden"><img src="umnik_avatar2.png" style="width:36px;height:36px;object-fit:cover;border-radius:50%"></div>
     <div>
       <div class="umnik-title">Чат с Умником</div>
       <div class="umnik-sub">Помощник по учёбе</div>
