@@ -2507,6 +2507,25 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
 .map-quiz-btn { padding:8px 16px; border-radius:12px; border:none; background:#4f46e5; color:#fff; font-weight:800; cursor:pointer; }
 .map-quiz-result { font-size:13px; min-height:16px; }
 </style>
+<script>
+// Перехват ошибок ДО загрузки основного скрипта
+window.__errors = [];
+window.onerror = function(msg, src, line, col, err) {
+  window.__errors.push({msg, line, col, stack: err ? err.stack : ''});
+  // Показываем сразу
+  setTimeout(function(){
+    var existing = document.getElementById('__errbox');
+    if(!existing){
+      existing = document.createElement('div');
+      existing.id = '__errbox';
+      existing.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:#0d0d1a;color:#ff4444;padding:16px;font-size:12px;z-index:999999;overflow:auto;font-family:monospace;white-space:pre-wrap';
+      document.body.appendChild(existing);
+    }
+    existing.innerHTML += '<b>ОШИБКА строка ' + line + ':</b> ' + msg + '\n' + (err ? err.stack : '') + '\n\n';
+  }, 100);
+  return true; // не показывать стандартный диалог
+};
+</script>
 </head>
 <body class="on-login theme-light">
 
