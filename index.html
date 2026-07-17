@@ -7143,6 +7143,24 @@ function selectRole(btn, role) {
 }
 
 function loginByRole() {
+  // DEBUG LOG
+  (function(){
+    try {
+      var d = document.getElementById('_dbg');
+      if(!d){ d=document.createElement('div'); d.id='_dbg'; d.style.cssText='position:fixed;top:5px;right:5px;background:rgba(0,0,0,.9);color:#0f0;padding:8px;font-size:11px;z-index:99999;max-width:90vw;max-height:80vh;overflow:auto;font-family:monospace;border:1px solid #0f0'; document.body.appendChild(d); }
+      d.innerHTML += 'loginByRole called<br>';
+      window._dbg = function(m){ d.innerHTML += m + '<br>'; };
+    } catch(e){}
+  })();
+  // DEBUG LOG
+  (function(){
+    try {
+      var d = document.getElementById('_dbg');
+      if(!d){ d=document.createElement('div'); d.id='_dbg'; d.style.cssText='position:fixed;top:5px;right:5px;background:rgba(0,0,0,.9);color:#0f0;padding:8px;font-size:11px;z-index:99999;max-width:90vw;max-height:80vh;overflow:auto;font-family:monospace;border:1px solid #0f0'; document.body.appendChild(d); }
+      d.innerHTML += 'loginByRole called<br>';
+      window._dbg = function(m){ d.innerHTML += m + '<br>'; };
+    } catch(e){}
+  })();
   if (_selectedRole === 'parent') {
     openParentPin();
   } else {
@@ -7187,6 +7205,9 @@ function freshST() {
 }
 
 function doLogin() {
+  try { if(window._dbg) window._dbg("doLogin start"); } catch(e){}
+  try {
+
   const name = document.getElementById('login-name').value.trim() || 'Ученик';
   const roleInput = document.getElementById('login-role');
   const role = roleInput ? roleInput.value : 'student';
@@ -7213,8 +7234,8 @@ function doLogin() {
     renderHome();
     showScreen('screen-home');
   }
-}
-function doLogout() {
+  } catch(doLoginErr) { if(window._dbg) window._dbg("doLogin CRASH: "+doLoginErr.message+doLoginErr.stack); }
+}function doLogout() {
   ST.user = null;
   lsSave();
   document.getElementById('login-name').value = '';
