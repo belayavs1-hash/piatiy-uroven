@@ -3480,6 +3480,23 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
 </div>
 
 <script>
+window.onerror = function(msg, src, line, col, err) {
+  var d = document.createElement('div');
+  d.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:#1a1a2e;color:#ff6b6b;padding:20px;font-size:13px;z-index:99999;overflow:auto;white-space:pre-wrap;font-family:monospace';
+  d.innerHTML = '<h2>JS ОШИБКА (runtime):</h2>' + msg + '
+Строка: ' + line + ', Столбец: ' + col + '
+' + (err ? err.stack : '');
+  document.body.appendChild(d);
+  return false;
+};
+window.addEventListener('unhandledrejection', function(e){
+  var d = document.createElement('div');
+  d.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:#1a1a2e;color:#ffa500;padding:20px;font-size:13px;z-index:99999;overflow:auto;white-space:pre-wrap;font-family:monospace';
+  d.innerHTML = '<h2>PROMISE ОШИБКА:</h2>' + e.reason;
+  document.body.appendChild(d);
+});
+</script>
+<script>
 // ===== DATA =====
 const TASKS = [
   // §1 Натуральные числа и нуль. Шкалы
