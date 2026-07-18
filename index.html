@@ -7199,10 +7199,10 @@ function doLogin() {
   ST.user = { name, role, inputMode };
   lsSave();
   if (role === 'parent') {
-    renderParent();
+    try { renderParent(); } catch(e) { console.error('[doLogin] renderParent:', e); }
     showScreen('screen-parent');
   } else {
-    renderHome();
+    try { renderHome(); } catch(e) { console.error('[doLogin] renderHome:', e); alert('renderHome error: ' + e.message); }
     showScreen('screen-home');
   }
 }function doLogout() {
