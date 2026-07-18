@@ -4796,9 +4796,7 @@ const TOPIC_RULES = {
       { q: "Сколько всего цифр в математике?", a: "10" },
       { q: "Какой разряд у цифры 7 в числе 370?", a: "десятки" },
       { q: "Число 5 048 — сколько в нём разрядов?", a: "4" },
-      { q: "Назови разряд цифры 2 в числе 1 200.", a: "сотни" },
-      { type:"odd", q: "Выбери лишнее — что НЕ является разрядом числа?", opts:["единицы","десятки","класс","сотни"], a: "класс" },
-      { type:"match", q: "Соотнеси цифру в числе 4 352 с её разрядом", pairs:[{q:"4",a:"тысячи"},{q:"3",a:"сотни"},{q:"5",a:"десятки"},{q:"2",a:"единицы"}] }
+      { q: "Назови разряд цифры 2 в числе 1 200.", a: "сотни" }
     ]
   },
   "Отрезок и его длина. Ломаная. Многоугольник": {
@@ -8246,9 +8244,12 @@ function ruleRenderFormat(card, qz, fmt, i) {
     function doCheckInput() {
       if (checked) { ruleNextQuestion(); return; }
       checked = true;
+      var _numWords = {'ноль':'0','нуль':'0','один':'1','одна':'1','два':'2','две':'2','три':'3','четыре':'4','пять':'5','шесть':'6','семь':'7','восемь':'8','девять':'9','десять':'10','одиннадцать':'11','двенадцать':'12','тринадцать':'13','четырнадцать':'14','пятнадцать':'15','шестнадцать':'16','семнадцать':'17','восемнадцать':'18','девятнадцать':'19','двадцать':'20'};
       var userAns = inp.value.trim().toLowerCase().replace(/[.,;:!?]/g,'');
+      var userAnsNorm = _numWords[userAns] || userAns;
       var correct = qz.a.toLowerCase().replace(/[.,;:!?]/g,'');
-      var ok = userAns === correct || correct.includes(userAns) || (userAns.length > 2 && userAns.includes(correct));
+      var correctNorm = _numWords[correct] || correct;
+      var ok = userAns === correct || userAnsNorm === correct || userAns === correctNorm || userAnsNorm === correctNorm || correct.includes(userAns) || (userAns.length > 2 && userAns.includes(correct));
       if (ok) ruleState.correct++;
       document.getElementById('rule-feedback').innerHTML = ok
         ? '<span style="color:#10b981;font-weight:800">✅ Верно!</span>'
