@@ -6874,12 +6874,17 @@ renderMap();
 renderTrainers();
 
 // ===== NAVIGATION =====
+function _dbg(msg) {
+  var d = document.getElementById('__dbg');
+  if(!d){ d=document.createElement('div'); d.id='__dbg'; d.style.cssText='position:fixed;top:0;left:0;right:0;background:#ff0;color:#000;padding:8px;font-size:14px;z-index:99999;font-family:monospace'; document.body.appendChild(d); }
+  d.innerHTML = msg;
+}
 function showScreen(id) {
-  var _role = ST.user ? ST.user.role : 'NO_USER';
+  
   alert('showScreen id='+id+' role='+_role);
-  if (id === 'screen-parent' && ST.user && ST.user.role !== 'parent') { alert('BLOCKED: not parent'); return; }
+  if (id === 'screen-parent' && ST.user && ST.user.role !== 'parent') { return; }
   const studentScreens = ['screen-home','screen-homework','screen-map','screen-trainers','screen-self-check','screen-walkthrough','screen-already-solved','screen-photo-check','screen-cheatsheet','screen-funfacts','screen-achievements','screen-profile','screen-final-test'];
-  if (studentScreens.includes(id) && ST.user && ST.user.role === 'parent') { alert('BLOCKED: parent cant see student screen'); return; }
+  if (studentScreens.includes(id) && ST.user && ST.user.role === 'parent') { return; }
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   document.body.classList.toggle('on-login', id === 'screen-login');
@@ -7214,7 +7219,7 @@ function doLogin() {
 let loginRecognition = null;
 function toggleLoginMic() {
   const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!SpeechRec) { alert('Голосовой ввод не поддерживается в этом браузере'); return; }
+  if (!SpeechRec) { return; }
   const btn = document.getElementById('login-mic-btn');
   const inp = document.getElementById('login-name');
   if (loginRecognition) {
@@ -7456,7 +7461,7 @@ function updateTopics() {
 
 function findTask() {
   const num = normalizeTaskNum(document.getElementById('hw-num').value.trim());
-  if (!num) { alert('Введи номер задания, например: 1.1'); return; }
+  if (!num) { return; }
   // Принимаем как "1.5" так и просто "5" при выбранном §1
   let taskId = num;
   if (!/\./.test(num)) {
@@ -8323,7 +8328,7 @@ function openCheck(task, backScreen) {
 
 function checkSolution() {
   const userAns = document.getElementById('chk-answer').value.trim();
-  if(!userAns) { alert('Введи ответ'); return; }
+  if(!userAns) { return; }
   const correct = checkAnswer(userAns, currentTask);
   const resultEl = document.getElementById('chk-result');
   resultEl.style.display = 'block';
@@ -11056,7 +11061,7 @@ function errSimilarAnswer(btn, chosen, correct, mistakeIdx, taskIdx) {
 // ── Тренировка по ошибкам ──
 function errStartTrain() {
   var errItems = getErrList().filter(function(m){ return m.status==='new'||m.status==='repeat'; });
-  if (errItems.length === 0) { alert('Нет ошибок для повторения!'); return; }
+  if (errItems.length === 0) { return; }
 
   errTrainTasks = [];
   errTrainIdx = 0;
@@ -11093,7 +11098,7 @@ function errStartTrain() {
     var fallbackId = 'add';
     var fallbackTasks = generateTasks(fallbackId, 10);
     fallbackTasks.forEach(function(t){ errTrainTasks.push({task:t, trId:fallbackId, type:'similar'}); });
-    if (errTrainTasks.length === 0) { alert('Нет заданий для тренировки.'); return; }
+    if (errTrainTasks.length === 0) { return; }
   }
 
   document.getElementById('err-train-overlay').style.display = 'block';
@@ -17468,7 +17473,6 @@ function umnikRemovePhoto() {
 function umnikToggleMic() {
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
   if (!SpeechRecognition) {
-    alert('Голосовой ввод не поддерживается в этом браузере. Попробуй Chrome.');
     return;
   }
   const btn = document.getElementById('umnik-mic-btn');
