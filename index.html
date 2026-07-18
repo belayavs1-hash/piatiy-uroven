@@ -6881,16 +6881,14 @@ function showScreen(id) {
   const studentScreens = ['screen-home','screen-homework','screen-map','screen-trainers','screen-self-check','screen-walkthrough','screen-already-solved','screen-photo-check','screen-cheatsheet','screen-funfacts','screen-achievements','screen-profile','screen-final-test'];
   if (studentScreens.includes(id) && ST.user && ST.user.role === 'parent') return;
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  var el=document.getElementById(id); alert('showScreen: '+id+' el='+(el?'found':'NULL')+' role='+(ST.user?ST.user.role:'nouser'));
   document.getElementById(id).classList.add('active');
   document.body.classList.toggle('on-login', id === 'screen-login');
   window.scrollTo(0, 0);
-  console.log('[showScreen] id='+id+' user='+JSON.stringify(ST.user));
   updateAllXP();
   if(id === 'screen-parent') { try { renderParent(); } catch(e) { console.error('renderParent error:', e); } }
   if(id === 'screen-homework') updateTopics();
   if(id === 'screen-home') { try { updateParaProgress(); } catch(e) {} }
-  if(id === 'screen-profile') { renderProfile(); }
+  if(id === 'screen-profile') { try { renderProfile(); } catch(e) { console.error(e); } }
   if(id === 'screen-funfacts') renderFunFacts();
   if(id === 'screen-mistakes') { try { renderMistakes(); } catch(e) { console.error('renderMistakes error:', e); } }
   if(id === 'screen-achievements') { try { renderAchievements(); } catch(e) { console.error('renderAchievements error:', e); } }
@@ -7136,7 +7134,6 @@ function selectRole(btn, role) {
 }
 
 function loginByRole() {
-   alert('loginByRole: ' + _selectedRole);
    if (_selectedRole === 'parent') {
     openParentPin();
   } else {
@@ -7166,9 +7163,9 @@ function checkParentPin() {
   const entered = document.getElementById('parent-pin-input').value.trim();
   if (entered === getParentPin()) {
     closeParentPin();
-    document.getElementById('login-role').value = 'parent';
+    _selectedRole = 'parent';
     doLogin();
-    document.getElementById('login-role').value = 'student'; // сбрасываем после входа
+    _selectedRole = 'student'; // сбрасываем после входа
   } else {
     document.getElementById('parent-pin-error').textContent = '❌ Неверный пин-код';
     document.getElementById('parent-pin-input').value = '';
@@ -7181,10 +7178,9 @@ function freshST() {
 }
 
 function doLogin() {
-  alert("doLogin called");
+
   const name = document.getElementById('login-name').value.trim() || 'Ученик';
-  const roleInput = document.getElementById('login-role');
-  const role = roleInput ? roleInput.value : 'student';
+  const role = _selectedRole || 'student';
   const modeBtn = document.querySelector('.input-mode-btn.selected');
   const inputMode = modeBtn ? modeBtn.dataset.mode : 'text';
 
@@ -7205,7 +7201,8 @@ function doLogin() {
     try { renderParent(); } catch(e) { console.error('[doLogin] renderParent:', e); }
     showScreen('screen-parent');
   } else {
-    alert('before showScreen'); showScreen('screen-home'); alert('after showScreen');
+    renderHome();
+    showScreen('screen-home');
   }
 }function doLogout() {
   ST.user = null;
