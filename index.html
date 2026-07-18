@@ -6881,9 +6881,11 @@ function showScreen(id) {
   const studentScreens = ['screen-home','screen-homework','screen-map','screen-trainers','screen-self-check','screen-walkthrough','screen-already-solved','screen-photo-check','screen-cheatsheet','screen-funfacts','screen-achievements','screen-profile','screen-final-test'];
   if (studentScreens.includes(id) && ST.user && ST.user.role === 'parent') return;
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  var el=document.getElementById(id); alert('showScreen: '+id+' el='+(el?'found':'NULL')+' role='+(ST.user?ST.user.role:'nouser'));
   document.getElementById(id).classList.add('active');
   document.body.classList.toggle('on-login', id === 'screen-login');
   window.scrollTo(0, 0);
+  console.log('[showScreen] id='+id+' user='+JSON.stringify(ST.user));
   updateAllXP();
   if(id === 'screen-parent') { try { renderParent(); } catch(e) { console.error('renderParent error:', e); } }
   if(id === 'screen-homework') updateTopics();
