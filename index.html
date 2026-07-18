@@ -8146,8 +8146,137 @@ function ruleRenderOdd(card, qz, i) {
     '<div class="rule-quiz-badge">🚫 Выбери лишнее</div>' +
     '<div class="rule-quiz-q">' + qz.q + '</div>' +
     '<div class="rq-choices">' +
-      opts.map(function(o){ return '<button class="rq-choice" data-val="' + o.replace(/"/g,'&quot;') + '">' + o + '</button>'; }).join('') +     '</div>' +     '<div class="rule-quiz-feedback" id="rule-feedback"></div>' +     '<button class="rule-quiz-check" id="rule-check-btn" style="display:none">' + nextLabel + '</button>';   card.querySelectorAll('.rq-choice').forEach(function(btn) {     btn.addEventListener('click', function() {       var chosen = this.getAttribute('data-val');       var ok = chosen.toLowerCase() === qz.a.toLowerCase();       card.querySelectorAll('.rq-choice').forEach(function(b) {         b.disabled = true;         if (b.getAttribute('data-val').toLowerCase() === qz.a.toLowerCase()) b.classList.add('rq-correct');         else if (b === btn && !ok) b.classList.add('rq-wrong');       });       if (ok) ruleState.correct++;       document.getElementById('rule-feedback').innerHTML = ok         ? '<span style="color:#10b981;font-weight:800">✅ Верно!</span>'         : '<span style="color:#ef4444;font-weight:700">Лишнее: <b>' + qz.a + '</b></span>';       document.getElementById('rule-check-btn').style.display = 'block';     });   });   document.getElementById('rule-check-btn').addEventListener('click', ruleNextQuestion); }  function ruleRenderMatch(card, qz, i) {   // qz.pairs = [{q,a},{q,a},...] — пары для соотнесения   var isLast = (i + 1 >= ruleState.quizzes.length);   var nextLabel = isLast ? 'Завершить →' : 'Следующий →';   var pairs = qz.pairs;   var leftItems = arrShuffle(pairs.map(function(p){ return p.q; }));   var rightItems = arrShuffle(pairs.map(function(p){ return p.a; }));   var pairMap = {};   pairs.forEach(function(p){ pairMap[p.q] = p.a; });   var selectedLeft = null;   var matched = 0;    card.innerHTML =     '<div class="rule-quiz-badge">🔗 Соотнеси</div>' +     '<div class="rule-quiz-q">' + qz.q + '</div>' +     '<div class="rq-match">' +       '<div class="rq-match-col" id="rq-left">' + leftItems.map(function(l){ return '<button class="rq-match-btn" data-val="' + l.replace(/"/g,'&quot;') + '" data-side="left">' + l + '</button>'; }).join('') + '</div>' +
-      '<div class="rq-match-col" id="rq-right">' + rightItems.map(function(r){ return '<button class="rq-match-btn" data-val="' + r.replace(/"/g,'&quot;') + '" data-side="right">' + r + '</button>'; }).join('') + '</div>' +     '</div>' +     '<div class="rule-quiz-feedback" id="rule-feedback"></div>' +     '<button class="rule-quiz-check" id="rule-check-btn" style="display:none">' + nextLabel + '</button>';    card.querySelectorAll('.rq-match-btn').forEach(function(btn) {     btn.addEventListener('click', function() {       var side = this.dataset.side;       var val = this.getAttribute('data-val');       if (side === 'left') {         card.querySelectorAll('.rq-match-btn[data-side="left"]').forEach(function(b){ b.classList.remove('rq-selected'); });         this.classList.add('rq-selected');         selectedLeft = val;       } else if (selectedLeft) {         var correctRight = pairMap[selectedLeft];         var ok = val === correctRight;         if (ok) {           matched++;           card.querySelectorAll('.rq-match-btn').forEach(function(b){             if ((b.dataset.side==='left' && b.getAttribute('data-val')===selectedLeft) ||                 (b.dataset.side==='right' && b.getAttribute('data-val')===val)) {               b.classList.remove('rq-selected'); b.classList.add('rq-correct'); b.disabled = true;             }           });           selectedLeft = null;           if (matched >= pairs.length) {             ruleState.correct++;             document.getElementById('rule-feedback').innerHTML = '<span style="color:#10b981;font-weight:800">✅ Все пары найдены!</span>';             document.getElementById('rule-check-btn').style.display = 'block';           }         } else {           this.classList.add('rq-wrong');           setTimeout(function(){ card.querySelectorAll('.rq-wrong').forEach(function(b){ b.classList.remove('rq-wrong','rq-selected'); }); selectedLeft = null; }, 700);           document.getElementById('rule-feedback').innerHTML = '<span style="color:#ef4444;font-size:12px">Не та пара, попробуй ещё</span>';         }       }     });   });   document.getElementById('rule-check-btn').addEventListener('click', ruleNextQuestion); }  function ruleRenderFormat(card, qz, fmt, i) {   var isLast = (i + 1 >= ruleState.quizzes.length);   var nextLabel = isLast ? 'Завершить →' : 'Следующий →';    if (fmt === 0) {     // Ввод ответа     card.innerHTML =       '<div class="rule-quiz-badge">✏️ Напиши ответ</div>' +       '<div class="rule-quiz-q">' + qz.q + '</div>' +       '<input type="text" class="rule-quiz-inp" id="rule-inp" placeholder="Твой ответ..." autocomplete="off">' +       '<button class="rule-quiz-check" id="rule-check-btn">Проверить →</button>' +       '<div class="rule-quiz-feedback" id="rule-feedback"></div>';     var inp = document.getElementById('rule-inp');     var btn = document.getElementById('rule-check-btn');     inp.focus();     var checked = false;     function doCheckInput() {       if (checked) { ruleNextQuestion(); return; }       checked = true;       var userAns = inp.value.trim().toLowerCase().replace(/[.,;:!?]/g,'');       var correct = qz.a.toLowerCase().replace(/[.,;:!?]/g,'');       var ok = userAns === correct || correct.includes(userAns) || (userAns.length > 2 && userAns.includes(correct));       if (ok) ruleState.correct++;       document.getElementById('rule-feedback').innerHTML = ok         ? '<span style="color:#10b981;font-weight:800">✅ Верно!</span>'         : '<span style="color:#ef4444;font-weight:700">Не совсем. Правильно: <b>' + qz.a + '</b></span>';       btn.textContent = nextLabel;       inp.disabled = true;     }     inp.addEventListener('keydown', function(e){ if(e.key==='Enter') doCheckInput(); });     btn.addEventListener('click', doCheckInput);    } else if (fmt === 1) {     // 4 варианта ответа     var opts;     if (qz.opts && qz.opts.length >= 2) {       // Используем заданные варианты       opts = arrShuffle(qz.opts.slice());     } else {       var allAnswers = ruleState.quizzes.map(function(q2){ return q2.a; });       var wrongs = allAnswers.filter(function(v){ return v !== qz.a; });       while (wrongs.length < 3) { wrongs.push(ruleState.quizzes[Math.floor(Math.random()*ruleState.quizzes.length)].a); }       wrongs = wrongs.slice(0,3);       opts = arrShuffle([qz.a, wrongs[0], wrongs[1], wrongs[2]]);     }     card.innerHTML =       '<div class="rule-quiz-badge">🎯 Выбери правильный ответ</div>' +       '<div class="rule-quiz-q">' + qz.q + '</div>' +       '<div class="rq-choices">' +         opts.map(function(o,ci){ return '<button class="rq-choice" data-val="' + o.replace(/"/g,'&quot;') + '">' + o + '</button>'; }).join('') +
+      opts.map(function(o){ return '<button class="rq-choice" data-val="' + o.replace(/"/g,'&quot;') + '">' + o + '</button>'; }).join('') +
+    '</div>' +
+    '<div class="rule-quiz-feedback" id="rule-feedback"></div>' +
+    '<button class="rule-quiz-check" id="rule-check-btn" style="display:none">' + nextLabel + '</button>';
+  card.querySelectorAll('.rq-choice').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var chosen = this.getAttribute('data-val');
+      var ok = chosen.toLowerCase() === qz.a.toLowerCase();
+      card.querySelectorAll('.rq-choice').forEach(function(b) {
+        b.disabled = true;
+        if (b.getAttribute('data-val').toLowerCase() === qz.a.toLowerCase()) b.classList.add('rq-correct');
+        else if (b === btn && !ok) b.classList.add('rq-wrong');
+      });
+      if (ok) ruleState.correct++;
+      document.getElementById('rule-feedback').innerHTML = ok
+        ? '<span style="color:#10b981;font-weight:800">✅ Верно!</span>'
+        : '<span style="color:#ef4444;font-weight:700">Лишнее: <b>' + qz.a + '</b></span>';
+      document.getElementById('rule-check-btn').style.display = 'block';
+    });
+  });
+  document.getElementById('rule-check-btn').addEventListener('click', ruleNextQuestion);
+}
+
+function ruleRenderMatch(card, qz, i) {
+  // qz.pairs = [{q,a},{q,a},...] — пары для соотнесения
+  var isLast = (i + 1 >= ruleState.quizzes.length);
+  var nextLabel = isLast ? 'Завершить →' : 'Следующий →';
+  var pairs = qz.pairs;
+  var leftItems = arrShuffle(pairs.map(function(p){ return p.q; }));
+  var rightItems = arrShuffle(pairs.map(function(p){ return p.a; }));
+  var pairMap = {};
+  pairs.forEach(function(p){ pairMap[p.q] = p.a; });
+  var selectedLeft = null;
+  var matched = 0;
+
+  card.innerHTML =
+    '<div class="rule-quiz-badge">🔗 Соотнеси</div>' +
+    '<div class="rule-quiz-q">' + qz.q + '</div>' +
+    '<div class="rq-match">' +
+      '<div class="rq-match-col" id="rq-left">' + leftItems.map(function(l){ return '<button class="rq-match-btn" data-val="' + l.replace(/"/g,'&quot;') + '" data-side="left">' + l + '</button>'; }).join('') + '</div>' +
+      '<div class="rq-match-col" id="rq-right">' + rightItems.map(function(r){ return '<button class="rq-match-btn" data-val="' + r.replace(/"/g,'&quot;') + '" data-side="right">' + r + '</button>'; }).join('') + '</div>' +
+    '</div>' +
+    '<div class="rule-quiz-feedback" id="rule-feedback"></div>' +
+    '<button class="rule-quiz-check" id="rule-check-btn" style="display:none">' + nextLabel + '</button>';
+
+  card.querySelectorAll('.rq-match-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var side = this.dataset.side;
+      var val = this.getAttribute('data-val');
+      if (side === 'left') {
+        card.querySelectorAll('.rq-match-btn[data-side="left"]').forEach(function(b){ b.classList.remove('rq-selected'); });
+        this.classList.add('rq-selected');
+        selectedLeft = val;
+      } else if (selectedLeft) {
+        var correctRight = pairMap[selectedLeft];
+        var ok = val === correctRight;
+        if (ok) {
+          matched++;
+          card.querySelectorAll('.rq-match-btn').forEach(function(b){
+            if ((b.dataset.side==='left' && b.getAttribute('data-val')===selectedLeft) ||
+                (b.dataset.side==='right' && b.getAttribute('data-val')===val)) {
+              b.classList.remove('rq-selected'); b.classList.add('rq-correct'); b.disabled = true;
+            }
+          });
+          selectedLeft = null;
+          if (matched >= pairs.length) {
+            ruleState.correct++;
+            document.getElementById('rule-feedback').innerHTML = '<span style="color:#10b981;font-weight:800">✅ Все пары найдены!</span>';
+            document.getElementById('rule-check-btn').style.display = 'block';
+          }
+        } else {
+          this.classList.add('rq-wrong');
+          setTimeout(function(){ card.querySelectorAll('.rq-wrong').forEach(function(b){ b.classList.remove('rq-wrong','rq-selected'); }); selectedLeft = null; }, 700);
+          document.getElementById('rule-feedback').innerHTML = '<span style="color:#ef4444;font-size:12px">Не та пара, попробуй ещё</span>';
+        }
+      }
+    });
+  });
+  document.getElementById('rule-check-btn').addEventListener('click', ruleNextQuestion);
+}
+
+function ruleRenderFormat(card, qz, fmt, i) {
+  var isLast = (i + 1 >= ruleState.quizzes.length);
+  var nextLabel = isLast ? 'Завершить →' : 'Следующий →';
+
+  if (fmt === 0) {
+    // Ввод ответа
+    card.innerHTML =
+      '<div class="rule-quiz-badge">✏️ Напиши ответ</div>' +
+      '<div class="rule-quiz-q">' + qz.q + '</div>' +
+      '<input type="text" class="rule-quiz-inp" id="rule-inp" placeholder="Твой ответ..." autocomplete="off">' +
+      '<button class="rule-quiz-check" id="rule-check-btn">Проверить →</button>' +
+      '<div class="rule-quiz-feedback" id="rule-feedback"></div>';
+    var inp = document.getElementById('rule-inp');
+    var btn = document.getElementById('rule-check-btn');
+    inp.focus();
+    var checked = false;
+    function doCheckInput() {
+      if (checked) { ruleNextQuestion(); return; }
+      checked = true;
+      var userAns = inp.value.trim().toLowerCase().replace(/[.,;:!?]/g,'');
+      var correct = qz.a.toLowerCase().replace(/[.,;:!?]/g,'');
+      var ok = userAns === correct || correct.includes(userAns) || (userAns.length > 2 && userAns.includes(correct));
+      if (ok) ruleState.correct++;
+      document.getElementById('rule-feedback').innerHTML = ok
+        ? '<span style="color:#10b981;font-weight:800">✅ Верно!</span>'
+        : '<span style="color:#ef4444;font-weight:700">Не совсем. Правильно: <b>' + qz.a + '</b></span>';
+      btn.textContent = nextLabel;
+      inp.disabled = true;
+    }
+    inp.addEventListener('keydown', function(e){ if(e.key==='Enter') doCheckInput(); });
+    btn.addEventListener('click', doCheckInput);
+
+  } else if (fmt === 1) {
+    // 4 варианта ответа
+    var opts;
+    if (qz.opts && qz.opts.length >= 2) {
+      // Используем заданные варианты
+      opts = arrShuffle(qz.opts.slice());
+    } else {
+      var allAnswers = ruleState.quizzes.map(function(q2){ return q2.a; });
+      var wrongs = allAnswers.filter(function(v){ return v !== qz.a; });
+      while (wrongs.length < 3) { wrongs.push(ruleState.quizzes[Math.floor(Math.random()*ruleState.quizzes.length)].a); }
+      wrongs = wrongs.slice(0,3);
+      opts = arrShuffle([qz.a, wrongs[0], wrongs[1], wrongs[2]]);
+    }
+    card.innerHTML =
+      '<div class="rule-quiz-badge">🎯 Выбери правильный ответ</div>' +
+      '<div class="rule-quiz-q">' + qz.q + '</div>' +
+      '<div class="rq-choices">' +
+        opts.map(function(o,ci){ return '<button class="rq-choice" data-val="' + o.replace(/"/g,'&quot;') + '">' + o + '</button>'; }).join('') +
       '</div>' +
       '<div class="rule-quiz-feedback" id="rule-feedback"></div>' +
       '<button class="rule-quiz-check" id="rule-check-btn" style="display:none">' + nextLabel + '</button>';
@@ -8190,8 +8319,119 @@ function ruleRenderOdd(card, qz, i) {
       '<div class="rule-quiz-badge">🚫 Выбери лишнее</div>' +
       '<div class="rule-quiz-q">' + qz.q + '</div>' +
       '<div class="rq-choices">' +
-        opts2.map(function(o){ return '<button class="rq-choice" data-val="' + o.replace(/"/g,'&quot;') + '">' + o + '</button>'; }).join('') +       '</div>' +       '<div class="rule-quiz-feedback" id="rule-feedback"></div>' +       '<button class="rule-quiz-check" id="rule-check-btn" style="display:none">' + nextLabel + '</button>';     card.querySelectorAll('.rq-choice').forEach(function(btn) {       btn.addEventListener('click', function() {         var chosen = this.getAttribute('data-val');         var ok = chosen.toLowerCase() === qz.a.toLowerCase();         card.querySelectorAll('.rq-choice').forEach(function(b) {           b.disabled = true;           if (b.getAttribute('data-val').toLowerCase() === qz.a.toLowerCase()) b.classList.add('rq-correct');           else if (b === btn && !ok) b.classList.add('rq-wrong');         });         if (ok) ruleState.correct++;         document.getElementById('rule-feedback').innerHTML = ok           ? '<span style="color:#10b981;font-weight:800">✅ Верно!</span>'           : '<span style="color:#ef4444;font-weight:700">Правильный ответ: <b>' + qz.a + '</b></span>';         document.getElementById('rule-check-btn').style.display = 'block';       });     });     document.getElementById('rule-check-btn').addEventListener('click', ruleNextQuestion);    } else if (fmt === 3) {     // Верно / Неверно — строим утверждение из вопроса + ответа     var isTrue3 = Math.random() > 0.5;     var otherAnswers3 = ruleState.quizzes.filter(function(q2){ return q2.a.toLowerCase() !== qz.a.toLowerCase(); }).map(function(q2){ return q2.a; });     var fakeA3 = otherAnswers3.length ? otherAnswers3[Math.floor(Math.random()*otherAnswers3.length)] : null;     var displayClaim, correctAnswer;     if (isTrue3 || !fakeA3) {       // Показываем правдивое утверждение: «[вопрос] → [правильный ответ]»       displayClaim = qz.q.replace(/\?$/, '') + ': <b>' + qz.a + '</b>.';       correctAnswer = 'Верно';     } else {       // Ложное: подставляем неверный ответ       displayClaim = qz.q.replace(/\?$/, '') + ': <b>' + fakeA3 + '</b>.';       correctAnswer = 'Неверно';     }     card.innerHTML =       '<div class="rule-quiz-badge">💡 Верно или Неверно?</div>' +       '<div class="rule-quiz-q">' + displayClaim + '</div>' +       '<div class="rq-choices" style="grid-template-columns:1fr 1fr">' +         '<button class="rq-choice" data-val="Верно">✅ Верно</button>' +         '<button class="rq-choice" data-val="Неверно">❌ Неверно</button>' +       '</div>' +       '<div class="rule-quiz-feedback" id="rule-feedback"></div>' +       '<button class="rule-quiz-check" id="rule-check-btn" style="display:none">' + nextLabel + '</button>';     card.querySelectorAll('.rq-choice').forEach(function(btn) {       btn.addEventListener('click', function() {         var chosen = this.getAttribute('data-val');         var ok = chosen === correctAnswer;         card.querySelectorAll('.rq-choice').forEach(function(b) {           b.disabled = true;           if (b.getAttribute('data-val') === correctAnswer) b.classList.add('rq-correct');           else if (b === btn && !ok) b.classList.add('rq-wrong');         });         if (ok) ruleState.correct++;         document.getElementById('rule-feedback').innerHTML = ok           ? '<span style="color:#10b981;font-weight:800">✅ Верно!</span>'           : '<span style="color:#ef4444;font-weight:700">Ответ: <b>' + correctAnswer + '</b></span>';         document.getElementById('rule-check-btn').style.display = 'block';       });     });     document.getElementById('rule-check-btn').addEventListener('click', ruleNextQuestion);    } else {     // fmt === 4: найди пару (match 3 пары с разными ответами)     // Берём квизы с уникальными ответами чтобы пара была осмысленной     var pairPool = [];     var usedAnswers = {};     // Перемешиваем чтобы каждый раз разные 3 пары     var shuffledQ = arrShuffle(ruleState.quizzes.slice());     for (var pi4 = 0; pi4 < shuffledQ.length; pi4++) {       var q4 = shuffledQ[pi4];       if (!usedAnswers[q4.a]) { usedAnswers[q4.a] = true; pairPool.push(q4); }       if (pairPool.length >= 3) break;     }     // Если не набрали 3 уникальных — берём просто первые три     if (pairPool.length < 3) pairPool = ruleState.quizzes.slice(0, 3);     while (pairPool.length < 3) pairPool.push(ruleState.quizzes[0]);     var pairs = pairPool.slice(0, 3);     var leftItems = arrShuffle(pairs.map(function(p){ return p.q; }));     var rightItems = arrShuffle(pairs.map(function(p){ return p.a; }));     var pairMap = {};     pairs.forEach(function(p){ pairMap[p.q] = p.a; pairMap[p.a] = p.q; });     var selectedLeft = null;     var matched = 0;     var totalPairs = pairs.length;      card.innerHTML =       '<div class="rule-quiz-badge">🔗 Найди пару</div>' +       '<div class="rule-quiz-q">Соедини вопрос с ответом</div>' +       '<div class="rq-match">' +         '<div class="rq-match-col" id="rq-left">' + leftItems.map(function(l){ return '<button class="rq-match-btn" data-val="' + l.replace(/"/g,'&quot;') + '" data-side="left">' + l + '</button>'; }).join('') + '</div>' +
-        '<div class="rq-match-col" id="rq-right">' + rightItems.map(function(r){ return '<button class="rq-match-btn" data-val="' + r.replace(/"/g,'&quot;') + '" data-side="right">' + r + '</button>'; }).join('') + '</div>' +       '</div>' +       '<div class="rule-quiz-feedback" id="rule-feedback"></div>' +       '<button class="rule-quiz-check" id="rule-check-btn" style="display:none">' + nextLabel + '</button>';      card.querySelectorAll('.rq-match-btn').forEach(function(btn) {       btn.addEventListener('click', function() {         if (this.classList.contains('rq-matched') || this.disabled) return;         var side = this.getAttribute('data-side');         var val = this.getAttribute('data-val');         if (side === 'left') {           // снять предыдущий выбор           card.querySelectorAll('.rq-match-btn[data-side=left]').forEach(function(b){ b.classList.remove('rq-selected'); });           selectedLeft = val;           this.classList.add('rq-selected');         } else if (selectedLeft !== null) {           // Проверить пару           var expectedRight = pairMap[selectedLeft];           var ok2 = val === expectedRight;           var leftBtn = card.querySelector('.rq-match-btn[data-val="' + selectedLeft.replace(/"/g,'&quot;') + '"][data-side=left]');
+        opts2.map(function(o){ return '<button class="rq-choice" data-val="' + o.replace(/"/g,'&quot;') + '">' + o + '</button>'; }).join('') +
+      '</div>' +
+      '<div class="rule-quiz-feedback" id="rule-feedback"></div>' +
+      '<button class="rule-quiz-check" id="rule-check-btn" style="display:none">' + nextLabel + '</button>';
+    card.querySelectorAll('.rq-choice').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var chosen = this.getAttribute('data-val');
+        var ok = chosen.toLowerCase() === qz.a.toLowerCase();
+        card.querySelectorAll('.rq-choice').forEach(function(b) {
+          b.disabled = true;
+          if (b.getAttribute('data-val').toLowerCase() === qz.a.toLowerCase()) b.classList.add('rq-correct');
+          else if (b === btn && !ok) b.classList.add('rq-wrong');
+        });
+        if (ok) ruleState.correct++;
+        document.getElementById('rule-feedback').innerHTML = ok
+          ? '<span style="color:#10b981;font-weight:800">✅ Верно!</span>'
+          : '<span style="color:#ef4444;font-weight:700">Правильный ответ: <b>' + qz.a + '</b></span>';
+        document.getElementById('rule-check-btn').style.display = 'block';
+      });
+    });
+    document.getElementById('rule-check-btn').addEventListener('click', ruleNextQuestion);
+
+  } else if (fmt === 3) {
+    // Верно / Неверно — строим утверждение из вопроса + ответа
+    var isTrue3 = Math.random() > 0.5;
+    var otherAnswers3 = ruleState.quizzes.filter(function(q2){ return q2.a.toLowerCase() !== qz.a.toLowerCase(); }).map(function(q2){ return q2.a; });
+    var fakeA3 = otherAnswers3.length ? otherAnswers3[Math.floor(Math.random()*otherAnswers3.length)] : null;
+    var displayClaim, correctAnswer;
+    if (isTrue3 || !fakeA3) {
+      // Показываем правдивое утверждение: «[вопрос] → [правильный ответ]»
+      displayClaim = qz.q.replace(/\?$/, '') + ': <b>' + qz.a + '</b>.';
+      correctAnswer = 'Верно';
+    } else {
+      // Ложное: подставляем неверный ответ
+      displayClaim = qz.q.replace(/\?$/, '') + ': <b>' + fakeA3 + '</b>.';
+      correctAnswer = 'Неверно';
+    }
+    card.innerHTML =
+      '<div class="rule-quiz-badge">💡 Верно или Неверно?</div>' +
+      '<div class="rule-quiz-q">' + displayClaim + '</div>' +
+      '<div class="rq-choices" style="grid-template-columns:1fr 1fr">' +
+        '<button class="rq-choice" data-val="Верно">✅ Верно</button>' +
+        '<button class="rq-choice" data-val="Неверно">❌ Неверно</button>' +
+      '</div>' +
+      '<div class="rule-quiz-feedback" id="rule-feedback"></div>' +
+      '<button class="rule-quiz-check" id="rule-check-btn" style="display:none">' + nextLabel + '</button>';
+    card.querySelectorAll('.rq-choice').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var chosen = this.getAttribute('data-val');
+        var ok = chosen === correctAnswer;
+        card.querySelectorAll('.rq-choice').forEach(function(b) {
+          b.disabled = true;
+          if (b.getAttribute('data-val') === correctAnswer) b.classList.add('rq-correct');
+          else if (b === btn && !ok) b.classList.add('rq-wrong');
+        });
+        if (ok) ruleState.correct++;
+        document.getElementById('rule-feedback').innerHTML = ok
+          ? '<span style="color:#10b981;font-weight:800">✅ Верно!</span>'
+          : '<span style="color:#ef4444;font-weight:700">Ответ: <b>' + correctAnswer + '</b></span>';
+        document.getElementById('rule-check-btn').style.display = 'block';
+      });
+    });
+    document.getElementById('rule-check-btn').addEventListener('click', ruleNextQuestion);
+
+  } else {
+    // fmt === 4: найди пару (match 3 пары с разными ответами)
+    // Берём квизы с уникальными ответами чтобы пара была осмысленной
+    var pairPool = [];
+    var usedAnswers = {};
+    // Перемешиваем чтобы каждый раз разные 3 пары
+    var shuffledQ = arrShuffle(ruleState.quizzes.slice());
+    for (var pi4 = 0; pi4 < shuffledQ.length; pi4++) {
+      var q4 = shuffledQ[pi4];
+      if (!usedAnswers[q4.a]) { usedAnswers[q4.a] = true; pairPool.push(q4); }
+      if (pairPool.length >= 3) break;
+    }
+    // Если не набрали 3 уникальных — берём просто первые три
+    if (pairPool.length < 3) pairPool = ruleState.quizzes.slice(0, 3);
+    while (pairPool.length < 3) pairPool.push(ruleState.quizzes[0]);
+    var pairs = pairPool.slice(0, 3);
+    var leftItems = arrShuffle(pairs.map(function(p){ return p.q; }));
+    var rightItems = arrShuffle(pairs.map(function(p){ return p.a; }));
+    var pairMap = {};
+    pairs.forEach(function(p){ pairMap[p.q] = p.a; pairMap[p.a] = p.q; });
+    var selectedLeft = null;
+    var matched = 0;
+    var totalPairs = pairs.length;
+
+    card.innerHTML =
+      '<div class="rule-quiz-badge">🔗 Найди пару</div>' +
+      '<div class="rule-quiz-q">Соедини вопрос с ответом</div>' +
+      '<div class="rq-match">' +
+        '<div class="rq-match-col" id="rq-left">' + leftItems.map(function(l){ return '<button class="rq-match-btn" data-val="' + l.replace(/"/g,'&quot;') + '" data-side="left">' + l + '</button>'; }).join('') + '</div>' +
+        '<div class="rq-match-col" id="rq-right">' + rightItems.map(function(r){ return '<button class="rq-match-btn" data-val="' + r.replace(/"/g,'&quot;') + '" data-side="right">' + r + '</button>'; }).join('') + '</div>' +
+      '</div>' +
+      '<div class="rule-quiz-feedback" id="rule-feedback"></div>' +
+      '<button class="rule-quiz-check" id="rule-check-btn" style="display:none">' + nextLabel + '</button>';
+
+    card.querySelectorAll('.rq-match-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        if (this.classList.contains('rq-matched') || this.disabled) return;
+        var side = this.getAttribute('data-side');
+        var val = this.getAttribute('data-val');
+        if (side === 'left') {
+          // снять предыдущий выбор
+          card.querySelectorAll('.rq-match-btn[data-side=left]').forEach(function(b){ b.classList.remove('rq-selected'); });
+          selectedLeft = val;
+          this.classList.add('rq-selected');
+        } else if (selectedLeft !== null) {
+          // Проверить пару
+          var expectedRight = pairMap[selectedLeft];
+          var ok2 = val === expectedRight;
+          var leftBtn = card.querySelector('.rq-match-btn[data-val="' + selectedLeft.replace(/"/g,'&quot;') + '"][data-side=left]');
           if (ok2) {
             matched++;
             if (leftBtn) { leftBtn.classList.remove('rq-selected'); leftBtn.classList.add('rq-matched'); leftBtn.disabled = true; }
