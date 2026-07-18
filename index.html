@@ -6881,8 +6881,6 @@ function _dbg(msg) {
   d.innerHTML = msg;
 }
 function showScreen(id) {
-  
-  alert('showScreen id='+id+' role='+_role);
   if (id === 'screen-parent' && ST.user && ST.user.role !== 'parent') { return; }
   const studentScreens = ['screen-home','screen-homework','screen-map','screen-trainers','screen-self-check','screen-walkthrough','screen-already-solved','screen-photo-check','screen-cheatsheet','screen-funfacts','screen-achievements','screen-profile','screen-final-test'];
   if (studentScreens.includes(id) && ST.user && ST.user.role === 'parent') { return; }
