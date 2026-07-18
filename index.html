@@ -7205,8 +7205,7 @@ function doLogin() {
     try { renderParent(); } catch(e) { console.error('[doLogin] renderParent:', e); }
     showScreen('screen-parent');
   } else {
-    try { renderHome(); } catch(e) { console.error('[doLogin] renderHome:', e); alert('renderHome error: ' + e.message); }
-    showScreen('screen-home');
+    alert('before showScreen'); showScreen('screen-home'); alert('after showScreen');
   }
 }function doLogout() {
   ST.user = null;
