@@ -6875,11 +6875,11 @@ renderTrainers();
 
 // ===== NAVIGATION =====
 function showScreen(id) {
-  // Защита ролей: ученик не может зайти в кабинет родителя
-  if (id === 'screen-parent' && ST.user && ST.user.role !== 'parent') return;
-  // Родитель не может зайти на экраны ученика
+  var _role = ST.user ? ST.user.role : 'NO_USER';
+  alert('showScreen id='+id+' role='+_role);
+  if (id === 'screen-parent' && ST.user && ST.user.role !== 'parent') { alert('BLOCKED: not parent'); return; }
   const studentScreens = ['screen-home','screen-homework','screen-map','screen-trainers','screen-self-check','screen-walkthrough','screen-already-solved','screen-photo-check','screen-cheatsheet','screen-funfacts','screen-achievements','screen-profile','screen-final-test'];
-  if (studentScreens.includes(id) && ST.user && ST.user.role === 'parent') return;
+  if (studentScreens.includes(id) && ST.user && ST.user.role === 'parent') { alert('BLOCKED: parent cant see student screen'); return; }
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   document.body.classList.toggle('on-login', id === 'screen-login');
