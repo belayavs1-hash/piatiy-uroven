@@ -9459,10 +9459,23 @@ function wtShowTask(startPart) {
       chatAddBot(intro.msg1, false);
       wtTutorHistory.push({ role: 'assistant', content: intro.msg1 });
       if (intro.msg2) setTimeout(() => { chatAddBot(intro.msg2, false); wtTutorHistory.push({ role: 'assistant', content: intro.msg2 }); }, 550);
+      // Показать SVG-подсказку из hints если есть
+      const h0 = (task.hints || [])[0];
+      const hintSvg = h0 && typeof h0 === 'object' && h0.content && h0.content.indexOf('<svg') >= 0 ? h0.content : null;
       // Показать иллюстрацию если задание про геометрическую фигуру
       // Показываем SVG только если ТЕМА задания геометрическая — не текст (там «прямая», «луч» в другом смысле)
-      const taskGeo = getGeoSvg(task.topic || '');
-      if (taskGeo) {
+      const taskGeo = hintSvg ? null : getGeoSvg(task.topic || '');
+      if (hintSvg) {
+        const delay = intro.msg2 ? 1200 : 600;
+        setTimeout(() => {
+          // content = SVG + \n + текст подсказки
+          const parts = hintSvg.split('\n');
+          const svgPart = parts[0];
+          const tipPart = parts.slice(1).join('\n').trim();
+          const tipHtml = tipPart ? '<div style="margin-top:8px;font-size:13px;color:#94a3b8">' + tipPart.replace(/\n/g,'<br>') + '</div>' : '';
+          chatAddBot('<b>Рисунок к задаче:</b><div style="margin-top:6px">' + svgPart + '</div>' + tipHtml, false);
+        }, delay);
+      } else if (taskGeo) {
         const delay = intro.msg2 ? 1200 : 600;
         setTimeout(() => {
           chatAddBot('<b>Вот как выглядит эта фигура:</b><div style="margin-top:6px">' + taskGeo + '</div>', false);
