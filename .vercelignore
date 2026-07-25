@@ -1,0 +1,16 @@
+*.zip
+*.docx
+para1_photos/
+svg_extracted/
+svg_extracted2/
+svg_tmp/
+svg_tmp4/
+svg_tmp5/
+t.js
+tmp_check.js
+png260_b64.txt
+png260_direct_b64.txt
+png286_b64.txt
+png310_b64.txt
+png345_b64.txt
+png433_b64.txt
