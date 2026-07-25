@@ -1,0 +1,44 @@
+[
+  {
+    "number": "6.208 (1)",
+    "file": "svg/task-6-208-1.svg",
+    "png_file": "png/task-6-208-1.png",
+    "description": "рис. 6.20"
+  },
+  {
+    "number": "6.208 (2)",
+    "file": "svg/task-6-208-2.svg",
+    "png_file": "png/task-6-208-2.png",
+    "description": "рис. 6.21"
+  },
+  {
+    "number": "6.209",
+    "file": "svg/task-6-209.svg",
+    "png_file": "png/task-6-209.png",
+    "description": "образец деления"
+  },
+  {
+    "number": "6.258",
+    "file": "svg/task-6-258.svg",
+    "png_file": "png/task-6-258.png",
+    "description": "рис. 6.22"
+  },
+  {
+    "number": "6.265",
+    "file": "svg/task-6-265.svg",
+    "png_file": "png/task-6-265.png",
+    "description": "рис. 6.23"
+  },
+  {
+    "number": "6.307",
+    "file": "svg/task-6-307.svg",
+    "png_file": "png/task-6-307.png",
+    "description": "схема Солнечной системы"
+  },
+  {
+    "number": "6.311",
+    "file": "svg/task-6-311.svg",
+    "png_file": "png/task-6-311.png",
+    "description": "рис. 6.25"
+  }
+]
