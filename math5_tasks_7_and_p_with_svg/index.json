@@ -1,0 +1,122 @@
+[
+  {
+    "number": "7.23",
+    "file": "svg/task-7-23.svg",
+    "png_file": "png/task-7-23.png",
+    "description": "рис. 7.9 — ломаные и отрезки"
+  },
+  {
+    "number": "7.25",
+    "file": "svg/task-7-25.svg",
+    "png_file": "png/task-7-25.png",
+    "description": "рис. 7.10 — точки и ломаная"
+  },
+  {
+    "number": "7.28",
+    "file": "svg/task-7-28.svg",
+    "png_file": "png/task-7-28.png",
+    "description": "рис. 7.11 — часы с лучами"
+  },
+  {
+    "number": "7.29",
+    "file": "svg/task-7-29.svg",
+    "png_file": "png/task-7-29.png",
+    "description": "рис. 7.12 — ломаные"
+  },
+  {
+    "number": "7.48",
+    "file": "svg/task-7-48.svg",
+    "png_file": "png/task-7-48.png",
+    "description": "рис. 7.13 — лучи из точки Q"
+  },
+  {
+    "number": "7.49",
+    "file": "svg/task-7-49.svg",
+    "png_file": "png/task-7-49.png",
+    "description": "рис. 7.13 и рис. 7.14"
+  },
+  {
+    "number": "7.57",
+    "file": "svg/task-7-57.svg",
+    "png_file": "png/task-7-57.png",
+    "description": "рис. 7.19 — транспортир"
+  },
+  {
+    "number": "7.70",
+    "file": "svg/task-7-70.svg",
+    "png_file": "png/task-7-70.png",
+    "description": "рис. 7.21 — прямые и лучи"
+  },
+  {
+    "number": "7.73",
+    "file": "svg/task-7-73.svg",
+    "png_file": "png/task-7-73.png",
+    "description": "рис. 7.22 — лучи и пересечение"
+  },
+  {
+    "number": "п.29",
+    "file": "svg/task-p-29.svg",
+    "png_file": "png/task-p-29.png",
+    "description": "рис. 1 — вертикальная шкала"
+  },
+  {
+    "number": "п.43",
+    "file": "svg/task-p-43.svg",
+    "png_file": "png/task-p-43.png",
+    "description": "рис. 2 — отрезки в круге и рядом"
+  },
+  {
+    "number": "п.46",
+    "file": "svg/task-p-46.svg",
+    "png_file": "png/task-p-46.png",
+    "description": "рис. 3 — точки M, N, P, K на прямой"
+  },
+  {
+    "number": "п.67",
+    "file": "svg/task-p-67.svg",
+    "png_file": "png/task-p-67.png",
+    "description": "рис. 4 — мерный цилиндр"
+  },
+  {
+    "number": "п.68",
+    "file": "svg/task-p-68.svg",
+    "png_file": "png/task-p-68.png",
+    "description": "рис. 5 — пересекающиеся прямые"
+  },
+  {
+    "number": "п.69",
+    "file": "svg/task-p-69.svg",
+    "png_file": "png/task-p-69.png",
+    "description": "рис. 6 — две квадратные фигуры"
+  },
+  {
+    "number": "п.70",
+    "file": "svg/task-p-70.svg",
+    "png_file": "png/task-p-70.png",
+    "description": "рис. 7 — квадрат, разделённый на части"
+  },
+  {
+    "number": "п.74",
+    "file": "svg/task-p-74.svg",
+    "png_file": "png/task-p-74.png",
+    "description": "рис. 8 — многоугольник"
+  },
+  {
+    "number": "п.75",
+    "file": "svg/task-p-75.svg",
+    "png_file": "png/task-p-75.png",
+    "description": "рис. 9 и рис. 10 — треугольники с размерами"
+  },
+  {
+    "number": "п.107",
+    "file": "svg/task-p-107.svg",
+    "png_file": "png/task-p-107.png",
+    "description": "рис. 11 и рис. 12 — числовые таблицы"
+  },
+  {
+    "number": "п.108",
+    "file": "svg/task-p-108.svg",
+    "png_file": "png/task-p-108.png",
+    "description": "рис. 13 — схемы на сетке"
+  }
+]
