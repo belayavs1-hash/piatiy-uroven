@@ -3511,6 +3511,7 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
     <div class="done-xp" id="done-xp">+10 XP ⭐</div>
     <div class="done-btns">
       <button class="btn-primary" onclick="showScreen('screen-homework')">📚 Следующее задание</button>
+      <button class="btn-secondary" onclick="showScreen('screen-walkthrough')" style="background:rgba(99,102,241,.12);color:#a5b4fc;border:1.5px solid rgba(99,102,241,.3)">← Перечитать задание</button>
       <button class="btn-secondary" onclick="showScreen('screen-home')" style="background:#fff">🏠 На главную</button>
     </div>
   </div>
@@ -6824,7 +6825,7 @@ const TASKS = [
 {id:"П.1",part:3,para:"Повторение",topic:"Задачи на повторение",text:"В семизначном числе переставили две последние цифры, и оно не изменилось. Какая цифра была предпоследней, если последняя цифра 8?",type:"text",answer:"Предпоследняя цифра тоже 8 (число не изменилось, значит оба одинаковые).",hints:["Число не изменилось → две последние цифры одинаковые.","Последняя цифра 8 → предпоследняя тоже 8."]},
 {id:"П.2",part:3,para:"Повторение",topic:"Задачи на повторение",text:"Девятизначное число оканчивается на 60. На сколько изменится число, если эти цифры поменять местами?",type:"text",answer:"Число увеличится на 54 (60→06: разница 60−6=54, но смотри порядок: 06<60, значит число уменьшится на 54).",hints:["Цифры «60» → меняем на «06»: ...60 > ...06, число уменьшается.","Разница: последние два разряда. 60 − 06 = 54 → число уменьшится на 54."]},
 {id:"П.3",part:3,para:"Повторение",topic:"Задачи на повторение",text:"Справедливо ли утверждение: «Если четырёхзначное число записать в обратном порядке, то снова получим четырёхзначное число»?",type:"text",answer:"Нет, не всегда. Например 1000 → 0001 = 1 (однозначное). Если первая цифра ≠ 0, то да.",hints:["Пример: 1000 → 0001 = 1 (не четырёхзначное).","Утверждение неверно: первая цифра может оказаться 0."]},
-{id:"П.4",part:3,para:"Повторение",topic:"Задачи на повторение",text:"Вычислите цепочку действий:<br>а) 6 : 1,2 − 5 · 0,97 + 3,15 = ?&nbsp;&nbsp; в) 3 · 1,6 − 1,2 : 12 + 1,2 = ?&nbsp;&nbsp; д) 30 · 0,3 − 4,8 : 0,7 · 0,01 = ?&nbsp;&nbsp; ж) 7 − 0,7 : 0,9 · 0,02 + 0,66 = ?<br>б) 9 : 1,5 − 5 · 0,25 + 6 = ?&nbsp;&nbsp; г) 0,6 · 6 + 1,2 : 40 · 50 = ?&nbsp;&nbsp; е) 2 · 1,9 − 2,2 : 0,8 : 0,1 = ?&nbsp;&nbsp; з) 1,5 · 6 : 5 · 2 + 2,4 = ?<span style='font-size:0;line-height:0;visibility:hidden'><br>а)<br>б)<br>в)<br>г)<br>д)<br>е)<br>ж)<br>з)</span>",type:"text",answer:"а) 5−4,85+3,15=3,3; в) 4,8−0,1+1,2=5,9; д) 9−68,57≈−59,57; ж) 7−0,0156+0,66≈7,64; б) 6−1,25+6=10,75; г) 3,6+1,5=5,1; е) 3,8−27,5=−23,7; з) 9:5·2+2,4=3,6+2,4=6",hints:["Соблюдай порядок действий: умножение и деление — слева направо, потом сложение и вычитание.","а) 6:1,2=5; 5·0,97=4,85; 5−4,85+3,15=3,3","б) 9:1,5=6; 6·0,25=1,5; 6−1,5+6=10,5 (нет, 6−1,25+6 → 9:1,5=6, 5·0,25=1,25, 6−1,25+6=10,75)","г) 0,6·6=3,6; 1,2:40=0,03; 0,03·50=1,5; 3,6+1,5=5,1","з) 1,5·6=9; 9:5=1,8; 1,8·2=3,6; 3,6+2,4=6"]},
+{id:"П.4",part:3,para:"Повторение",topic:"Задачи на повторение",text:"Вычислите:<div style=\"overflow-x:auto;margin:10px 0\"><div style=\"display:flex;gap:10px;min-width:max-content;padding:4px\"><div style=\"display:flex;flex-direction:column;gap:4px;min-width:100px\"><div style=\"background:#2563eb;color:#fff;border-radius:8px;padding:5px 8px;font-size:11px;font-weight:700;text-align:center\">а) 6:1,2−5·0,97+3,15</div><div style=\"background:#e2e8f0;border-radius:5px;padding:3px 8px;font-size:12px;color:#374151;text-align:center\">6:1,2=?</div><div style=\"background:#e2e8f0;border-radius:5px;padding:3px 8px;font-size:12px;color:#374151;text-align:center\">×0,97</div><div style=\"background:#e2e8f0;border-radius:5px;padding:3px 8px;font-size:12px;color:#374151;text-align:center\">−5</div><div style=\"background:#e2e8f0;border-radius:5px;padding:3px 8px;font-size:12px;color:#374151;text-align:center\">= ?</div><div style=\"background:#e2e8f0;border-radius:5px;padding:3px 8px;font-size:12px;color:#374151;text-align:center\">= ?</div><div style=\"background:#a7f3d0;border-radius:5px;padding:3px 8px;font-size:12px;font-weight:700;text-align:center;color:#065f46\">= ?</div></div><div style=\"display:flex;flex-direction:column;gap:4px;min-width:100px\"><div style=\"background:#2563eb;color:#fff;border-radius:8px;padding:5px 8px;font-size:11px;font-weight:700;text-align:center\">б) 9:1,5−5·0,25+6</div><div style=\"background:#e2e8f0;border-radius:5px;padding:3px 8px;font-size:12px;color:#374151;text-align:center\">9:1,5=?</div><div style=\"background:#e2e8f0;border-radius:5px;padding:3px 8px;font-size:12px;color:#374151;text-align:center\">−1,25</div><div style=\"background:#e2e8f0;border-radius:5px;padding:3px 8px;font-size:12px;color:#374151;text-align:center\">= ?</div><div style=\"background:#a7f3d0;border-radius:5px;padding:3px 8px;font-size:12px;font-weight:700;text-align:center;color:#065f46\">= ?</div></div><div style=\"display:flex;flex-direction:column;gap:4px;min-width:100px\"><div style=\"background:#2563eb;color:#fff;border-radius:8px;padding:5px 8px;font-size:11px;font-weight:700;text-align:center\">в) 3·1,6−1,2:12+1,2</div><div style=\"background:#e2e8f0;border-radius:5px;padding:3px 8px;font-size:12px;color:#374151;text-align:center\">3·1,6=?</div><div style=\"background:#e2e8f0;border-radius:5px;padding:3px 8px;font-size:12px;color:#374151;text-align:center\">1,2:12=?</div><div style=\"background:#e2e8f0;border-radius:5px;padding:3px 8px;font-size:12px;color:#374151;text-align:center\">= ?</div><div style=\"background:#a7f3d0;border-radius:5px;padding:3px 8px;font-size:12px;font-weight:700;text-align:center;color:#065f46\">= ?</div></div><div style=\"display:flex;flex-direction:column;gap:4px;min-width:100px\"><div style=\"background:#2563eb;color:#fff;border-radius:8px;padding:5px 8px;font-size:11px;font-weight:700;text-align:center\">г) 0,6·6+1,2:40·50</div><div style=\"background:#e2e8f0;border-radius:5px;padding:3px 8px;font-size:12px;color:#374151;text-align:center\">0,6·6=?</div><div style=\"background:#e2e8f0;border-radius:5px;padding:3px 8px;font-size:12px;color:#374151;text-align:center\">1,2:40=?</div><div style=\"background:#e2e8f0;border-radius:5px;padding:3px 8px;font-size:12px;color:#374151;text-align:center\">×50</div><div style=\"background:#e2e8f0;border-radius:5px;padding:3px 8px;font-size:12px;color:#374151;text-align:center\">= ?</div><div style=\"background:#a7f3d0;border-radius:5px;padding:3px 8px;font-size:12px;font-weight:700;text-align:center;color:#065f46\">= ?</div></div><div style=\"display:flex;flex-direction:column;gap:4px;min-width:100px\"><div style=\"background:#2563eb;color:#fff;border-radius:8px;padding:5px 8px;font-size:11px;font-weight:700;text-align:center\">д) 30·0,3−4,8:0,7·0,01</div><div style=\"background:#e2e8f0;border-radius:5px;padding:3px 8px;font-size:12px;color:#374151;text-align:center\">30·0,3=?</div><div style=\"background:#e2e8f0;border-radius:5px;padding:3px 8px;font-size:12px;color:#374151;text-align:center\">4,8:0,7=?</div><div style=\"background:#e2e8f0;border-radius:5px;padding:3px 8px;font-size:12px;color:#374151;text-align:center\">×0,01</div><div style=\"background:#e2e8f0;border-radius:5px;padding:3px 8px;font-size:12px;color:#374151;text-align:center\">= ?</div><div style=\"background:#a7f3d0;border-radius:5px;padding:3px 8px;font-size:12px;font-weight:700;text-align:center;color:#065f46\">= ?</div></div><div style=\"display:flex;flex-direction:column;gap:4px;min-width:100px\"><div style=\"background:#2563eb;color:#fff;border-radius:8px;padding:5px 8px;font-size:11px;font-weight:700;text-align:center\">е) 2·1,9−2,2:0,8:0,1</div><div style=\"background:#e2e8f0;border-radius:5px;padding:3px 8px;font-size:12px;color:#374151;text-align:center\">2·1,9=?</div><div style=\"background:#e2e8f0;border-radius:5px;padding:3px 8px;font-size:12px;color:#374151;text-align:center\">2,2:0,8=?</div><div style=\"background:#e2e8f0;border-radius:5px;padding:3px 8px;font-size:12px;color:#374151;text-align:center\">:0,1</div><div style=\"background:#e2e8f0;border-radius:5px;padding:3px 8px;font-size:12px;color:#374151;text-align:center\">= ?</div><div style=\"background:#a7f3d0;border-radius:5px;padding:3px 8px;font-size:12px;font-weight:700;text-align:center;color:#065f46\">= ?</div></div><div style=\"display:flex;flex-direction:column;gap:4px;min-width:100px\"><div style=\"background:#2563eb;color:#fff;border-radius:8px;padding:5px 8px;font-size:11px;font-weight:700;text-align:center\">ж) 7−0,7:0,9·0,02+0,66</div><div style=\"background:#e2e8f0;border-radius:5px;padding:3px 8px;font-size:12px;color:#374151;text-align:center\">0,7:0,9=?</div><div style=\"background:#e2e8f0;border-radius:5px;padding:3px 8px;font-size:12px;color:#374151;text-align:center\">×0,02</div><div style=\"background:#e2e8f0;border-radius:5px;padding:3px 8px;font-size:12px;color:#374151;text-align:center\">7−?+0,66</div><div style=\"background:#e2e8f0;border-radius:5px;padding:3px 8px;font-size:12px;color:#374151;text-align:center\">= ?</div><div style=\"background:#a7f3d0;border-radius:5px;padding:3px 8px;font-size:12px;font-weight:700;text-align:center;color:#065f46\">= ?</div></div><div style=\"display:flex;flex-direction:column;gap:4px;min-width:100px\"><div style=\"background:#2563eb;color:#fff;border-radius:8px;padding:5px 8px;font-size:11px;font-weight:700;text-align:center\">з) 1,5·6:5·2+2,4</div><div style=\"background:#e2e8f0;border-radius:5px;padding:3px 8px;font-size:12px;color:#374151;text-align:center\">1,5·6=?</div><div style=\"background:#e2e8f0;border-radius:5px;padding:3px 8px;font-size:12px;color:#374151;text-align:center\">:5</div><div style=\"background:#e2e8f0;border-radius:5px;padding:3px 8px;font-size:12px;color:#374151;text-align:center\">×2</div><div style=\"background:#e2e8f0;border-radius:5px;padding:3px 8px;font-size:12px;color:#374151;text-align:center\">+2,4</div><div style=\"background:#e2e8f0;border-radius:5px;padding:3px 8px;font-size:12px;color:#374151;text-align:center\">= ?</div><div style=\"background:#a7f3d0;border-radius:5px;padding:3px 8px;font-size:12px;font-weight:700;text-align:center;color:#065f46\">= ?</div></div></div></div><span style='font-size:0;line-height:0;visibility:hidden'><br>а)<br>б)<br>в)<br>г)<br>д)<br>е)<br>ж)<br>з)</span>",type:"text",answer:"а) 5−4,85+3,15=3,3; в) 4,8−0,1+1,2=5,9; д) 9−68,57≈−59,57; ж) 7−0,0156+0,66≈7,64; б) 6−1,25+6=10,75; г) 3,6+1,5=5,1; е) 3,8−27,5=−23,7; з) 9:5·2+2,4=3,6+2,4=6",hints:["Соблюдай порядок действий: умножение и деление — слева направо, потом сложение и вычитание.","а) 6:1,2=5; 5·0,97=4,85; 5−4,85+3,15=3,3","б) 9:1,5=6; 6·0,25=1,5; 6−1,5+6=10,5 (нет, 6−1,25+6 → 9:1,5=6, 5·0,25=1,25, 6−1,25+6=10,75)","г) 0,6·6=3,6; 1,2:40=0,03; 0,03·50=1,5; 3,6+1,5=5,1","з) 1,5·6=9; 9:5=1,8; 1,8·2=3,6; 3,6+2,4=6"]},
 {id:"П.5",part:3,para:"Повторение",topic:"Задачи на повторение",text:"Найдите значение выражения:<br>а) (4347 − 3490) · 31 − 4400 : 275;<br>б) (72 198 + 72 186) : 48 + 61 · 27;<br>в) 433 159 : 851 − 479 987 : 943 + 468 000 : 2340 + 331 331 : 331;<br>г) 423 328 + (49 007 − 52 275 : 615);<br>д) 232 · (336 392 : 56 − 3862) + 666.<span style='font-size:0;line-height:0;visibility:hidden'><br>а)<br>б)<br>в)<br>г)<br>д)</span>",type:"text",answer:"а) 857·31−16=26567−16=26551; б) 144384:48+1647=3008+1647=4655; в) 509−509+200+1001=1201; г) 423328+49007−85=472250; д) 232·(6007−3862)+666=232·2145+666=497640+666=498306",hints:["а) 4347−3490=857; 857·31=26567; 4400:275=16; 26567−16=26551","б) 72198+72186=144384; 144384:48=3008; 61·27=1647; 3008+1647=4655","в) 433159:851=509; 479987:943=509; 468000:2340=200; 331331:331=1001; 509−509+200+1001=1201","г) 52275:615=85; 49007−85=48922; 423328+48922=472250","д) 336392:56=6007; 6007−3862=2145; 232·2145=497640; 497640+666=498306"]},
 {id:"П.6",part:3,para:"Повторение",topic:"Задачи на повторение",text:"Найдите условия, при которых:<br>а) сумма двух чисел равна одному из них;<br>б) разность равна уменьшаемому; нулю;<br>в) произведение равно одному из множителей; нулю;<br>г) частное равно делимому; нулю; единице.<span style='font-size:0;line-height:0;visibility:hidden'><br>а)<br>б)<br>в)<br>г)</span>",type:"text",answer:"а) a+b=a → b=0; а) сумма равна a если b=0; б) a−b=a → b=0; a−b=0 → a=b; в) a·b=a → b=1 (или a=0); a·b=0 → a=0 или b=0; г) a:b=a → b=1; a:b=0 → a=0; a:b=1 → a=b",hints:["а) a+b=a когда b=0","б) a−b=a когда b=0; a−b=0 когда a=b","в) a·b=a когда b=1 или a=0; a·b=0 когда одно из чисел = 0","г) a:b=a когда b=1; a:b=0 когда a=0; a:b=1 когда a=b"]},
 {id:"П.7",part:3,para:"Повторение",topic:"Задачи на повторение",text:"Выполните деление с остатком: а) 24 360 на 79; б) 30 296 на 407.<span style='font-size:0;line-height:0;visibility:hidden'><br>а)<br>б)</span>",type:"text",answer:"а) 24360 = 79 · 308 + 28; б) 30296 = 407 · 74 + 118",hints:["а) 24360 : 79 = 308 ост. 28 (79·308=24332, 24360−24332=28)","б) 30296 : 407 = 74 ост. 118 (407·74=30118, 30296−30118=178... уточни по учебнику)"]},
@@ -9443,6 +9444,7 @@ let wtCurrentPart = null;   // текущий пункт: 'а','б',...
 let wtDoneParts   = [];     // выполненные пункты
 let wtPartAttempts = 0;     // попытки по текущему пункту
 let wtIsMultiPart = false;  // задание с пунктами а–з
+let wtParsedParts = null;   // пункты из hidden span (для задач без TASK_PARTS)
 let wtTutorHistory = [];    // история диалога с AI репетитором
 
 // ===== АВТОПАРСИНГ ПУНКТОВ =====
@@ -9636,6 +9638,33 @@ function openWalkthrough(task, backScreen, fromPhoto, doneParts) {
   wtDoneParts = doneParts || [];
   wtPartAttempts = 0;
   wtIsMultiPart = !!(getTaskCfg(task.id));
+  // Для задач без TASK_PARTS но с hidden span (повторение и др.)
+  if (!wtIsMultiPart) {
+    var _wParsed = null;
+    // 1. Hidden span: парсим пункты а/б/в/г или 1/2/3/4
+    var _hm = (task.text||"").match(/<span[^>]*visibility:hidden[^>]*>([\s\S]*?)<\/span>/i);
+    if (_hm) {
+      var _st = _hm[1];
+      var _ruL = ["а","б","в","г","д","е","ж"];
+      var _af = [];
+      for (var _xi=0;_xi<_ruL.length;_xi++){
+        if (_st.indexOf(_ruL[_xi]+")")>=0 && _af.indexOf(_ruL[_xi])<0) _af.push(_ruL[_xi]);
+      }
+      var _nf=[], _nr=/([1-9][0-9]?)[)]/g, _nx;
+      while((_nx=_nr.exec(_st))!==null){ if(_nf.indexOf(_nx[1])<0) _nf.push(_nx[1]); }
+      if (_af.length>=2) _wParsed=_af;
+      else if (_nf.length>=2) _wParsed=_nf;
+    }
+    // 2. Fallback: autoParseTaskParts (для числовых задач)
+    if (!_wParsed) {
+      var _ap=autoParseTaskParts(task);
+      if (_ap&&_ap.parts&&_ap.parts.length>=2) _wParsed=_ap.parts;
+    }
+    if (_wParsed) { wtIsMultiPart=true; wtParsedParts=_wParsed; }
+    else { wtParsedParts=null; }
+  } else {
+    wtParsedParts = null;
+  }
   wtTutorHistory = [];  // сброс истории при новом задании
 
   document.getElementById('wt-back-btn').onclick = () => showScreen(backScreen);
@@ -9683,6 +9712,16 @@ function wtUpdatePartsBar() {
   const bar = document.getElementById('wt-parts-bar');
   const chat = document.getElementById('wt-chat');
   if (!wtIsMultiPart || !currentTask) { bar.style.display = 'none'; return; }
+  // Simple mode (Повторение + др. без TASK_PARTS)
+  if (!getTaskCfg(currentTask.id) && wtParsedParts) {
+    bar.style.display = 'flex';
+    bar.innerHTML = wtParsedParts.map(function(p){
+      var done = wtDoneParts.includes(p);
+      var active = p === wtCurrentPart;
+      return '<div class="wt-part-dot' + (done?' done':active?' active':'') + '">' + p + ')</div>';
+    }).join('');
+    return;
+  }
   const cfg = getTaskCfg(currentTask.id);
   if (!cfg) { bar.style.display = 'none'; return; }
   bar.style.display = 'flex';
@@ -9772,9 +9811,56 @@ function wtShowTask(startPart) {
   }, 350);
 }
 
+// Простой многопунктовый режим (для задач без TASK_PARTS, только AI)
+function wtGoToNextPartSimple(keepCurrent) {
+  var parts = wtParsedParts || [];
+  if (!parts.length) {
+    // нет пунктов — завершаем
+    var xp2 = Math.max(5, 20 - wtAttempts);
+    addXP(xp2);
+    markSolved(currentTask.id, {attempts: wtAttempts, correct: true});
+    showDone('🤖', 'Разобрались!', 'С Умником', xp2);
+    return;
+  }
+  if (!keepCurrent) wtCurrentPart = null;
+  var remaining = parts.filter(function(p){ return !wtDoneParts.includes(p); });
+  wtUpdatePartsBar();
+  if (remaining.length === 0) {
+    // Все пункты выполнены
+    wtCurrentPart = null;
+    var xp = Math.max(5, 20 - wtAttempts);
+    chatAddBot('✅ Отлично! Ты ответил на все пункты задания.<br><span class="chat-xp">+' + xp + ' XP ⭐</span>', false);
+    setTimeout(function(){
+      var chat = document.getElementById('wt-chat');
+      var div = document.createElement('div');
+      div.className = 'chat-msg bot';
+      div.innerHTML = '<div class="chat-avatar"><img src="umnik_avatar2.png" alt="Умник"></div>'
+        + '<div style="display:flex;flex-direction:column;gap:8px">'
+        + '<button onclick="wtScrollToTop()" style="padding:10px 20px;border-radius:20px;border:none;background:rgba(255,255,255,.08);color:#fbbf24;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit">📝 Перечитать задание</button>'
+        + '<button onclick="afterWalkthrough()" style="padding:10px 20px;border-radius:20px;border:none;background:linear-gradient(135deg,#059669,#10b981);color:#fff;font-size:14px;font-weight:800;cursor:pointer;font-family:inherit">🏆 Готово!</button>'
+        + '</div>';
+      chat.appendChild(div);
+      chat.scrollTop = chat.scrollHeight;
+      document.getElementById('wt-input-bar').style.opacity = '0.4';
+      document.getElementById('wt-input-bar').style.pointerEvents = 'none';
+    }, 400);
+    addXP(xp);
+    markSolved(currentTask.id, {attempts: wtAttempts, correct: true});
+    setTimeout(function(){ showDone('🤖', 'Разобрались!', 'С Умником', xp); }, 2000);
+    return;
+  }
+  wtCurrentPart = remaining[0];
+  wtPartAttempts = 0;
+  chatAddBot('Теперь пункт <b>' + wtCurrentPart + ')</b> — напиши ответ.', false);
+}
+
 function wtGoToNextPart(keepCurrent) {
   const cfg = getTaskCfg(currentTask.id);
-  if (!cfg) return;
+  // Для задач без TASK_PARTS (Повторение и др.) — используем простой режим
+  if (!cfg) {
+    wtGoToNextPartSimple(keepCurrent);
+    return;
+  }
   // Если keepCurrent — не двигаемся вперёд, начинаем с wtCurrentPart
   if (!keepCurrent) wtCurrentPart = null;
   const remaining = cfg.parts.filter(p => !wtDoneParts.includes(p));
