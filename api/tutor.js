@@ -8,9 +8,26 @@ module.exports = async function handler(req, res) {
   const { task, messages } = req.body;
   if (!task || !messages) return res.status(400).json({ error: 'Missing task or messages' });
 
-  const partContext = task.currentPart
-    ? `\nСЕЙЧАС РЕШАЕМ ПУНКТ: ${task.currentPart}). Помоги ученику решить именно этот пункт задания.`
-    : '';
+  // For sub-parts like а1, а2... extract which numbered value we're checking
+  let partContext = '';
+  let subValueHint = '';
+  if (task.currentPart) {
+    const subMatch = task.currentPart.match(/^([а-яё])([1-9])$/u);
+    if (subMatch) {
+      const letter = subMatch[1];
+      const num = parseInt(subMatch[2]);
+      partContext = `\nСЕЙЧАС РЕШАЕМ ПУНКТ: ${letter}), значение ${num}.`;
+      // Extract the Nth value from the answer for this letter-part
+      const answerSection = (task.answer || '').match(new RegExp(letter + '\\)([^;а-яё]+(?:;[^;а-яё]+){0,20})'));
+      if (answerSection) {
+        const values = answerSection[1].split(';').map(v => v.trim()).filter(Boolean);
+        const val = values[num - 1];
+        if (val) subValueHint = `\nПРАВИЛЬНЫЙ ОТВЕТ ДЛЯ ЭТОГО ЗНАЧЕНИЯ: ${val}`;
+      }
+    } else {
+      partContext = `\nСЕЙЧАС РЕШАЕМ ПУНКТ: ${task.currentPart}). Помоги ученику решить именно этот пункт задания.`;
+    }
+  }
 
   const systemMsg = {
     role: 'system',
@@ -19,9 +36,9 @@ module.exports = async function handler(req, res) {
 ЗАДАНИЕ:
 ${task.text ? task.text.replace(/<[^>]+>/g, '') : ''}
 
-ПРАВИЛЬНЫЙ ОТВЕТ: ${task.answer || ''}${partContext}
+ПРАВИЛЬНЫЙ ОТВЕТ (только для твоей проверки — НЕ показывай ученику): ${task.answer || ''}${partContext}${subValueHint}
 
-${task.hints && task.hints.length ? 'ПОДСКАЗКИ:\n' + task.hints.filter(h=>typeof h==='string').map((h,i) => (i+1)+') '+h).join('\n') : ''}
+${task.hints && task.hints.length ? 'ПОДСКАЗКИ (только для твоей проверки — НЕ зачитывай их дословно):\n' + task.hints.filter(h=>typeof h==='string').map((h,i) => (i+1)+') '+h).join('\n') : ''}
 
 РИСУНКИ: Вставляй тег [РИСУНОК: название] для геометрических фигур.
 Доступные: острый угол, прямой угол, тупой угол, развёрнутый угол, отрезок, луч, прямая, треугольник, квадрат.
@@ -31,13 +48,14 @@ ${task.hints && task.hints.length ? 'ПОДСКАЗКИ:\n' + task.hints.filter(
 1. СНАЧАЛА проверь ответ ученика — сравни с правильным ответом
 2. Если ответ правильный или близкий по смыслу — сразу скажи "Правильно! ✅" и похвали
 3. Если частично правильный — скажи что верно, и задай ОДИН вопрос по оставшейся части
-4. Если ошибся — дай короткую подсказку (1 предложение), не объясняй долго
+4. Если ошибся — дай ОДИН наводящий вопрос (не объясняй, не давай числа, не пересказывай подсказки)
 5. НЕ задавай вопросы типа "как ты это определил?" — просто прими правильный ответ
 6. НЕ переспрашивай если ответ правильный — засчитывай сразу
 7. Отвечай максимум 2-3 предложения, коротко и ясно
 8. Язык простой, для 10-летнего ребёнка
 9. НЕ используй markdown (**, *, #)
-10. Не показывай готовый ответ если ученик ещё не ответил`
+10. НИКОГДА не называй конкретные числа из ответа пока ученик сам не ответил правильно
+11. При подсказке: задай вопрос "Что нужно сделать чтобы перевести Х в У?" — без чисел и без формул`
   };
 
   try {
