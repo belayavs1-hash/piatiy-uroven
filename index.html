@@ -2257,6 +2257,7 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
 .chat-bubble.user { background:linear-gradient(135deg,#4338ca,#7c3aed); color:#fff; border-bottom-right-radius:5px; }
 .chat-bubble.bot.task-bubble { max-width:min(100%,480px); padding:0; background:transparent; border:none; width:100%; }
 .chat-msg.bot.task-msg { align-items:flex-start; }
+.chat-msg.bot.task-msg-full { display:block; padding:0; }
 .chat-msg.bot.task-msg > div:first-child { display:none; }
 .chat-bubble.correct { background:linear-gradient(135deg,#065f46,#059669); border:none; }
 .chat-bubble.wrong { background:rgba(239,68,68,.12); border:1px solid rgba(239,68,68,.28); }
@@ -10182,10 +10183,11 @@ function chatAddBot(html, animate, noAvatar) {
   }
 
   const div = document.createElement('div');
-  div.className = 'chat-msg bot';
+  const isTaskCard = noAvatar && html.indexOf('chat-task-card')>=0;
+  div.className = 'chat-msg bot' + (isTaskCard ? ' task-msg-full' : '');
   let avatarHtml;
   if (noAvatar) {
-    avatarHtml = '<div style="width:40px;flex-shrink:0"></div>';
+    avatarHtml = isTaskCard ? '' : '<div style="width:40px;flex-shrink:0"></div>';
   } else {
     avatarHtml = '<div class="chat-avatar"><img src="umnik_avatar2.png" alt="Умник"></div>';
   }
