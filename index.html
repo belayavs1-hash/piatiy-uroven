@@ -35,6 +35,7 @@ body {
 }
 
 .screen { display: none; min-height: 100vh; }
+#screen-homework { min-height: 0; height: auto; }
 .screen.active { display: flex; flex-direction: column; }
 
 /* ===== NAV ===== */
@@ -1248,6 +1249,9 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
 .task-text table { width: 100% !important; border-collapse: collapse !important; margin: 10px 0 !important; font-size: 14px !important; }
 .task-text table th, .task-text table td { padding: 7px 10px !important; border: 1px solid #86efac !important; text-align: center !important; box-sizing: border-box; }
 .task-text table th { background: #dcfce7 !important; font-weight: 700 !important; text-align: left !important; }
+.chat-task-text table { width:100% !important; border-collapse:collapse !important; margin:4px 0 !important; }
+.chat-task-text table td, .chat-task-text table th { padding:3px 6px !important; border:1px solid rgba(255,255,255,0.2) !important; text-align:center !important; font-size:13px !important; }
+.chat-task-text table tr:first-child td { color:#93c5fd !important; font-weight:700 !important; }
 .task-text table tr:nth-child(even) td { background: #f8fafc !important; }
 .task-actions { display: flex; flex-direction: column; gap: 8px; }
 .btn-secondary {
