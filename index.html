@@ -9748,6 +9748,25 @@ function wtUpdatePartsBar() {
   }).join('');
 }
 
+function stripInteractiveSvg(text){
+  // Remove <div style="margin:4px 0 8px 0">...</div> blocks (interactive SVG wrappers)
+  var result=text;
+  var search="<div style=\"margin:4px 0 8px 0\">";
+  while(result.indexOf(search)>=0){
+    var s=result.indexOf(search);
+    // find matching closing </div> — count nesting
+    var depth=0;var i=s;
+    while(i<result.length){
+      if(result.slice(i,i+5)==="<div "){depth++;i+=5;}
+      else if(result.slice(i,i+6)==="<div>"){depth++;i+=6;}
+      else if(result.slice(i,i+6)==="</div>"){depth--;i+=6;if(depth===0)break;}
+      else i++;
+    }
+    var placeholder="<div style=\"margin:6px 0;padding:8px 10px;background:rgba(99,102,241,.1);border-radius:8px;color:#93c5fd;font-size:13px\">📊 Интерактивная прямая — вернись на экран задания</div>";
+    result=result.slice(0,s)+placeholder+result.slice(i);
+  }
+  return result;
+}
 function wtShowTask(startPart) {
   const task = currentTask;
   const paraLabel = task.topic;
@@ -9755,7 +9774,7 @@ function wtShowTask(startPart) {
     '<div class="chat-task-card">'
     + '<div class="chat-task-id">Задание ' + task.id + '</div>'
     + '<div class="chat-task-topic">' + paraLabel + '</div>'
-    + '<div class="chat-task-text">' + task.text + '</div>'
+    + '<div class="chat-task-text">' + (task.text.indexOf('iprLineClick')>=0 ? stripInteractiveSvg(task.text) : task.text) + '</div>'
     + getTaskSvgHtml(task.id)
     + '</div>', false, true);
 
