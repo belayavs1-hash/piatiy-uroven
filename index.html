@@ -10310,7 +10310,7 @@ function checkWalkthrough() {
         wtTutorHistory.push({ role: 'assistant', content: reply });
         chatAddBot(processGeoReply(reply), false);
         // Если AI засчитал ответ — переходим к следующему пункту
-        const _aiOk = (function(_r){ return !(/неs*(?:совсемs*)?(?:правильно|верно)/i.test(_r)) && /правильно|верно|отлично|молодец|✅/i.test(_r); })(reply);
+        const _aiOk = (function(_r){ var _neg = /неs*(?:совсемs*)?(?:правильно|верно)/i.test(_r); var _pos = /^s*(?:правильно|верно|отлично|молодец)[^а-яё]/i.test(_r) || /правильно!s*✅/i.test(_r) || _r.indexOf('✅') === _r.search(/S/); return !_neg && _pos; })(reply);
         if (_aiOk && wtIsMultiPart && wtCurrentPart && !wtDoneParts.includes(wtCurrentPart)) {
           wtDoneParts.push(wtCurrentPart);
           wtUpdatePartsBar();
@@ -10395,7 +10395,7 @@ function checkWalkthrough() {
     wtTutorHistory.push({ role: 'assistant', content: reply });
     chatAddBot(processGeoReply(reply), false);
     // Если AI засчитал — завершаем задание
-    const _aiOk2 = (function(_r){ return !(/неs*(?:совсемs*)?(?:правильно|верно)/i.test(_r)) && /правильно|верно|отлично|молодец|✅/i.test(_r); })(reply);
+    const _aiOk2 = (function(_r){ var _neg = /неs*(?:совсемs*)?(?:правильно|верно)/i.test(_r); var _pos = /^s*(?:правильно|верно|отлично|молодец)[^а-яё]/i.test(_r) || /правильно!s*✅/i.test(_r) || _r.indexOf('✅') === _r.search(/S/); return !_neg && _pos; })(reply);
     if (_aiOk2 && !wtIsMultiPart) {
       const _xp2 = Math.max(5, 20 - wtAttempts);
       if (currentTask && currentTask.para === 'Повторение') {
