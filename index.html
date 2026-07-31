@@ -9417,7 +9417,7 @@ function findTask() {
     <div class="task-id" style="margin-bottom:4px">Задание ${task.id} ${done ? '✅' : ''}</div>
     <div style="font-size:12px;color:#6366f1;font-weight:700;margin-bottom:6px">${task.topic}</div>
     <div class="task-text">${task.text}</div>
-    ${getTaskSvgHtml(task.id)}${WT_SVG_EXTRA[task.id] ? '<div class="task-svg-wrap">'+WT_SVG_EXTRA[task.id]+'</div>' : ''}
+    ${getTaskSvgHtml(task.id)}${(WT_SVG_EXTRA[task.id] && task.id !== 'П.25') ? '<div class="task-svg-wrap">'+WT_SVG_EXTRA[task.id]+'</div>' : ''}
     <button class="btn-find" onclick="goToWalkthroughFromHW()" style="margin-bottom:6px;padding:10px 14px"><img src="umnik_avatar2.png" style="width:32px;height:32px;object-fit:contain;vertical-align:middle;margin-right:8px;filter:drop-shadow(0 0 4px rgba(147,197,253,.6))"> Разобрать с Умником</button>
     <button class="btn-secondary" onclick="showScreen('screen-already-solved')" style="width:100%;padding:9px 16px">✅ Проверить моё решение</button>
   </div>`;
@@ -9783,7 +9783,7 @@ function wtShowTask(startPart) {
     '<div class="chat-task-card">'
     + '<div class="chat-task-id">Задание ' + task.id + '</div>'
     + '<div class="chat-task-topic">' + paraLabel + '</div>'
-    + '<div class="chat-task-text">' + (task.text.indexOf('iprLineClick')>=0 ? stripInteractiveSvg(task.text) : task.text) + (WT_SVG_EXTRA[task.id] ? stripInteractiveSvg(WT_SVG_EXTRA[task.id]) : '') + '</div>'
+    + '<div class="chat-task-text">' + (task.text.indexOf('iprLineClick')>=0 ? stripInteractiveSvg(task.text) : task.text) + (WT_SVG_EXTRA[task.id] && task.id !== 'П.25' ? stripInteractiveSvg(WT_SVG_EXTRA[task.id]) : '') + '</div>'
     + getTaskSvgHtml(task.id)
     + '</div>', false, true, false, true);
 
@@ -9824,6 +9824,12 @@ function wtShowTask(startPart) {
       chatAddBot(intro.msg1, false);
       wtTutorHistory.push({ role: 'assistant', content: intro.msg1 });
       if (intro.msg2) setTimeout(() => { const m2=processGeoReply(intro.msg2); chatAddBot(m2, false); wtTutorHistory.push({ role: 'assistant', content: intro.msg2 }); }, 550);
+      // П.25 — показать интерактивные прямые отдельным сообщением
+      if (task.id === 'П.25' && WT_SVG_EXTRA[task.id]) {
+        setTimeout(() => {
+          chatAddBot(stripInteractiveSvg(WT_SVG_EXTRA[task.id]), false);
+        }, 700);
+      }
       // Показать SVG-подсказку из hints если есть
       const h0 = (task.hints || [])[0];
       const hintSvg = h0 && typeof h0 === 'object' && h0.content && (h0.content.indexOf('<svg') >= 0 || h0.content.indexOf('<div') >= 0) ? h0.content : null;
