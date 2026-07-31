@@ -9777,6 +9777,7 @@ function stripInteractiveSvg(text){
 }
 
 function wtShowTask(startPart) {
+  wtHintIdx = 0;
   const task = currentTask;
   const paraLabel = task.topic;
   chatAddBot(
@@ -10493,6 +10494,19 @@ function wtAskHint() {
   // Для задания 1.1 с таблицей животных — статичные подсказки по пункту
   if (TASK_PARTS[currentTask.id] && PART_HINTS[wtCurrentPart]) {
     chatAddBot('💡 ' + PART_HINTS[wtCurrentPart], false);
+    return;
+  }
+
+  // Статичные подсказки из hints[] (строки, не SVG) — по очереди
+  const staticHints = currentTask.hints
+    ? currentTask.hints.filter(function(h){ return typeof h === 'string'; })
+    : [];
+  if (staticHints.length > 0) {
+    if (typeof wtHintIdx === 'undefined') wtHintIdx = 0;
+    var hint = staticHints[wtHintIdx % staticHints.length];
+    wtHintIdx++;
+    chatAddUser('💡 подсказка', 'hint');
+    chatAddBot('💡 ' + hint, false);
     return;
   }
 
