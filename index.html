@@ -20672,20 +20672,28 @@ function p108drop(cx,cy,el,seg){
   var fr=svgEl.getBoundingClientRect();
   var cell=28;
   var isH=(seg[1]===seg[3]);
-  // Координата относительно SVG с учётом прокрутки
   var rx=cx-fr.left;
   var ry=cy-fr.top;
-  // Snap to grid
   var gx=Math.round(rx/cell);
   var gy=Math.round(ry/cell);
   gx=Math.max(0,Math.min(isH?18:20,gx));
   gy=Math.max(0,Math.min(isH?8:6,gy));
   var x2=isH?gx+2:gx;
   var y2=isH?gy:gy+2;
-  if(x2>20||y2>8)return;
+  if(x2>20||y2>8){
+    // Промах мимо поля — вернуть в склад
+    el.style.opacity="1";
+    el.style.pointerEvents="auto";
+    return;
+  }
   var key=gx+","+gy+","+x2+","+y2;
-  if(_p108placed[key])return;
-  // Нарисовать
+  if(_p108placed[key]){
+    // Место занято — вернуть в склад
+    el.style.opacity="1";
+    el.style.pointerEvents="auto";
+    return;
+  }
+  // Нарисовать на поле
   var ln=document.createElementNS("http://www.w3.org/2000/svg","line");
   ln.setAttribute("x1",gx*cell);
   ln.setAttribute("y1",gy*cell);
@@ -20695,14 +20703,25 @@ function p108drop(cx,cy,el,seg){
   ln.setAttribute("stroke-width","3");
   ln.setAttribute("stroke-linecap","round");
   ln.dataset.key=key;
-  ln.style.cursor="pointer";
-  // Клик — убрать обратно
-  ln.addEventListener("click",function(){
+  ln.style.cursor="grab";
+  // Перетащить с поля на другое место
+  ln.addEventListener("mousedown",function(e){
+    e.stopPropagation();
     delete _p108placed[key];
     ln.remove();
     el.style.opacity="1";
     el.style.pointerEvents="auto";
+    p108beginDrag(el,e.clientX,e.clientY);
   });
+  ln.addEventListener("touchstart",function(e){
+    e.stopPropagation();
+    var t=e.touches[0];
+    delete _p108placed[key];
+    ln.remove();
+    el.style.opacity="1";
+    el.style.pointerEvents="auto";
+    p108beginDrag(el,t.clientX,t.clientY);
+  },{passive:true});
   svgEl.appendChild(ln);
   _p108placed[key]=true;
   el.style.opacity="0.25";
