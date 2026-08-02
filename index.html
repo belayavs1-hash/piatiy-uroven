@@ -20556,36 +20556,87 @@ function p108init(){
   _p108placed={};_p108sel=null;
   svg.querySelectorAll("line[data-key]").forEach(function(l){l.remove();});
   var shuffled=_p108segs.slice().sort(function(){return Math.random()-0.5;});
-  pool.innerHTML="";
+  pool.innerHTML='<div style="font-size:0.75em;color:#64748b;width:100%;margin-bottom:4px">Клик — повернуть · Перетащи на поле</div>';
   shuffled.forEach(function(s){
-    var el=document.createElement("div");
-    el.dataset.seg=JSON.stringify(s);
-    el.style.display="inline-flex";
-    el.style.alignItems="center";
-    el.style.justifyContent="center";
-    el.style.width="60px";
-    el.style.height="20px";
-    el.style.margin="4px";
-    el.style.cursor="grab";
-    el.style.background="#1e293b";
-    el.style.border="1px solid #475569";
-    el.style.borderRadius="4px";
-    var svgEl=document.createElementNS("http://www.w3.org/2000/svg","svg");
-    svgEl.setAttribute("width","60");
-    svgEl.setAttribute("height","20");
-    var ln=document.createElementNS("http://www.w3.org/2000/svg","line");
-    ln.setAttribute("x1","5"); ln.setAttribute("y1","10");
-    ln.setAttribute("x2","55"); ln.setAttribute("y2","10");
-    ln.setAttribute("stroke","#f472b6");
-    ln.setAttribute("stroke-width","3");
-    ln.setAttribute("stroke-linecap","round");
-    svgEl.appendChild(ln); el.appendChild(svgEl);
-    el.addEventListener("mousedown",p108startDrag);
-    el.addEventListener("touchstart",p108startDragT,{passive:false});
-    pool.appendChild(el);
+    p108makePoolItem(s,pool);
   });
   var res=document.getElementById("p108res");
   if(res)res.textContent="";
+}
+
+function p108makePoolItem(seg,pool){
+  // seg хранит оригинальные координаты; isH — текущая ориентация (может меняться кликом)
+  var el=document.createElement("div");
+  el.dataset.seg=JSON.stringify(seg);
+  var rotated=false; // false=горизонталь, true=вертикаль
+  function applyRot(){
+    el.style.width=rotated?"20px":"60px";
+    el.style.height=rotated?"60px":"20px";
+    var svgEl=el.querySelector("svg");
+    if(svgEl){
+      svgEl.setAttribute("width",rotated?"20":"60");
+      svgEl.setAttribute("height",rotated?"60":"20");
+      var ln=svgEl.querySelector("line");
+      if(ln){
+        ln.setAttribute("x1",rotated?"10":"5");
+        ln.setAttribute("y1",rotated?"5":"10");
+        ln.setAttribute("x2",rotated?"10":"55");
+        ln.setAttribute("y2",rotated?"55":"10");
+      }
+    }
+    // Обновить seg в dataset с учётом поворота
+    var s=JSON.parse(el.dataset.seg);
+    var origH=(s[1]===s[3]);
+    // Если поворот не совпадает с оригиналом — инвертируем координаты
+    if(rotated===origH){
+      // нужна вертикальная — делаем из горизонтального: x1,y1,x1,y1+2
+      el.dataset.seg=JSON.stringify([s[0],s[1],s[0],s[1]+2]);
+    } else {
+      el.dataset.seg=JSON.stringify(seg);
+    }
+  }
+  el.style.display="inline-flex";
+  el.style.alignItems="center";
+  el.style.justifyContent="center";
+  el.style.width="60px";
+  el.style.height="20px";
+  el.style.margin="4px";
+  el.style.cursor="pointer";
+  el.style.background="#1e293b";
+  el.style.border="1px solid #475569";
+  el.style.borderRadius="4px";
+  el.title="Клик — повернуть";
+  var svgEl=document.createElementNS("http://www.w3.org/2000/svg","svg");
+  svgEl.setAttribute("width","60"); svgEl.setAttribute("height","20");
+  var ln=document.createElementNS("http://www.w3.org/2000/svg","line");
+  ln.setAttribute("x1","5"); ln.setAttribute("y1","10");
+  ln.setAttribute("x2","55"); ln.setAttribute("y2","10");
+  ln.setAttribute("stroke","#f472b6");
+  ln.setAttribute("stroke-width","3");
+  ln.setAttribute("stroke-linecap","round");
+  svgEl.appendChild(ln); el.appendChild(svgEl);
+  var dragging=false;
+  el.addEventListener("click",function(e){
+    if(dragging){dragging=false;return;}
+    rotated=!rotated;
+    applyRot();
+  });
+  el.addEventListener("mousedown",function(e){
+    dragging=false;
+    var startX=e.clientX,startY=e.clientY;
+    function onMove(ev){
+      if(Math.abs(ev.clientX-startX)>5||Math.abs(ev.clientY-startY)>5) dragging=true;
+    }
+    function onUp(ev){
+      document.removeEventListener("mousemove",onMove);
+      document.removeEventListener("mouseup",onUp);
+      if(dragging) p108beginDrag(el,ev.clientX,ev.clientY);
+    }
+    document.addEventListener("mousemove",onMove);
+    document.addEventListener("mouseup",onUp);
+  });
+  el.addEventListener("touchstart",p108startDragT,{passive:false});
+  pool.appendChild(el);
 }
 
 function p108startDrag(e){
