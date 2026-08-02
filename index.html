@@ -9424,7 +9424,7 @@ function findTask() {
     <div class="task-id" style="margin-bottom:4px">Задание ${task.id} ${done ? '✅' : ''}</div>
     <div style="font-size:12px;color:#6366f1;font-weight:700;margin-bottom:6px">${task.topic}</div>
     <div class="task-text">${task.text}</div>
-    ${getTaskSvgHtml(task.id)}${(WT_SVG_EXTRA[task.id] && task.id !== 'П.25' && task.id !== 'П.92') ? '<div class="task-svg-wrap">'+WT_SVG_EXTRA[task.id]+'</div>' : ''}
+    ${getTaskSvgHtml(task.id)}${(WT_SVG_EXTRA[task.id] && task.id !== 'П.25') ? '<div class="task-svg-wrap">'+WT_SVG_EXTRA[task.id]+'</div>' : ''}
     <button class="btn-find" onclick="goToWalkthroughFromHW()" style="margin-bottom:6px;padding:10px 14px"><img src="umnik_avatar2.png" style="width:32px;height:32px;object-fit:contain;vertical-align:middle;margin-right:8px;filter:drop-shadow(0 0 4px rgba(147,197,253,.6))"> Разобрать с Умником</button>
     <button class="btn-secondary" onclick="showScreen('screen-already-solved')" style="width:100%;padding:9px 16px">✅ Проверить моё решение</button>
   </div>`;
@@ -9791,7 +9791,7 @@ function wtShowTask(startPart) {
     '<div class="chat-task-card">'
     + '<div class="chat-task-id">Задание ' + task.id + '</div>'
     + '<div class="chat-task-topic">' + paraLabel + '</div>'
-    + '<div class="chat-task-text">' + (task.text.indexOf('iprLineClick')>=0 ? stripInteractiveSvg(task.text) : task.text) + (WT_SVG_EXTRA[task.id] && task.id !== 'П.25' ? stripInteractiveSvg(WT_SVG_EXTRA[task.id]) : '') + '</div>'
+    + '<div class="chat-task-text">' + (task.text.indexOf('iprLineClick')>=0 ? stripInteractiveSvg(task.text) : task.text) + (WT_SVG_EXTRA[task.id] && task.id !== 'П.25' && task.id !== 'П.92' ? stripInteractiveSvg(WT_SVG_EXTRA[task.id]) : '') + '</div>'
     + getTaskSvgHtml(task.id)
     + '</div>', false, true, false, true);
 
@@ -9838,11 +9838,6 @@ function wtShowTask(startPart) {
       if (intro.p106) { setTimeout(function(){ p106Next(); }, 800); }
       // П.25 — показать интерактивные прямые отдельным сообщением
       if (task.id === 'П.25' && WT_SVG_EXTRA[task.id]) {
-        setTimeout(() => {
-          chatAddBot(WT_SVG_EXTRA[task.id], false);
-        }, 700);
-      }
-      if (task.id === 'П.92' && WT_SVG_EXTRA[task.id]) {
         setTimeout(() => {
           chatAddBot(WT_SVG_EXTRA[task.id], false);
         }, 700);
@@ -20493,6 +20488,9 @@ function p69click(el, name) {
   }
 }
 
+var _p92selected = null;
+var _p92placed = {};
+var _p92correct = {B:88,S:146,F:465,X:407,E:320,N:233,R:204,Y:204,Z:378};
 function p92selectPt(name) {
   _p92selected = name;
   document.querySelectorAll("[id^=btn92_]").forEach(function(b){
