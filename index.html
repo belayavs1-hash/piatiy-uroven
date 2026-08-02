@@ -20723,60 +20723,55 @@ function p108drop(cx,cy,el,seg){
   var fr=svgEl.getBoundingClientRect();
   var cell=28;
   var isH=(seg[1]===seg[3]);
-  var rx=cx-fr.left;
-  var ry=cy-fr.top;
-  var gx=Math.round(rx/cell);
-  var gy=Math.round(ry/cell);
+  var gx=Math.round((cx-fr.left)/cell);
+  var gy=Math.round((cy-fr.top)/cell);
   gx=Math.max(0,Math.min(isH?18:20,gx));
   gy=Math.max(0,Math.min(isH?8:6,gy));
-  var x2=isH?gx+2:gx;
-  var y2=isH?gy:gy+2;
-  if(x2>20||y2>8){
-    // Промах мимо поля — вернуть в склад
-    el.style.opacity="1";
-    el.style.pointerEvents="auto";
-    return;
-  }
+  var x2=isH?gx+2:gx, y2=isH?gy:gy+2;
+  if(x2>20||y2>8){el.style.opacity="1";el.style.pointerEvents="auto";return;}
   var key=gx+","+gy+","+x2+","+y2;
-  if(_p108placed[key]){
-    // Место занято — вернуть в склад
-    el.style.opacity="1";
-    el.style.pointerEvents="auto";
-    return;
-  }
-  // Нарисовать на поле
+  if(_p108placed[key]){el.style.opacity="1";el.style.pointerEvents="auto";return;}
   var ln=document.createElementNS("http://www.w3.org/2000/svg","line");
-  ln.setAttribute("x1",gx*cell);
-  ln.setAttribute("y1",gy*cell);
-  ln.setAttribute("x2",x2*cell);
-  ln.setAttribute("y2",y2*cell);
+  ln.setAttribute("x1",gx*cell); ln.setAttribute("y1",gy*cell);
+  ln.setAttribute("x2",x2*cell); ln.setAttribute("y2",y2*cell);
   ln.setAttribute("stroke","#f472b6");
-  ln.setAttribute("stroke-width","3");
+  ln.setAttribute("stroke-width","6");
   ln.setAttribute("stroke-linecap","round");
   ln.dataset.key=key;
   ln.style.cursor="grab";
-  // Перетащить с поля на другое место
+  // Клик или drag на размещённом отрезке
   ln.addEventListener("mousedown",function(e){
     e.stopPropagation();
-    delete _p108placed[key];
-    ln.remove();
-    el.style.opacity="1";
-    el.style.pointerEvents="auto";
-    p108beginDrag(el,e.clientX,e.clientY);
+    var sx=e.clientX,sy=e.clientY,moved=false;
+    function mm(ev){if(Math.abs(ev.clientX-sx)>5||Math.abs(ev.clientY-sy)>5)moved=true;}
+    function mu(ev){
+      document.removeEventListener("mousemove",mm);
+      document.removeEventListener("mouseup",mu);
+      delete _p108placed[key]; ln.remove();
+      el.style.opacity="1"; el.style.pointerEvents="auto";
+      if(moved) p108beginDrag(el,ev.clientX,ev.clientY);
+      // если не moved — просто вернули в склад (удаление)
+    }
+    document.addEventListener("mousemove",mm);
+    document.addEventListener("mouseup",mu);
   });
   ln.addEventListener("touchstart",function(e){
     e.stopPropagation();
-    var t=e.touches[0];
-    delete _p108placed[key];
-    ln.remove();
-    el.style.opacity="1";
-    el.style.pointerEvents="auto";
-    p108beginDrag(el,t.clientX,t.clientY);
+    var t=e.touches[0],sx=t.clientX,sy=t.clientY,moved=false;
+    function tm(ev){var tt=ev.touches[0];if(Math.abs(tt.clientX-sx)>8||Math.abs(tt.clientY-sy)>8)moved=true;}
+    function tu(ev){
+      document.removeEventListener("touchmove",tm);
+      document.removeEventListener("touchend",tu);
+      delete _p108placed[key]; ln.remove();
+      el.style.opacity="1"; el.style.pointerEvents="auto";
+      if(moved){var tt=ev.changedTouches[0];p108beginDrag(el,tt.clientX,tt.clientY);}
+    }
+    document.addEventListener("touchmove",tm,{passive:true});
+    document.addEventListener("touchend",tu);
   },{passive:true});
   svgEl.appendChild(ln);
   _p108placed[key]=true;
-  el.style.opacity="0.25";
-  el.style.pointerEvents="none";
+  el.style.opacity="0.25"; el.style.pointerEvents="none";
 }
 
 function p108check(){
