@@ -21173,7 +21173,7 @@ function p110check(){
     });
     correct.forEach(function(k){
       if(!ssel[k]){
-        var el=document.getElementById(k+"_t");
+        var el=document.getElementById(k+"_t")||document.getElementById(k+"R_t");
         if(el){p110setCubeColor(k,"#78350f","#451a03","#92400e");nMissed++;allOk=false;}
       }
     });
