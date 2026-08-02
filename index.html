@@ -20528,43 +20528,34 @@ var _p108sel=null;
 function p108init(){
   var pool=document.getElementById("p108pool");
   var svg=document.getElementById("p108svg");
-  if(!pool||!svg){
-    console.log("p108init: retry — элементы ещё не в DOM");
-    setTimeout(p108init,300);
-    return;
-  }
+  if(!pool||!svg){setTimeout(p108init,300);return;}
   _p108placed={};_p108sel=null;
-  var placed=svg.querySelectorAll("line[data-key]");
-  placed.forEach(function(l){l.remove();});
+  svg.querySelectorAll("line[data-key]").forEach(function(l){l.remove();});
   var shuffled=_p108segs.slice().sort(function(){return Math.random()-0.5;});
   pool.innerHTML="";
-  shuffled.forEach(function(s,i){
-    var isH=(s[1]===s[3]);
+  shuffled.forEach(function(s){
     var el=document.createElement("div");
     el.dataset.seg=JSON.stringify(s);
     el.style.display="inline-flex";
     el.style.alignItems="center";
     el.style.justifyContent="center";
-    el.style.width=isH?"60px":"20px";
-    el.style.height=isH?"20px":"60px";
+    el.style.width="60px";
+    el.style.height="20px";
     el.style.margin="4px";
     el.style.cursor="grab";
     el.style.background="#1e293b";
     el.style.border="1px solid #475569";
     el.style.borderRadius="4px";
     var svgEl=document.createElementNS("http://www.w3.org/2000/svg","svg");
-    svgEl.setAttribute("width",isH?"60":"20");
-    svgEl.setAttribute("height",isH?"20":"60");
+    svgEl.setAttribute("width","60");
+    svgEl.setAttribute("height","20");
     var ln=document.createElementNS("http://www.w3.org/2000/svg","line");
-    ln.setAttribute("x1",isH?"5":"10");
-    ln.setAttribute("y1",isH?"10":"5");
-    ln.setAttribute("x2",isH?"55":"10");
-    ln.setAttribute("y2",isH?"10":"55");
+    ln.setAttribute("x1","5"); ln.setAttribute("y1","10");
+    ln.setAttribute("x2","55"); ln.setAttribute("y2","10");
     ln.setAttribute("stroke","#f472b6");
     ln.setAttribute("stroke-width","3");
     ln.setAttribute("stroke-linecap","round");
-    svgEl.appendChild(ln);
-    el.appendChild(svgEl);
+    svgEl.appendChild(ln); el.appendChild(svgEl);
     el.addEventListener("mousedown",p108startDrag);
     el.addEventListener("touchstart",p108startDragT,{passive:false});
     pool.appendChild(el);
