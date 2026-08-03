@@ -3802,6 +3802,39 @@ button, .btn-find, .btn-check, .btn-ghost, .btn-secondary {
 }
 .ob-btn-next:hover { background: rgba(99,102,241,.35); }
 
+
+.err-item-btn.green {
+  background: rgba(22,163,74,.12);
+  border: 1.5px solid rgba(22,163,74,.4);
+  color: #16a34a;
+}
+.err-item-btn.green:hover {
+  background: rgba(22,163,74,.22);
+}
+
+.err-item-btn.green {
+  background: rgba(22,163,74,.12);
+  border: 1.5px solid rgba(22,163,74,.4);
+  color: #16a34a;
+}
+.err-item-btn.green:hover {
+  background: rgba(22,163,74,.22);
+}
+
+/* Чат Умника в разборе ошибки */
+#err-umnik-chat .chat-msg { margin: 0; }
+#err-umnik-chat .chat-msg.bot { display: flex; gap: 8px; align-items: flex-start; }
+#err-umnik-chat .chat-avatar img { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+#err-umnik-chat .chat-bubble.bot {
+  background: rgba(99,102,241,.08);
+  border-radius: 4px 14px 14px 14px;
+  padding: 10px 14px;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--ink);
+  max-width: 100%;
+}
+
 </style>
 <div id="screen-self-check" class="screen">
   <nav class="top-nav">
@@ -10305,7 +10338,7 @@ function wtShowTask(startPart) {
         setTimeout(() => { chatAddBot(WT_SVG_EXTRA['П.110'], false); setTimeout(p110init, 300); }, 700);
       }
 
-     
+     
       // Показать SVG-подсказку из hints если есть
       const h0 = (task.hints || [])[0];
       const hintSvg = h0 && typeof h0 === 'object' && h0.content && (h0.content.indexOf('<svg') >= 0 || h0.content.indexOf('<div') >= 0) ? h0.content : null;
@@ -10961,6 +10994,28 @@ function checkWalkthrough() {
   // Не правильно — спрашиваем AI репетитора
   chatAddUser(userAns, 'almost');
   wtTutorHistory.push({ role: 'user', content: userAns });
+
+  // Записать ошибку из домашки
+  if (currentTask) {
+    addMistake(currentTask.topic || 'Домашка', 'homework_wrong', {
+      taskId: currentTask.id,
+      task: (currentTask.text || '').replace(/<[^>]+>/g,'').slice(0, 120),
+      studentAnswer: userAns,
+      correctAnswer: currentTask.answer || '',
+      source: 'Домашка · ' + (currentTask.para || '') + ' · ' + currentTask.id
+    });
+  }
+
+  // Записать ошибку из домашки
+  if (currentTask) {
+    addMistake(currentTask.topic || 'Домашка', 'homework_wrong', {
+      taskId: currentTask.id,
+      task: (currentTask.text || '').replace(/<[^>]+>/g,'').slice(0, 120),
+      studentAnswer: userAns,
+      correctAnswer: currentTask.answer || '',
+      source: 'Домашка · ' + (currentTask.para || '') + ' · ' + currentTask.id
+    });
+  }
 
   // Показываем индикатор печати
   const typingDiv = document.createElement('div');
@@ -14134,7 +14189,9 @@ function errRenderList() {
     return '<div class="err-item ' + statusCls + '">'
       + '<div class="err-item-head">'
       + '<div><div class="err-item-topic">' + errTopicIcon(m.topic) + ' ' + m.topic + '</div>'
-      + (m.source ? '<div style="font-size:11px;color:#94a3b8">' + m.source + '</div>' : '') + '</div>'
+      + (m.source ? '<div style="font-size:11px;color:#94a3b8">' + m.source + '</div>' : '')
+      + (m.taskId ? '<div style="font-size:11px;color:#6366f1;font-weight:700;margin-top:1px">🔗 ' + m.taskId + '</div>' : '')
+      + '</div>'
       + '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">'
       + '<span class="err-status ' + statusCls + '">' + statusText + '</span>'
       + '<div class="err-item-date">' + (m.date||'') + '</div>'
@@ -14151,7 +14208,7 @@ function errRenderList() {
       + '</div>'
       + '<div class="err-item-btns">'
       + '<button class="err-item-btn blue" onclick="errExplain(' + realIdx + ')">🧑‍🏫 Разобрать</button>'
-      + '<button class="err-item-btn outline" onclick="errSimilarTask(' + realIdx + ')">🔁 Похожее задание</button>'
+      + (m.taskId ? '<button class="err-item-btn green" onclick="errOpenTask(' + realIdx + ')">📖 Открыть задание</button>' : '<button class="err-item-btn outline" onclick="errSimilarTask(' + realIdx + ')">🔁 Похожее</button>')
       + (statusCls !== 'fixed' && statusCls !== 'closed'
         ? '<button class="err-item-btn ghost" onclick="errMarkFixed(' + realIdx + ')">✓ Исправлено</button>'
         : '<button class="err-item-btn ghost" onclick="errClose(' + realIdx + ')">Закрыть</button>')
@@ -14196,43 +14253,150 @@ function errExplainFirst() {
   if (idx >= 0) errExplain(idx);
 }
 
+function errOpenTask(idx) {
+  var m = (ST.mistakes||[])[idx];
+  if (!m || !m.taskId) return;
+  var task = TASKS.find(function(t){ return t.id === m.taskId; });
+  if (!task) { alert('Задание ' + m.taskId + ' не найдено в базе'); return; }
+  openWalkthrough(task, 'screen-mistakes');
+}
+
 function errExplain(idx) {
   var m = (ST.mistakes||[])[idx];
   if (!m) return;
   errMarkReviewed(idx);
-  var steps = errGuessExplain(m);
-  var errType = errGuessType(m);
-  var hasTask = m.task && m.studentAnswer && m.correctAnswer;
 
-  var html =
+  var hasTask = m.task && m.correctAnswer;
+  var taskText = m.task || m.topic;
+  var studentAns = m.studentAnswer || '';
+  var correctAns = m.correctAnswer || '';
+
+  // Шапка: задание + ответы
+  var headerHtml =
     '<div class="err-card" style="margin-bottom:14px">'
     + '<div class="err-explain-task-card">'
-    + '<div class="err-explain-task-lbl">Задание</div>'
-    + '<div class="err-explain-task-q">' + (m.task || m.topic) + '</div>'
-    + (hasTask
+    + '<div class="err-explain-task-lbl">' + (m.source || m.topic) + '</div>'
+    + '<div class="err-explain-task-q">' + taskText + '</div>'
+    + (hasTask && studentAns
       ? '<div class="err-explain-answers">'
-        + '<div class="err-answer-block wrong" style="flex:0 1 auto"><div class="err-answer-lbl">твой ответ</div><div class="err-answer-val">' + m.studentAnswer + '</div></div>'
+        + '<div class="err-answer-block wrong"><div class="err-answer-lbl">твой ответ</div><div class="err-answer-val">' + studentAns + '</div></div>'
         + '<div style="font-size:22px;align-self:center;color:#94a3b8">→</div>'
-        + '<div class="err-answer-block right" style="flex:0 1 auto"><div class="err-answer-lbl">правильно</div><div class="err-answer-val">' + m.correctAnswer + '</div></div>'
+        + '<div class="err-answer-block right"><div class="err-answer-lbl">правильно</div><div class="err-answer-val">' + correctAns + '</div></div>'
         + '</div>'
       : '')
-    + '</div>'
-    + '<div class="err-card-title" style="margin-top:14px">Умник объясняет: <span style="color:#2563eb;font-weight:700">' + errType + '</span></div>'
-    + steps.map(function(s, i){
-        return '<div class="err-explain-step">'
-          + '<div class="err-explain-step-num">' + (i+1) + '</div>'
-          + '<div class="err-explain-step-text">' + s + '</div>'
-          + '</div>';
-      }).join('')
-    + '<div class="err-explain-final">«Ошибка была не в том, что ты не понял тему. Просто это место нужно чуть закрепить — и всё получится!»</div>'
-    + '<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px">'
-    + '<button class="err-summary-btn primary" onclick="errSimilarTask(' + idx + ')">🔁 Решить похожее</button>'
+    + '</div></div>';
+
+  // Чат-блок Умника
+  var chatHtml =
+    '<div class="err-card" style="padding:14px 16px">'
+    + '<div style="font-size:13px;font-weight:800;color:var(--ink);margin-bottom:10px">🧑‍🏫 Умник объясняет</div>'
+    + '<div id="err-umnik-chat" style="display:flex;flex-direction:column;gap:8px;margin-bottom:12px">'
+    + '<div class="chat-msg bot" style="opacity:.6">'
+    + '<div class="chat-avatar"><img src="umnik_avatar2.png" alt="Умник"></div>'
+    + '<div class="chat-bubble bot" style="color:#64748b">разбираю ошибку…</div>'
+    + '</div></div>'
+    + '<div style="display:flex;gap:8px;flex-wrap:wrap">'
+    + '<button class="err-summary-btn primary" onclick="errAskUmnikMore(' + idx + ')">💬 Ещё раз объясни</button>'
+    + (m.taskId
+      ? '<button class="err-summary-btn secondary" onclick="errOpenTask(' + idx + ')">📖 Решить это задание</button>'
+      : '<button class="err-summary-btn secondary" onclick="errSimilarTask(' + idx + ')">🔁 Похожее задание</button>')
     + '<button class="err-summary-btn secondary" onclick="errMarkFixed(' + idx + ');errCloseExplain()">✅ Понятно, закрыть</button>'
     + '</div>'
     + '</div>';
 
-  document.getElementById('err-explain-body').innerHTML = html;
+  document.getElementById('err-explain-body').innerHTML = headerHtml + chatHtml;
   document.getElementById('err-explain-overlay').style.display = 'block';
+
+  // Сразу запрашиваем объяснение от Умника
+  errCallUmnikExplain(m, idx);
+}
+
+function errCallUmnikExplain(m, idx) {
+  var taskText = (m.task || m.topic || '').replace(/<[^>]+>/g, '').slice(0, 200);
+  var studentAns = m.studentAnswer || '';
+  var correctAns = m.correctAnswer || '';
+
+  var prompt;
+  if (studentAns && correctAns) {
+    prompt = 'Ученик решал задачу: «' + taskText + '»\n'
+      + 'Его ответ: «' + studentAns + '»\n'
+      + 'Правильный ответ: «' + correctAns + '»\n\n'
+      + 'Объясни кратко (2–3 предложения) в чём ошибка и как правильно. Говори как добрый учитель, простыми словами. Без лишних фраз.';
+  } else {
+    prompt = 'Ученик ошибся в теме: «' + taskText + '».\n'
+      + 'Объясни кратко (2–3 предложения) главное правило этой темы и типичную ошибку. Говори как добрый учитель, без лишних фраз.';
+  }
+
+  var task = m.taskId ? (TASKS || []).find(function(t){ return t.id === m.taskId; }) : null;
+
+  fetch('/api/tutor', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      task: task
+        ? { text: task.text, answer: task.answer, hints: task.hints }
+        : { text: taskText, answer: correctAns, hints: [] },
+      messages: [{ role: 'user', content: prompt }]
+    })
+  })
+  .then(function(r){ return r.json(); })
+  .then(function(data){
+    var reply = data.reply || 'Проверь каждый шаг решения и запиши условие аккуратно.';
+    var chatEl = document.getElementById('err-umnik-chat');
+    if (!chatEl) return;
+    chatEl.innerHTML =
+      '<div class="chat-msg bot">'
+      + '<div class="chat-avatar"><img src="umnik_avatar2.png" alt="Умник"></div>'
+      + '<div class="chat-bubble bot">' + reply.replace(/\n/g,'<br>') + '</div>'
+      + '</div>';
+    window._errUmnikHistory = [{ role: 'user', content: prompt }, { role: 'assistant', content: reply }];
+    window._errUmnikTask = task || { text: taskText, answer: correctAns, hints: [] };
+  })
+  .catch(function(){
+    var chatEl = document.getElementById('err-umnik-chat');
+    if (chatEl) chatEl.innerHTML =
+      '<div class="chat-msg bot"><div class="chat-avatar"><img src="umnik_avatar2.png" alt="Умник"></div>'
+      + '<div class="chat-bubble bot">Не могу связаться с сервером. Но я тут — нажми «Ещё раз».</div></div>';
+  });
+}
+
+function errAskUmnikMore(idx) {
+  var m = (ST.mistakes||[])[idx];
+  if (!m) return;
+  var chatEl = document.getElementById('err-umnik-chat');
+  if (!chatEl) return;
+
+  var history = window._errUmnikHistory || [];
+  var followUp = 'Объясни ещё раз, другими словами. Используй простой пример из жизни.';
+  history.push({ role: 'user', content: followUp });
+
+  chatEl.innerHTML +=
+    '<div class="chat-msg bot"><div class="chat-avatar"><img src="umnik_avatar2.png" alt="Умник"></div>'
+    + '<div class="chat-bubble bot" style="color:#64748b">думаю…</div></div>';
+
+  fetch('/api/tutor', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ task: window._errUmnikTask || {}, messages: history })
+  })
+  .then(function(r){ return r.json(); })
+  .then(function(data){
+    var reply = data.reply || 'Попробуй решить похожее задание — это поможет лучше понять!';
+    history.push({ role: 'assistant', content: reply });
+    window._errUmnikHistory = history;
+    // Убрать «думаю…» и добавить ответ
+    var typing = chatEl.querySelector('.chat-bubble[style*="color:#64748b"]');
+    if (typing) typing.closest('.chat-msg').remove();
+    chatEl.innerHTML +=
+      '<div class="chat-msg bot"><div class="chat-avatar"><img src="umnik_avatar2.png" alt="Умник"></div>'
+      + '<div class="chat-bubble bot">' + reply.replace(/\n/g,'<br>') + '</div></div>';
+    chatEl.scrollTop = chatEl.scrollHeight;
+  })
+  .catch(function(){
+    chatEl.innerHTML +=
+      '<div class="chat-msg bot"><div class="chat-avatar"><img src="umnik_avatar2.png" alt="Умник"></div>'
+      + '<div class="chat-bubble bot">Нет связи. Попробуй ещё раз.</div></div>';
+  });
 }
 
 function errCloseExplain() {
