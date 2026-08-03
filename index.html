@@ -10576,32 +10576,109 @@ function wtAskHint() {
     return;
   }
 
-  // Статичные подсказки из hints[] (строки, не SVG) — по очереди
-  const staticHints = currentTask.hints
-    ? currentTask.hints.filter(function(h){ return typeof h === 'string'; })
-    : [];
-  if (staticHints.length > 0) {
+  const allHints = currentTask.hints || [];
+
+  // Разделяем: текстовые hints и hints с картинками
+  const textHints = allHints.filter(function(h){ return typeof h === 'string'; });
+  const imageHints = allHints.filter(function(h){
+    return h && typeof h === 'object' && h.content && h.content.indexOf('<img') >= 0;
+  });
+
+  // Извлечь src из html-строки картинки
+  function extractImgSrc(html) {
+    var m = html.match(/src=["']([^"']+)["']/);
+    return m ? m[1] : null;
+  }
+
+  // Если есть текстовые подсказки — показываем по очереди
+  if (textHints.length > 0) {
     if (typeof wtHintIdx === 'undefined') wtHintIdx = 0;
-    var hint = staticHints[wtHintIdx % staticHints.length];
+    var hint = textHints[wtHintIdx % textHints.length];
     wtHintIdx++;
     chatAddUser('💡 подсказка', 'hint');
     chatAddBot('💡 ' + hint, false);
+
+    // Если это последняя текстовая подсказка И есть картинки — предложить посмотреть рисунок
+    if (wtHintIdx >= textHints.length && imageHints.length > 0) {
+      setTimeout(function(){
+        chatAddBot('📐 К этому заданию есть рисунок. Хочешь посмотреть? Нажми 💡 ещё раз.', false);
+      }, 400);
+    }
     return;
   }
 
-  // Для всех остальных — просим AI дать наводящую подсказку
-  const hintRequest = wtIsMultiPart && wtCurrentPart
+  // Если текстовые закончились — показываем картинку и спрашиваем Умника
+  if (imageHints.length > 0) {
+    var imgHint = imageHints[0];
+    var imgSrc = extractImgSrc(imgHint.content);
+
+    // Показываем картинку в чате
+    chatAddUser('💡 подсказка (рисунок)', 'hint');
+    if (imgSrc) {
+      chatAddBot('<img src="' + imgSrc + '" style="max-width:100%;border-radius:8px;margin:4px 0"> ', true);
+    }
+
+    // Если картинка — отправляем в API с vision
+    if (imgSrc) {
+      var absUrl = imgSrc.startsWith('http') ? imgSrc : (window.location.origin + '/' + imgSrc);
+      var hintRequest = 'Посмотри на рисунок к заданию и объясни мне что на нём показано, чтобы помочь решить задачу. Не давай ответ, только наводящий вопрос.';
+
+      var msgContent = [
+        { type: 'image_url', image_url: { url: absUrl } },
+        { type: 'text', text: hintRequest }
+      ];
+
+      wtTutorHistory.push({ role: 'user', content: msgContent });
+
+      var typingDiv = document.createElement('div');
+      typingDiv.className = 'chat-msg bot';
+      typingDiv.innerHTML = '<div class="chat-avatar"><img src="umnik_avatar2.png" alt="Умник"></div>'
+        + '<div class="chat-bubble bot" style="color:#64748b">смотрю рисунок…</div>';
+      document.getElementById('wt-chat').appendChild(typingDiv);
+      document.getElementById('wt-chat').scrollTop = document.getElementById('wt-chat').scrollHeight;
+
+      fetch('/api/tutor', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          task: {
+            text: currentTask.text,
+            answer: currentTask.answer,
+            hints: textHints,
+            currentPart: wtIsMultiPart ? wtCurrentPart : undefined
+          },
+          messages: wtTutorHistory
+        })
+      })
+      .then(function(r){ return r.json(); })
+      .then(function(data){
+        typingDiv.remove();
+        var reply = data.reply || 'Посмотри на рисунок — что ты видишь? Это поможет решить задачу.';
+        wtTutorHistory.push({ role: 'assistant', content: reply });
+        chatAddBot('💡 ' + processGeoReply(reply), false);
+      })
+      .catch(function(){
+        typingDiv.remove();
+        chatAddBot('💡 Посмотри внимательно на рисунок — что на нём изображено?', false);
+      });
+      return;
+    }
+    return;
+  }
+
+  // Нет ни текстовых ни картинок — просим AI дать подсказку
+  var hintRequest2 = wtIsMultiPart && wtCurrentPart
     ? 'Дай мне подсказку для пункта ' + wtCurrentPart + ') — не говори ответ, только наводящий вопрос'
     : 'Дай мне подсказку — не говори ответ, только наводящий вопрос';
 
   chatAddUser('💡 подсказка', 'hint');
-  wtTutorHistory.push({ role: 'user', content: hintRequest });
+  wtTutorHistory.push({ role: 'user', content: hintRequest2 });
 
-  const typingDiv = document.createElement('div');
-  typingDiv.className = 'chat-msg bot';
-  typingDiv.innerHTML = '<div class="chat-avatar"><img src="umnik_avatar2.png" alt="Умник"></div>'
+  var typingDiv2 = document.createElement('div');
+  typingDiv2.className = 'chat-msg bot';
+  typingDiv2.innerHTML = '<div class="chat-avatar"><img src="umnik_avatar2.png" alt="Умник"></div>'
     + '<div class="chat-bubble bot" style="color:#64748b">печатает…</div>';
-  document.getElementById('wt-chat').appendChild(typingDiv);
+  document.getElementById('wt-chat').appendChild(typingDiv2);
   document.getElementById('wt-chat').scrollTop = document.getElementById('wt-chat').scrollHeight;
 
   fetch('/api/tutor', {
@@ -10617,15 +10694,15 @@ function wtAskHint() {
       messages: wtTutorHistory
     })
   })
-  .then(r => r.json())
-  .then(data => {
-    typingDiv.remove();
-    const reply = data.reply || 'Попробуй разобрать: что дано в задаче и что нужно найти?';
+  .then(function(r){ return r.json(); })
+  .then(function(data){
+    typingDiv2.remove();
+    var reply = data.reply || 'Попробуй разобрать: что дано в задаче и что нужно найти?';
     wtTutorHistory.push({ role: 'assistant', content: reply });
     chatAddBot('💡 ' + processGeoReply(reply), false);
   })
-  .catch(() => {
-    typingDiv.remove();
+  .catch(function(){
+    typingDiv2.remove();
     chatAddBot('💡 Подумай: что дано в задаче и что нужно найти?', false);
   });
 }
