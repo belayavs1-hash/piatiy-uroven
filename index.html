@@ -9500,7 +9500,7 @@ function checkParentPin() {
 }
 
 function freshST() {
-  return { user: null, studentName: null, xp: 0, solvedTasks: {}, topicProgress: {}, mistakes: [], achievements: [], hintsUsed: 0, selfSolved: 0, trainerStats: {}, trainerHistory: [], ruleHistory: [], selfCheckResults: [], parSettings: null, history: [] };
+  return { user: null, studentName: null, xp: 0, solvedTasks: {}, topicProgress: {}, mistakes: [], achievements: [], hintsUsed: 0, selfSolved: 0, trainerStats: {}, trainerHistory: [], ruleHistory: [], selfCheckResults: [], parSettings: null, history: [], onboardingDone: false };
 }
 
 
@@ -9529,7 +9529,7 @@ function obNext() {
 function finishOnboarding() {
   ST.onboardingDone = true;
   lsSave();
-  renderHome();
+  try { renderHome(); } catch(e) { console.error('renderHome:', e); }
   showScreen('screen-home');
 }
 
@@ -9554,6 +9554,7 @@ function doLogin() {
   ST.user = { name, role, inputMode };
   lsSave();
   if (role === 'parent') {
+    ST.onboardingDone = true;
     try { renderParent(); } catch(e) { console.error('[doLogin] renderParent:', e); }
     showScreen('screen-parent');
   } else {
