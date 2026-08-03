@@ -2333,6 +2333,9 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
 .err-item-head { display:flex; align-items:center; justify-content:space-between; padding:12px 16px 6px; }
 .err-item-topic { font-size:13px; font-weight:900; color:#1e293b; }
 .err-item-date  { font-size:11px; color:#94a3b8; }
+.err-date-group-lbl { font-size:11px; font-weight:800; color:#94a3b8; text-transform:uppercase; letter-spacing:.6px; padding:10px 16px 4px; }
+.err-date-group-lbl:first-child { padding-top:0; }
+.err-date-group-cnt { background:rgba(99,102,241,.12); color:#6366f1; border-radius:10px; padding:1px 7px; font-size:11px; font-weight:800; }
 .err-item-body  { padding:0 16px 8px; }
 .err-item-task  { font-size:15px; font-weight:700; color:#1e293b; margin-bottom:6px; }
 .err-item-answers { display:flex; gap:12px; margin-bottom:6px; }
@@ -14180,7 +14183,7 @@ function errRenderList() {
     return;
   }
 
-  var html = filtered.slice(0,15).map(function(m, idx) {
+  function errItemHtml(m) {
     var realIdx = (ST.mistakes||[]).indexOf(m);
     var errType = errGuessType(m);
     var statusCls = m.status || 'new';
@@ -14214,10 +14217,47 @@ function errRenderList() {
         : '<button class="err-item-btn ghost" onclick="errClose(' + realIdx + ')">Закрыть</button>')
       + '</div>'
       + '</div>';
-  }).join('');
+  }
+
+  // Группировка по дате
+  var now = new Date();
+  var todayStr = now.toLocaleDateString('ru');
+  var weekAgo = new Date(now - 7 * 24 * 3600 * 1000);
+
+  function parseErrDate(m) {
+    if (!m.date) return null;
+    // Ожидаем формат ДД.ММ.ГГГГ или ДД.ММ.ГГ
+    var p = m.date.split('.');
+    if (p.length < 3) return null;
+    return new Date(+p[2] < 100 ? 2000 + +p[2] : +p[2], +p[1]-1, +p[0]);
+  }
+
+  var groups = [
+    { label: 'Сегодня', items: [] },
+    { label: 'На этой неделе', items: [] },
+    { label: 'Раньше', items: [] }
+  ];
+
+  filtered.forEach(function(m) {
+    var d = parseErrDate(m);
+    if (!d || m.date === todayStr) {
+      groups[0].items.push(m);
+    } else if (d >= weekAgo) {
+      groups[1].items.push(m);
+    } else {
+      groups[2].items.push(m);
+    }
+  });
+
+  var html = '';
+  groups.forEach(function(g) {
+    if (!g.items.length) return;
+    html += '<div class="err-date-group-lbl">' + g.label + ' <span class="err-date-group-cnt">' + g.items.length + '</span></div>';
+    html += g.items.map(errItemHtml).join('');
+  });
 
   document.getElementById('err-list-card').innerHTML =
-    '<div class="err-card"><div class="err-card-title">📋 Последние ошибки</div>' + html + '</div>';
+    '<div class="err-card"><div class="err-card-title">📋 Ошибки <span style="font-size:12px;font-weight:600;color:#94a3b8">всего: ' + filtered.length + '</span></div>' + html + '</div>';
 }
 
 function errFilterSet(f) {
