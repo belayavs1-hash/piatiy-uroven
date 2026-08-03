@@ -2520,6 +2520,12 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
 .map-quiz-input { flex:1; padding:8px 12px; border-radius:12px; border:1px solid rgba(255,255,255,.2); background:rgba(255,255,255,.08); color:#fff; font-family:inherit; font-size:14px; font-weight:700; outline:none; }
 .map-quiz-btn { padding:8px 16px; border-radius:12px; border:none; background:#4f46e5; color:#fff; font-weight:800; cursor:pointer; }
 .map-quiz-result { font-size:13px; min-height:16px; }
+
+/* iOS zoom fix — все инпуты минимум 16px */
+input[type=text], input[type=number], input[type=search], input[type=email],
+textarea, select { font-size: max(16px, 1em) !important; }
+/* Исключение для маленьких инлайн-инпутов — масштабируем вниз визуально */
+.data-ans-inp { font-size: 16px !important; transform: scale(0.85); transform-origin: center; }
 </style>
 </head>
 <body class="on-login theme-light">
@@ -2916,7 +2922,7 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
   <!-- Фиксированный ввод внизу -->
   <div id="wt-input-bar" style="position:fixed;bottom:0;left:0;right:0;padding:10px 12px;background:rgba(10,18,40,.97);backdrop-filter:blur(12px);border-top:1px solid rgba(100,149,255,.15);display:flex;gap:7px;box-sizing:border-box;width:100%">
     <button id="wt-mic-btn" onclick="wtStartVoice()" title="Голос" style="padding:11px 13px;border-radius:22px;border:none;background:rgba(255,255,255,.08);color:#fff;font-size:19px;cursor:pointer;flex-shrink:0;line-height:1">🎤</button>
-    <input type="text" id="wt-answer" placeholder="Напиши ответ или скажи голосом…" onkeydown="if(event.key==='Enter')checkWalkthrough()" style="flex:1;padding:11px 15px;border-radius:22px;border:1.5px solid rgba(100,149,255,.25);background:rgba(255,255,255,.07);color:#fff;font-family:inherit;font-size:15px;font-weight:600;outline:none">
+    <input type="text" id="wt-answer" placeholder="Напиши ответ или скажи голосом…" onkeydown="if(event.key==='Enter')checkWalkthrough()" style="flex:1;padding:11px 15px;border-radius:22px;border:1.5px solid rgba(100,149,255,.25);background:rgba(255,255,255,.07);color:#fff;font-family:inherit;font-size:16px;font-weight:600;outline:none">
     <button id="wt-hint-btn" onclick="wtAskHint()" title="Подсказка" style="padding:11px 13px;border-radius:22px;border:none;background:rgba(255,255,255,.08);color:#fbbf24;font-size:19px;cursor:pointer;flex-shrink:0;line-height:1">💡</button>
     <button id="wt-calc-btn" onclick="wtToggleCalc()" title="Калькулятор" style="padding:11px 13px;border-radius:22px;border:none;background:rgba(255,255,255,.08);color:#34d399;font-size:19px;cursor:pointer;flex-shrink:0;line-height:1">🧮</button>
     <button onclick="checkWalkthrough()" style="padding:11px 18px;border-radius:22px;border:none;background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff;font-family:inherit;font-size:16px;font-weight:800;cursor:pointer;white-space:nowrap">→</button>
@@ -3083,6 +3089,7 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
     <a onclick="showScreen('screen-homework')"><span class="icon">📚</span>Домашка</a>
     <a onclick="showScreen('screen-map')" class="active"><span class="icon">🗺</span>Темы</a>
     <a onclick="showScreen('screen-self-check')"><span class="icon">✅</span>Проверка</a>
+    <a onclick='showUmnik("screen-map")'><span class="icon"><img src="umnik_prygaet.png" style="width:20px;height:20px;object-fit:contain;vertical-align:middle" onerror="this.outerHTML='🤖'"></span>Умник</a>
     <a onclick="showScreen('screen-achievements')"><span class="icon">🏆</span>Достижения</a>
   </div>
 </div>
@@ -3392,7 +3399,7 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
 <!-- ===== PARENT ===== -->
 <div id="screen-parent" class="screen">
   <nav class="top-nav">
-    <div style="width:60px"></div>
+    <button class="nav-back" onclick="showScreen('screen-home')">← Назад</button>
     <div class="nav-logo">👨‍👩‍👧 Кабинет родителя</div>
     <button onclick="doLogout()" style="padding:6px 14px;border-radius:10px;border:1.5px solid rgba(255,255,255,.3);background:rgba(255,255,255,.1);color:#fff;font-size:13px;font-weight:700;cursor:pointer">🚪 Выйти из кабинета</button>
   </nav>
@@ -3442,6 +3449,137 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
 .sc-typing span:nth-child(2) { animation-delay:.2s; }
 .sc-typing span:nth-child(3) { animation-delay:.4s; }
 @keyframes scDot { 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-5px)} }
+
+/* ════════════════════════════════════════════
+   МОБИЛЬНЫЕ УЛУЧШЕНИЯ (375–430px)
+   ════════════════════════════════════════════ */
+
+/* Все экраны — правильный скролл */
+.screen { overflow-x: hidden; }
+.screen-body { overflow-x: hidden; }
+
+/* Таблицы в заданиях — горизонтальный скролл */
+.task-text table, .task-text .table-wrap {
+  display: block;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  max-width: 100%;
+}
+
+/* SVG в заданиях */
+.task-text svg, .task-svg-wrap svg {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Карточки заданий */
+.white-card {
+  border-radius: 16px;
+}
+
+/* bottom-nav — компактнее на маленьких экранах */
+@media (max-width: 400px) {
+  .bottom-nav a {
+    font-size: 9px;
+    padding: 3px 0;
+    gap: 2px;
+  }
+  .bottom-nav .icon {
+    font-size: 20px;
+  }
+  .bottom-nav a img {
+    width: 18px !important;
+    height: 18px !important;
+  }
+}
+
+/* top-nav на телефоне */
+@media (max-width: 480px) {
+  .nav-logo {
+    font-size: 14px;
+    max-width: 160px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .nav-back {
+    font-size: 13px;
+    padding: 6px 8px;
+  }
+}
+
+/* Кнопки — минимальный размер для пальца */
+button, .btn-find, .btn-check, .btn-ghost, .btn-secondary {
+  min-height: 44px;
+  touch-action: manipulation;
+}
+
+/* Исключение для маленьких inline-кнопок */
+.cs-tab, .wt-mode-btn, .part-btn {
+  min-height: 32px;
+}
+
+/* Текст задания */
+.task-text {
+  font-size: 15px;
+  line-height: 1.6;
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+/* Поле ввода ответа */
+#wt-answer {
+  font-size: 16px !important; /* iOS no-zoom */
+}
+
+/* Чат Умника */
+@media (max-width: 480px) {
+  .chat-bubble {
+    font-size: 14px;
+    padding: 10px 12px;
+  }
+  #wt-chat {
+    padding: 8px;
+  }
+}
+
+/* Экран профиля — сетка на мобиле */
+@media (max-width: 480px) {
+  #profile-content .stats-grid {
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+  }
+}
+
+/* Карта тем — читаемо на телефоне */
+@media (max-width: 480px) {
+  .topic-card {
+    padding: 12px;
+  }
+  .topic-card-title {
+    font-size: 14px;
+  }
+}
+
+/* Кабинет родителя */
+@media (max-width: 480px) {
+  .par-card {
+    padding: 12px;
+    font-size: 13px;
+  }
+}
+
+/* Flex без wrap — защита */
+.wt-buttons-row, .hint-row, .mode-row {
+  flex-wrap: wrap;
+}
+
+/* overflow-x auto для больших SVG */
+.svg-scroll-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
 </style>
 <div id="screen-self-check" class="screen">
   <nav class="top-nav">
@@ -8790,6 +8928,53 @@ function _dbg(msg) {
   if(!d){ d=document.createElement('div'); d.id='__dbg'; d.style.cssText='position:fixed;top:0;left:0;right:0;background:#ff0;color:#000;padding:8px;font-size:14px;z-index:99999;font-family:monospace'; document.body.appendChild(d); }
   d.innerHTML = msg;
 }
+function renderProfile() {
+  var el = document.getElementById("profile-content");
+  if (!el) return;
+  var xp = ST.xp || 0;
+  var solved = Object.keys(ST.solvedTasks || {}).length;
+  var streak = ST.streak || 0;
+  var level = xp < 100 ? "Новичок 🌱" : xp < 300 ? "Ученик 📚" : xp < 600 ? "Знаток ⭐" : xp < 1000 ? "Мастер 🏆" : "Эксперт 🎓";
+  var name = (ST.childName || ST.name || "Ученик");
+  el.innerHTML = '<div style="text-align:center;padding:20px 0 10px">'
+    + '<div style="font-size:64px;margin-bottom:8px">🧑‍🎓</div>'
+    + '<div style="font-size:22px;font-weight:900;color:var(--ink)">' + name + '</div>'
+    + '<div style="font-size:14px;color:#6366f1;font-weight:700;margin-top:4px">' + level + '</div>'
+    + '</div>'
+    + '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin:16px 0">'
+    + '<div class="white-card" style="text-align:center;padding:16px 8px">'
+    + '  <div style="font-size:28px;font-weight:900;color:#f59e0b">' + xp + '</div>'
+    + '  <div style="font-size:11px;color:var(--ink3);margin-top:2px">XP</div></div>'
+    + '<div class="white-card" style="text-align:center;padding:16px 8px">'
+    + '  <div style="font-size:28px;font-weight:900;color:#10b981">' + solved + '</div>'
+    + '  <div style="font-size:11px;color:var(--ink3);margin-top:2px">Задач решено</div></div>'
+    + '<div class="white-card" style="text-align:center;padding:16px 8px">'
+    + '  <div style="font-size:28px;font-weight:900;color:#6366f1">' + streak + '</div>'
+    + '  <div style="font-size:11px;color:var(--ink3);margin-top:2px">Дней подряд</div></div>'
+    + '</div>'
+    + '<div class="white-card" style="padding:16px">'
+    + '  <div style="font-size:14px;font-weight:800;color:var(--ink);margin-bottom:12px">📊 Прогресс по параграфам</div>'
+    + renderProfileProgress()
+    + '</div>';
+}
+function renderProfileProgress() {
+  var paras = ["§1","§2","§3","§4","§5","§6","§7"];
+  var out = "";
+  paras.forEach(function(para) {
+    var total = TASKS.filter(function(t){ return t.para === para; }).length;
+    var done = TASKS.filter(function(t){ return t.para === para && ST.solvedTasks[t.id]; }).length;
+    var pct = total > 0 ? Math.round(done/total*100) : 0;
+    out += '<div style="margin-bottom:10px">'
+      + '<div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px">'
+      + '  <span style="font-weight:700;color:var(--ink)">' + para + '</span>'
+      + '  <span style="color:var(--ink3)">' + done + '/' + total + '</span></div>'
+      + '<div style="height:8px;background:rgba(99,102,241,.15);border-radius:4px">'
+      + '  <div style="height:100%;width:' + pct + '%;background:linear-gradient(90deg,#6366f1,#a78bfa);border-radius:4px;transition:width .4s"></div>'
+      + '</div></div>';
+  });
+  return out;
+}
+
 function showScreen(id) {
   if (id === 'screen-parent' && ST.user && ST.user.role !== 'parent') { return; }
   const studentScreens = ['screen-home','screen-homework','screen-map','screen-trainers','screen-self-check','screen-walkthrough','screen-already-solved','screen-photo-check','screen-cheatsheet','screen-funfacts','screen-achievements','screen-profile','screen-final-test'];
@@ -8803,6 +8988,7 @@ function showScreen(id) {
   if(id === 'screen-homework') updateTopics();
   if(id === 'screen-home') { try { updateParaProgress(); } catch(e) {} }
   if(id === 'screen-profile') { try { renderProfile(); } catch(e) { console.error(e); } }
+  if(id === 'screen-profile') renderProfile();
   if(id === 'screen-funfacts') renderFunFacts();
   if(id === 'screen-mistakes') { try { renderMistakes(); } catch(e) { console.error('renderMistakes error:', e); } }
   if(id === 'screen-achievements') { try { renderAchievements(); } catch(e) { console.error('renderAchievements error:', e); } }
@@ -10330,6 +10516,31 @@ function chatAddUser(text, statusKey) {
   chat.scrollTop = chat.scrollHeight;
 }
 
+function wtCallTutor() {
+  var typingDiv = document.createElement("div");
+  typingDiv.className = "chat-msg bot";
+  typingDiv.innerHTML = '<div class="chat-avatar"><img src="umnik_avatar2.png" alt="Умник"></div>'
+    + '<div class="chat-bubble bot" style="color:#64748b">проверяю…</div>';
+  document.getElementById("wt-chat").appendChild(typingDiv);
+  document.getElementById("wt-chat").scrollTop = 99999;
+  fetch("/api/tutor", {
+    method: "POST", headers: {"Content-Type":"application/json"},
+    body: JSON.stringify({
+      task: { text: currentTask.text, answer: currentTask.answer || "", hints: currentTask.hints },
+      messages: wtTutorHistory
+    })
+  }).then(function(r){ return r.json(); })
+  .then(function(data){
+    typingDiv.remove();
+    var reply = data.reply || "Хорошая попытка! Расскажи как ты решал.";
+    wtTutorHistory.push({ role: "assistant", content: reply });
+    chatAddBot(processGeoReply(reply), false);
+  }).catch(function(){
+    typingDiv.remove();
+    chatAddBot("Расскажи как ты решал — разберём вместе!", false);
+  });
+}
+
 function checkWalkthrough() {
   const inp = document.getElementById('wt-answer');
   const userAns = inp.value.trim();
@@ -10342,6 +10553,13 @@ function checkWalkthrough() {
   }
   inp.value = '';
   wtAttempts++;
+
+  // Если у задания нет правильного ответа — отправляем к Умнику
+  if (!currentTask.answer || currentTask.answer.trim() === "") {
+    chatAddUser(userAns, "answer");
+    wtTutorHistory.push({ role: "user", content: "Я решил задачу: " + userAns + ". Проверь моё решение и объясни правильно ли я сделал." });
+    return wtCallTutor();
+  }
 
   // === Многопунктовое задание ===
   if (wtIsMultiPart && wtCurrentPart && currentTask && getTaskCfg(currentTask.id)) {
@@ -14319,6 +14537,15 @@ function renderAchievements() {
 // Состояние навигации шпаргалки
 var csActivePara = null;
 var csActiveTopic = null;
+
+function csSetPara(n) {
+  csActivePara = n ? "§"+n : null;
+  // Подсветить активную кнопку
+  document.querySelectorAll(".cs-tab").forEach(function(b){
+    b.classList.toggle("active", b.textContent === (n ? "§"+n : "Все"));
+  });
+  renderCheatsheet();
+}
 
 function renderCheatsheet() {
   var el = document.getElementById('cs-cards');
