@@ -2799,9 +2799,9 @@ textarea, select { font-size: max(16px, 1em) !important; }
       <div class="h-level">
         <div class="h-level-row">
           <div class="h-level-hex" id="home-level-num">1</div>
-          <div>
-            <div class="h-level-label" id="home-level-label">До уровня 2</div>
-            <div class="h-level-xp" id="home-level-xp">0 XP</div>
+          <div style="flex:1">
+            <div class="h-level-label" id="home-level-label">Новичок · до ур. 2</div>
+            <div class="h-level-xp" id="home-level-xp">0 / 51 тем · 0 XP</div>
           </div>
         </div>
         <div class="h-level-bar"><div class="h-level-bar-fill" id="home-level-bar" style="width:0%"></div></div>
@@ -9400,11 +9400,37 @@ async function checkPhotoSolution() {
   }
 }
 
+function calcTopicsDone() {
+  // Считаем сколько тем освоено: тема освоена если решена хоть 1 задача из неё
+  var solved = ST.solvedTasks || {};
+  var solvedIds = Object.keys(solved);
+  var doneTopic = {};
+  solvedIds.forEach(function(tid) {
+    var task = TASKS.find(function(t){ return t.id === tid; });
+    if (task && task.topic) doneTopic[task.topic] = true;
+  });
+  // Всего тем в учебнике (из TOPICS_MAP)
+  var allTopics = 0;
+  TOPICS_MAP.forEach(function(b){ allTopics += b.topics.length; });
+  return { done: Object.keys(doneTopic).length, total: allTopics };
+}
+
 function calcLevel(xp) {
-  // 100 XP на уровень 1→2, потом каждый уровень на 50 XP больше
-  let lvl = 1, need = 100, acc = 0;
-  while (acc + need <= xp) { acc += need; lvl++; need += 50; }
-  return { lvl, current: xp - acc, need, pct: Math.round((xp - acc) / need * 100) };
+  // Уровень = каждые 10 освоенных тем из 51 (5 класс → 5 уровней)
+  // Пятый уровень = 5 класс. 51 тема ÷ 10 = 5 уровней (1–5)
+  var td = calcTopicsDone();
+  var done = td.done;
+  var total = td.total || 51;
+  var TOPICS_PER_LVL = 10;
+  var MAX_LVL = 5;
+  var lvl = Math.min(MAX_LVL, Math.floor(done / TOPICS_PER_LVL) + 1);
+  // Прогресс внутри текущего уровня
+  var inLvl = done - (lvl - 1) * TOPICS_PER_LVL;
+  var need = TOPICS_PER_LVL;
+  if (lvl === MAX_LVL) { inLvl = done - (MAX_LVL - 1) * TOPICS_PER_LVL; need = total - (MAX_LVL - 1) * TOPICS_PER_LVL; }
+  var pct = need > 0 ? Math.min(100, Math.round(inLvl / need * 100)) : 100;
+  var lvlNames = ['', 'Новичок', 'Ученик', 'Знаток', 'Мастер', 'Пятиклассник!'];
+  return { lvl: lvl, current: done, need: total, inLvl: Math.max(0,inLvl), topicsNeed: need, pct: pct, name: lvlNames[lvl] || '', topicsDone: done, topicsTotal: total };
 }
 
 function calcStreak() {
@@ -9425,22 +9451,26 @@ function calcStreak() {
 }
 
 function updateHomeLevel() {
-  const { lvl, current, need, pct } = calcLevel(ST.xp);
-  const streak = calcStreak();
-  const lvlEl = document.getElementById('home-level-num');
-  const lblEl = document.getElementById('home-level-label');
-  const xpEl  = document.getElementById('home-level-xp');
-  const barEl = document.getElementById('home-level-bar');
-  const strEl = document.getElementById('home-streak-label');
-  const dotsEl= document.getElementById('home-streak-dots');
-  if (lvlEl) lvlEl.textContent = lvl;
-  if (lblEl) lblEl.textContent = `До уровня ${lvl + 1}`;
-  if (xpEl)  xpEl.textContent  = `${current} / ${need} XP`;
-  if (barEl) barEl.style.width = pct + '%';
-  if (strEl) strEl.textContent = `🔥 Серия: ${streak} ${streak === 1 ? 'день' : streak >= 2 && streak <= 4 ? 'дня' : 'дней'}`;
+  var lv = calcLevel(ST.xp);
+  var streak = calcStreak();
+  var lvlEl = document.getElementById('home-level-num');
+  var lblEl = document.getElementById('home-level-label');
+  var xpEl  = document.getElementById('home-level-xp');
+  var barEl = document.getElementById('home-level-bar');
+  var strEl = document.getElementById('home-streak-label');
+  var dotsEl= document.getElementById('home-streak-dots');
+  if (lvlEl) lvlEl.textContent = lv.lvl;
+  if (lblEl) {
+    lblEl.textContent = lv.lvl < 5
+      ? lv.name + ' · до ур. ' + (lv.lvl + 1)
+      : '🏆 ' + lv.name;
+  }
+  if (xpEl) xpEl.textContent = lv.topicsDone + ' / ' + lv.topicsTotal + ' тем · ' + ST.xp + ' XP';
+  if (barEl) barEl.style.width = lv.pct + '%';
+  if (strEl) strEl.textContent = '🔥 Серия: ' + streak + ' ' + (streak === 1 ? 'день' : streak >= 2 && streak <= 4 ? 'дня' : 'дней');
   if (dotsEl) {
-    const dots = dotsEl.querySelectorAll('.h-streak-dot');
-    dots.forEach((d, i) => d.classList.toggle('done', i < Math.min(streak, 6)));
+    var dots = dotsEl.querySelectorAll('.h-streak-dot');
+    dots.forEach(function(d, i){ d.classList.toggle('done', i < Math.min(streak, 6)); });
   }
 }
 
@@ -9657,26 +9687,65 @@ function renderHome() {
   const navName = document.getElementById('home-nav-name');
   if(navName) navName.textContent = `${ST.user.name} • 5 класс`;
   updateHomeLevel();
-  // Прогресс учебника — считаем по решённым заданиям
+  // Прогресс учебника — шкала 7 параграфов
   (function() {
-    const solved = ST.solvedTasks || {};
-    const total = Object.keys(solved).length;
-    const el = document.getElementById('home-book-progress');
-    if (!el) return;
-    if (total === 0) {
-      el.innerHTML = `<span style="white-space:nowrap;color:var(--h-muted);font-size:12px">Прогресс ещё не начат</span>`;
-      return;
-    }
-    // Находим последнюю решённую главу
-    const paras = Object.keys(solved).map(id => id.split('.')[0]).filter(Boolean);
-    const lastPara = paras.sort().pop();
-    const TASKS_IN_PARA = { '1':213, '2':200, '3':400, '4':100, '5':100, '6':80, '7':80 };
-    const paraTotal = TASKS_IN_PARA[lastPara] || 100;
-    const paraCount = paras.filter(p => p === lastPara).length;
-    const pct = Math.min(100, Math.round(paraCount / paraTotal * 100));
-    el.innerHTML = `<span style="white-space:nowrap">§${lastPara} · ${total} задан.</span>
-      <div class="h-book-bar" style="height:8px;flex:1"><span style="width:${pct}%"></span></div>
-      <span>${pct}%</span>`;
+    var lv = calcLevel(ST.xp);
+    var progEl = document.getElementById('home-book-progress');
+    var barsEl = document.getElementById('home-para-bars');
+    if (!progEl) return;
+
+    // Для каждого параграфа считаем сколько тем освоено
+    var solved = ST.solvedTasks || {};
+    var topicDoneByPara = {};
+    Object.keys(solved).forEach(function(tid) {
+      var task = TASKS.find(function(t){ return t.id === tid; });
+      if (task && task.topic && task.para) {
+        if (!topicDoneByPara[task.para]) topicDoneByPara[task.para] = {};
+        topicDoneByPara[task.para][task.topic] = true;
+      }
+    });
+
+    // Общий заголовок
+    progEl.innerHTML = '<span style="color:var(--h-muted);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px">Прогресс по учебнику</span>'
+      + '<span style="margin-left:auto;font-size:12px;font-weight:800;color:var(--h-ink)">' + lv.topicsDone + ' / ' + lv.topicsTotal + ' тем</span>';
+
+    if (!barsEl) return;
+
+    // Сегментная шкала
+    var segsHtml = '<div style="display:flex;gap:2px;height:10px;border-radius:6px;overflow:hidden;margin-bottom:8px">';
+    var paraIcons = ['🔢','➕','✖️','📐','½','🔟','📏'];
+    TOPICS_MAP.forEach(function(block, i) {
+      var paraTopics = block.topics.length;
+      var pNum = '' + (i + 1);
+      var doneCnt = topicDoneByPara[pNum] ? Object.keys(topicDoneByPara[pNum]).length : 0;
+      var pct = paraTopics > 0 ? Math.min(100, Math.round(doneCnt / paraTopics * 100)) : 0;
+      // Ширина сегмента пропорциональна кол-ву тем в параграфе (относительно 51)
+      var flex = paraTopics;
+      var bg = pct === 0 ? 'rgba(148,163,184,.15)'
+        : pct === 100 ? 'linear-gradient(90deg,#22c572,#0ea55e)'
+        : 'linear-gradient(90deg,#366eff ' + pct + '%,rgba(148,163,184,.15) ' + pct + '%)';
+      segsHtml += '<div style="flex:' + flex + ';background:' + bg + ';position:relative" title="§' + (i+1) + ': ' + doneCnt + '/' + paraTopics + ' тем"></div>';
+    });
+    segsHtml += '</div>';
+
+    // Мини-строки по параграфам
+    var rowsHtml = '';
+    TOPICS_MAP.forEach(function(block, i) {
+      var paraTopics = block.topics.length;
+      var pNum = '' + (i + 1);
+      var doneCnt = topicDoneByPara[pNum] ? Object.keys(topicDoneByPara[pNum]).length : 0;
+      var pct = paraTopics > 0 ? Math.min(100, Math.round(doneCnt / paraTopics * 100)) : 0;
+      var clr = pct === 100 ? '#22c572' : pct >= 50 ? '#366eff' : pct > 0 ? '#f59e0b' : 'var(--h-muted)';
+      rowsHtml += '<div style="display:flex;align-items:center;gap:6px">'
+        + '<span style="font-size:10px;color:var(--h-muted);width:16px;flex-shrink:0">§' + (i+1) + '</span>'
+        + '<div style="flex:1;height:4px;border-radius:3px;background:rgba(148,163,184,.15);overflow:hidden">'
+        + '<div style="height:100%;width:' + pct + '%;background:' + clr + ';border-radius:3px;transition:width .5s"></div>'
+        + '</div>'
+        + '<span style="font-size:10px;color:' + clr + ';font-weight:700;width:28px;text-align:right">' + doneCnt + '/' + paraTopics + '</span>'
+        + '</div>';
+    });
+
+    barsEl.innerHTML = segsHtml + rowsHtml;
   })();
   // Плашка «Хочу всё знать» — показываем кол-во ошибок
   var errSub = document.getElementById('banner-know-sub');
