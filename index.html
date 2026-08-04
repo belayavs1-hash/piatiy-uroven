@@ -15692,25 +15692,60 @@ function renderParent() {
   document.getElementById('par-trainer-hist-card').innerHTML =
     '<div class="par-card"><div class="par-card-title">📈 Динамика занятий</div>' + dynHtml + '</div>';
 
-  // ── 7. Достижения (#12, #13, #14) ───────────────────────────────────
+  // ── 7. Достижения и прогресс ранга ─────────────────────────────────
   var unlocked = ACHIEVEMENTS.filter(function(a){ return (ST.achievements||[]).includes(a.id); });
   var locked   = ACHIEVEMENTS.filter(function(a){ return !(ST.achievements||[]).includes(a.id); });
+  var lv7 = calcLevel(ST.xp);
+  var totalXp7 = ST.xp || 0;
+  var RANKS = [
+    { name:'🌱 Новичок', min:0,    max:299  },
+    { name:'📚 Ученик',  min:300,  max:599  },
+    { name:'💡 Знаток',  min:600,  max:1499 },
+    { name:'🏆 Мастер',  min:1500, max:2999 },
+    { name:'🎓 Эксперт', min:3000, max:99999}
+  ];
+  var curRankIdx = RANKS.findIndex(function(r){ return totalXp7 <= r.max; });
+  if (curRankIdx < 0) curRankIdx = RANKS.length - 1;
+  var curRank = RANKS[curRankIdx];
+  var nextRank = RANKS[curRankIdx + 1];
+  var rankBarPct = nextRank
+    ? Math.min(100, Math.round((totalXp7 - curRank.min) / (nextRank.min - curRank.min) * 100))
+    : 100;
+  var rankHtml = '<div style="background:rgba(99,102,241,.06);border-radius:12px;padding:14px;margin-bottom:14px">'
+    + '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">'
+    + '<div>'
+    + '<div style="font-size:18px;font-weight:900;color:#1e293b">' + curRank.name + '</div>'
+    + '<div style="font-size:11px;color:#64748b;margin-top:2px">' + lv7.name + ' · ' + lv7.topicsDone + ' тем из ' + lv7.topicsTotal + '</div>'
+    + '</div>'
+    + '<div style="text-align:right">'
+    + '<div style="font-size:20px;font-weight:900;color:#6366f1">' + totalXp7 + ' ⭐</div>'
+    + (nextRank ? '<div style="font-size:11px;color:#94a3b8">до «' + nextRank.name + '» ещё ' + (nextRank.min - totalXp7) + ' XP</div>' : '<div style="font-size:11px;color:#16a34a">Максимальный ранг!</div>')
+    + '</div>'
+    + '</div>'
+    + '<div style="height:8px;background:#e2e8f0;border-radius:5px;overflow:hidden">'
+    + '<div style="height:100%;width:' + rankBarPct + '%;background:linear-gradient(90deg,#6366f1,#8b5cf6);border-radius:5px"></div>'
+    + '</div>'
+    + (nextRank ? '<div style="display:flex;justify-content:space-between;font-size:10px;color:#94a3b8;margin-top:4px"><span>' + curRank.name + '</span><span>' + nextRank.name + '</span></div>' : '')
+    + '</div>';
   document.getElementById('par-rule-hist-card').innerHTML =
     '<div class="par-card">'
-    + '<div class="par-card-title">🏅 Достижения</div>'
-    + '<div style="font-size:12px;color:#64748b;margin-bottom:12px">Достижения помогают ребёнку видеть прогресс и сохранять интерес к занятиям.</div>'
+    + '<div class="par-card-title">🏅 Прогресс и достижения</div>'
+    + rankHtml
     + (unlocked.length === 0
-        ? '<div style="color:#94a3b8;font-size:13px;margin-bottom:10px">Ни одного ещё не открыто.</div>'
+        ? '<div style="color:#94a3b8;font-size:13px;margin-bottom:10px">Значков пока нет — откроются после первых заданий.</div>'
         : '<div class="par-ach-section"><div class="par-ach-section-title">Открыто · ' + unlocked.length + '</div><div class="par-ach-grid">'
           + unlocked.map(function(a){ return '<div class="par-ach-item"><div class="par-ach-emoji">'+a.icon+'</div><div class="par-ach-name">'+a.name+'</div></div>'; }).join('')
           + '</div></div>')
-    + '<div class="par-ach-section"><div class="par-ach-section-title">Ближайшие цели</div><div class="par-ach-grid">'
-    + locked.slice(0,3).map(function(a){
-        var prog = achGetProgress(a);
-        var progStr = (prog !== null && a.goal > 1) ? ' · ' + prog + '/' + a.goal : '';
-        return '<div class="par-ach-item next"><div class="par-ach-emoji">'+a.icon+'</div><div class="par-ach-name">'+a.name+'</div><div class="par-ach-desc">'+a.desc+progStr+'</div></div>';
-      }).join('')
-    + '</div></div></div>';
+    + (locked.length > 0
+        ? '<div class="par-ach-section"><div class="par-ach-section-title">Ближайшие цели</div><div class="par-ach-grid">'
+          + locked.slice(0,3).map(function(a){
+              var prog = achGetProgress(a);
+              var progStr = (prog !== null && a.goal > 1) ? ' · ' + prog + '/' + a.goal : '';
+              return '<div class="par-ach-item next"><div class="par-ach-emoji">'+a.icon+'</div><div class="par-ach-name">'+a.name+'</div><div class="par-ach-desc">'+a.desc+progStr+'</div></div>';
+            }).join('')
+          + '</div></div>'
+        : '')
+    + '</div>';
 
   
   // ── 8. История проверочных работ ────────────────────────────────────
