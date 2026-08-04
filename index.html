@@ -2932,6 +2932,7 @@ textarea, select { font-size: max(16px, 1em) !important; }
       <article class="h-card" style="justify-content:space-between">
         <div style="flex:1;display:flex;flex-direction:column">
           <small style="font-size:11px;font-weight:700;color:var(--h-muted);text-transform:uppercase;letter-spacing:.04em">Твой учебник</small>
+          <div style="font-size:11px;color:var(--h-muted);margin-top:2px">Математика 5 класс · Виленкин Н.Я.</div>
           <div style="display:flex;gap:14px;margin-top:10px;flex:1">
             <div style="width:140px;flex-shrink:0;align-self:stretch;border-radius:10px;overflow:hidden;position:relative;background:rgba(255,255,255,0.9)">
               <img src="kniga.png" alt="Учебник" style="width:100%;height:100%;object-fit:contain;display:block">
@@ -15798,44 +15799,38 @@ function renderParent() {
   document.getElementById('par-hw-card').innerHTML =
     '<div class="par-card"><div class="par-card-title">📝 Проверочные работы</div>' + hwHtml + '</div>';
 
-  // ── 9. Подробная статистика ───────────────────────────────────────────
-  var allTrainer = ST.trainerHistory || [];
-  var allTotal   = allTrainer.reduce(function(s,h){ return s+(h.total||0); }, 0);
-  var allCorrect = allTrainer.reduce(function(s,h){ return s+(h.correct||0); }, 0);
-  var allPct     = allTotal > 0 ? Math.round(allCorrect/allTotal*100) : 0;
-  var hintsUsed  = ST.hintsUsed || 0;
-  var allSolvedN = Object.keys(ST.solvedTasks||{}).length;
-  var selfSolved = ST.selfSolved || 0;
-  var selfPct    = allSolvedN > 0 ? Math.round(selfSolved/allSolvedN*100) : 0;
+  // ── 9. Подробная статистика (за всё время) ───────────────────────────
+  var allTrainer  = ST.trainerHistory || [];
+  var allSessions = allTrainer.length;
+  var allTotal    = allTrainer.reduce(function(s,h){ return s+(h.total||0); }, 0);
+  var allCorrect  = allTrainer.reduce(function(s,h){ return s+(h.correct||0); }, 0);
+  var allPct      = allTotal > 0 ? Math.round(allCorrect/allTotal*100) : 0;
+  var allSolvedN  = Object.keys(ST.solvedTasks||{}).length;
+  var selfSolvedN = ST.selfSolved || 0;
+  var selfPct     = allSolvedN > 0 ? Math.round(selfSolvedN/allSolvedN*100) : 0;
+  var hintsUsedN  = ST.hintsUsed || 0;
+  var scTotal     = scResults.length;
+  var scGood      = scResults.filter(function(r){ return (r.pct||0) >= 80; }).length;
+  var scGoodPct   = scTotal > 0 ? Math.round(scGood/scTotal*100) : 0;
 
-  var statHtml = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">'
-    + '<div style="background:rgba(16,185,129,.08);border-radius:10px;padding:12px;text-align:center">'
-    + '<div style="font-size:26px;font-weight:900;color:#10b981">' + allTotal + '</div>'
-    + '<div style="font-size:11px;color:#64748b;margin-top:2px">Вопросов в тренажёрах</div></div>'
-    + '<div style="background:rgba(99,102,241,.08);border-radius:10px;padding:12px;text-align:center">'
-    + '<div style="font-size:26px;font-weight:900;color:#6366f1">' + allPct + '%</div>'
-    + '<div style="font-size:11px;color:#64748b;margin-top:2px">Правильных ответов</div></div>'
-    + '<div style="background:rgba(245,158,11,.08);border-radius:10px;padding:12px;text-align:center">'
-    + '<div style="font-size:26px;font-weight:900;color:#f59e0b">' + hintsUsed + '</div>'
-    + '<div style="font-size:11px;color:#64748b;margin-top:2px">Подсказок взял</div></div>'
-    + '<div style="background:rgba(239,68,68,.08);border-radius:10px;padding:12px;text-align:center">'
-    + '<div style="font-size:26px;font-weight:900;color:#ef4444">' + selfPct + '%</div>'
-    + '<div style="font-size:11px;color:#64748b;margin-top:2px">Решил сам (без помощи)</div></div>'
-    + '</div>';
-
-  var scTotal = scResults.length;
-  var scGood  = scResults.filter(function(r){ return (r.pct||0) >= 80; }).length;
-  if (scTotal > 0) {
-    statHtml += '<div style="padding:10px;background:rgba(99,102,241,.06);border-radius:8px">'
-      + '<div style="font-size:12px;color:#64748b;margin-bottom:6px">Проверочных работ: <b>' + scTotal
-      + '</b> · Отлично (≥80%): <b>' + scGood + '</b></div>'
-      + '<div style="height:6px;background:rgba(99,102,241,.15);border-radius:3px">'
-      + '<div style="height:100%;width:' + Math.round(scGood/scTotal*100) + '%;background:#6366f1;border-radius:3px"></div>'
+  function statRow(label, val, sub, color) {
+    return '<div style="display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid #f1f5f9">'
+      + '<div style="font-size:13px;color:#475569">' + label + '</div>'
+      + '<div style="text-align:right">'
+      + '<span style="font-size:15px;font-weight:900;color:' + (color||'#1e293b') + '">' + val + '</span>'
+      + (sub ? '<span style="font-size:11px;color:#94a3b8;margin-left:5px">' + sub + '</span>' : '')
       + '</div></div>';
   }
 
+  var statHtml = statRow('Заданий решено всего', allSolvedN, '', '#1e293b')
+    + statRow('Решил сам (без подсказок)', selfSolvedN, selfPct + '%', selfPct >= 70 ? '#16a34a' : selfPct >= 40 ? '#d97706' : '#dc2626')
+    + statRow('Тренажёров пройдено', allSessions, allTotal + ' вопросов', '#6366f1')
+    + statRow('Правильных в тренажёрах', allCorrect, allPct + '%', allPct >= 70 ? '#16a34a' : allPct >= 50 ? '#d97706' : '#dc2626')
+    + statRow('Проверочных сдано', scTotal, scTotal > 0 ? 'отлично: ' + scGood + ' (' + scGoodPct + '%)' : '', '#1e293b')
+    + statRow('Подсказок использовано', hintsUsedN, '', hintsUsedN > 20 ? '#dc2626' : '#64748b');
+
   document.getElementById('par-ach-card').innerHTML =
-    '<div class="par-card"><div class="par-card-title">📊 Подробная статистика</div>' + statHtml + '</div>';
+    '<div class="par-card"><div class="par-card-title">📊 Статистика за всё время</div>' + statHtml + '</div>';
 
   // ── 10. Настройки ─────────────────────────────────────────────────────
   var curName = ST.studentName || (ST.user && ST.user.name) || 'Ученик';
