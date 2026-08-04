@@ -2724,12 +2724,16 @@ textarea, select { font-size: max(16px, 1em) !important; }
           <h2 class="ob-title">Зарабатывай очки!</h2>
           <p class="ob-text">За каждую правильно решённую задачу получаешь <b>XP</b>.<br>
           Копи очки, открывай достижения и повышай уровень.</p>
-          <div class="ob-xp-demo">
-            <div class="ob-xp-item"><span style="font-size:28px">⭐</span><div>Новичок<br><small>0 XP</small></div></div>
+          <div class="ob-xp-demo" style="flex-wrap:wrap;gap:6px;justify-content:center">
+            <div class="ob-xp-item"><span style="font-size:22px">🌱</span><div>Новичок<br><small>0 XP</small></div></div>
             <div class="ob-arrow">→</div>
-            <div class="ob-xp-item"><span style="font-size:28px">📚</span><div>Ученик<br><small>100 XP</small></div></div>
+            <div class="ob-xp-item"><span style="font-size:22px">📚</span><div>Ученик<br><small>300 XP</small></div></div>
             <div class="ob-arrow">→</div>
-            <div class="ob-xp-item"><span style="font-size:28px">🏆</span><div>Мастер<br><small>600 XP</small></div></div>
+            <div class="ob-xp-item"><span style="font-size:22px">💡</span><div>Знаток<br><small>600 XP</small></div></div>
+            <div class="ob-arrow">→</div>
+            <div class="ob-xp-item"><span style="font-size:22px">🏆</span><div>Мастер<br><small>1500 XP</small></div></div>
+            <div class="ob-arrow">→</div>
+            <div class="ob-xp-item"><span style="font-size:22px">🎓</span><div>Эксперт<br><small>3000 XP</small></div></div>
           </div>
           <p class="ob-hint">Умник никогда не даёт ответ сразу — только наводящие вопросы 😉</p>
         </div>
@@ -9196,7 +9200,7 @@ function renderProfile() {
   var xp = ST.xp || 0;
   var solved = Object.keys(ST.solvedTasks || {}).length;
   var streak = ST.streak || 0;
-  var level = xp < 100 ? "Новичок 🌱" : xp < 300 ? "Ученик 📚" : xp < 600 ? "Знаток ⭐" : xp < 1000 ? "Мастер 🏆" : "Эксперт 🎓";
+  var level = xp < 300 ? "Новичок 🌱" : xp < 600 ? "Ученик 📚" : xp < 1500 ? "Знаток 💡" : xp < 3000 ? "Мастер 🏆" : "Эксперт 🎓";
   var name = (ST.childName || ST.name || "Ученик");
   el.innerHTML = '<div style="text-align:center;padding:20px 0 10px">'
     + '<div style="font-size:64px;margin-bottom:8px">🧑‍🎓</div>'
@@ -9429,8 +9433,16 @@ function calcLevel(xp) {
   var need = TOPICS_PER_LVL;
   if (lvl === MAX_LVL) { inLvl = done - (MAX_LVL - 1) * TOPICS_PER_LVL; need = total - (MAX_LVL - 1) * TOPICS_PER_LVL; }
   var pct = need > 0 ? Math.min(100, Math.round(inLvl / need * 100)) : 100;
-  var lvlNames = ['', 'Новичок', 'Ученик', 'Знаток', 'Мастер', 'Пятиклассник!'];
-  return { lvl: lvl, current: done, need: total, inLvl: Math.max(0,inLvl), topicsNeed: need, pct: pct, name: lvlNames[lvl] || '', topicsDone: done, topicsTotal: total };
+  var lvlNames = ['', 'Уровень 1', 'Уровень 2', 'Уровень 3', 'Уровень 4', 'Уровень 5'];
+  // XP за текущий уровень (накоплено с начала уровня)
+  var XP_THRESHOLDS = [0, 300, 600, 1500, 3000];
+  var xpLvlStart = XP_THRESHOLDS[Math.min(lvl-1, XP_THRESHOLDS.length-1)] || 0;
+  var xpLvlEnd   = XP_THRESHOLDS[Math.min(lvl, XP_THRESHOLDS.length-1)] || 3000;
+  var xpTotal = ST.xp || 0;
+  var xpInLvl = Math.max(0, xpTotal - xpLvlStart);
+  var xpNeedLvl = xpLvlEnd - xpLvlStart;
+  var xpPct = xpNeedLvl > 0 ? Math.min(100, Math.round(xpInLvl / xpNeedLvl * 100)) : 100;
+  return { lvl: lvl, current: done, need: total, inLvl: Math.max(0,inLvl), topicsNeed: need, pct: xpPct, name: lvlNames[lvl] || '', topicsDone: done, topicsTotal: total, xpInLvl: xpInLvl, xpNeedLvl: xpNeedLvl, xpPct: xpPct };
 }
 
 function calcStreak() {
@@ -9465,7 +9477,7 @@ function updateHomeLevel() {
       ? lv.name + ' · до ур. ' + (lv.lvl + 1)
       : '🏆 ' + lv.name;
   }
-  if (xpEl) xpEl.textContent = lv.topicsDone + ' / ' + lv.topicsTotal + ' тем · ' + ST.xp + ' XP';
+  if (xpEl) xpEl.textContent = (lv.xpInLvl || 0) + ' / ' + (lv.xpNeedLvl || 300) + ' XP на уровне · ' + lv.topicsDone + ' тем';
   if (barEl) barEl.style.width = lv.pct + '%';
   if (strEl) strEl.textContent = '🔥 Серия: ' + streak + ' ' + (streak === 1 ? 'день' : streak >= 2 && streak <= 4 ? 'дня' : 'дней');
   if (dotsEl) {
