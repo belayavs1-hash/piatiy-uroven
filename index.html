@@ -9374,7 +9374,7 @@ async function checkPhotoSolution() {
         <div class="result-answer" style="margin-top:8px">${data.comment || ''}</div>
         <button class="btn-check" style="margin-top:14px;width:100%" onclick="showDone('🏆','Отлично!','Задание ${currentTask ? currentTask.id : ''} выполнено',25)">Отлично! →</button>
       </div>`;
-      addXP(30);
+      addXP(20);
       if(currentTask) markSolved(currentTask.id, {attempts:1, withHints:false, correct:true});
     } else {
       _lastDoneParts = data.parts_done || [];
@@ -10480,7 +10480,7 @@ function wtShowTask(startPart) {
 
 // Завершение задачи Повторения по кнопке "Готово"
 function wtFinishRepeat() {
-  var xp = wtLastXp || Math.max(7, 30 - wtAttempts * 5);
+  var xp = wtLastXp || 5;
   addXP(xp);
   markSolved(currentTask.id, {attempts: wtAttempts, correct: true});
   showDone('🤖', 'Разобрались!', 'С Умником', xp);
@@ -10491,7 +10491,7 @@ function wtGoToNextPartSimple(keepCurrent) {
   var parts = wtParsedParts || [];
   if (!parts.length) {
     // нет пунктов — завершаем
-    var xp2 = Math.max(7, 30 - wtAttempts * 5);
+    var xp2 = 5;
     addXP(xp2);
     markSolved(currentTask.id, {attempts: wtAttempts, correct: true});
     showDone('🤖', 'Разобрались!', 'С Умником', xp2);
@@ -10512,7 +10512,7 @@ function wtGoToNextPartSimple(keepCurrent) {
   if (remaining.length === 0) {
     // Все пункты выполнены
     wtCurrentPart = null;
-    var xp = Math.max(7, 30 - wtAttempts * 5);
+    var xp = 5;
     chatAddBot('✅ Отлично! Ты ответил на все пункты задания.<br><span class="chat-xp">+' + xp + ' XP ⭐</span>', false);
     setTimeout(function(){
       var chat = document.getElementById('wt-chat');
@@ -10561,7 +10561,7 @@ function wtGoToNextPart(keepCurrent) {
     // Все пункты выполнены!
     wtCurrentPart = null;
     wtUpdatePartsBar();
-    const xp = Math.max(7, 30 - wtAttempts * 5);
+    const xp = 5;
     chatAddBot('✅ Отлично! Ты ответил на все пункты задания.<br><span class="chat-xp">+' + xp + ' XP ⭐</span>', false);
     setTimeout(() => {
       const chat = document.getElementById('wt-chat');
@@ -11069,7 +11069,7 @@ function checkWalkthrough() {
       return;
     }
     // Правильный ответ — сразу завершаем без API
-    const xp = wtAttempts === 1 ? 30 : wtAttempts === 2 ? 20 : wtAttempts <= 3 ? 12 : 7;
+    const xp = wtAttempts === 1 ? 20 : wtAttempts <= 3 ? 10 : 5;
     chatAddUser(userAns, 'ok');
     wtTutorHistory.push({ role: 'user', content: userAns });
     setTimeout(() => {
@@ -11156,7 +11156,7 @@ function checkWalkthrough() {
     // Если AI засчитал — завершаем задание
     const _aiOk2 = (function(_r){ var _neg = /неs*(?:совсемs*)?(?:правильно|верно)/i.test(_r); var _hasQ = _r.indexOf('?') >= 0; var _pos = /правильно!s*✅/i.test(_r) && !_hasQ; return !_neg && _pos; })(reply);
     if (_aiOk2 && !wtIsMultiPart) {
-      const _xp2 = Math.max(7, 30 - wtAttempts * 5);
+      const _xp2 = 5;
       if (currentTask && currentTask.para === 'Повторение') {
         // Показываем кнопку — не закрываем автоматически
         wtLastXp = _xp2;
@@ -11476,7 +11476,7 @@ function checkSolution() {
       <div class="r-text">Верно! Задание выполнено!</div>
       <button class="btn-check" style="margin-top:14px;width:100%" onclick="showDone('🏆','Отлично!','Задание ${currentTask.id} выполнено',25)">Отлично! →</button>
     </div>`;
-    addXP(30);
+    addXP(20);
     ST.selfSolved++;
     markSolved(currentTask.id, {attempts:1, withHints:false, correct:true});
     grantAchievement('solved_self');
@@ -12063,7 +12063,7 @@ function ruleFinishQuiz() {
   if ((ST.mapProgress[id] || 0) < 2) { ST.mapProgress[id] = 2; }
   var total = ruleState.quizzes.length;
   var correct = ruleState.correct;
-  var xpGained = correct * 3;
+  var xpGained = correct * 1;
   addXP(xpGained);
 
   // Сохраняем в историю
@@ -12793,13 +12793,7 @@ function tgResolve(correct, rightAnswer, studentAnswer) {
     trSessionXP += xpGain;
     trStreak++;
     if (trStreak > trBestStreak) trBestStreak = trStreak;
-    // Г) Бонус серии каждые 5 подряд
-    if (trStreak > 0 && trStreak % 5 === 0) {
-      addXP(15);
-      var _sb = document.querySelector('#tg-status,#archer-status,#dice-status,#builder-status,#pirate-status');
-      if (_sb) { var _sbt = _sb.textContent; _sb.textContent = '\uD83D\uDD25 Серия ' + trStreak + '! +15 XP'; setTimeout(function(){ _sb.textContent = _sbt; }, 1500); }
-    }
-    trUpdateStats();
+        trUpdateStats();
     document.getElementById('tg-status').textContent = '✅ Верно! +' + xpGain + ' XP';
     document.getElementById('tg-status').className = 'tg-status ok';
     tgHeroJump();
@@ -12889,7 +12883,7 @@ function tgHeroJump() {
   const scene = document.getElementById('tg-scene');
   const pop = document.createElement('div');
   pop.className = 'tg-xp-pop';
-  pop.textContent = '+10 XP ⭐';
+  pop.textContent = '+1 XP ⭐';
   scene.appendChild(pop);
   setTimeout(function() { if (pop.parentNode) pop.parentNode.removeChild(pop); }, 700);
 }
@@ -13106,7 +13100,7 @@ function archerResolve(correct, rightAnswer, studentAnswer) {
     trStreak++;
     if (trStreak > trBestStreak) trBestStreak = trStreak;
     trUpdateStats();
-    var hitMsg = archerAttempt === 0 ? '🎯 В центр! +10 XP' : archerAttempt === 1 ? '🏹 В кольцо! +6 XP' : '↗️ В край! +3 XP';
+    var hitMsg = '🎯 Попадание! +1 XP';
     if (statusEl) { statusEl.textContent = hitMsg; statusEl.className = 'tg-status ok'; }
     setTimeout(archerAdvance, 1500);
   } else {
@@ -13391,7 +13385,7 @@ function builderResolve(correct, rightAnswer, studentAnswer) {
   const statusEl = document.getElementById('builder-status');
 
   if (correct) {
-    var xpGain = builderAttempt === 0 ? 10 : builderAttempt === 1 ? 6 : 3;
+    var xpGain = 1;
     task._result = 'ok';
     trCorrect++;
     addXP(xpGain);
@@ -13574,7 +13568,7 @@ function pirateResolve(correct, rightAnswer, studentAnswer) {
   const scene = document.getElementById('pirate-scene');
 
   if (correct) {
-    var xpGain = pirateAttempt === 0 ? 10 : pirateAttempt === 1 ? 6 : 3;
+    var xpGain = 1;
     task._result = 'ok';
     trCorrect++;
     addXP(xpGain);
@@ -14788,7 +14782,7 @@ function errTrainAnswer(chosen) {
 function errTrainFinish() {
   var total = errTrainTasks.length;
   var fixedCount = errTrainFixed.length;
-  var xpGained = errTrainCorrect * 8;
+  var xpGained = errTrainCorrect * 1;
   addXP(xpGained);
   lsSave();
 
@@ -21012,7 +21006,7 @@ function scCheckNL(t, required) {
     scYouScore++;
     scUpdateScores();
     scAddMsg('bot', '✅ Верно! +1 очко тебе!');
-    addXP(10);
+    addXP(1);
     inp.value = '';
     setTimeout(() => scNext(), 1200);
   } else {
@@ -21098,7 +21092,7 @@ function scCheckAnswer() {
     scYouScore++;
     scUpdateScores();
     scAddMsg('bot', '✅ Верно! +1 очко тебе!');
-    addXP(10);
+    addXP(1);
     inp.value = '';
     inp.placeholder = '...';
     setTimeout(() => scNext(), 1200);
@@ -21203,7 +21197,7 @@ function scFinish() {
   document.getElementById('sc-done-result').innerHTML =
     `Правильных ответов: <b style="color:#10b981">${scYouScore}</b> из ${total}<br>` +
     (errs > 0 ? `Ошибок: <b style="color:#f87171">${errs}</b> — повтори задания ещё раз!` : '🎉 Все ответы верны!');
-  if (scYouScore > scUmnikScore) addXP(30);
+  // XP за каждый правильный ответ уже начислены выше
   updateAllXP();
 }
 
