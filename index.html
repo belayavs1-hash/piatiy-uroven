@@ -15511,11 +15511,25 @@ function renderParent() {
     + '<div class="par-week-cell"><div class="par-week-val">' + periodXP + '</div><div class="par-week-lbl">XP заработано ⭐</div></div>'
     + '<div class="par-week-cell"><div class="par-week-val">' + periodMinutes + '</div><div class="par-week-lbl">минут занятий</div></div>'
     + '</div>'
-    + '<div style="border-top:1px solid #f1f5f9;margin-top:12px;padding-top:10px;display:flex;gap:24px;flex-wrap:wrap">'
-    + '<div><span style="font-size:12px;color:#64748b">Общий XP: </span><span style="font-size:13px;font-weight:800;color:#2563eb">'+ST.xp+' ⭐</span></div>'
-    + '<div><span style="font-size:12px;color:#64748b">Уровень: </span><span style="font-size:13px;font-weight:800;color:#7c3aed">'+calcLevel(ST.xp)+'</span></div>'
-    + '<div><span style="font-size:12px;color:#64748b">Серия: </span><span style="font-size:13px;font-weight:800;color:#ea580c">'+calcStreak()+' дн.</span></div>'
-    + '</div>'
+    + (function(){
+        var lv = calcLevel(ST.xp);
+        var totalXp = ST.xp || 0;
+        var rank = totalXp < 300 ? '🌱 Новичок' : totalXp < 600 ? '📚 Ученик' : totalXp < 1500 ? '💡 Знаток' : totalXp < 3000 ? '🏆 Мастер' : '🎓 Эксперт';
+        var barPct = lv.xpNeedLvl > 0 ? Math.min(100, Math.round(lv.xpInLvl / lv.xpNeedLvl * 100)) : 100;
+        return '<div style="border-top:1px solid #f1f5f9;margin-top:12px;padding-top:12px">'
+          + '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">'
+          + '<div style="font-size:14px;font-weight:900;color:#1e293b">' + rank + ' · ' + lv.name + '</div>'
+          + '<div style="font-size:13px;font-weight:800;color:#6366f1">' + totalXp + ' XP ⭐</div>'
+          + '</div>'
+          + '<div style="height:7px;background:#e2e8f0;border-radius:4px;overflow:hidden;margin-bottom:6px">'
+          + '<div style="height:100%;width:' + barPct + '%;background:linear-gradient(90deg,#6366f1,#8b5cf6);border-radius:4px;transition:width .4s"></div>'
+          + '</div>'
+          + '<div style="display:flex;justify-content:space-between;font-size:11px;color:#94a3b8">'
+          + '<span>' + lv.topicsDone + ' тем пройдено из ' + lv.topicsTotal + '</span>'
+          + '<span>' + lv.xpInLvl + ' / ' + lv.xpNeedLvl + ' XP на уровне</span>'
+          + '</div>'
+          + '</div>';
+      })()
     + '</div>';
 
   // ── 2. Рекомендация (#9) ────────────────────────────────────────────
