@@ -9141,41 +9141,30 @@ const SHELL_DESC = {
 
 const ACHIEVEMENTS = [
   // ── Первые шаги ──
-  {id:"first_step",      icon:"🚀", name:"Первый уровень",        desc:"Реши первое задание в приложении",                 goal:1,  xp:10,  progKey:"selfSolved",  cat:"start"},
-  {id:"solved_self",     icon:"💡", name:"Сам разобрался",        desc:"Реши задание без единой подсказки",                goal:1,  xp:20,  progKey:"selfSolved",  cat:"start"},
-  {id:"first_check",     icon:"✅", name:"Первый зачёт",          desc:"Пройди первую проверочную работу",                 goal:1,  xp:25,  progKey:"selfChecks",  cat:"start"},
-  // ── §1 Натуральные числа ──
-  {id:"number_row",      icon:"🔢", name:"Знаю натуральный ряд",  desc:"Реши 10 заданий из §1 (Числа и шкалы)",          goal:10, xp:30,  progKey:"para1",       cat:"para1"},
-  {id:"table_reader",    icon:"📊", name:"Читаю таблицы",         desc:"Реши 5 заданий с таблицами из §1",                goal:5,  xp:20,  progKey:"para1",       cat:"para1"},
-  // ── §2 Сложение и вычитание ──
-  {id:"plus_minus",      icon:"➕", name:"Считаю в уме",          desc:"Реши 15 заданий из §2 (Сложение и вычитание)",    goal:15, xp:35,  progKey:"para2",       cat:"para2"},
-  {id:"equation_solver", icon:"🔣", name:"Ловец уравнений",       desc:"Реши 10 заданий из §2",                           goal:10, xp:30,  progKey:"para2",       cat:"para2"},
-  // ── §3 Умножение и деление ──
-  {id:"multiply",        icon:"✖️", name:"Таблица — моя стихия",  desc:"Реши 10 заданий на умножение из §3",              goal:10, xp:35,  progKey:"para3",       cat:"para3"},
-  {id:"remainder",       icon:"🍕", name:"Делёж с остатком",      desc:"Реши 20 заданий из §3",                           goal:20, xp:25,  progKey:"para3",       cat:"para3"},
-  {id:"degree",          icon:"⚡", name:"Степенной разряд",      desc:"Реши 5 заданий на степени из §3",                 goal:5,  xp:20,  progKey:"para3",       cat:"para3"},
-  // ── §4 Площадь и объём ──
-  {id:"area_finder",     icon:"📐", name:"Юный планиметр",        desc:"Реши 5 заданий на площадь из §4",                 goal:5,  xp:30,  progKey:"para4",       cat:"para4"},
-  {id:"volume_finder",   icon:"📦", name:"Мастер объёма",         desc:"Реши 10 заданий из §4 (Площадь и объём)",         goal:10, xp:30,  progKey:"para4",       cat:"para4"},
-  // ── §5 Дроби ──
-  {id:"fraction_start",  icon:"½",  name:"Дроби — не страшно",    desc:"Реши 5 заданий с обыкновенными дробями из §5",    goal:5,  xp:25,  progKey:"para5",       cat:"para5"},
-  {id:"fraction_master", icon:"🎯", name:"Дробный мастер",        desc:"Реши 20 заданий с дробями из §5",                 goal:20, xp:50,  progKey:"para5",       cat:"para5"},
-  {id:"common_denom",    icon:"🔗", name:"Общий знаменатель",     desc:"Реши 30 заданий из §5",                           goal:30, xp:40,  progKey:"para5",       cat:"para5"},
-  // ── §6 Десятичные дроби ──
-  {id:"decimal_start",   icon:"🔹", name:"Запятая на месте",      desc:"Реши 5 заданий с десятичными дробями из §6",      goal:5,  xp:25,  progKey:"para6",       cat:"para6"},
-  {id:"decimal_master",  icon:"💎", name:"Десятичный ас",         desc:"Реши 20 заданий с десятичными дробями из §6",     goal:20, xp:50,  progKey:"para6",       cat:"para6"},
-  {id:"rounding",        icon:"🎲", name:"Прикинул точно",        desc:"Реши 30 заданий из §6",                           goal:30, xp:40,  progKey:"para6",       cat:"para6"},
-  // ── §7 Углы и транспортир ──
-  {id:"angle_finder",    icon:"📏", name:"Умею измерять углы",    desc:"Реши 3 задания на транспортир из §7",             goal:3,  xp:20,  progKey:"para7",       cat:"para7"},
-  {id:"geometer",        icon:"🔭", name:"Пятый уровень — пройден!", desc:"Реши 10 заданий из §7 — финал учебника!",      goal:10, xp:100, progKey:"para7",       cat:"para7"},
+  {id:"first_step",      icon:"🚀", name:"Первый шаг",            desc:"Реши первое задание в приложении",                 goal:1,  xp:10,  progKey:"solvedTotal", cat:"start"},
+  {id:"solved_10",       icon:"💡", name:"10 заданий",            desc:"Реши 10 заданий в любых разделах",                 goal:10, xp:20,  progKey:"solvedTotal", cat:"start"},
+  {id:"solved_50",       icon:"🔥", name:"50 заданий",            desc:"Реши 50 заданий — ты уже в ритме!",               goal:50, xp:40,  progKey:"solvedTotal", cat:"start"},
+  {id:"solved_100",      icon:"💯", name:"100 заданий",           desc:"Сотня решённых заданий — это сила!",               goal:100,xp:80,  progKey:"solvedTotal", cat:"start"},
+  // ── Ранги ──
+  {id:"rank_uchenk",     icon:"📚", name:"Ученик",                desc:"Набери 300 XP",                                    goal:300, xp:0,  progKey:"xpTotal",    cat:"rank"},
+  {id:"rank_znatok",     icon:"💡", name:"Знаток",                desc:"Набери 600 XP",                                    goal:600, xp:0,  progKey:"xpTotal",    cat:"rank"},
+  {id:"rank_master",     icon:"🏆", name:"Мастер",                desc:"Набери 1500 XP",                                   goal:1500,xp:0,  progKey:"xpTotal",    cat:"rank"},
+  {id:"rank_expert",     icon:"🎓", name:"Эксперт",               desc:"Набери 3000 XP — высший ранг!",                    goal:3000,xp:0,  progKey:"xpTotal",    cat:"rank"},
+  // ── Темы ──
+  {id:"topics_5",        icon:"📖", name:"5 тем изучено",         desc:"Освой 5 разных тем учебника",                      goal:5,  xp:30,  progKey:"topicsDone",  cat:"topics"},
+  {id:"topics_10",       icon:"📗", name:"10 тем изучено",        desc:"Освой 10 тем — это Уровень 2!",                    goal:10, xp:50,  progKey:"topicsDone",  cat:"topics"},
+  {id:"topics_25",       icon:"📘", name:"Полпути!",              desc:"25 тем из 51 — половина учебника!",                goal:25, xp:80,  progKey:"topicsDone",  cat:"topics"},
+  {id:"topics_51",       icon:"🎓", name:"Весь учебник!",         desc:"Освой все 51 тему — пятый класс пройден!",         goal:51, xp:200, progKey:"topicsDone",  cat:"topics"},
   // ── Серии ──
   {id:"streak3",         icon:"🔥", name:"3 дня подряд",          desc:"Занимайся 3 дня без пропуска",                    goal:3,  xp:30,  progKey:"streakDays",  cat:"streak"},
-  {id:"streak5",         icon:"🌋", name:"Неделя без остановок",  desc:"Заниматься 5 дней подряд — настоящий ритм",       goal:5,  xp:50,  progKey:"streakDays",  cat:"streak"},
-  {id:"streak10",        icon:"💥", name:"10 дней — это сила!",   desc:"10 дней подряд — ты на Пятом уровне!",            goal:10, xp:100, progKey:"streakDays",  cat:"streak"},
-  // ── Умник и настойчивость ──
+  {id:"streak7",         icon:"🌋", name:"Неделя!",               desc:"7 дней подряд — настоящий ритм",                  goal:7,  xp:60,  progKey:"streakDays",  cat:"streak"},
+  {id:"streak14",        icon:"💥", name:"Две недели!",           desc:"14 дней подряд — ты на Пятом уровне!",            goal:14, xp:120, progKey:"streakDays",  cat:"streak"},
+  // ── Проверочные ──
+  {id:"first_check",     icon:"✅", name:"Первый зачёт",          desc:"Пройди первую проверочную работу",                 goal:1,  xp:25,  progKey:"selfChecks",  cat:"check"},
+  {id:"clean_sheet",     icon:"🌟", name:"Чистая работа",         desc:"Пройди проверочную без единой ошибки",            goal:1,  xp:40,  progKey:"cleanChecks", cat:"check"},
+  // ── Умник ──
   {id:"umnik_fan",       icon:"🤖", name:"Друг Умника",           desc:"Поговори с Умником 5 раз",                        goal:5,  xp:20,  progKey:"umnikChats",  cat:"umnik"},
-  {id:"no_give_up",      icon:"💪", name:"Упорство побеждает",    desc:"Попробуй решить задание 3 раза",                  goal:3,  xp:15,  progKey:"hintsUsed",   cat:"umnik"},
-  {id:"clean_sheet",     icon:"🌟", name:"Чистая работа",         desc:"Пройди проверочную без ошибок с первого раза",    goal:1,  xp:40,  progKey:"cleanChecks", cat:"check"},
+  {id:"fraction_master", icon:"🎯", name:"Дробный мастер",        desc:"Реши 5 заданий про дроби",                        goal:5,  xp:30,  progKey:"fracSolved",  cat:"umnik"},
 ];
 
 // ===== STATE =====
@@ -14959,20 +14948,25 @@ function errFindTrainer(topic) {
 
 // ===== ACHIEVEMENTS =====
 function achGetProgress(a) {
-  if (!a.goal || a.goal <= 1) return null;
-  if (a.id === 'no_give_up')      return Math.min(ST.hintsUsed || 0, a.goal);
-  if (a.id === 'streak5')         return Math.min(calcStreak(), a.goal);
-  if (a.id === 'calculator')      return Math.min(Object.keys(ST.solvedTasks||{}).length, a.goal);
-  if (a.id === 'fraction_master') {
-    var fr = Object.keys(ST.solvedTasks||{}).filter(function(id){ var t=TASKS.find(function(x){return x.id===id;}); return t&&(t.topic||'').toLowerCase().includes('дроб'); });
-    return Math.min(fr.length, a.goal);
+  var key = a.progKey;
+  var goal = a.goal || 1;
+  var val;
+  if (key === 'solvedTotal') val = Object.keys(ST.solvedTasks||{}).length;
+  else if (key === 'xpTotal') val = ST.xp || 0;
+  else if (key === 'topicsDone') val = calcTopicsDone().done;
+  else if (key === 'streakDays') val = calcStreak();
+  else if (key === 'selfChecks') val = (ST.selfCheckResults||[]).length;
+  else if (key === 'cleanChecks') val = (ST.selfCheckResults||[]).filter(function(r){ return (r.pct||0) === 100; }).length;
+  else if (key === 'umnikChats') val = ST.umnikChats || 0;
+  else if (key === 'fracSolved') {
+    val = Object.keys(ST.solvedTasks||{}).filter(function(id){
+      var t = TASKS.find(function(x){ return x.id===id; });
+      return t && (t.topic||'').toLowerCase().includes('дроб');
+    }).length;
   }
-  if (a.id === 'geometer') {
-    var gk = ['периметр','площадь','геом','объём'];
-    var gi = Object.keys(ST.solvedTasks||{}).filter(function(id){ var t=TASKS.find(function(x){return x.id===id;}); return t&&gk.some(function(k){return (t.topic||'').toLowerCase().includes(k);}); });
-    return Math.min(gi.length, a.goal);
-  }
-  return null;
+  else return null;
+  if (goal <= 1) return null;
+  return Math.min(val, goal);
 }
 
 // ===== ИТОГОВЫЙ ТЕСТ =====
@@ -15210,14 +15204,39 @@ function renderAchievements() {
 
   var html = '';
 
-  // Прогресс-шапка
-  var pct = ACHIEVEMENTS.length ? Math.round(unlocked.length / ACHIEVEMENTS.length * 100) : 0;
-  html += '<div style="background:linear-gradient(135deg,#1e1b4b,#312e81);border-radius:20px;padding:20px;margin-bottom:20px;text-align:center">'
-    + '<div style="font-size:40px;margin-bottom:8px">🏆</div>'
-    + '<div style="font-size:22px;font-weight:900;color:#fff">' + unlocked.length + ' из ' + ACHIEVEMENTS.length + '</div>'
-    + '<div style="font-size:13px;color:rgba(255,255,255,.6);margin-bottom:12px">достижений открыто</div>'
-    + '<div style="background:rgba(255,255,255,.15);border-radius:8px;height:8px;overflow:hidden">'
-    +   '<div style="width:' + pct + '%;height:100%;background:linear-gradient(90deg,#fbbf24,#f59e0b);border-radius:8px;transition:width .4s"></div>'
+  // Шапка: ранг + XP
+  var lv = calcLevel(ST.xp);
+  var totalXp = ST.xp || 0;
+  var RANKS = [
+    { name:'🌱 Новичок', min:0,    max:299   },
+    { name:'📚 Ученик',  min:300,  max:599   },
+    { name:'💡 Знаток',  min:600,  max:1499  },
+    { name:'🏆 Мастер',  min:1500, max:2999  },
+    { name:'🎓 Эксперт', min:3000, max:99999 }
+  ];
+  var curRI = RANKS.findIndex(function(r){ return totalXp <= r.max; });
+  if (curRI < 0) curRI = RANKS.length - 1;
+  var curR = RANKS[curRI], nextR = RANKS[curRI + 1];
+  var rBarPct = nextR ? Math.min(100, Math.round((totalXp - curR.min) / (nextR.min - curR.min) * 100)) : 100;
+  var achPct = ACHIEVEMENTS.length ? Math.round(unlocked.length / ACHIEVEMENTS.length * 100) : 0;
+  html += '<div style="background:linear-gradient(135deg,#1e1b4b,#312e81);border-radius:20px;padding:20px;margin-bottom:20px">'
+    + '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">'
+    + '<div><div style="font-size:22px;font-weight:900;color:#fff">' + curR.name + '</div>'
+    + '<div style="font-size:12px;color:rgba(255,255,255,.5);margin-top:2px">' + lv.name + ' · ' + lv.topicsDone + ' тем</div></div>'
+    + '<div style="text-align:right"><div style="font-size:24px;font-weight:900;color:#fbbf24">' + totalXp + ' ⭐</div>'
+    + (nextR ? '<div style="font-size:11px;color:rgba(255,255,255,.4)">до «' + nextR.name + '» −' + (nextR.min - totalXp) + ' XP</div>' : '<div style="font-size:11px;color:#10b981">Высший ранг!</div>')
+    + '</div></div>'
+    + '<div style="background:rgba(255,255,255,.15);border-radius:6px;height:7px;overflow:hidden;margin-bottom:4px">'
+    +   '<div style="width:' + rBarPct + '%;height:100%;background:linear-gradient(90deg,#818cf8,#c4b5fd);border-radius:6px;transition:width .4s"></div>'
+    + '</div>'
+    + '<div style="display:flex;justify-content:space-between;font-size:10px;color:rgba(255,255,255,.4);margin-bottom:14px">'
+    + (nextR ? '<span>' + curR.name + '</span><span>' + nextR.name + '</span>' : '') + '</div>'
+    + '<div style="border-top:1px solid rgba(255,255,255,.1);padding-top:12px;display:flex;align-items:center;justify-content:space-between">'
+    + '<div style="font-size:12px;color:rgba(255,255,255,.5)">Достижений открыто</div>'
+    + '<div style="font-size:14px;font-weight:900;color:#fff">' + unlocked.length + ' / ' + ACHIEVEMENTS.length + '</div>'
+    + '</div>'
+    + '<div style="background:rgba(255,255,255,.1);border-radius:4px;height:5px;overflow:hidden;margin-top:8px">'
+    +   '<div style="width:' + achPct + '%;height:100%;background:linear-gradient(90deg,#fbbf24,#f59e0b);border-radius:4px;transition:width .4s"></div>'
     + '</div>'
     + '</div>';
 
@@ -16288,6 +16307,7 @@ function addXP(amount) {
   lsSave();
   updateAllXP();
   if(ST.user) document.getElementById('home-xp').textContent = `⭐ ${ST.xp} XP заработано`;
+  try { checkAchievements(); } catch(e) {}
 }
 
 function markSolved(taskId, data) {
@@ -16315,9 +16335,8 @@ function markSolved(taskId, data) {
       }
     }
   }
-  var totalSolved = Object.keys(ST.solvedTasks).length;
-  if (totalSolved >= 10) grantAchievement('calculator');
   lsSave();
+  try { checkAchievements(); } catch(e) {}
 }
 
 function showNewTopicBonus(topicName) {
@@ -16366,10 +16385,69 @@ function addMistake(topic, type, extra) {
 }
 
 function grantAchievement(id) {
-  if(!ST.achievements.includes(id)) {
+  if (!ST.achievements) ST.achievements = [];
+  if (!ST.achievements.includes(id)) {
     ST.achievements.push(id);
+    var a = ACHIEVEMENTS.find(function(x){ return x.id === id; });
+    if (a) showAchievementPopup(a);
     lsSave();
   }
+}
+
+function checkAchievements() {
+  var solved = Object.keys(ST.solvedTasks||{}).length;
+  var xp = ST.xp || 0;
+  var topics = calcTopicsDone().done;
+  var streak = calcStreak();
+  var checks = ST.selfCheckResults || [];
+  var cleanChecks = checks.filter(function(r){ return (r.pct||0) === 100; }).length;
+  var fracSolved = Object.keys(ST.solvedTasks||{}).filter(function(id){
+    var t = TASKS.find(function(x){ return x.id===id; });
+    return t && (t.topic||'').toLowerCase().includes('дроб');
+  }).length;
+
+  if (solved >= 1)   grantAchievement('first_step');
+  if (solved >= 10)  grantAchievement('solved_10');
+  if (solved >= 50)  grantAchievement('solved_50');
+  if (solved >= 100) grantAchievement('solved_100');
+  if (xp >= 300)  grantAchievement('rank_uchenk');
+  if (xp >= 600)  grantAchievement('rank_znatok');
+  if (xp >= 1500) grantAchievement('rank_master');
+  if (xp >= 3000) grantAchievement('rank_expert');
+  if (topics >= 5)  grantAchievement('topics_5');
+  if (topics >= 10) grantAchievement('topics_10');
+  if (topics >= 25) grantAchievement('topics_25');
+  if (topics >= 51) grantAchievement('topics_51');
+  if (streak >= 3)  grantAchievement('streak3');
+  if (streak >= 7)  grantAchievement('streak7');
+  if (streak >= 14) grantAchievement('streak14');
+  if (checks.length >= 1) grantAchievement('first_check');
+  if (cleanChecks >= 1)   grantAchievement('clean_sheet');
+  if ((ST.umnikChats||0) >= 5) grantAchievement('umnik_fan');
+  if (fracSolved >= 5) grantAchievement('fraction_master');
+}
+
+function showAchievementPopup(a) {
+  var el = document.createElement('div');
+  el.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);'
+    + 'background:linear-gradient(135deg,#1e1b4b,#312e81);color:#fff;border-radius:16px;'
+    + 'padding:14px 20px;display:flex;align-items:center;gap:12px;z-index:99999;'
+    + 'box-shadow:0 8px 32px rgba(99,102,241,.5);border:1.5px solid rgba(129,140,248,.4);'
+    + 'opacity:0;transition:all .3s;max-width:320px;width:calc(100% - 40px)';
+  el.innerHTML = '<div style="font-size:28px">' + a.icon + '</div>'
+    + '<div><div style="font-size:13px;font-weight:900;color:#c7d2fe">Новое достижение!</div>'
+    + '<div style="font-size:15px;font-weight:900">' + a.name + '</div>'
+    + (a.xp ? '<div style="font-size:12px;color:#fbbf24;margin-top:2px">+' + a.xp + ' XP ⭐</div>' : '') + '</div>';
+  document.body.appendChild(el);
+  requestAnimationFrame(function(){
+    el.style.opacity = '1';
+    el.style.transform = 'translateX(-50%) translateY(0)';
+  });
+  setTimeout(function(){
+    el.style.opacity = '0';
+    el.style.transform = 'translateX(-50%) translateY(10px)';
+    setTimeout(function(){ el.remove(); }, 400);
+  }, 3000);
 }
 
 // ===== ПРОВЕРОЧНЫЕ РАБОТЫ =====
