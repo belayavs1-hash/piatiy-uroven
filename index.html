@@ -3695,9 +3695,12 @@ button, .btn-find, .btn-check, .btn-ghost, .btn-secondary {
    ════════════════════════════════════════════ */
 #screen-onboarding {
   background: linear-gradient(160deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
-  display: flex; align-items: center; justify-content: center;
+  display: none; align-items: center; justify-content: center;
   min-height: 100vh; padding: 0;
   overflow: hidden;
+}
+#screen-onboarding.active {
+  display: flex;
 }
 .ob-wrap {
   width: 100%; max-width: 480px;
