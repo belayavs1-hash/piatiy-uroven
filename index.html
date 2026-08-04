@@ -2760,6 +2760,40 @@ textarea, select { font-size: max(16px, 1em) !important; }
     </div>
   </div>
   <!-- ══ / ОНБОРДИНГ ════════════════════════════════════════════ -->
+
+  <!-- ══ ОНБОРДИНГ РОДИТЕЛЯ ══════════════════════════════════════ -->
+  <div id="screen-onboarding-parent" class="screen">
+    <div class="ob-wrap">
+      <div class="ob-dots">
+        <div class="ob-dot active" id="obp-dot-0"></div>
+        <div class="ob-dot" id="obp-dot-1"></div>
+      </div>
+      <div class="ob-slides" id="obp-slides">
+
+        <!-- Слайд 0 -->
+        <div class="ob-slide active">
+          <div class="ob-finish-umnik" style="font-size:72px;text-align:center;margin-bottom:8px">📊</div>
+          <h2 class="ob-title">Кабинет родителя</h2>
+          <p class="ob-text">Здесь вы видите прогресс ребёнка: сколько тем пройдено, какие задания вызывают трудности и как часто он занимается.</p>
+        </div>
+
+        <!-- Слайд 1 -->
+        <div class="ob-slide">
+          <div class="ob-finish-umnik" style="font-size:72px;text-align:center;margin-bottom:8px">✅</div>
+          <h2 class="ob-title">Всё под контролем</h2>
+          <p class="ob-text">Заглядывайте после занятий — вы сразу увидите что сделано, где ребёнок застрял и что стоит повторить.</p>
+          <button class="ob-start-btn" onclick="finishParentOnboarding()">Перейти →</button>
+        </div>
+
+      </div>
+      <div class="ob-nav">
+        <button class="ob-btn-skip" onclick="finishParentOnboarding()">Пропустить</button>
+        <button class="ob-btn-next" id="obp-next-btn" onclick="obpNext()">Далее →</button>
+      </div>
+    </div>
+  </div>
+  <!-- ══ / ОНБОРДИНГ РОДИТЕЛЯ ════════════════════════════════════ -->
+
 <div id="screen-home" class="screen theme-light">
 
   <!-- САЙДБАР -->
@@ -3701,6 +3735,12 @@ button, .btn-find, .btn-check, .btn-ghost, .btn-secondary {
 #screen-onboarding.active {
   display: flex;
 }
+#screen-onboarding-parent {
+  background: linear-gradient(160deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
+  display: none; align-items: center; justify-content: center;
+  min-height: 100vh; padding: 0; overflow: hidden;
+}
+#screen-onboarding-parent.active { display: flex; }
 .ob-wrap {
   width: 100%; max-width: 480px;
   display: flex; flex-direction: column;
@@ -9651,6 +9691,36 @@ function finishOnboarding() {
   try { renderHome(); } catch(e) { console.error('renderHome error in finishOnboarding:', e); }
 }
 
+// ── Онбординг родителя ────────────────────────────────────────────
+var _obpStep = 0;
+var _obpTotal = 2;
+function showParentOnboarding() {
+  _obpStep = 0;
+  obpRender();
+  showScreen('screen-onboarding-parent');
+}
+function obpRender() {
+  var container = document.getElementById('obp-slides');
+  if (!container) return;
+  var slides = container.querySelectorAll('.ob-slide');
+  slides.forEach(function(s, i) { s.classList.toggle('active', i === _obpStep); });
+  var dot0 = document.getElementById('obp-dot-0');
+  var dot1 = document.getElementById('obp-dot-1');
+  if (dot0) dot0.classList.toggle('active', _obpStep === 0);
+  if (dot1) dot1.classList.toggle('active', _obpStep === 1);
+  var nextBtn = document.getElementById('obp-next-btn');
+  if (nextBtn) nextBtn.style.display = (_obpStep >= _obpTotal - 1) ? 'none' : 'inline-block';
+}
+function obpNext() {
+  if (_obpStep < _obpTotal - 1) { _obpStep++; obpRender(); }
+}
+function finishParentOnboarding() {
+  ST.parentOnboardingDone = true;
+  lsSave();
+  try { renderParent(); } catch(e) {}
+  showScreen('screen-parent');
+}
+
 function doLogin() {
 
   const name = document.getElementById('login-name').value.trim() || 'Ученик';
@@ -9673,8 +9743,13 @@ function doLogin() {
   lsSave();
   if (role === 'parent') {
     ST.onboardingDone = true;
-    try { renderParent(); } catch(e) { console.error('[doLogin] renderParent:', e); }
-    showScreen('screen-parent');
+    lsSave();
+    if (!ST.parentOnboardingDone) {
+      showParentOnboarding();
+    } else {
+      try { renderParent(); } catch(e) { console.error('[doLogin] renderParent:', e); }
+      showScreen('screen-parent');
+    }
   } else {
     if (!ST.onboardingDone) { showOnboarding(name); } else { renderHome(); showScreen('screen-home'); };
   }
