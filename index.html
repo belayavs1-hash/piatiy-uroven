@@ -14248,8 +14248,8 @@ function renderMistakes() {
       + '<div class="err-empty-title" style="color:var(--ink,#1e293b);text-align:left">Здесь пока нет ошибок — отлично!</div>'
       + '<div class="err-empty-text" style="text-align:left">Когда встретится трудное задание, я сохраню его сюда и помогу разобраться.<br><br><span style="font-size:13px;opacity:.7">Ошибки — это задания, которые стоит повторить. После правильного повторного решения они исчезнут из списка.</span></div>'
       + '<div style="display:flex;gap:10px;flex-wrap:wrap">'
-      + '<button class="err-summary-btn primary" onclick="showScreen(\'screen-homework\')">📖 Перейти к домашке</button>'
-      + '<button class="err-summary-btn" onclick="showScreen(\'screen-trainers\')" style="background:rgba(245,158,11,.12);border-color:rgba(245,158,11,.4);color:#f59e0b">⚡ Открыть тренажёры</button>'
+      + '<button class="err-summary-btn primary" onclick="showScreen(\'screen-map\')">🗺 Карта тем</button>'
+      + '<button class="err-summary-btn" onclick="showScreen(\'screen-trainers\')" style="background:rgba(245,158,11,.12);border-color:rgba(245,158,11,.4);color:#f59e0b">⚡ Тренажёры</button>'
       + '</div>'
       + '</div>'
       + '</div></div>';
@@ -14345,7 +14345,10 @@ function renderMistakes() {
       + '<div class="err-card-title">🎯 Что повторить сегодня</div>'
       + '<div style="font-size:15px;font-weight:800;color:#1e293b;margin-bottom:6px">' + errTopicIcon(topTopic) + ' ' + topTopic + '</div>'
       + '<div style="font-size:13px;color:#64748b;margin-bottom:14px">В этой теме было ' + topCount + ' ошибок — давай закроем их сегодня!</div>'
-      + '<button class="err-summary-btn primary" onclick="errStartTrain()" style="width:100%">⚡ Начать 10 заданий</button>'
+      + '<div style="display:flex;gap:10px;flex-wrap:wrap">'
+      + '<button class="err-summary-btn primary" onclick="errGoToMapTopic(\'' + topTopic.replace(/'/g,"\\'") + '\')">🗺 Карта тем</button>'
+      + '<button class="err-summary-btn secondary" onclick="errStartTrain()">⚡ Тренировка</button>'
+      + '</div>'
       + '</div>';
   } else {
     document.getElementById('err-recommend-card').innerHTML = '';
@@ -14372,15 +14375,15 @@ function errRenderList() {
 
   function errItemHtml(m) {
     var realIdx = (ST.mistakes||[]).indexOf(m);
-    var errType = errGuessType(m);
     var statusCls = m.status || 'new';
     var statusText = errStatusLabel(statusCls);
     var hasTask = m.task && m.studentAnswer && m.correctAnswer;
+    var topicName = m.topic || '';
+    var safeTopicName = topicName.replace(/'/g, "\\'");
     return '<div class="err-item ' + statusCls + '">'
       + '<div class="err-item-head">'
-      + '<div><div class="err-item-topic">' + errTopicIcon(m.topic) + ' ' + m.topic + '</div>'
+      + '<div><div class="err-item-topic">' + errTopicIcon(topicName) + ' ' + topicName + '</div>'
       + (m.source ? '<div style="font-size:11px;color:#94a3b8">' + m.source + '</div>' : '')
-      + (m.taskId ? '<div style="font-size:11px;color:#6366f1;font-weight:700;margin-top:1px">🔗 ' + m.taskId + '</div>' : '')
       + '</div>'
       + '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">'
       + '<span class="err-status ' + statusCls + '">' + statusText + '</span>'
@@ -14393,15 +14396,12 @@ function errRenderList() {
           + '<div class="err-answer-block wrong"><div class="err-answer-lbl">твой ответ</div><div class="err-answer-val">' + m.studentAnswer + '</div></div>'
           + '<div class="err-answer-block right"><div class="err-answer-lbl">правильно</div><div class="err-answer-val">' + m.correctAnswer + '</div></div>'
           + '</div>'
-        : '<div class="err-item-task" style="color:#64748b">Тема: ' + m.topic + '</div>')
-      + '<div class="err-item-type">Тип ошибки: <span>' + errType + '</span></div>'
+        : '<div class="err-item-task" style="color:#64748b">Тема: ' + topicName + '</div>')
       + '</div>'
       + '<div class="err-item-btns">'
-      + '<button class="err-item-btn blue" onclick="errExplain(' + realIdx + ')">🧑‍🏫 Разобрать</button>'
-      + (m.taskId ? '<button class="err-item-btn green" onclick="errOpenTask(' + realIdx + ')">📖 Открыть задание</button>' : '<button class="err-item-btn outline" onclick="errSimilarTask(' + realIdx + ')">🔁 Похожее</button>')
-      + (statusCls !== 'fixed' && statusCls !== 'closed'
-        ? '<button class="err-item-btn ghost" onclick="errMarkFixed(' + realIdx + ')">✓ Исправлено</button>'
-        : '<button class="err-item-btn ghost" onclick="errClose(' + realIdx + ')">Закрыть</button>')
+      + (m.taskId ? '<button class="err-item-btn green" onclick="errOpenTask(' + realIdx + ')">📖 Повторить задание</button>' : '')
+      + '<button class="err-item-btn blue" onclick="errGoToMapTopic(\'' + safeTopicName + '\')">🗺 Карта тем</button>'
+      + '<button class="err-item-btn outline" onclick="errUmnikSimilar(' + realIdx + ')">🤖 Похожее</button>'
       + '</div>'
       + '</div>';
   }
@@ -14631,7 +14631,93 @@ function errCloseExplain() {
   renderMistakes();
 }
 
-// ── Похожее задание ──
+// Перейти к теме на карте тем (правило → практика → тренажёр)
+function errGoToMapTopic(topicName) {
+  var found = null;
+  for (var bi = 0; bi < TOPICS_MAP.length && !found; bi++) {
+    TOPICS_MAP[bi].topics.forEach(function(t) {
+      if (t.name === topicName) found = t;
+    });
+  }
+  var ruleKey = found ? (Object.keys(TOPIC_RULES).find(function(k){ return k === found.name; }) || found.name) : '';
+  showScreen('screen-map');
+  setTimeout(function() {
+    if (found) {
+      var row = document.querySelector('.map-topic-row[data-id="' + found.id + '"]');
+      if (row) {
+        row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        row.style.outline = '2px solid #6366f1';
+        setTimeout(function(){ row.style.outline = ''; }, 2000);
+        if (ruleKey && TOPIC_RULES[ruleKey]) topicStudy(found.id, ruleKey);
+      }
+    }
+  }, 200);
+}
+
+// Умник генерирует похожее задание прямо в оверлее ошибок
+function errUmnikSimilar(idx) {
+  var m = (ST.mistakes||[])[idx];
+  if (!m) return;
+  var topicName = m.topic || 'математика';
+  var taskText = (m.task || '').replace(/<[^>]+>/g, '').slice(0, 150);
+
+  var headerHtml =
+    '<div class="err-card" style="margin-bottom:14px">'
+    + '<div class="err-explain-task-card">'
+    + '<div class="err-explain-task-lbl">🤖 Умник придумывает похожее задание</div>'
+    + '<div class="err-explain-task-q" style="color:#64748b;font-style:italic">Тема: ' + topicName + '</div>'
+    + '</div></div>';
+
+  var chatHtml =
+    '<div class="err-card" style="padding:14px 16px">'
+    + '<div id="err-umnik-chat" style="display:flex;flex-direction:column;gap:8px;margin-bottom:12px">'
+    + '<div class="chat-msg bot" style="opacity:.6">'
+    + '<div class="chat-avatar"><img src="umnik_avatar2.png" alt="Умник" onerror="this.outerHTML=\'🤖\'"></div>'
+    + '<div class="chat-bubble bot" style="color:#64748b">придумываю задачу…</div>'
+    + '</div></div>'
+    + '<div style="display:flex;gap:8px;flex-wrap:wrap">'
+    + '<button class="err-summary-btn primary" onclick="errUmnikSimilar(' + idx + ')">🔁 Другое задание</button>'
+    + '<button class="err-summary-btn secondary" onclick="errCloseExplain()">← К ошибкам</button>'
+    + '</div></div>';
+
+  document.getElementById('err-explain-body').innerHTML = headerHtml + chatHtml;
+  document.getElementById('err-explain-overlay').style.display = 'block';
+
+  var prompt = taskText
+    ? 'Придумай ОДНО новое задание по теме «' + topicName + '» — похожее на: «' + taskText + '», но с ДРУГИМИ числами. Для 5 класса. Напиши только задание и ответ в скобках: "(Ответ: ...)".'
+    : 'Придумай ОДНО задание для 5 класса по теме «' + topicName + '». Напиши только задание и ответ в скобках: "(Ответ: ...)".';
+
+  fetch('/api/tutor', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      task: { text: topicName, answer: '', hints: [] },
+      messages: [{ role: 'user', content: prompt }]
+    })
+  })
+  .then(function(r){ return r.json(); })
+  .then(function(data){
+    var reply = data.reply || 'Попробуй решить задание из тренажёра — нажми «Карта тем».';
+    var chatEl = document.getElementById('err-umnik-chat');
+    if (!chatEl) return;
+    chatEl.innerHTML =
+      '<div class="chat-msg bot">'
+      + '<div class="chat-avatar"><img src="umnik_avatar2.png" alt="Умник" onerror="this.outerHTML=\'🤖\'"></div>'
+      + '<div class="chat-bubble bot" style="font-size:15px;line-height:1.6">' + reply.replace(/\n/g,'<br>') + '</div>'
+      + '</div>';
+    ST.umnikChats = (ST.umnikChats || 0) + 1;
+    lsSave();
+    try { checkAchievements(); } catch(e) {}
+  })
+  .catch(function(){
+    var chatEl = document.getElementById('err-umnik-chat');
+    if (chatEl) chatEl.innerHTML =
+      '<div class="chat-msg bot"><div class="chat-avatar"><img src="umnik_avatar2.png" alt="Умник" onerror="this.outerHTML=\'🤖\'"></div>'
+      + '<div class="chat-bubble bot">Нет связи. Попробуй ещё раз.</div></div>';
+  });
+}
+
+// ── Похожее задание (тренажёр, старый метод) ──
 // Генерирует 3 похожих задания по теме ошибки и показывает их в overlay разбора
 function errSimilarTask(idx) {
   var m = (ST.mistakes||[])[idx];
