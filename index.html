@@ -9374,7 +9374,7 @@ async function checkPhotoSolution() {
         <div class="result-answer" style="margin-top:8px">${data.comment || ''}</div>
         <button class="btn-check" style="margin-top:14px;width:100%" onclick="showDone('🏆','Отлично!','Задание ${currentTask ? currentTask.id : ''} выполнено',25)">Отлично! →</button>
       </div>`;
-      addXP(25);
+      addXP(30);
       if(currentTask) markSolved(currentTask.id, {attempts:1, withHints:false, correct:true});
     } else {
       _lastDoneParts = data.parts_done || [];
@@ -10480,7 +10480,7 @@ function wtShowTask(startPart) {
 
 // Завершение задачи Повторения по кнопке "Готово"
 function wtFinishRepeat() {
-  var xp = wtLastXp || Math.max(5, 20 - wtAttempts);
+  var xp = wtLastXp || Math.max(7, 30 - wtAttempts * 5);
   addXP(xp);
   markSolved(currentTask.id, {attempts: wtAttempts, correct: true});
   showDone('🤖', 'Разобрались!', 'С Умником', xp);
@@ -10491,7 +10491,7 @@ function wtGoToNextPartSimple(keepCurrent) {
   var parts = wtParsedParts || [];
   if (!parts.length) {
     // нет пунктов — завершаем
-    var xp2 = Math.max(5, 20 - wtAttempts);
+    var xp2 = Math.max(7, 30 - wtAttempts * 5);
     addXP(xp2);
     markSolved(currentTask.id, {attempts: wtAttempts, correct: true});
     showDone('🤖', 'Разобрались!', 'С Умником', xp2);
@@ -10512,7 +10512,7 @@ function wtGoToNextPartSimple(keepCurrent) {
   if (remaining.length === 0) {
     // Все пункты выполнены
     wtCurrentPart = null;
-    var xp = Math.max(5, 20 - wtAttempts);
+    var xp = Math.max(7, 30 - wtAttempts * 5);
     chatAddBot('✅ Отлично! Ты ответил на все пункты задания.<br><span class="chat-xp">+' + xp + ' XP ⭐</span>', false);
     setTimeout(function(){
       var chat = document.getElementById('wt-chat');
@@ -10561,7 +10561,7 @@ function wtGoToNextPart(keepCurrent) {
     // Все пункты выполнены!
     wtCurrentPart = null;
     wtUpdatePartsBar();
-    const xp = Math.max(5, 20 - wtAttempts);
+    const xp = Math.max(7, 30 - wtAttempts * 5);
     chatAddBot('✅ Отлично! Ты ответил на все пункты задания.<br><span class="chat-xp">+' + xp + ' XP ⭐</span>', false);
     setTimeout(() => {
       const chat = document.getElementById('wt-chat');
@@ -11069,7 +11069,7 @@ function checkWalkthrough() {
       return;
     }
     // Правильный ответ — сразу завершаем без API
-    const xp = wtAttempts === 1 ? 20 : wtAttempts === 2 ? 15 : wtAttempts <= 3 ? 10 : 5;
+    const xp = wtAttempts === 1 ? 30 : wtAttempts === 2 ? 20 : wtAttempts <= 3 ? 12 : 7;
     chatAddUser(userAns, 'ok');
     wtTutorHistory.push({ role: 'user', content: userAns });
     setTimeout(() => {
@@ -11156,7 +11156,7 @@ function checkWalkthrough() {
     // Если AI засчитал — завершаем задание
     const _aiOk2 = (function(_r){ var _neg = /неs*(?:совсемs*)?(?:правильно|верно)/i.test(_r); var _hasQ = _r.indexOf('?') >= 0; var _pos = /правильно!s*✅/i.test(_r) && !_hasQ; return !_neg && _pos; })(reply);
     if (_aiOk2 && !wtIsMultiPart) {
-      const _xp2 = Math.max(5, 20 - wtAttempts);
+      const _xp2 = Math.max(7, 30 - wtAttempts * 5);
       if (currentTask && currentTask.para === 'Повторение') {
         // Показываем кнопку — не закрываем автоматически
         wtLastXp = _xp2;
@@ -11476,7 +11476,7 @@ function checkSolution() {
       <div class="r-text">Верно! Задание выполнено!</div>
       <button class="btn-check" style="margin-top:14px;width:100%" onclick="showDone('🏆','Отлично!','Задание ${currentTask.id} выполнено',25)">Отлично! →</button>
     </div>`;
-    addXP(25);
+    addXP(30);
     ST.selfSolved++;
     markSolved(currentTask.id, {attempts:1, withHints:false, correct:true});
     grantAchievement('solved_self');
@@ -12793,6 +12793,12 @@ function tgResolve(correct, rightAnswer, studentAnswer) {
     trSessionXP += xpGain;
     trStreak++;
     if (trStreak > trBestStreak) trBestStreak = trStreak;
+    // Г) Бонус серии каждые 5 подряд
+    if (trStreak > 0 && trStreak % 5 === 0) {
+      addXP(15);
+      var _sb = document.querySelector('#tg-status,#archer-status,#dice-status,#builder-status,#pirate-status');
+      if (_sb) { var _sbt = _sb.textContent; _sb.textContent = '\uD83D\uDD25 Серия ' + trStreak + '! +15 XP'; setTimeout(function(){ _sb.textContent = _sbt; }, 1500); }
+    }
     trUpdateStats();
     document.getElementById('tg-status').textContent = '✅ Верно! +' + xpGain + ' XP';
     document.getElementById('tg-status').className = 'tg-status ok';
@@ -16153,17 +16159,55 @@ function addXP(amount) {
 }
 
 function markSolved(taskId, data) {
+  var wasNew = !ST.solvedTasks[taskId];
   ST.solvedTasks[taskId] = data;
-  const taskObj = TASKS.find(t => t.id === taskId);
-  if(taskObj) {
-    if(taskObj.topic.toLowerCase().includes('дроб')) {
-      const frCount = Object.values(ST.solvedTasks).filter((_,i) => TASKS[i] && TASKS[i].topic.toLowerCase().includes('дроб')).length;
-      if(frCount >= 5) grantAchievement('fraction_master');
+  var taskObj = TASKS.find(function(t){ return t.id === taskId; });
+  if (taskObj) {
+    if (taskObj.topic.toLowerCase().includes('дроб')) {
+      var frCount = Object.keys(ST.solvedTasks).filter(function(tid){
+        var t = TASKS.find(function(x){ return x.id === tid; });
+        return t && t.topic.toLowerCase().includes('дроб');
+      }).length;
+      if (frCount >= 5) grantAchievement('fraction_master');
+    }
+    // Б) Бонус за первую задачу из новой темы
+    if (wasNew && taskObj.topic) {
+      var topicAlreadyDone = Object.keys(ST.solvedTasks).some(function(tid) {
+        if (tid === taskId) return false;
+        var t = TASKS.find(function(x){ return x.id === tid; });
+        return t && t.topic === taskObj.topic;
+      });
+      if (!topicAlreadyDone) {
+        addXP(50);
+        showNewTopicBonus(taskObj.topic);
+      }
     }
   }
-  const totalSolved = Object.keys(ST.solvedTasks).length;
-  if(totalSolved >= 10) grantAchievement('calculator');
+  var totalSolved = Object.keys(ST.solvedTasks).length;
+  if (totalSolved >= 10) grantAchievement('calculator');
   lsSave();
+}
+
+function showNewTopicBonus(topicName) {
+  var el = document.createElement('div');
+  el.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.6);'
+    + 'background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;border-radius:20px;'
+    + 'padding:20px 28px;text-align:center;z-index:99999;box-shadow:0 20px 60px rgba(99,102,241,.5);'
+    + 'transition:transform .3s cubic-bezier(.34,1.56,.64,1),opacity .3s;opacity:0;pointer-events:none;max-width:280px;';
+  el.innerHTML = '<div style="font-size:32px;margin-bottom:6px">🎉</div>'
+    + '<div style="font-size:15px;font-weight:900;margin-bottom:4px">Новая тема!</div>'
+    + '<div style="font-size:12px;opacity:.85;margin-bottom:10px">' + topicName + '</div>'
+    + '<div style="font-size:22px;font-weight:900;color:#fbbf24">+50 XP ⭐</div>';
+  document.body.appendChild(el);
+  requestAnimationFrame(function(){
+    el.style.transform = 'translate(-50%,-50%) scale(1)';
+    el.style.opacity = '1';
+  });
+  setTimeout(function(){
+    el.style.transform = 'translate(-50%,-50%) scale(0.8)';
+    el.style.opacity = '0';
+    setTimeout(function(){ el.remove(); }, 400);
+  }, 2200);
 }
 
 function addMistake(topic, type, extra) {
