@@ -9558,7 +9558,7 @@ function updateParaProgress() {
 }
 
 function updateAllXP() {
-  const xpStr = `⭐ ${ST.xp} XP`;
+  const xpStr = '⭐ ' + Math.round(ST.xp) + ' XP';
   ['nav-xp-home','nav-xp-hw','nav-xp-wt','nav-xp-chk','nav-xp-map','nav-xp-tr','nav-xp-par','nav-xp-as','nav-xp-ph'].forEach(id => {
     const el = document.getElementById(id);
     if(el) el.textContent = xpStr;
@@ -9799,9 +9799,9 @@ function renderHome() {
   if(!ST.user) return;
   const greetName = ST.studentName || (ST.user.role === 'student' ? ST.user.name : null);
   document.getElementById('home-greeting').textContent = greetName ? `Привет, ${greetName}! 👋` : 'Привет! 👋';
-  document.getElementById('home-xp').textContent = `⭐ ${ST.xp} XP заработано`;
+  document.getElementById('home-xp').textContent = '⭐ ' + Math.round(ST.xp) + ' XP заработано';
   const navXp = document.getElementById('nav-xp-home');
-  if(navXp) navXp.textContent = `⭐ ${ST.xp} XP`;
+  if(navXp) navXp.textContent = '⭐ ' + Math.round(ST.xp) + ' XP';
   const navName = document.getElementById('home-nav-name');
   if(navName) navName.textContent = `${ST.user.name} • 5 класс`;
   updateHomeLevel();
@@ -12374,7 +12374,7 @@ function trUpdateStats() {
   var pfxs = ['tg','dice','archer','pirate','builder'];
   pfxs.forEach(function(p) {
     var el;
-    el = document.getElementById(p+'-stat-xp');     if (el) el.textContent = '⭐ ' + trSessionXP + ' XP';
+    el = document.getElementById(p+'-stat-xp');     if (el) el.textContent = '⭐ ' + Math.round(trSessionXP) + ' XP';
     el = document.getElementById(p+'-stat-streak'); if (el) el.textContent = '🔥 ' + trStreak;
     el = document.getElementById(p+'-stat-err');    if (el) el.textContent = '❌ ' + trErrors;
   });
@@ -12868,7 +12868,7 @@ function tgResolve(correct, rightAnswer, studentAnswer) {
     task._result = 'ok';
     trCorrect++;
     // XP: 10 с первой попытки, 6 со второй, 3 после подсказки/повтора
-    var xpGain = tgAttempt === 0 ? 10 : tgAttempt === 1 ? 6 : 3;
+    var xpGain = tgAttempt === 0 ? 1 : 0.5;
     addXP(xpGain);
     trSessionXP += xpGain;
     trStreak++;
@@ -13169,7 +13169,7 @@ function archerResolve(correct, rightAnswer, studentAnswer) {
   const task = trTasks[trIdx];
 
   if (correct) {
-    var xpGain = archerAttempt === 0 ? 10 : archerAttempt === 1 ? 6 : 3;
+    var xpGain = archerAttempt === 0 ? 1 : 0.5;
     archerAnimateArrow(archerAttempt, 500, () => {
       if (scorePop) { scorePop.textContent = '+' + xpGain + ' XP'; scorePop.style.color = '#4ade80'; scorePop.classList.add('show'); }
     });
@@ -13465,7 +13465,7 @@ function builderResolve(correct, rightAnswer, studentAnswer) {
   const statusEl = document.getElementById('builder-status');
 
   if (correct) {
-    var xpGain = 1;
+    var xpGain = builderAttempt === 0 ? 1 : 0.5;
     task._result = 'ok';
     trCorrect++;
     addXP(xpGain);
@@ -13648,7 +13648,7 @@ function pirateResolve(correct, rightAnswer, studentAnswer) {
   const scene = document.getElementById('pirate-scene');
 
   if (correct) {
-    var xpGain = 1;
+    var xpGain = pirateAttempt === 0 ? 1 : 0.5;
     task._result = 'ok';
     trCorrect++;
     addXP(xpGain);
@@ -13940,12 +13940,7 @@ function diceCheck() {
   diceResolve(correct, task.a, val);
 }
 
-function diceXpForFace(face) {
-  if (face === 6) return 20;
-  if (face === 5) return 12;
-  if (face >= 3)  return 8;
-  return 5;
-}
+function diceXpForFace(face) { return 1; }
 
 function diceResolve(correct, rightAnswer, studentAnswer) {
   const task = diceCurrentTask;
@@ -14057,7 +14052,7 @@ function endTrainer() {
   if (titleEl) titleEl.textContent = finishTitle;
   document.getElementById('tr-done-correct').textContent = trCorrect + '/' + total;
   document.getElementById('tr-done-errors').textContent = trErrors;
-  document.getElementById('tr-done-xp').textContent = '+' + trSessionXP + ' XP';
+  document.getElementById('tr-done-xp').textContent = '+' + Math.round(trSessionXP) + ' XP';
   document.getElementById('tr-done-streak').textContent = trBestStreak;
   document.getElementById('tr-done-umnik').textContent = umnikText;
 
@@ -16388,7 +16383,7 @@ function addXP(amount) {
   ST.xp += amount;
   lsSave();
   updateAllXP();
-  if(ST.user) document.getElementById('home-xp').textContent = `⭐ ${ST.xp} XP заработано`;
+  if(ST.user) document.getElementById('home-xp').textContent = '⭐ ' + Math.round(ST.xp) + ' XP заработано';
   try { checkAchievements(); } catch(e) {}
 }
 
