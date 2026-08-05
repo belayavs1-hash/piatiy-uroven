@@ -12868,7 +12868,7 @@ function tgResolve(correct, rightAnswer, studentAnswer) {
     task._result = 'ok';
     trCorrect++;
     // XP: 10 с первой попытки, 6 со второй, 3 после подсказки/повтора
-    var xpGain = tgAttempt === 0 ? 1 : 0.5;
+    var xpGain = tgAttempt === 0 ? 1 : tgAttempt === 1 ? 0.5 : 0;
     addXP(xpGain);
     trSessionXP += xpGain;
     trStreak++;
@@ -13169,7 +13169,7 @@ function archerResolve(correct, rightAnswer, studentAnswer) {
   const task = trTasks[trIdx];
 
   if (correct) {
-    var xpGain = archerAttempt === 0 ? 1 : 0.5;
+    var xpGain = archerAttempt === 0 ? 1 : archerAttempt === 1 ? 0.5 : 0;
     archerAnimateArrow(archerAttempt, 500, () => {
       if (scorePop) { scorePop.textContent = '+' + xpGain + ' XP'; scorePop.style.color = '#4ade80'; scorePop.classList.add('show'); }
     });
@@ -13465,7 +13465,7 @@ function builderResolve(correct, rightAnswer, studentAnswer) {
   const statusEl = document.getElementById('builder-status');
 
   if (correct) {
-    var xpGain = builderAttempt === 0 ? 1 : 0.5;
+    var xpGain = builderAttempt === 0 ? 1 : builderAttempt === 1 ? 0.5 : 0;
     task._result = 'ok';
     trCorrect++;
     addXP(xpGain);
@@ -13648,7 +13648,7 @@ function pirateResolve(correct, rightAnswer, studentAnswer) {
   const scene = document.getElementById('pirate-scene');
 
   if (correct) {
-    var xpGain = pirateAttempt === 0 ? 1 : 0.5;
+    var xpGain = pirateAttempt === 0 ? 1 : pirateAttempt === 1 ? 0.5 : 0;
     task._result = 'ok';
     trCorrect++;
     addXP(xpGain);
