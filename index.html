@@ -15229,7 +15229,7 @@ function renderFinalTest() {
     el.innerHTML = '<div style="text-align:center;padding:20px 0">'
       + '<div style="font-size:56px;margin-bottom:12px">🎯</div>'
       + '<h2 style="margin:0 0 8px;font-size:22px">Итоговый тест</h2>'
-      + '<p style="color:var(--muted);margin:0 0 6px">48 вопросов по всему курсу 5 класса</p>'
+      + '<p style="color:var(--muted);margin:0 0 6px">' + FINAL_QUESTIONS.length + ' вопросов по всему курсу 5 класса</p>'
       + '<p style="color:var(--muted);font-size:13px;margin:0 0 24px">Выбор ответа · Верно/Неверно · Соотнеси</p>'
       + '<button onclick="ftStart()" style="padding:14px 32px;background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;border:none;border-radius:14px;font-size:17px;font-weight:700;cursor:pointer;width:100%;max-width:320px">Начать тест →</button>'
       + '</div>';
@@ -15268,8 +15268,8 @@ function ftRenderQuestion(el) {
 
   if(q.type === 'choice') {
     q.opts.forEach(function(opt, i) {
-      html += '<button onclick="ftAnswer(' + i + ')" style="display:block;width:100%;text-align:left;padding:12px 16px;margin-bottom:8px;background:rgba(255,255,255,0.06);border:1.5px solid rgba(255,255,255,0.12);border-radius:12px;color:inherit;font-size:14px;cursor:pointer">'
-        + '<span style="font-weight:700;color:#7c3aed;margin-right:8px">' + ['А','Б','В','Г'][i] + '.</span>' + opt + '</button>';
+      html += '<button onclick="ftAnswer(' + i + ')" style="display:block;width:100%;text-align:left;padding:12px 16px;margin-bottom:8px;background:rgba(255,255,255,0.06);border:1.5px solid rgba(255,255,255,0.12);border-radius:12px;color:#e2e8f0;font-size:14px;cursor:pointer;font-family:inherit">'
+        + '<span style="font-weight:700;color:#a78bfa;margin-right:8px">' + ['А','Б','В','Г'][i] + '.</span>' + opt + '</button>';
     });
   } else if(q.type === 'truefalse') {
     html += '<div style="display:flex;gap:10px">';
@@ -15280,10 +15280,10 @@ function ftRenderQuestion(el) {
     html += '<div style="font-size:13px;color:var(--muted);margin-bottom:10px">Нажимай на левый пункт, затем на правый — соединяй пары</div>';
     html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px" id="ft-match-grid">';
     q.left.forEach(function(l, i) {
-      html += '<button onclick="ftMatchSelect(\'L\','+i+')" id="ftL'+i+'" style="padding:10px;background:rgba(124,58,237,0.15);border:1.5px solid rgba(124,58,237,0.3);border-radius:10px;color:inherit;font-size:13px;cursor:pointer">' + l + '</button>';
+      html += '<button onclick="ftMatchSelect(\'L\','+i+')" id="ftL'+i+'" style="padding:10px;background:rgba(124,58,237,0.15);border:1.5px solid rgba(124,58,237,0.3);border-radius:10px;color:#e2e8f0;font-size:13px;cursor:pointer;font-family:inherit">' + l + '</button>';
     });
     q.right.forEach(function(r, i) {
-      html += '<button onclick="ftMatchSelect(\'R\','+i+')" id="ftR'+i+'" style="padding:10px;background:rgba(79,70,229,0.15);border:1.5px solid rgba(79,70,229,0.3);border-radius:10px;color:inherit;font-size:13px;cursor:pointer">' + r + '</button>';
+      html += '<button onclick="ftMatchSelect(\'R\','+i+')" id="ftR'+i+'" style="padding:10px;background:rgba(79,70,229,0.15);border:1.5px solid rgba(79,70,229,0.3);border-radius:10px;color:#e2e8f0;font-size:13px;cursor:pointer;font-family:inherit">' + r + '</button>';
     });
     html += '</div><div id="ft-match-pairs" style="margin-top:10px;font-size:13px;color:var(--muted)"></div>';
     html += '<button onclick="ftMatchSubmit()" style="margin-top:10px;width:100%;padding:12px;background:linear-gradient(135deg,#7c3aed,#4f46e5);border:none;border-radius:12px;color:#fff;font-size:15px;font-weight:700;cursor:pointer">Проверить →</button>';
