@@ -9719,16 +9719,22 @@ function doLogin() {
   const modeBtn = document.querySelector('.input-mode-btn.selected');
   const inputMode = modeBtn ? modeBtn.dataset.mode : 'text';
 
-  const prev = ST.user;
-  // Сбрасываем ST если входит другой ученик (или первый раз вошёл ученик после пустого состояния)
   const prevStudentName = ST.studentName;
+  const prevOnboarding = ST.onboardingDone;
+  const prevParentOnboarding = ST.parentOnboardingDone;
+
   if (role === 'student') {
-    if (!prev || (prev.role === 'student' && prev.name !== name)) {
+    // Сбрасываем прогресс только если входит ДРУГОЙ ученик (не тот же)
+    if (prevStudentName && prevStudentName !== name) {
       ST = freshST();
     }
-    ST.studentName = name; // всегда обновляем имя ученика
+    ST.studentName = name;
+    // Флаг онбординга: если уже видел — не показывать снова
+    if (prevOnboarding) ST.onboardingDone = true;
+    // parentOnboardingDone не сбрасываем никогда
+    ST.parentOnboardingDone = prevParentOnboarding;
   }
-  // Родитель не трогает ST-прогресс ученика, только входит в свой кабинет
+  // Родитель не трогает ST-прогресс ученика
 
   ST.user = { name, role, inputMode };
   lsSave();
@@ -16398,18 +16404,6 @@ function markSolved(taskId, data) {
         return t && t.topic.toLowerCase().includes('дроб');
       }).length;
       if (frCount >= 5) grantAchievement('fraction_master');
-    }
-    // Б) Бонус за первую задачу из новой темы
-    if (wasNew && taskObj.topic) {
-      var topicAlreadyDone = Object.keys(ST.solvedTasks).some(function(tid) {
-        if (tid === taskId) return false;
-        var t = TASKS.find(function(x){ return x.id === tid; });
-        return t && t.topic === taskObj.topic;
-      });
-      if (!topicAlreadyDone) {
-        addXP(50);
-        showNewTopicBonus(taskObj.topic);
-      }
     }
   }
   lsSave();
