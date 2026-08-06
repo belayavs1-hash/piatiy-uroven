@@ -16240,7 +16240,11 @@ const UmnikTutor = (function() {
   // Проверить наличие единиц измерения
   function hasUnits(s) {
     const sn = norm(s);
-    return UNIT_WORDS.some(u => sn.includes(u));
+    // Ищем единицы только как отдельные токены (границы слова или пробел/начало/конец)
+    return UNIT_WORDS.some(u => {
+      const re = new RegExp('(^|\\s)' + u.replace(/[.*+?^${}()|[\]\\]/g,'\\$&') + '(\\s|$|[.,;!?)])', 'i');
+      return re.test(sn);
+    });
   }
 
   // Проверить «не знаю»
