@@ -4,6 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Пятый Уровень — ИИ-репетитор</title>
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#4f46e5">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="5 Уровень">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="preload" as="style" onload="this.rel='stylesheet'">
 <noscript><link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet"></noscript>
 <style>
@@ -2616,20 +2621,37 @@ textarea, select { font-size: max(16px, 1em) !important; }
       <input type="hidden" id="login-role" value="student">
 
       <!-- Пин-оверлей для родителя -->
+      <!-- Диалог входа родителя -->
       <div id="parent-pin-overlay" style="display:none;position:fixed;inset:0;z-index:500;background:rgba(3,8,58,.96);align-items:center;justify-content:center;flex-direction:column;gap:16px">
-        <div style="font-size:28px;font-weight:900;color:#fff">🔐 Вход для родителей</div>
-        <div style="font-size:14px;color:rgba(255,255,255,.6);margin-bottom:8px">Введите пин-код</div>
-        <div style="display:flex;gap:10px">
-          <input id="parent-pin-input" type="password" inputmode="numeric" maxlength="4" placeholder="••••"
-            style="width:120px;text-align:center;font-size:28px;font-weight:900;letter-spacing:8px;padding:12px 16px;border-radius:14px;border:2px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:#fff;font-family:inherit;outline:none"
-            onkeydown="if(event.key==='Enter')checkParentPin()">
+        <div id="parent-pin-login-block">
+          <div style="font-size:28px;font-weight:900;color:#fff;text-align:center;margin-bottom:6px">🔐 Вход для родителей</div>
+          <div style="font-size:14px;color:rgba(255,255,255,.6);margin-bottom:14px;text-align:center">Введите пин-код</div>
+          <div style="display:flex;gap:10px;justify-content:center">
+            <input id="parent-pin-input" type="password" inputmode="numeric" maxlength="4" placeholder="••••"
+              style="width:120px;text-align:center;font-size:28px;font-weight:900;letter-spacing:8px;padding:12px 16px;border-radius:14px;border:2px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:#fff;font-family:inherit;outline:none"
+              onkeydown="if(event.key==='Enter')checkParentPin()">
+          </div>
+          <div id="parent-pin-error" style="font-size:13px;color:#f87171;min-height:18px;text-align:center;margin-top:6px"></div>
+          <div style="display:flex;gap:10px;margin-top:12px;justify-content:center">
+            <button onclick="checkParentPin()" style="padding:12px 28px;border-radius:12px;border:none;background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff;font-size:15px;font-weight:800;cursor:pointer">Войти</button>
+            <button onclick="closeParentPin()" style="padding:12px 28px;border-radius:12px;border:1.5px solid rgba(255,255,255,.2);background:transparent;color:rgba(255,255,255,.7);font-size:15px;font-weight:700;cursor:pointer">Отмена</button>
+          </div>
         </div>
-        <div id="parent-pin-error" style="font-size:13px;color:#f87171;min-height:18px"></div>
-        <div style="display:flex;gap:10px;margin-top:4px">
-          <button onclick="checkParentPin()" style="padding:12px 28px;border-radius:12px;border:none;background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff;font-size:15px;font-weight:800;cursor:pointer">Войти</button>
-          <button onclick="closeParentPin()" style="padding:12px 28px;border-radius:12px;border:1.5px solid rgba(255,255,255,.2);background:transparent;color:rgba(255,255,255,.7);font-size:15px;font-weight:700;cursor:pointer">Отмена</button>
+        <!-- Блок установки нового PIN (первый вход) -->
+        <div id="parent-pin-setup-block" style="display:none;flex-direction:column;align-items:center;gap:12px">
+          <div style="font-size:28px;font-weight:900;color:#fff;text-align:center">🔐 Создайте пин-код</div>
+          <div style="font-size:14px;color:rgba(255,255,255,.6);text-align:center;max-width:260px">Придумайте 4-значный пин-код для входа в кабинет родителя</div>
+          <input id="parent-pin-new1" type="password" inputmode="numeric" maxlength="4" placeholder="Новый пин ••••"
+            style="width:160px;text-align:center;font-size:24px;font-weight:900;letter-spacing:6px;padding:12px 16px;border-radius:14px;border:2px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:#fff;font-family:inherit;outline:none">
+          <input id="parent-pin-new2" type="password" inputmode="numeric" maxlength="4" placeholder="Повторите ••••"
+            style="width:160px;text-align:center;font-size:24px;font-weight:900;letter-spacing:6px;padding:12px 16px;border-radius:14px;border:2px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:#fff;font-family:inherit;outline:none"
+            onkeydown="if(event.key==='Enter')confirmSetPin()">
+          <div id="parent-pin-setup-error" style="font-size:13px;color:#f87171;min-height:18px;text-align:center"></div>
+          <div style="display:flex;gap:10px">
+            <button onclick="confirmSetPin()" style="padding:12px 28px;border-radius:12px;border:none;background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff;font-size:15px;font-weight:800;cursor:pointer">Сохранить</button>
+            <button onclick="closeParentPin()" style="padding:12px 28px;border-radius:12px;border:1.5px solid rgba(255,255,255,.2);background:transparent;color:rgba(255,255,255,.7);font-size:15px;font-weight:700;cursor:pointer">Отмена</button>
+          </div>
         </div>
-        <div style="font-size:11px;color:rgba(255,255,255,.3);margin-top:8px">Первый вход: пин <b style="color:rgba(255,255,255,.5)">0000</b></div>
       </div>
 
       <label class="login-label" style="margin-top:16px" id="input-mode-label">Как будешь отвечать?</label>
@@ -9284,15 +9306,15 @@ function showScreen(id) {
   document.body.classList.toggle('on-login', id === 'screen-login');
   window.scrollTo(0, 0);
   updateAllXP();
-  if(id === 'screen-parent') { try { renderParent(); } catch(e) { console.error('renderParent error:', e); } }
+  if(id === 'screen-parent') { try { renderParent(); } catch(e) {} }
   if(id === 'screen-homework') updateTopics();
   if(id === 'screen-home') { try { updateParaProgress(); } catch(e) {} }
-  if(id === 'screen-profile') { try { renderProfile(); } catch(e) { console.error(e); } }
+  if(id === 'screen-profile') { try { renderProfile(); } catch(e) {} }
   if(id === 'screen-profile') renderProfile();
   if(id === 'screen-funfacts') renderFunFacts();
-  if(id === 'screen-mistakes') { try { renderMistakes(); } catch(e) { console.error('renderMistakes error:', e); } }
-  if(id === 'screen-achievements') { try { renderAchievements(); } catch(e) { console.error('renderAchievements error:', e); } }
-  if(id === 'screen-final-test') { try { renderFinalTest(); } catch(e) { console.error('renderFinalTest error:', e); } }
+  if(id === 'screen-mistakes') { try { renderMistakes(); } catch(e) {} }
+  if(id === 'screen-achievements') { try { renderAchievements(); } catch(e) {} }
+  if(id === 'screen-final-test') { try { renderFinalTest(); } catch(e) {} }
   if(id === 'screen-cheatsheet') { var _si=document.getElementById('cs-search'); if(_si) _si.value=''; _csPara=0; document.querySelectorAll('.cs-tab').forEach(function(b,i){ b.classList.toggle('cs-tab-active',i===0); }); renderCheatsheet(); }
   if(id === 'screen-already-solved') fillAlreadySolved();
   if(id === 'screen-photo-check') fillPhotoCheck();
@@ -9623,25 +9645,51 @@ function selectInputMode(btn) {
 }
 // ── Пин-код родителя ──
 var PARENT_PIN_KEY = 'piatiy_parent_pin';
-function getParentPin() { return localStorage.getItem(PARENT_PIN_KEY) || '0000'; }
+function getParentPin() { return localStorage.getItem(PARENT_PIN_KEY) || null; }
 
 function openParentPin() {
   const ov = document.getElementById('parent-pin-overlay');
   ov.style.display = 'flex';
-  document.getElementById('parent-pin-input').value = '';
-  document.getElementById('parent-pin-error').textContent = '';
-  setTimeout(() => document.getElementById('parent-pin-input').focus(), 100);
+  // Первый вход — PIN ещё не установлен
+  if (!localStorage.getItem(PARENT_PIN_KEY)) {
+    document.getElementById('parent-pin-login-block').style.display = 'none';
+    var sb = document.getElementById('parent-pin-setup-block');
+    sb.style.display = 'flex';
+    document.getElementById('parent-pin-new1').value = '';
+    document.getElementById('parent-pin-new2').value = '';
+    document.getElementById('parent-pin-setup-error').textContent = '';
+    setTimeout(function(){ document.getElementById('parent-pin-new1').focus(); }, 100);
+  } else {
+    document.getElementById('parent-pin-setup-block').style.display = 'none';
+    document.getElementById('parent-pin-login-block').style.display = 'block';
+    document.getElementById('parent-pin-input').value = '';
+    document.getElementById('parent-pin-error').textContent = '';
+    setTimeout(function(){ document.getElementById('parent-pin-input').focus(); }, 100);
+  }
 }
 function closeParentPin() {
   document.getElementById('parent-pin-overlay').style.display = 'none';
 }
+function confirmSetPin() {
+  var p1 = document.getElementById('parent-pin-new1').value.trim();
+  var p2 = document.getElementById('parent-pin-new2').value.trim();
+  var errEl = document.getElementById('parent-pin-setup-error');
+  if (p1.length !== 4 || !/^\d{4}$/.test(p1)) { errEl.textContent = '❌ Введи 4 цифры'; return; }
+  if (p1 !== p2) { errEl.textContent = '❌ Пин-коды не совпадают'; return; }
+  localStorage.setItem(PARENT_PIN_KEY, p1);
+  closeParentPin();
+  _selectedRole = 'parent';
+  doLogin();
+  _selectedRole = 'student';
+}
 function checkParentPin() {
   const entered = document.getElementById('parent-pin-input').value.trim();
-  if (entered === getParentPin()) {
+  var storedPin = localStorage.getItem(PARENT_PIN_KEY);
+  if (entered === storedPin) {
     closeParentPin();
     _selectedRole = 'parent';
     doLogin();
-    _selectedRole = 'student'; // сбрасываем после входа
+    _selectedRole = 'student';
   } else {
     document.getElementById('parent-pin-error').textContent = '❌ Неверный пин-код';
     document.getElementById('parent-pin-input').value = '';
@@ -9650,7 +9698,16 @@ function checkParentPin() {
 }
 
 function freshST() {
-  return { user: null, studentName: null, xp: 0, solvedTasks: {}, topicProgress: {}, mistakes: [], achievements: [], hintsUsed: 0, selfSolved: 0, trainerStats: {}, trainerHistory: [], ruleHistory: [], selfCheckResults: [], parSettings: null, history: [], onboardingDone: false };
+  return { user: null, studentName: null, xp: 0, solvedTasks: {}, topicProgress: {}, mapProgress: {}, mistakes: [], achievements: [], hintsUsed: 0, selfSolved: 0, trainerStats: {}, trainerHistory: [], ruleHistory: [], selfCheckResults: [], parSettings: null, history: [], onboardingDone: false };
+}
+
+function showToast(msg, type) {
+  var el = document.createElement('div');
+  var bg = type === 'warn' ? '#f59e0b' : type === 'err' ? '#ef4444' : '#22c55e';
+  el.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:' + bg + ';color:#fff;padding:10px 22px;border-radius:24px;font-size:14px;font-weight:600;z-index:9999;box-shadow:0 4px 16px rgba(0,0,0,.18);pointer-events:none;transition:opacity .3s';
+  el.textContent = msg;
+  document.body.appendChild(el);
+  setTimeout(function(){ el.style.opacity = '0'; setTimeout(function(){ el.remove(); }, 400); }, 2600);
 }
 
 
@@ -9680,7 +9737,7 @@ function finishOnboarding() {
   ST.onboardingDone = true;
   lsSave();
   showScreen('screen-home');
-  try { renderHome(); } catch(e) { console.error('renderHome error in finishOnboarding:', e); }
+  try { renderHome(); } catch(e) {}
 }
 
 // ── Онбординг родителя ────────────────────────────────────────────
@@ -9743,7 +9800,7 @@ function doLogin() {
     if (!ST.parentOnboardingDone) {
       showParentOnboarding();
     } else {
-      try { renderParent(); } catch(e) { console.error('[doLogin] renderParent:', e); }
+      try { renderParent(); } catch(e) {}
       showScreen('screen-parent');
     }
   } else {
@@ -11729,7 +11786,53 @@ const TOPIC_TRAINER_MAP = {
   "Виды углов. Чертёжный треугольник": "angles",
   // Исправленные маппинги
   "Шкалы и координатная прямая": "add",
-  "Сравнение натуральных чисел": "cmp"
+  "Сравнение натуральных чисел": "cmp",
+
+  // §1 — темы без тренажёра
+  "Представление числовой информации в таблицах": "add",
+  "Отрезок и его длина. Ломаная. Многоугольник": "perim",
+  "Представление числовой информации в столбчатых диаграммах": "add",
+  "Плоскость, прямая, луч, угол": "perim",
+
+  // §2
+  "Действие сложения. Свойства сложения": "add",
+  "Действие вычитания. Свойства вычитания": "sub",
+  "Действие умножения. Свойства умножения": "mul",
+  "Числовые и буквенные выражения": "chain",
+  "Уравнение": "chain",
+
+  // §3
+  "Порядок действий в вычислениях": "chain",
+  "Делители и кратные": "div",
+  "Свойства и признаки делимости": "div",
+
+  // §4
+  "Формулы": "chain",
+  "Единицы измерения площадей": "area",
+  "Объёмы. Объём прямоугольного параллелепипеда": "geo_t",
+
+  // §5 дроби и геометрия
+  "Окружность, круг, шар, цилиндр": "perim",
+  "Доли и дроби. Изображение дробей на координатной прямой": "fradd",
+  "Сравнение дробей": "cmp",
+  "Правильные и неправильные дроби": "fradd",
+  "Сложение и вычитание дробей с одинаковыми знаменателями": "frsub",
+  "Деление натуральных чисел и дроби": "div",
+  "Смешанные числа": "fradd2",
+  "Сложение и вычитание смешанных чисел": "fradd2",
+  "Сокращение дробей": "fracprop",
+  "Приведение дробей к общему знаменателю": "fradd2",
+  "Сравнение, сложение и вычитание дробей с разными знаменателями": "fradd2",
+  "Умножение дробей": "decmul",
+  "Нахождение части целого": "fradd",
+  "Деление дробей": "div",
+  "Нахождение целого по его части": "fradd",
+
+  // §6
+  "Округление чисел. Прикидка": "decadd",
+
+  // §7
+  "Измерение углов. Транспортир": "angles"
 };
 
 function topicStudy(id, ruleKey) {
@@ -14484,7 +14587,7 @@ function errOpenTask(idx) {
   var m = (ST.mistakes||[])[idx];
   if (!m || !m.taskId) return;
   var task = TASKS.find(function(t){ return t.id === m.taskId; });
-  if (!task) { alert('Задание ' + m.taskId + ' не найдено в базе'); return; }
+  if (!task) { showToast('Задание ' + m.taskId + ' не найдено в базе', 'warn'); return; }
   openWalkthrough(task, 'screen-mistakes');
 }
 
@@ -15969,7 +16072,7 @@ function parSavePin() {
   var inp = document.getElementById('par-pin-inp');
   if (!inp) return;
   var val = ('' + inp.value).replace(/D/g,'').slice(0,4);
-  if (val.length !== 4) { alert('Введи 4-значный PIN'); return; }
+  if (val.length !== 4) { showToast('Введи 4-значный PIN', 'warn'); return; }
   if (!ST.parSettings) ST.parSettings = {};
   ST.parSettings.pin = val;
   lsSave();
@@ -16409,27 +16512,6 @@ function markSolved(taskId, data) {
   try { checkAchievements(); } catch(e) {}
 }
 
-function showNewTopicBonus(topicName) {
-  var el = document.createElement('div');
-  el.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.6);'
-    + 'background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;border-radius:20px;'
-    + 'padding:20px 28px;text-align:center;z-index:99999;box-shadow:0 20px 60px rgba(99,102,241,.5);'
-    + 'transition:transform .3s cubic-bezier(.34,1.56,.64,1),opacity .3s;opacity:0;pointer-events:none;max-width:280px;';
-  el.innerHTML = '<div style="font-size:32px;margin-bottom:6px">🎉</div>'
-    + '<div style="font-size:15px;font-weight:900;margin-bottom:4px">Новая тема!</div>'
-    + '<div style="font-size:12px;opacity:.85;margin-bottom:10px">' + topicName + '</div>'
-    + '<div style="font-size:22px;font-weight:900;color:#fbbf24">+50 XP ⭐</div>';
-  document.body.appendChild(el);
-  requestAnimationFrame(function(){
-    el.style.transform = 'translate(-50%,-50%) scale(1)';
-    el.style.opacity = '1';
-  });
-  setTimeout(function(){
-    el.style.transform = 'translate(-50%,-50%) scale(0.8)';
-    el.style.opacity = '0';
-    setTimeout(function(){ el.remove(); }, 400);
-  }, 2200);
-}
 
 function addMistake(topic, type, extra) {
   var entry = Object.assign({
