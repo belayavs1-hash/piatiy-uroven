@@ -15229,8 +15229,8 @@ function renderFinalTest() {
     el.innerHTML = '<div style="text-align:center;padding:20px 0">'
       + '<div style="font-size:56px;margin-bottom:12px">🎯</div>'
       + '<h2 style="margin:0 0 8px;font-size:22px">Итоговый тест</h2>'
-      + '<p style="color:var(--muted);margin:0 0 6px">' + FINAL_QUESTIONS.length + ' вопросов по всему курсу 5 класса</p>'
-      + '<p style="color:var(--muted);font-size:13px;margin:0 0 24px">Выбор ответа · Верно/Неверно · Соотнеси</p>'
+      + '<p style="color:#94a3b8;margin:0 0 6px">' + FINAL_QUESTIONS.length + ' вопросов по всему курсу 5 класса</p>'
+      + '<p style="color:#94a3b8;font-size:13px;margin:0 0 24px">Выбор ответа · Верно/Неверно · Соотнеси</p>'
       + '<button onclick="ftStart()" style="padding:14px 32px;background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;border:none;border-radius:14px;font-size:17px;font-weight:700;cursor:pointer;width:100%;max-width:320px">Начать тест →</button>'
       + '</div>';
     return;
@@ -15248,7 +15248,7 @@ function ftRenderQuestion(el) {
   var total = FINAL_QUESTIONS.length;
   var pct = Math.round((FT_STATE.idx / total) * 100);
   var html = '<div style="margin-bottom:16px">'
-    + '<div style="display:flex;justify-content:space-between;font-size:13px;color:var(--muted);margin-bottom:6px">'
+    + '<div style="display:flex;justify-content:space-between;font-size:13px;color:#94a3b8;margin-bottom:6px">'
     + '<span>Вопрос ' + (FT_STATE.idx+1) + ' из ' + total + '</span>'
     + '<span>✅ ' + FT_STATE.score + '</span>'
     + '</div>'
@@ -15277,7 +15277,7 @@ function ftRenderQuestion(el) {
     html += '<button onclick="ftAnswer(false)" style="flex:1;padding:14px;background:rgba(239,68,68,0.15);border:1.5px solid rgba(239,68,68,0.3);border-radius:12px;color:#f87171;font-size:16px;font-weight:700;cursor:pointer">❌ Ложь</button>';
     html += '</div>';
   } else if(q.type === 'match') {
-    html += '<div style="font-size:13px;color:var(--muted);margin-bottom:10px">Нажимай на левый пункт, затем на правый — соединяй пары</div>';
+    html += '<div style="font-size:13px;color:#94a3b8;margin-bottom:10px">Нажимай на левый пункт, затем на правый — соединяй пары</div>';
     html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px" id="ft-match-grid">';
     q.left.forEach(function(l, i) {
       html += '<button onclick="ftMatchSelect(\'L\','+i+')" id="ftL'+i+'" style="padding:10px;background:rgba(124,58,237,0.15);border:1.5px solid rgba(124,58,237,0.3);border-radius:10px;color:#e2e8f0;font-size:13px;cursor:pointer;font-family:inherit">' + l + '</button>';
@@ -15285,7 +15285,7 @@ function ftRenderQuestion(el) {
     q.right.forEach(function(r, i) {
       html += '<button onclick="ftMatchSelect(\'R\','+i+')" id="ftR'+i+'" style="padding:10px;background:rgba(79,70,229,0.15);border:1.5px solid rgba(79,70,229,0.3);border-radius:10px;color:#e2e8f0;font-size:13px;cursor:pointer;font-family:inherit">' + r + '</button>';
     });
-    html += '</div><div id="ft-match-pairs" style="margin-top:10px;font-size:13px;color:var(--muted)"></div>';
+    html += '</div><div id="ft-match-pairs" style="margin-top:10px;font-size:13px;color:#94a3b8"></div>';
     html += '<button onclick="ftMatchSubmit()" style="margin-top:10px;width:100%;padding:12px;background:linear-gradient(135deg,#7c3aed,#4f46e5);border:none;border-radius:12px;color:#fff;font-size:15px;font-weight:700;cursor:pointer">Проверить →</button>';
   }
 
@@ -15347,7 +15347,7 @@ function ftShowFeedback(correct, hint) {
   var msg = correct ? 'Верно!' : 'Не совсем.';
   fb.innerHTML = '<div style="background:rgba(255,255,255,0.05);border-radius:12px;padding:14px;border-left:3px solid ' + color + '">'
     + '<div style="color:' + color + ';font-weight:700;font-size:15px;margin-bottom:4px">' + icon + ' ' + msg + '</div>'
-    + '<div style="font-size:13px;color:var(--muted)">' + hint + '</div>'
+    + '<div style="font-size:13px;color:#cbd5e1">' + hint + '</div>'
     + '</div>'
     + '<button onclick="ftNext()" style="margin-top:10px;width:100%;padding:13px;background:linear-gradient(135deg,#7c3aed,#4f46e5);border:none;border-radius:12px;color:#fff;font-size:15px;font-weight:700;cursor:pointer">'
     + (FT_STATE.idx + 1 < FINAL_QUESTIONS.length ? 'Следующий вопрос →' : 'Посмотреть результат 🎯') + '</button>';
@@ -15379,12 +15379,12 @@ function ftShowResult() {
   el.innerHTML = '<div style="text-align:center;padding:20px 0">'
     + '<div style="font-size:64px;margin-bottom:12px">' + emoji + '</div>'
     + '<h2 style="margin:0 0 6px;font-size:24px;color:' + gradeColor + '">' + grade + '</h2>'
-    + '<p style="font-size:18px;color:var(--muted);margin:0 0 6px">Правильных ответов: <b style="color:#fff">' + score + '</b> из <b>' + total + '</b></p>'
+    + '<p style="font-size:18px;color:#94a3b8;margin:0 0 6px">Правильных ответов: <b style="color:#fff">' + score + '</b> из <b>' + total + '</b></p>'
     + '<div style="font-size:32px;font-weight:900;color:' + gradeColor + ';margin:12px 0">' + pct + '%</div>'
     + '<div style="height:10px;background:rgba(255,255,255,0.1);border-radius:5px;margin:0 0 24px">'
     + '<div style="height:10px;background:' + gradeColor + ';border-radius:5px;width:' + pct + '%"></div></div>'
     + '<button onclick="ftStart()" style="display:block;width:100%;padding:14px;background:linear-gradient(135deg,#7c3aed,#4f46e5);border:none;border-radius:14px;color:#fff;font-size:16px;font-weight:700;cursor:pointer;margin-bottom:10px">🔄 Пройти снова</button>'
-    + '<button onclick="showScreen(\'screen-home\')" style="display:block;width:100%;padding:12px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:14px;color:inherit;font-size:15px;cursor:pointer">← На главную</button>'
+    + '<button onclick="showScreen(\'screen-home\')" style="display:block;width:100%;padding:12px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:14px;color:#e2e8f0;font-size:15px;cursor:pointer">← На главную</button>'
     + '</div>';
 }
 // ===== КОНЕЦ ИТОГОВОГО ТЕСТА =====
