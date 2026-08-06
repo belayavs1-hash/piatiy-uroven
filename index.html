@@ -9720,18 +9720,16 @@ function doLogin() {
   const inputMode = modeBtn ? modeBtn.dataset.mode : 'text';
 
   const prevStudentName = ST.studentName;
-  const prevOnboarding = ST.onboardingDone;
   const prevParentOnboarding = ST.parentOnboardingDone;
 
   if (role === 'student') {
-    // Сбрасываем прогресс только если входит ДРУГОЙ ученик (не тот же)
     if (prevStudentName && prevStudentName !== name) {
+      // Другой ученик — сбросить прогресс, онбординг для него новый
       ST = freshST();
+      ST.onboardingDone = false;
     }
+    // Если то же имя или первый вход — ничего не трогаем, onboardingDone остаётся как есть
     ST.studentName = name;
-    // Флаг онбординга: если уже видел — не показывать снова
-    if (prevOnboarding) ST.onboardingDone = true;
-    // parentOnboardingDone не сбрасываем никогда
     ST.parentOnboardingDone = prevParentOnboarding;
   }
   // Родитель не трогает ST-прогресс ученика
