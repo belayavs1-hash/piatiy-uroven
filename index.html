@@ -255,13 +255,13 @@ body:not(.on-login) .login-blocks { display: none !important; }
 .mc-block:nth-child(6){width:62px;height:62px;background:linear-gradient(145deg,#f97316,#c2410c);top:68%;right:1%;animation-duration:3.5s;animation-delay:2s}
 @keyframes mcFloat{0%,100%{transform:translateY(0) rotate(-5deg) scale(1)}50%{transform:translateY(-22px) rotate(5deg) scale(1.08)}}
 
-/* 2. fon2.png — карточка поверх синего фона */
+/* 2. fon3.png — карточка поверх синего фона */
 .login-fon2 {
   position: relative;
   z-index: 10;
   width: 100%;
   max-width: 540px;
-  background: url('fon3.png') top center / 100% auto no-repeat;
+  background: none;
   border-radius: 32px;
   overflow: visible;
   box-shadow: 0 24px 80px rgba(0,0,15,.6);
@@ -269,8 +269,24 @@ body:not(.on-login) .login-blocks { display: none !important; }
 }
 @keyframes cardReveal{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
 
-/* Отступ под синюю шапку fon3 */
-.login-fon2-spacer { height: 200px; }
+/* Шапка — img тег вместо background-image (без артефактов масштабирования) */
+.login-fon2-header {
+  display: block;
+  width: 100%;
+  border-radius: 32px 32px 0 0;
+  overflow: hidden;
+  line-height: 0;
+}
+.login-fon2-header img {
+  width: 100%;
+  height: auto;
+  display: block;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+}
+
+/* Отступ под синюю шапку fon3 — теперь не нужен, но оставим для совместимости */
+.login-fon2-spacer { display: none; }
 
 /* 3. Белое поле fon2 — контент поверх */
 .login-fon2-body {
@@ -338,7 +354,7 @@ body:not(.on-login) .login-blocks { display: none !important; }
   .role-info-block { padding:6px 6px 10px; }
   .role-label-name { font-size:13px; }
   .role-hint { font-size:11px; }
-  .login-fon2-spacer { min-height:110px; }
+  .login-fon2-spacer { display:none; }
 }
 
 /* ===== HOME ===== */
@@ -2610,7 +2626,12 @@ textarea, select { font-size: max(16px, 1em) !important; }
   <!-- fon2 — карточка поверх синего фона -->
   <div class="login-fon2">
 
-    <!-- Пустой спейсер под синюю шапку fon2 -->
+    <!-- Шапка с Умником через img (без артефактов масштабирования) -->
+    <div class="login-fon2-header">
+      <img src="fon3.png" alt="Пятый уровень">
+    </div>
+
+    <!-- Пустой спейсер — скрыт, оставлен для совместимости -->
     <div class="login-fon2-spacer"></div>
 
     <!-- Контент на белом поле fon2 -->
