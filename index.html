@@ -10201,12 +10201,13 @@ function showOnboarding(name) {
   showScreen('screen-onboarding');
 }
 function obRender() {
-  var slides = document.querySelectorAll('.ob-slide');
+  var container = document.getElementById('screen-onboarding');
+  var slides = container ? container.querySelectorAll('.ob-slide') : document.querySelectorAll('.ob-slide');
   slides.forEach(function(s, i) { s.classList.toggle('active', i === _obStep); });
-  var dots = document.querySelectorAll('.ob-dot');
+  var dots = container ? container.querySelectorAll('.ob-dot') : document.querySelectorAll('.ob-dot');
   dots.forEach(function(d, i) { d.classList.toggle('active', i === _obStep); });
   var nextBtn = document.getElementById('ob-next-btn');
-  if (nextBtn) nextBtn.style.display = (_obStep >= _obTotal - 1) ? 'none' : 'inline-block';
+  if (nextBtn) nextBtn.style.display = (_obStep >= slides.length - 1) ? 'none' : 'inline-block';
 }
 function obNext() {
   if (_obStep < _obTotal - 1) { _obStep++; obRender(); }
