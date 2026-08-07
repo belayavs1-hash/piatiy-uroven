@@ -10110,10 +10110,15 @@ function selectRole(btn, role) {
 }
 
 function loginByRole() {
-   if (_selectedRole === 'parent') {
-    openParentPin();
-  } else {
-    doLogin();
+  try {
+    if (_selectedRole === 'parent') {
+      openParentPin();
+    } else {
+      doLogin();
+    }
+  } catch(e) {
+    console.error('loginByRole error:', e);
+    alert('Ошибка входа: ' + e.message);
   }
 }
 
@@ -10290,7 +10295,12 @@ function doLogin() {
       showScreen('screen-parent');
     }
   } else {
-    if (!ST.onboardingDone) { showOnboarding(name); } else { renderHome(); showScreen('screen-home'); };
+    if (!ST.onboardingDone) {
+      showOnboarding(name);
+    } else {
+      try { renderHome(); } catch(e) { console.error('renderHome error:', e); }
+      showScreen('screen-home');
+    }
   }
 }function doLogout() {
   ST.user = null;
