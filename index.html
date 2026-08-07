@@ -160,7 +160,7 @@ body:not(.on-login) .login-blocks { display: none !important; }
 
 /* Звёзды — редкое ночное небо */
 .login-stars {
-  position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  position: absolute; inset: 0; pointer-events: none; z-index: 0;
   background-image:
     radial-gradient(circle, rgba(255,255,255,.95) 0 1px, transparent 1.5px),
     radial-gradient(circle, rgba(255,255,255,.6) 0 1px, transparent 1.5px),
@@ -171,7 +171,7 @@ body:not(.on-login) .login-blocks { display: none !important; }
 }
 
 /* Облака с формулами */
-.login-clouds { position:fixed; inset:0; pointer-events:none; overflow:hidden; z-index:1; }
+.login-clouds { position:absolute; inset:0; pointer-events:none; overflow:hidden; z-index:1; }
 .login-cloud {
   position:absolute;
   display:flex; align-items:center; justify-content:center;
@@ -194,7 +194,7 @@ body:not(.on-login) .login-blocks { display: none !important; }
 @keyframes cloudDrift{from{transform:translateX(0)}to{transform:translateX(calc(100vw + 250px))}}
 
 /* Планеты */
-.login-planets { position:fixed; inset:0; pointer-events:none; z-index:1; }
+.login-planets { position:absolute; inset:0; pointer-events:none; z-index:1; }
 .planet { position:absolute; border-radius:50%; animation:planetFloat ease-in-out infinite; }
 .planet-1 {
   width:72px; height:72px;
@@ -224,7 +224,7 @@ body:not(.on-login) .login-blocks { display: none !important; }
 @keyframes planetFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
 
 /* Символы на небе */
-.login-sky-math { position:fixed; inset:0; pointer-events:none; z-index:1; }
+.login-sky-math { position:absolute; inset:0; pointer-events:none; z-index:1; }
 .sky-sym { position:absolute; font-weight:900; animation:symFloat ease-in-out infinite; user-select:none; }
 .sky-sym-1{font-size:60px;color:rgba(120,180,255,.65);top:3%;left:22%;animation-duration:5s}
 .sky-sym-2{font-size:52px;color:rgba(250,204,21,.65);top:6%;right:20%;animation-duration:6.5s;animation-delay:1s}
@@ -237,7 +237,7 @@ body:not(.on-login) .login-blocks { display: none !important; }
 @keyframes symFloat{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-16px) rotate(4deg)}}
 
 /* Кубики с формулами */
-.login-blocks { position:fixed; inset:0; pointer-events:none; z-index:2; }
+.login-blocks { position:absolute; inset:0; pointer-events:none; z-index:2; }
 .mc-block {
   position:absolute; border-radius:16px;
   font-size:26px; font-weight:900; color:#fff;
