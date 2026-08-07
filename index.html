@@ -295,12 +295,13 @@ body {
 .role-btn {
   border:2px solid #d9e3ff; padding:0; background:#fff;
   cursor:pointer; border-radius:18px; overflow:hidden;
-  transition:transform .2s,box-shadow .2s,border-color .2s;
+  transition:transform .2s,box-shadow .2s,border-color .2s,opacity .2s;
   font-family:inherit; box-shadow:0 4px 16px rgba(55,95,220,.15);
   text-align:center; display:flex; flex-direction:column; position:relative;
+  opacity:.55; filter:grayscale(.25);
 }
-.role-btn:hover { transform:translateY(-2px); box-shadow:0 10px 28px rgba(55,95,220,.25); }
-.role-btn.selected { border-color:#35c981; box-shadow:0 0 0 3px rgba(53,201,129,.3),0 4px 16px rgba(55,95,220,.15); }
+.role-btn:hover { transform:translateY(-2px); box-shadow:0 10px 28px rgba(55,95,220,.25); opacity:.75; filter:none; }
+.role-btn.selected { border-color:#35c981; box-shadow:0 0 0 3px rgba(53,201,129,.3),0 4px 16px rgba(55,95,220,.15); opacity:1; filter:none; }
 .role-btn.selected::after { content:"✓"; position:absolute; top:8px; right:8px; width:26px; height:26px; border-radius:50%; display:grid; place-items:center; background:linear-gradient(135deg,#35c981,#2bb46f); color:#fff; font-weight:900; font-size:13px; z-index:2; }
 .role-photo { width:100%; height:230px; overflow:hidden; flex-shrink:0; background:#dbeafe; }
 .role-photo img { width:100%; height:100%; object-fit:cover; display:block; }
