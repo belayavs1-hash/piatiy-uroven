@@ -248,24 +248,37 @@ body {
 .mc-block:nth-child(6){width:62px;height:62px;background:linear-gradient(145deg,#f97316,#c2410c);top:68%;right:1%;animation-duration:3.5s;animation-delay:2s}
 @keyframes mcFloat{0%,100%{transform:translateY(0) rotate(-5deg) scale(1)}50%{transform:translateY(-22px) rotate(5deg) scale(1.08)}}
 
-/* 2. fon2.png — карточка поверх синего фона */
+/* 2. Карточка входа */
 .login-fon2 {
   position: relative;
   z-index: 10;
   width: 100%;
   max-width: 540px;
-  background: url('fon3.png') top center / 100% auto no-repeat;
+  background: none;
   border-radius: 32px;
-  overflow: visible;
+  overflow: hidden;
   box-shadow: 0 24px 80px rgba(0,0,15,.6);
   animation: cardReveal .5s ease both;
 }
 @keyframes cardReveal{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
 
-/* Отступ под синюю шапку fon3 */
-.login-fon2-spacer { height: 200px; }
+/* Шапка — img тег, стекло только на белую плашку */
+.login-fon2-header {
+  display: block;
+  line-height: 0;
+  border-radius: 32px 32px 0 0;
+  overflow: hidden;
+}
+.login-fon2-header img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
 
-/* 3. Белое поле fon2 — контент поверх */
+/* Спейсер больше не нужен */
+.login-fon2-spacer { display: none; }
+
+/* 3. Белое поле — контент */
 .login-fon2-body {
   background: rgba(255,255,255,.97);
   border-radius: 0 0 32px 32px;
@@ -2600,13 +2613,18 @@ textarea, select { font-size: max(16px, 1em) !important; }
     <div class="mc-block">∞</div>
   </div>
 
-  <!-- fon2 — карточка поверх синего фона -->
+  <!-- Карточка входа -->
   <div class="login-fon2">
 
-    <!-- Пустой спейсер под синюю шапку fon2 -->
+    <!-- Шапка через img — стекло не накрывает картинку -->
+    <div class="login-fon2-header">
+      <img src="fon3.png" alt="Пятый уровень">
+    </div>
+
+    <!-- спейсер скрыт -->
     <div class="login-fon2-spacer"></div>
 
-    <!-- Контент на белом поле fon2 -->
+    <!-- Контент на белом поле -->
     <div class="login-fon2-body">
 
       <!-- Карточки выбора роли -->
