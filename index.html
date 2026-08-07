@@ -697,15 +697,16 @@ body.theme-dark .h-step { opacity:.85; color:#c8d8ff; }
 .h-tile.orange { border-color: #ffdf94; }
 .h-tile.orange::before { background: linear-gradient(90deg,#ffae25,#ff7c00); }
 body.theme-light .h-tile.orange { background: linear-gradient(135deg,#fff,#fff9ec); }
-body.theme-dark .h-tile.orange { background: rgba(255,174,37,.08); }
+body.theme-dark .h-tile:not(.orange):not(.green2):not(.pink) { background: rgba(71,120,255,.12); }
+body.theme-dark .h-tile.orange { background: rgba(255,174,37,.15); }
 .h-tile.green2 { border-color: #bdeed7; }
 .h-tile.green2::before { background: linear-gradient(90deg,#22c572,#0ea55e); }
 body.theme-light .h-tile.green2 { background: linear-gradient(135deg,#fff,#f3fff8); }
-body.theme-dark .h-tile.green2 { background: rgba(53,201,129,.08); }
+body.theme-dark .h-tile.green2 { background: rgba(53,201,129,.15); }
 .h-tile.pink { border-color: #ffc7ed; }
 .h-tile.pink::before { background: linear-gradient(90deg,#ec49d9,#b020b0); }
 body.theme-light .h-tile.pink { background: linear-gradient(135deg,#fff,#fff5fc); }
-body.theme-dark .h-tile.pink { background: rgba(236,73,217,.08); }
+body.theme-dark .h-tile.pink { background: rgba(236,73,217,.15); }
 .h-tile-emoji { font-size: 28px; margin-bottom: 8px; display: block; }
 .h-tile-name { font-size: 16px; font-weight: 900; color: var(--h-ink); margin-bottom: 3px; transition: color .3s; }
 .h-tile-desc { font-size: 13px; color: var(--h-ink); opacity: .7; line-height: 1.35; transition: color .3s, opacity .3s; }
@@ -3269,6 +3270,9 @@ textarea, select { font-size: max(16px, 1em) !important; }
       <button onclick="showScreen('screen-achievements')" style="padding:6px 14px;border-radius:10px;border:1px solid rgba(251,191,36,.35);background:rgba(245,158,11,.12);color:#fbbf24;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0">🏆 Достижения</button>
     </div>
     <div id="map-content"></div>
+    <div style="text-align:center;padding:16px 0 8px">
+      <button onclick="window.scrollTo({top:0,behavior:'smooth'})" style="padding:8px 24px;border-radius:20px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.06);color:rgba(255,255,255,.5);font-size:12px;font-weight:600;cursor:pointer">↑ Наверх</button>
+    </div>
   </div>
   <div class="bottom-nav">
     <a onclick="showScreen('screen-homework')"><span class="icon">📚</span>Домашка</a>
@@ -3359,6 +3363,9 @@ textarea, select { font-size: max(16px, 1em) !important; }
       <div class="screen-title">Тренажёры</div>
       <div class="screen-subtitle">Каждый тренажёр — 10 заданий. Решай, собирай XP, открывай предметы и повторяй ошибки с Умником.</div>
       <div class="trainers-grid" id="trainers-grid"></div>
+      <div style="text-align:center;padding:16px 0 8px">
+        <button onclick="window.scrollTo({top:0,behavior:'smooth'})" style="padding:8px 24px;border-radius:20px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.06);color:rgba(255,255,255,.5);font-size:12px;font-weight:600;cursor:pointer">↑ Наверх</button>
+      </div>
     </div>
     <!-- Экран старта тренажёра -->
     <div id="tr-start-view" style="display:none">
@@ -3952,7 +3959,7 @@ button, .btn-find, .btn-check, .btn-ghost, .btn-secondary {
       <div class="screen-subtitle">Выбери тему и проверь свои знания вместе с Умником <img src="umnik_avatar2.png" style="width:18px;height:18px;object-fit:cover;border-radius:50%;vertical-align:middle"></div>
       <div id="sc-cards"></div>
       <div style="text-align:center;padding:16px 0 8px">
-        <button onclick="document.getElementById('screen-self-check').scrollTo({top:0,behavior:'smooth'})" style="padding:8px 24px;border-radius:20px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.06);color:rgba(255,255,255,.5);font-size:12px;font-weight:600;cursor:pointer">↑ Наверх</button>
+        <button onclick="window.scrollTo({top:0,behavior:'smooth'})" style="padding:8px 24px;border-radius:20px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.06);color:rgba(255,255,255,.5);font-size:12px;font-weight:600;cursor:pointer">↑ Наверх</button>
       </div>
     </div>
     <!-- Чат-сессия -->
