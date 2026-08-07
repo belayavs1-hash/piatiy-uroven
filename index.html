@@ -3264,7 +3264,10 @@ textarea, select { font-size: max(16px, 1em) !important; }
   </nav>
   <div class="screen-body">
     <div class="screen-title stripe-map">Карта тем</div>
-    <div class="screen-subtitle">Здесь можно повторить тему, потренироваться и закрыть пробелы</div>
+    <div class="screen-subtitle" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
+      <span>Здесь можно повторить тему, потренироваться и закрыть пробелы</span>
+      <button onclick="showScreen('screen-achievements')" style="padding:6px 14px;border-radius:10px;border:1px solid rgba(251,191,36,.35);background:rgba(245,158,11,.12);color:#fbbf24;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0">🏆 Достижения</button>
+    </div>
     <div id="map-content"></div>
   </div>
   <div class="bottom-nav">
@@ -9184,31 +9187,36 @@ const SHELL_DESC = {
 };
 
 const ACHIEVEMENTS = [
-  // ── Первые шаги ──
-  {id:"first_step",      icon:"🚀", name:"Первый шаг",            desc:"Реши первое задание в приложении",                 goal:1,  xp:10,  progKey:"solvedTotal", cat:"start"},
-  {id:"solved_10",       icon:"💡", name:"10 заданий",            desc:"Реши 10 заданий в любых разделах",                 goal:10, xp:20,  progKey:"solvedTotal", cat:"start"},
-  {id:"solved_50",       icon:"🔥", name:"50 заданий",            desc:"Реши 50 заданий — ты уже в ритме!",               goal:50, xp:40,  progKey:"solvedTotal", cat:"start"},
-  {id:"solved_100",      icon:"💯", name:"100 заданий",           desc:"Сотня решённых заданий — это сила!",               goal:100,xp:80,  progKey:"solvedTotal", cat:"start"},
-  // ── Ранги ──
-  {id:"rank_uchenk",     icon:"📚", name:"Ученик",                desc:"Набери 300 XP",                                    goal:300, xp:0,  progKey:"xpTotal",    cat:"rank"},
-  {id:"rank_znatok",     icon:"💡", name:"Знаток",                desc:"Набери 600 XP",                                    goal:600, xp:0,  progKey:"xpTotal",    cat:"rank"},
-  {id:"rank_master",     icon:"🏆", name:"Мастер",                desc:"Набери 1500 XP",                                   goal:1500,xp:0,  progKey:"xpTotal",    cat:"rank"},
-  {id:"rank_expert",     icon:"🎓", name:"Эксперт",               desc:"Набери 3000 XP — высший ранг!",                    goal:3000,xp:0,  progKey:"xpTotal",    cat:"rank"},
-  // ── Темы ──
-  {id:"topics_5",        icon:"📖", name:"5 тем изучено",         desc:"Освой 5 разных тем учебника",                      goal:5,  xp:30,  progKey:"topicsDone",  cat:"topics"},
-  {id:"topics_10",       icon:"📗", name:"10 тем изучено",        desc:"Освой 10 тем — это Уровень 2!",                    goal:10, xp:50,  progKey:"topicsDone",  cat:"topics"},
-  {id:"topics_25",       icon:"📘", name:"Полпути!",              desc:"25 тем из 51 — половина учебника!",                goal:25, xp:80,  progKey:"topicsDone",  cat:"topics"},
-  {id:"topics_51",       icon:"🎓", name:"Весь учебник!",         desc:"Освой все 51 тему — пятый класс пройден!",         goal:51, xp:200, progKey:"topicsDone",  cat:"topics"},
-  // ── Серии ──
-  {id:"streak3",         icon:"🔥", name:"3 дня подряд",          desc:"Занимайся 3 дня без пропуска",                    goal:3,  xp:30,  progKey:"streakDays",  cat:"streak"},
-  {id:"streak7",         icon:"🌋", name:"Неделя!",               desc:"7 дней подряд — настоящий ритм",                  goal:7,  xp:60,  progKey:"streakDays",  cat:"streak"},
-  {id:"streak14",        icon:"💥", name:"Две недели!",           desc:"14 дней подряд — ты на Пятом уровне!",            goal:14, xp:120, progKey:"streakDays",  cat:"streak"},
-  // ── Проверочные ──
-  {id:"first_check",     icon:"✅", name:"Первый зачёт",          desc:"Пройди первую проверочную работу",                 goal:1,  xp:25,  progKey:"selfChecks",  cat:"check"},
-  {id:"clean_sheet",     icon:"🌟", name:"Чистая работа",         desc:"Пройди проверочную без единой ошибки",            goal:1,  xp:40,  progKey:"cleanChecks", cat:"check"},
-  // ── Умник ──
-  {id:"umnik_fan",       icon:"🤖", name:"Друг Умника",           desc:"Поговори с Умником 5 раз",                        goal:5,  xp:20,  progKey:"umnikChats",  cat:"umnik"},
-  {id:"fraction_master", icon:"🎯", name:"Дробный мастер",        desc:"Реши 5 заданий про дроби",                        goal:5,  xp:30,  progKey:"fracSolved",  cat:"umnik"},
+  // ── Первые шаги (common — зелёный) ──
+  {id:"first_step",      icon:"🚀", name:"Первый шаг",            desc:"Реши первое задание в приложении",                 goal:1,  xp:10,  progKey:"solvedTotal", cat:"start",  rarity:"common"},
+  {id:"solved_10",       icon:"💡", name:"10 заданий",            desc:"Реши 10 заданий в любых разделах",                 goal:10, xp:20,  progKey:"solvedTotal", cat:"start",  rarity:"common"},
+  {id:"solved_50",       icon:"🔥", name:"50 заданий",            desc:"Реши 50 заданий — ты уже в ритме!",               goal:50, xp:40,  progKey:"solvedTotal", cat:"start",  rarity:"rare"},
+  {id:"solved_100",      icon:"💯", name:"100 заданий",           desc:"Сотня решённых заданий — это сила!",               goal:100,xp:80,  progKey:"solvedTotal", cat:"start",  rarity:"epic"},
+  // ── Ранги (silver/gold/epic/legendary) ──
+  {id:"rank_uchenk",     icon:"📚", name:"Ученик",                desc:"Набери 300 XP",                                    goal:300, xp:0,  progKey:"xpTotal",    cat:"rank",   rarity:"silver"},
+  {id:"rank_znatok",     icon:"💡", name:"Знаток",                desc:"Набери 600 XP",                                    goal:600, xp:0,  progKey:"xpTotal",    cat:"rank",   rarity:"silver"},
+  {id:"rank_master",     icon:"🏆", name:"Мастер",                desc:"Набери 1500 XP",                                   goal:1500,xp:0,  progKey:"xpTotal",    cat:"rank",   rarity:"gold"},
+  {id:"rank_expert",     icon:"🎓", name:"Эксперт",               desc:"Набери 3000 XP — высший ранг!",                    goal:3000,xp:0,  progKey:"xpTotal",    cat:"rank",   rarity:"legendary"},
+  // ── Темы (common/rare/epic) ──
+  {id:"topics_5",        icon:"📖", name:"5 тем изучено",         desc:"Освой 5 разных тем учебника",                      goal:5,  xp:30,  progKey:"topicsDone",  cat:"topics", rarity:"common"},
+  {id:"topics_10",       icon:"📗", name:"10 тем изучено",        desc:"Освой 10 тем — это Уровень 2!",                    goal:10, xp:50,  progKey:"topicsDone",  cat:"topics", rarity:"rare"},
+  {id:"topics_25",       icon:"📘", name:"Полпути!",              desc:"25 тем из 51 — половина учебника!",                goal:25, xp:80,  progKey:"topicsDone",  cat:"topics", rarity:"epic"},
+  {id:"topics_51",       icon:"🎓", name:"Весь учебник!",         desc:"Освой все 51 тему — пятый класс пройден!",         goal:51, xp:200, progKey:"topicsDone",  cat:"topics", rarity:"legendary"},
+  // ── Серии (rare/epic/legendary) ──
+  {id:"streak3",         icon:"🔥", name:"3 дня подряд",          desc:"Занимайся 3 дня без пропуска",                    goal:3,  xp:30,  progKey:"streakDays",  cat:"streak", rarity:"rare"},
+  {id:"streak7",         icon:"🌋", name:"Неделя без пропуска",   desc:"7 дней подряд — настоящий ритм",                  goal:7,  xp:60,  progKey:"streakDays",  cat:"streak", rarity:"epic"},
+  {id:"streak14",        icon:"💥", name:"Две недели подряд",     desc:"14 дней подряд — ты на Пятом уровне!",            goal:14, xp:120, progKey:"streakDays",  cat:"streak", rarity:"legendary"},
+  // ── Проверочные (common/rare) ──
+  {id:"first_check",     icon:"✅", name:"Первый зачёт",          desc:"Пройди первую проверочную работу",                 goal:1,  xp:25,  progKey:"selfChecks",  cat:"check",  rarity:"common"},
+  {id:"clean_sheet",     icon:"🌟", name:"Чистая работа",         desc:"Пройди проверочную без единой ошибки",            goal:1,  xp:40,  progKey:"cleanChecks", cat:"check",  rarity:"rare"},
+  {id:"five_checks",     icon:"📋", name:"Пятёрочник",            desc:"Пройди 5 проверочных работ",                      goal:5,  xp:60,  progKey:"selfChecks",  cat:"check",  rarity:"rare"},
+  // ── Умник (common/rare) ──
+  {id:"umnik_fan",       icon:"🤖", name:"Друг Умника",           desc:"Поговори с Умником 5 раз",                        goal:5,  xp:20,  progKey:"umnikChats",  cat:"umnik",  rarity:"common"},
+  {id:"fraction_master", icon:"🎯", name:"Дробный мастер",        desc:"Реши 10 заданий про дроби",                       goal:10, xp:40,  progKey:"fracSolved",  cat:"umnik",  rarity:"rare"},
+  // ── Исследователь (rare/epic) — СЕКРЕТНЫЕ ──
+  {id:"night_owl",       icon:"🦉", name:"Ночная сова",           desc:"???",                                              goal:1,  xp:35,  progKey:"nightSession", cat:"secret", rarity:"rare",  secret:true},
+  {id:"fast_fingers",    icon:"⚡", name:"Молния",                desc:"???",                                              goal:1,  xp:50,  progKey:"fastSolve",   cat:"secret", rarity:"epic",  secret:true},
+  {id:"all_sections",    icon:"🗺", name:"Исследователь",         desc:"???",                                              goal:4,  xp:70,  progKey:"sectionsVisited", cat:"secret", rarity:"epic", secret:true},
 ];
 
 // ===== STATE =====
@@ -15492,31 +15500,59 @@ function renderAchievements() {
     + '</div>'
     + '</div>';
 
+  // Цветовая схема по редкости
+  var RARITY_STYLE = {
+    common:    { bg:'rgba(16,185,129,.15)',  border:'rgba(52,211,153,.45)',  glow:'rgba(52,211,153,.3)',  label:'Обычное',    labelColor:'#34d399', barColor:'#10b981' },
+    rare:      { bg:'rgba(59,130,246,.15)',  border:'rgba(96,165,250,.45)',  glow:'rgba(96,165,250,.3)',  label:'Редкое',     labelColor:'#60a5fa', barColor:'#3b82f6' },
+    silver:    { bg:'rgba(148,163,184,.12)', border:'rgba(203,213,225,.35)', glow:'rgba(203,213,225,.25)',label:'Серебро',    labelColor:'#cbd5e1', barColor:'#94a3b8' },
+    epic:      { bg:'rgba(139,92,246,.18)',  border:'rgba(167,139,250,.5)',  glow:'rgba(139,92,246,.4)',  label:'Эпическое',  labelColor:'#a78bfa', barColor:'#7c3aed' },
+    gold:      { bg:'rgba(245,158,11,.15)',  border:'rgba(251,191,36,.5)',   glow:'rgba(251,191,36,.35)', label:'Золотое',    labelColor:'#fbbf24', barColor:'#f59e0b' },
+    legendary: { bg:'rgba(239,68,68,.15)',   border:'rgba(252,165,165,.5)',  glow:'rgba(239,68,68,.4)',   label:'Легендарное',labelColor:'#fca5a5', barColor:'linear-gradient(90deg,#f59e0b,#ef4444)' }
+  };
+
   function achCard(a, isOpen) {
     var prog = achGetProgress(a);
+    var rs = RARITY_STYLE[a.rarity || 'common'];
+    var isSecret = a.secret && !isOpen;
+
     var progHtml = '';
-    if (!isOpen && prog !== null) {
+    if (!isOpen && !isSecret && prog !== null) {
       var pp = Math.round(prog / a.goal * 100);
       progHtml = '<div style="margin-top:8px">'
-        + '<div style="font-size:11px;color:rgba(255,255,255,.5);margin-bottom:4px">' + prog + ' из ' + a.goal + '</div>'
-        + '<div style="height:4px;background:rgba(255,255,255,.1);border-radius:2px"><div style="height:100%;width:' + pp + '%;background:#4f46e5;border-radius:2px;transition:width .3s"></div></div>'
+        + '<div style="font-size:10px;color:rgba(255,255,255,.4);margin-bottom:3px">' + prog + ' / ' + a.goal + '</div>'
+        + '<div style="height:3px;background:rgba(255,255,255,.1);border-radius:2px"><div style="height:100%;width:' + pp + '%;background:' + rs.barColor + ';border-radius:2px;transition:width .3s"></div></div>'
         + '</div>';
     }
-    var rewardHtml = '<div style="font-size:11px;color:' + (isOpen ? '#fbbf24' : 'rgba(255,255,255,.35)') + ';margin-top:6px;font-weight:700">+' + (a.xp||15) + ' XP</div>';
+
+    var rarityBadge = '<div style="font-size:9px;font-weight:900;color:' + rs.labelColor + ';letter-spacing:.05em;text-transform:uppercase;opacity:.85;margin-bottom:5px">' + rs.label + '</div>';
+
+    if (isSecret) {
+      return '<div style="background:rgba(255,255,255,.04);border:1.5px dashed rgba(255,255,255,.18);border-radius:16px;padding:16px;text-align:center">'
+        + '<div style="font-size:32px;margin-bottom:6px;filter:blur(2px);opacity:.5">🔒</div>'
+        + '<div style="font-size:14px;font-weight:900;color:rgba(255,255,255,.4);margin-bottom:4px">❓ Секретное</div>'
+        + '<div style="font-size:11px;color:rgba(255,255,255,.25);line-height:1.4">Продолжай учиться — оно само откроется!</div>'
+        + '</div>';
+    }
+
     if (isOpen) {
-      return '<div style="background:rgba(79,70,229,.25);border:2.5px solid #818cf8;border-radius:16px;padding:16px;text-align:center;box-shadow:0 0 16px rgba(99,102,241,.45),inset 0 0 12px rgba(99,102,241,.1)">'
-        + '<div style="font-size:32px;margin-bottom:6px">' + a.icon + '</div>'
-        + '<div style="font-size:14px;font-weight:900;color:#fff;margin-bottom:3px">' + a.name + '</div>'
-        + '<div style="font-size:12px;color:rgba(255,255,255,.7);line-height:1.4">' + a.desc + '</div>'
-        + rewardHtml
-        + '<div style="font-size:11px;color:#10b981;margin-top:5px;font-weight:700">✓ Открыто</div>'
+      var glowStyle = a.rarity === 'legendary'
+        ? 'box-shadow:0 0 24px rgba(239,68,68,.45),0 0 8px rgba(251,191,36,.3),inset 0 0 14px rgba(239,68,68,.1)'
+        : 'box-shadow:0 0 18px ' + rs.glow + ',inset 0 0 10px ' + rs.glow.replace('.3','.08').replace('.4','.08').replace('.35','.08');
+      return '<div style="background:' + rs.bg + ';border:2px solid ' + rs.border + ';border-radius:16px;padding:16px;text-align:center;' + glowStyle + '">'
+        + rarityBadge
+        + '<div style="font-size:30px;margin-bottom:6px">' + a.icon + '</div>'
+        + '<div style="font-size:13px;font-weight:900;color:#fff;margin-bottom:3px;line-height:1.3">' + a.name + '</div>'
+        + '<div style="font-size:11px;color:rgba(255,255,255,.65);line-height:1.4">' + a.desc + '</div>'
+        + (a.xp > 0 ? '<div style="font-size:11px;color:#fbbf24;margin-top:5px;font-weight:700">+' + a.xp + ' XP</div>' : '')
+        + '<div style="font-size:10px;color:#4ade80;margin-top:4px;font-weight:700">✓ Открыто</div>'
         + '</div>';
     } else {
-      return '<div style="background:rgba(255,255,255,.04);border:1.5px dashed rgba(255,255,255,.22);border-radius:16px;padding:16px;text-align:center">'
-        + '<div style="font-size:32px;margin-bottom:6px;opacity:.4">' + a.icon + '</div>'
-        + '<div style="font-size:14px;font-weight:900;color:rgba(255,255,255,.85);margin-bottom:3px">' + a.name + '</div>'
-        + '<div style="font-size:12px;color:rgba(255,255,255,.6);line-height:1.4">' + a.desc + '</div>'
-        + rewardHtml
+      return '<div style="background:rgba(255,255,255,.04);border:1px dashed rgba(255,255,255,.16);border-radius:16px;padding:16px;text-align:center">'
+        + rarityBadge
+        + '<div style="font-size:30px;margin-bottom:6px;opacity:.35">' + a.icon + '</div>'
+        + '<div style="font-size:13px;font-weight:900;color:rgba(255,255,255,.7);margin-bottom:3px;line-height:1.3">' + a.name + '</div>'
+        + '<div style="font-size:11px;color:rgba(255,255,255,.45);line-height:1.4">' + a.desc + '</div>'
+        + (a.xp > 0 ? '<div style="font-size:11px;color:rgba(255,255,255,.25);margin-top:5px;font-weight:700">+' + a.xp + ' XP</div>' : '')
         + progHtml
         + '</div>';
     }
@@ -15543,6 +15579,12 @@ function renderAchievements() {
       + '<div style="font-size:13px;margin-top:8px">Решай задания и тренажёры — достижения откроются сами!</div>'
       + '</div>';
   }
+
+  // Кнопки связи разделов
+  html += '<div style="display:flex;gap:8px;margin-top:20px">'
+    + '<button onclick="showScreen(\'screen-self-check\')" style="flex:1;padding:11px;border-radius:13px;border:1px solid rgba(52,211,153,.3);background:rgba(16,185,129,.1);color:#34d399;font-size:12px;font-weight:700;cursor:pointer">✅ Проверочные</button>'
+    + '<button onclick="showScreen(\'screen-map\')" style="flex:1;padding:11px;border-radius:13px;border:1px solid rgba(99,102,241,.3);background:rgba(99,102,241,.1);color:#a5b4fc;font-size:12px;font-weight:700;cursor:pointer">🗺 Карта тем</button>'
+    + '</div>';
 
   document.getElementById('ach-content').innerHTML = html;
 }
