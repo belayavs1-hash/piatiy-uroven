@@ -10128,7 +10128,7 @@ function loginByRole() {
     }
   } catch(e) {
     console.error('loginByRole error:', e);
-    alert('Ошибка входа: ' + e.message);
+    alert('Ошибка входа: ' + e.message + '\n\n' + (e.stack || ''));
   }
 }
 
