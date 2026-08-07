@@ -9225,7 +9225,7 @@ const ACHIEVEMENTS = [
   {id:"umnik_fan",       icon:"🤖", name:"Друг Умника",           desc:"Поговори с Умником 5 раз",                        goal:5,  xp:20,  progKey:"umnikChats",  cat:"umnik",  rarity:"common"},
   {id:"fraction_master", icon:"🎯", name:"Дробный мастер",        desc:"Реши 10 заданий про дроби",                       goal:10, xp:40,  progKey:"fracSolved",  cat:"umnik",  rarity:"rare"},
   // ── Исследователь (rare/epic) — СЕКРЕТНЫЕ ──
-  {id:"night_owl",       icon:"🦉", name:"Ночная сова",           desc:"???",                                              goal:1,  xp:35,  progKey:"nightSession", cat:"secret", rarity:"rare",  secret:true},
+  {id:"speed_round",     icon:"⏱", name:"Скоростной раунд",      desc:"???",                                              goal:5,  xp:35,  progKey:"speedSolve",  cat:"secret", rarity:"rare",  secret:true},
   {id:"fast_fingers",    icon:"⚡", name:"Молния",                desc:"???",                                              goal:1,  xp:50,  progKey:"fastSolve",   cat:"secret", rarity:"epic",  secret:true},
   {id:"all_sections",    icon:"🗺", name:"Исследователь",         desc:"???",                                              goal:4,  xp:70,  progKey:"sectionsVisited", cat:"secret", rarity:"epic", secret:true},
 ];
@@ -15546,7 +15546,7 @@ function renderAchievements() {
 
     if (isSecret) {
       var secretHints = {
-        night_owl:    { hint: '🌙 Занимайся после 21:00', when: 'Открывается ночью' },
+        speed_round:  { hint: '⏱ Реши 5 заданий подряд быстро', when: 'Скоростной раунд' },
         fast_fingers: { hint: '⚡ Реши задание очень быстро', when: 'Скорость решения' },
         all_sections: { hint: '🗺 Загляни в каждый раздел', when: 'Посети все разделы' }
       };
