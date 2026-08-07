@@ -151,6 +151,13 @@ body {
   padding: 20px;
 }
 
+/* Декорации экрана входа — скрыты на всех остальных экранах */
+body:not(.on-login) .login-stars,
+body:not(.on-login) .login-clouds,
+body:not(.on-login) .login-planets,
+body:not(.on-login) .login-sky-math,
+body:not(.on-login) .login-blocks { display: none !important; }
+
 /* Звёзды — редкое ночное небо */
 .login-stars {
   position: fixed; inset: 0; pointer-events: none; z-index: 0;
@@ -2715,7 +2722,7 @@ textarea, select { font-size: max(16px, 1em) !important; }
         <!-- Слайд 0: Приветствие -->
         <div class="ob-slide">
           <div class="ob-umnik">
-            <img src="umnik_prygaet.png" alt="Умник" onerror="this.outerHTML='<div style='font-size:80px'>🤖</div>'">
+            <img src="umnik_prygaet.png" alt="Умник" onerror="this.outerHTML='<div style=\'font-size:80px\'>🤖</div>'">
           </div>
           <h1 class="ob-title">Привет, <span id="ob-name-hi">друг</span>!</h1>
           <p class="ob-text">Я Умник — твой личный помощник по математике 5 класса.<br>
