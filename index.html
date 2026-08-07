@@ -15332,6 +15332,35 @@ function ftAnswer(userAns) {
   if(FT_STATE.answered) return;
   var q = FINAL_QUESTIONS[FT_STATE.idx];
   var correct = (userAns === q.a);
+
+  // Подсветить кнопки: правильный — зелёный, выбранный неверный — красный
+  if(q.type === 'choice') {
+    q.opts.forEach(function(_, i) {
+      var btn = document.querySelectorAll('#ft-options button')[i];
+      if(!btn) return;
+      btn.disabled = true;
+      if(i === q.a) {
+        btn.style.background = 'rgba(34,197,94,0.25)';
+        btn.style.borderColor = '#4ade80';
+        btn.style.color = '#4ade80';
+      } else if(i === userAns) {
+        btn.style.background = 'rgba(239,68,68,0.25)';
+        btn.style.borderColor = '#f87171';
+        btn.style.color = '#f87171';
+      } else {
+        btn.style.opacity = '0.4';
+      }
+    });
+  } else if(q.type === 'truefalse') {
+    var btns = document.querySelectorAll('#ft-options button');
+    btns.forEach(function(btn) { btn.disabled = true; });
+    // btns[0] = Правда (true), btns[1] = Ложь (false)
+    var correctBtn = q.a === true ? btns[0] : btns[1];
+    var wrongBtn   = userAns === true ? btns[0] : btns[1];
+    if(correctBtn) { correctBtn.style.background='rgba(34,197,94,0.3)'; correctBtn.style.borderColor='#4ade80'; }
+    if(!correct && wrongBtn) { wrongBtn.style.background='rgba(239,68,68,0.3)'; wrongBtn.style.borderColor='#f87171'; }
+  }
+
   ftShowFeedback(correct, q.hint);
 }
 
