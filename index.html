@@ -9691,7 +9691,17 @@ var ST = {
 
 const LS_KEY = 'piatiy_uroven_v2';
 function lsLoad() {
-  try { const d = localStorage.getItem(LS_KEY); if(d) ST = Object.assign(ST, JSON.parse(d)); } catch(e){}
+  try {
+    const d = localStorage.getItem(LS_KEY);
+    if (d) {
+      const parsed = JSON.parse(d);
+      if (parsed && typeof parsed === 'object') {
+        if (!ST || typeof ST !== 'object') ST = freshST();
+        ST = Object.assign(ST, parsed);
+      }
+    }
+  } catch(e) { console.warn('lsLoad error:', e); }
+  if (!ST || typeof ST !== 'object') ST = freshST();
 }
 function lsSave() {
   try { localStorage.setItem(LS_KEY, JSON.stringify(ST)); } catch(e){}
