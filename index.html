@@ -151,16 +151,9 @@ body {
   padding: 20px;
 }
 
-/* Декорации экрана входа — скрыты на всех остальных экранах */
-body:not(.on-login) .login-stars,
-body:not(.on-login) .login-clouds,
-body:not(.on-login) .login-planets,
-body:not(.on-login) .login-sky-math,
-body:not(.on-login) .login-blocks { display: none !important; }
-
 /* Звёзды — редкое ночное небо */
 .login-stars {
-  position: absolute; inset: 0; pointer-events: none; z-index: 0;
+  position: fixed; inset: 0; pointer-events: none; z-index: 0;
   background-image:
     radial-gradient(circle, rgba(255,255,255,.95) 0 1px, transparent 1.5px),
     radial-gradient(circle, rgba(255,255,255,.6) 0 1px, transparent 1.5px),
@@ -171,7 +164,7 @@ body:not(.on-login) .login-blocks { display: none !important; }
 }
 
 /* Облака с формулами */
-.login-clouds { position:absolute; inset:0; pointer-events:none; overflow:hidden; z-index:1; }
+.login-clouds { position:fixed; inset:0; pointer-events:none; overflow:hidden; z-index:1; }
 .login-cloud {
   position:absolute;
   display:flex; align-items:center; justify-content:center;
@@ -194,7 +187,7 @@ body:not(.on-login) .login-blocks { display: none !important; }
 @keyframes cloudDrift{from{transform:translateX(0)}to{transform:translateX(calc(100vw + 250px))}}
 
 /* Планеты */
-.login-planets { position:absolute; inset:0; pointer-events:none; z-index:1; }
+.login-planets { position:fixed; inset:0; pointer-events:none; z-index:1; }
 .planet { position:absolute; border-radius:50%; animation:planetFloat ease-in-out infinite; }
 .planet-1 {
   width:72px; height:72px;
@@ -224,7 +217,7 @@ body:not(.on-login) .login-blocks { display: none !important; }
 @keyframes planetFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
 
 /* Символы на небе */
-.login-sky-math { position:absolute; inset:0; pointer-events:none; z-index:1; }
+.login-sky-math { position:fixed; inset:0; pointer-events:none; z-index:1; }
 .sky-sym { position:absolute; font-weight:900; animation:symFloat ease-in-out infinite; user-select:none; }
 .sky-sym-1{font-size:60px;color:rgba(120,180,255,.65);top:3%;left:22%;animation-duration:5s}
 .sky-sym-2{font-size:52px;color:rgba(250,204,21,.65);top:6%;right:20%;animation-duration:6.5s;animation-delay:1s}
@@ -237,7 +230,7 @@ body:not(.on-login) .login-blocks { display: none !important; }
 @keyframes symFloat{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-16px) rotate(4deg)}}
 
 /* Кубики с формулами */
-.login-blocks { position:absolute; inset:0; pointer-events:none; z-index:2; }
+.login-blocks { position:fixed; inset:0; pointer-events:none; z-index:2; }
 .mc-block {
   position:absolute; border-radius:16px;
   font-size:26px; font-weight:900; color:#fff;
@@ -255,13 +248,13 @@ body:not(.on-login) .login-blocks { display: none !important; }
 .mc-block:nth-child(6){width:62px;height:62px;background:linear-gradient(145deg,#f97316,#c2410c);top:68%;right:1%;animation-duration:3.5s;animation-delay:2s}
 @keyframes mcFloat{0%,100%{transform:translateY(0) rotate(-5deg) scale(1)}50%{transform:translateY(-22px) rotate(5deg) scale(1.08)}}
 
-/* 2. fon3.png — карточка поверх синего фона */
+/* 2. fon2.png — карточка поверх синего фона */
 .login-fon2 {
   position: relative;
   z-index: 10;
   width: 100%;
   max-width: 540px;
-  background: none;
+  background: url('fon3.png') top center / 100% auto no-repeat;
   border-radius: 32px;
   overflow: visible;
   box-shadow: 0 24px 80px rgba(0,0,15,.6);
@@ -269,24 +262,8 @@ body:not(.on-login) .login-blocks { display: none !important; }
 }
 @keyframes cardReveal{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
 
-/* Шапка — img тег вместо background-image (без артефактов масштабирования) */
-.login-fon2-header {
-  display: block;
-  width: 100%;
-  border-radius: 32px 32px 0 0;
-  overflow: hidden;
-  line-height: 0;
-}
-.login-fon2-header img {
-  width: 100%;
-  height: auto;
-  display: block;
-  image-rendering: -webkit-optimize-contrast;
-  image-rendering: crisp-edges;
-}
-
-/* Отступ под синюю шапку fon3 — теперь не нужен, но оставим для совместимости */
-.login-fon2-spacer { display: none; }
+/* Отступ под синюю шапку fon3 */
+.login-fon2-spacer { height: 200px; }
 
 /* 3. Белое поле fon2 — контент поверх */
 .login-fon2-body {
@@ -354,7 +331,7 @@ body:not(.on-login) .login-blocks { display: none !important; }
   .role-info-block { padding:6px 6px 10px; }
   .role-label-name { font-size:13px; }
   .role-hint { font-size:11px; }
-  .login-fon2-spacer { display:none; }
+  .login-fon2-spacer { min-height:110px; }
 }
 
 /* ===== HOME ===== */
@@ -2626,12 +2603,7 @@ textarea, select { font-size: max(16px, 1em) !important; }
   <!-- fon2 — карточка поверх синего фона -->
   <div class="login-fon2">
 
-    <!-- Шапка с Умником через img (без артефактов масштабирования) -->
-    <div class="login-fon2-header">
-      <img src="fon3.png" alt="Пятый уровень">
-    </div>
-
-    <!-- Пустой спейсер — скрыт, оставлен для совместимости -->
+    <!-- Пустой спейсер под синюю шапку fon2 -->
     <div class="login-fon2-spacer"></div>
 
     <!-- Контент на белом поле fon2 -->
@@ -2743,7 +2715,7 @@ textarea, select { font-size: max(16px, 1em) !important; }
         <!-- Слайд 0: Приветствие -->
         <div class="ob-slide">
           <div class="ob-umnik">
-            <img src="umnik_prygaet.png" alt="Умник" onerror="this.outerHTML='<div style=\'font-size:80px\'>🤖</div>'">
+            <img src="umnik_prygaet.png" alt="Умник" onerror="this.outerHTML='<div style='font-size:80px'>🤖</div>'">
           </div>
           <h1 class="ob-title">Привет, <span id="ob-name-hi">друг</span>!</h1>
           <p class="ob-text">Я Умник — твой личный помощник по математике 5 класса.<br>
