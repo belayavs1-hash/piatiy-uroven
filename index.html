@@ -3951,6 +3951,9 @@ button, .btn-find, .btn-check, .btn-ghost, .btn-secondary {
       <div class="screen-title stripe-check">Проверочные</div>
       <div class="screen-subtitle">Выбери тему и проверь свои знания вместе с Умником <img src="umnik_avatar2.png" style="width:18px;height:18px;object-fit:cover;border-radius:50%;vertical-align:middle"></div>
       <div id="sc-cards"></div>
+      <div style="text-align:center;padding:16px 0 8px">
+        <button onclick="document.getElementById('screen-self-check').scrollTo({top:0,behavior:'smooth'})" style="padding:8px 24px;border-radius:20px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.06);color:rgba(255,255,255,.5);font-size:12px;font-weight:600;cursor:pointer">↑ Наверх</button>
+      </div>
     </div>
     <!-- Чат-сессия -->
     <div id="sc-session-view" style="display:none;padding-bottom:130px">
@@ -9812,6 +9815,13 @@ function doLogin() {
       // Другой ученик — сбросить прогресс, онбординг для него новый
       ST = freshST();
       ST.onboardingDone = false;
+      // Очистить sc_done_* и sc_score_* из localStorage
+      var keysToRemove = [];
+      for (var i = 0; i < localStorage.length; i++) {
+        var k = localStorage.key(i);
+        if (k && (k.startsWith('sc_done_') || k.startsWith('sc_score_'))) keysToRemove.push(k);
+      }
+      keysToRemove.forEach(function(k) { localStorage.removeItem(k); });
     }
     // Если то же имя или первый вход — ничего не трогаем, onboardingDone остаётся как есть
     ST.studentName = name;
@@ -21159,8 +21169,13 @@ function renderSelfCheckList() {
   });
 
   // Найти первый незавершённый параграф для авто-раскрытия
-  var openIdx = (typeof window._scOpenIdx === 'number') ? window._scOpenIdx : -1;
-  if (openIdx < 0) {
+  var openIdx;
+  if (window._scOpenIdx === -2) {
+    // Пользователь свернул все
+    openIdx = -2;
+  } else if (typeof window._scOpenIdx === 'number' && window._scOpenIdx >= 0) {
+    openIdx = window._scOpenIdx;
+  } else {
     openIdx = 0;
     for (var i = 0; i < paraOrder.length; i++) {
       if (!paraStats[paraOrder[i]].allDone) { openIdx = i; break; }
@@ -21307,7 +21322,7 @@ function renderSelfCheckList() {
 }
 
 function scJourneyOpen(idx) {
-  window._scOpenIdx = idx;
+  window._scOpenIdx = (window._scOpenIdx === idx) ? -2 : idx;
   renderSelfCheckList();
 }
 
