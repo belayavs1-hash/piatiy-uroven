@@ -21097,97 +21097,181 @@ function renderSelfCheckList() {
     if (!byPara[p]) { byPara[p] = []; paraOrder.push(p); }
     byPara[p].push(ch);
   });
-  // Определяем первый параграф с активностью (в процессе или не начат)
-  var firstActiveIdx = 0;
-  paraOrder.forEach(function(para, pi) {
-    var hasInProgress = byPara[para].some(function(ch) {
-      var done = parseInt(localStorage.getItem('sc_done_' + ch.id)) || 0;
-      var total = ch.tasks ? ch.tasks.length : 0;
-      return done > 0 && done < total;
-    });
-    if (hasInProgress && pi < firstActiveIdx) firstActiveIdx = pi;
-  });
-  var html = '';
-  paraOrder.forEach(function(para, pi) {
-    var paraId = 'sc-para-' + pi;
-    var bodyId = 'sc-para-body-' + pi;
-    var isOpen = pi === firstActiveIdx || pi === 0;
-    // Считаем прогресс параграфа для шапки
-    var paraTotal = 0, paraDone = 0;
-    byPara[para].forEach(function(ch) {
-      var total = ch.tasks ? ch.tasks.length : 0;
-      var done = parseInt(localStorage.getItem('sc_done_' + ch.id)) || 0;
-      paraTotal += total; paraDone += Math.min(done, total);
-    });
-    var paraFinished = byPara[para].filter(function(ch) {
-      var total = ch.tasks ? ch.tasks.length : 0;
-      return total > 0 && (parseInt(localStorage.getItem('sc_done_' + ch.id)) || 0) >= total;
-    }).length;
-    var paraCount = byPara[para].filter(function(ch) { return ch.tasks && ch.tasks.length > 0; }).length;
-    var badgeHtml = paraFinished > 0
-      ? '<span style="font-size:11px;color:#34d399;font-weight:700;margin-left:8px">' + paraFinished + '/' + paraCount + ' ✓</span>'
-      : '<span style="font-size:11px;color:rgba(255,255,255,.35);margin-left:8px">' + paraCount + ' работ</span>';
-    html += '<div id="' + paraId + '" style="margin-bottom:8px">';
-    // Заголовок-аккордеон
-    html += '<div onclick="var b=document.getElementById(\'' + bodyId + '\');var open=b.style.display!==\'none\';b.style.display=open?\'none\':\'block\';this.querySelector(\'.sc-para-arrow\').style.transform=open?\'rotate(-90deg)\':\'\'"'
-      + ' style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:rgba(99,102,241,.12);border:1.5px solid rgba(99,102,241,.28);border-radius:14px;cursor:pointer;user-select:none">'
-      + '<div style="display:flex;align-items:center;gap:8px">'
-      + '<span style="font-size:11px;font-weight:900;color:#6366f1;background:rgba(99,102,241,.18);border-radius:6px;padding:2px 7px;flex-shrink:0">' + (para.match(/^(§\d+)/) ? para.match(/^(§\d+)/)[1] : '') + '</span>'
-      + '<span style="font-size:13px;font-weight:900;color:#a5b4fc">' + para.replace(/^§\d+\s*/, '') + '</span>'
-      + badgeHtml
-      + '</div>'
-      + '<span class="sc-para-arrow" style="font-size:12px;color:rgba(255,255,255,.4);transition:transform .2s' + (isOpen ? '' : ';transform:rotate(-90deg)') + '">▾</span>'
-      + '</div>';
-    html += '<div id="' + bodyId + '" style="display:' + (isOpen ? 'block' : 'none') + ';padding:6px 0 2px">';
 
-    byPara[para].forEach(function(ch) {
+  // Считаем статус каждого параграфа
+  var paraStats = {};
+  paraOrder.forEach(function(para) {
+    var checks = byPara[para].filter(function(ch) { return ch.tasks && ch.tasks.length > 0; });
+    var finished = 0, inProgress = 0, totalQ = 0, doneQ = 0;
+    checks.forEach(function(ch) {
+      var total = ch.tasks.length;
+      var done = parseInt(localStorage.getItem('sc_done_' + ch.id)) || 0;
+      totalQ += total; doneQ += Math.min(done, total);
+      if (done >= total) finished++;
+      else if (done > 0) inProgress++;
+    });
+    var pct = totalQ > 0 ? Math.round(doneQ / totalQ * 100) : 0;
+    var allDone = checks.length > 0 && finished === checks.length;
+    var anyProgress = inProgress > 0 || finished > 0;
+    paraStats[para] = { checks: checks, finished: finished, inProgress: inProgress, totalQ: totalQ, doneQ: doneQ, pct: pct, allDone: allDone, anyProgress: anyProgress };
+  });
+
+  // Найти первый незавершённый параграф для авто-раскрытия
+  var openIdx = (typeof window._scOpenIdx === 'number') ? window._scOpenIdx : -1;
+  if (openIdx < 0) {
+    openIdx = 0;
+    for (var i = 0; i < paraOrder.length; i++) {
+      if (!paraStats[paraOrder[i]].allDone) { openIdx = i; break; }
+    }
+  }
+
+  // Journey-полоса: ряд пузырей
+  var journeyHtml = '<div style="overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:4px;margin-bottom:20px">'
+    + '<div style="display:flex;align-items:center;gap:0;min-width:max-content;padding:4px 2px">';
+  paraOrder.forEach(function(para, pi) {
+    var s = paraStats[para];
+    var label = para.match(/^(§\d+)/) ? para.match(/^(§\d+)/)[1] : (para === 'Повторение и обобщение' ? 'П' : '?');
+    var bubbleColor, bubbleBorder, bubbleShadow, dotColor;
+    if (s.allDone) {
+      bubbleColor = 'linear-gradient(135deg,#059669,#10b981)';
+      bubbleBorder = '#10b981'; bubbleShadow = 'rgba(16,185,129,.4)'; dotColor = '#4ade80';
+    } else if (s.anyProgress) {
+      bubbleColor = 'linear-gradient(135deg,#d97706,#f59e0b)';
+      bubbleBorder = '#f59e0b'; bubbleShadow = 'rgba(245,158,11,.4)'; dotColor = '#fbbf24';
+    } else {
+      bubbleColor = 'rgba(255,255,255,.06)';
+      bubbleBorder = 'rgba(255,255,255,.15)'; bubbleShadow = 'none'; dotColor = 'rgba(255,255,255,.2)';
+    }
+    var isActive = pi === openIdx;
+    var activeBorder = isActive ? ';outline:2.5px solid rgba(255,255,255,.5);outline-offset:2px' : '';
+    journeyHtml += '<div onclick="scJourneyOpen(' + pi + ')" style="display:flex;flex-direction:column;align-items:center;cursor:pointer;padding:0 2px">'
+      + '<div style="width:44px;height:44px;border-radius:50%;background:' + bubbleColor + ';border:2px solid ' + bubbleBorder + ';display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:#fff;box-shadow:0 4px 14px ' + bubbleShadow + activeBorder + ';transition:transform .15s" '
+      + 'onmouseover="this.style.transform=\'scale(1.08)\'" onmouseout="this.style.transform=\'scale(1)\'">'
+      + label + '</div>'
+      + '<div style="font-size:9px;color:' + dotColor + ';font-weight:700;margin-top:3px;white-space:nowrap">' + (s.allDone ? '✓' : s.pct > 0 ? s.pct + '%' : '') + '</div>'
+      + '</div>';
+    if (pi < paraOrder.length - 1) {
+      var lineColor = s.allDone ? '#10b981' : 'rgba(255,255,255,.12)';
+      journeyHtml += '<div style="width:16px;height:2px;background:' + lineColor + ';margin-top:-10px;flex-shrink:0"></div>';
+    }
+  });
+  journeyHtml += '</div></div>';
+
+  // Карточки параграфов
+  var sectionsHtml = '';
+  paraOrder.forEach(function(para, pi) {
+    var s = paraStats[para];
+    var bodyId = 'sc-journey-body-' + pi;
+    var isOpen = pi === openIdx;
+
+    // Заголовок секции
+    var paraNum = para.match(/^(§\d+)/) ? para.match(/^(§\d+)/)[1] : '';
+    var paraName = paraNum ? para.replace(/^§\d+\s*/, '') : para;
+    var secColor = s.allDone ? '#10b981' : s.anyProgress ? '#f59e0b' : '#6366f1';
+    var secBg = s.allDone ? 'rgba(16,185,129,.08)' : s.anyProgress ? 'rgba(245,158,11,.07)' : 'rgba(99,102,241,.1)';
+    var secBorder = s.allDone ? 'rgba(52,211,153,.3)' : s.anyProgress ? 'rgba(245,158,11,.28)' : 'rgba(99,102,241,.28)';
+    var secIcon = s.allDone ? '✅' : s.anyProgress ? '⏳' : '📖';
+
+    // Точки прогресса (проверочные в этой секции)
+    var dotsHtml = '<div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:6px">';
+    s.checks.forEach(function(ch) {
+      var done = parseInt(localStorage.getItem('sc_done_' + ch.id)) || 0;
+      var total = ch.tasks.length;
+      var isF = done >= total;
+      var isIP = done > 0 && !isF;
+      var dotBg = isF ? '#4ade80' : isIP ? '#fbbf24' : 'rgba(255,255,255,.18)';
+      dotsHtml += '<div title="' + (ch.subtitle ? ch.subtitle.replace(/^Тема:\s*/i, '') : ch.title) + '" style="width:10px;height:10px;border-radius:50%;background:' + dotBg + ';flex-shrink:0"></div>';
+    });
+    dotsHtml += '</div>';
+
+    var pctLabel = s.pct > 0 ? '<span style="color:' + secColor + ';font-weight:700">' + s.pct + '%</span>' : '';
+    var pctSubLabel = s.totalQ > 0 ? 'Освоено: ' + pctLabel + ' (' + s.doneQ + '/' + s.totalQ + ' вопросов)' : '';
+
+    sectionsHtml += '<div style="margin-bottom:8px">';
+    sectionsHtml += '<div onclick="scJourneyOpen(' + pi + ')" style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:' + secBg + ';border:1.5px solid ' + secBorder + ';border-radius:14px;cursor:pointer;user-select:none;transition:all .15s" '
+      + 'onmouseover="this.style.background=\'' + (s.allDone ? 'rgba(16,185,129,.15)' : s.anyProgress ? 'rgba(245,158,11,.13)' : 'rgba(99,102,241,.18)') + '\'" '
+      + 'onmouseout="this.style.background=\'' + secBg + '\'">'
+      + '<div style="display:flex;align-items:center;gap:10px;flex:1;min-width:0">'
+      + '<div style="font-size:20px;flex-shrink:0">' + secIcon + '</div>'
+      + '<div style="min-width:0">'
+      + '<div style="display:flex;align-items:center;gap:8px">'
+      + (paraNum ? '<span style="font-size:11px;font-weight:900;color:' + secColor + ';background:rgba(255,255,255,.08);border-radius:6px;padding:2px 7px;flex-shrink:0">' + paraNum + '</span>' : '')
+      + '<span style="font-size:13px;font-weight:900;color:#e2e8f0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + (paraName || para) + '</span>'
+      + '</div>'
+      + (pctSubLabel ? '<div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:2px">' + pctSubLabel + '</div>' : '')
+      + dotsHtml
+      + '</div></div>'
+      + '<span style="font-size:14px;color:rgba(255,255,255,.35);flex-shrink:0;transition:transform .2s;' + (isOpen ? '' : 'transform:rotate(-90deg)') + '" id="sc-arr-' + pi + '">▾</span>'
+      + '</div>';
+
+    sectionsHtml += '<div id="' + bodyId + '" style="display:' + (isOpen ? 'block' : 'none') + ';padding:6px 0 2px">';
+
+    s.checks.forEach(function(ch) {
       var savedDone  = parseInt(localStorage.getItem('sc_done_'  + ch.id)) || 0;
       var savedScore = parseInt(localStorage.getItem('sc_score_' + ch.id)) || 0;
-      var total = ch.tasks ? ch.tasks.length : 0;
-      if (!total) return;
+      var total = ch.tasks.length;
       var isFinished = savedDone >= total;
       var inProgress = savedDone > 0 && !isFinished;
       var topic = ch.subtitle ? ch.subtitle.replace(/^Тема:\s*/i, '') : ch.title;
-      var cardTitle = topic + ' · проверочная №' + (ch._topicNum || '?');
+      var cardTitle = topic + ' · №' + (ch._topicNum || '?');
+      var scorePct = total > 0 ? Math.round(savedScore / total * 100) : 0;
+
       var progressHtml = '';
       if (isFinished) {
-        progressHtml = '<div style="margin-top:8px">'
-          + '<div style="height:4px;background:rgba(255,255,255,.08);border-radius:2px;margin-bottom:5px;overflow:hidden"><div style="height:100%;width:100%;background:linear-gradient(90deg,#10b981,#34d399);border-radius:2px"></div></div>'
-          + '<div style="font-size:12px;color:#34d399;font-weight:700">' + total + ' из ' + total + ' · Завершено &nbsp;·&nbsp; Результат: ' + savedScore + '/' + total + '</div>'
+        progressHtml = '<div style="margin-top:6px;display:flex;align-items:center;gap:8px">'
+          + '<div style="flex:1;height:3px;background:rgba(255,255,255,.08);border-radius:2px;overflow:hidden"><div style="height:100%;width:100%;background:linear-gradient(90deg,#10b981,#34d399)"></div></div>'
+          + '<span style="font-size:11px;color:#4ade80;font-weight:700;white-space:nowrap">✓ ' + scorePct + '%</span>'
           + '</div>';
       } else if (inProgress) {
-        var pct = Math.round(savedDone / total * 100);
-        progressHtml = '<div style="margin-top:8px">'
-          + '<div style="height:4px;background:rgba(255,255,255,.08);border-radius:2px;margin-bottom:5px;overflow:hidden"><div style="height:100%;width:' + pct + '%;background:linear-gradient(90deg,#f59e0b,#fbbf24);border-radius:2px"></div></div>'
-          + '<div style="font-size:12px;color:#fbbf24;font-weight:700">' + savedDone + ' из ' + total + ' · Продолжить</div>'
+        var pct2 = Math.round(savedDone / total * 100);
+        progressHtml = '<div style="margin-top:6px;display:flex;align-items:center;gap:8px">'
+          + '<div style="flex:1;height:3px;background:rgba(255,255,255,.08);border-radius:2px;overflow:hidden"><div style="height:100%;width:' + pct2 + '%;background:linear-gradient(90deg,#f59e0b,#fbbf24)"></div></div>'
+          + '<span style="font-size:11px;color:#fbbf24;font-weight:700;white-space:nowrap">' + savedDone + '/' + total + '</span>'
           + '</div>';
       }
-      // Фон карточки: завершённая — зелёный акцент, обычная — синий с контрастной границей
-      var cardBg = isFinished
-        ? 'background:rgba(16,185,129,.08);border:1.5px solid rgba(52,211,153,.3)'
-        : 'background:rgba(99,102,241,.1);border:1.5px solid rgba(99,102,241,.25)';
-      var iconBg = isFinished ? 'linear-gradient(135deg,#059669,#10b981)' : 'linear-gradient(135deg,#4f46e5,#7c3aed)';
-      var iconChar = isFinished ? '✅' : '⚡';
-      html += '<div onclick="startSelfCheck(\'' + ch.id + '\')" style="' + cardBg + ';border-radius:16px;padding:14px 16px;margin-bottom:8px;cursor:pointer;display:flex;align-items:center;gap:12px;transition:all .15s" '
-        + 'onmouseover="this.style.background=\'' + (isFinished ? 'rgba(16,185,129,.15)' : 'rgba(99,102,241,.2)') + '\';this.style.transform=\'translateX(3px)\'" '
-        + 'onmouseout="this.style.background=\'' + (isFinished ? 'rgba(16,185,129,.08)' : 'rgba(99,102,241,.1)') + '\';this.style.transform=\'none\'">'
-        + '<div style="width:42px;height:42px;border-radius:13px;background:' + iconBg + ';display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;box-shadow:0 4px 12px rgba(79,70,229,.4)">' + iconChar + '</div>'
+
+      var cardBg = isFinished ? 'rgba(16,185,129,.07)' : 'rgba(99,102,241,.08)';
+      var cardBorder = isFinished ? 'rgba(52,211,153,.25)' : 'rgba(99,102,241,.2)';
+      var cardBgHover = isFinished ? 'rgba(16,185,129,.14)' : 'rgba(99,102,241,.18)';
+      var statusDot = isFinished ? '#4ade80' : inProgress ? '#fbbf24' : 'rgba(255,255,255,.2)';
+
+      sectionsHtml += '<div onclick="startSelfCheck(\'' + ch.id + '\')" style="background:' + cardBg + ';border:1px solid ' + cardBorder + ';border-radius:14px;padding:12px 14px;margin-bottom:7px;cursor:pointer;display:flex;align-items:center;gap:12px;transition:all .15s" '
+        + 'onmouseover="this.style.background=\'' + cardBgHover + '\';this.style.transform=\'translateX(3px)\'" '
+        + 'onmouseout="this.style.background=\'' + cardBg + '\';this.style.transform=\'none\'">'
+        + '<div style="width:10px;height:10px;border-radius:50%;background:' + statusDot + ';flex-shrink:0;box-shadow:0 0 6px ' + statusDot + '"></div>'
         + '<div style="flex:1;min-width:0">'
-        +   '<div style="font-size:15px;font-weight:900;color:#fff;margin-bottom:2px;line-height:1.3">' + cardTitle + '</div>'
-        +   '<div style="font-size:12px;color:rgba(255,255,255,.5)">' + total + ' ' + (total===1?'вопрос':total<5?'вопроса':'вопросов') + '</div>'
+        +   '<div style="font-size:14px;font-weight:700;color:#e2e8f0;line-height:1.3">' + cardTitle + '</div>'
+        +   '<div style="font-size:11px;color:rgba(255,255,255,.4);margin-top:1px">' + total + ' ' + (total===1?'вопрос':total<5?'вопроса':'вопросов') + (isFinished ? ' · результат: ' + savedScore + '/' + total : '') + '</div>'
         +   progressHtml
         + '</div>'
-        + '<div style="font-size:18px;flex-shrink:0;color:rgba(255,255,255,.25)">›</div>'
+        + '<div style="font-size:16px;flex-shrink:0;color:rgba(255,255,255,.2)">›</div>'
         + '</div>';
     });
 
-    html += '</div></div>'; // body параграфа + wrapper параграфа
+    // Кнопки навигации: после всех карточек в открытой секции
+    if (isOpen) {
+      sectionsHtml += '<div style="display:flex;gap:8px;margin-top:4px;margin-bottom:4px">';
+      sectionsHtml += '<button onclick="showScreen(\'screen-map\')" style="flex:1;padding:10px;border-radius:12px;border:1px solid rgba(99,102,241,.3);background:rgba(99,102,241,.1);color:#a5b4fc;font-size:12px;font-weight:700;cursor:pointer">🗺 Карта тем</button>';
+      if (pi + 1 < paraOrder.length) {
+        sectionsHtml += '<button onclick="scJourneyOpen(' + (pi + 1) + ')" style="flex:1;padding:10px;border-radius:12px;border:1px solid rgba(52,211,153,.3);background:rgba(16,185,129,.1);color:#34d399;font-size:12px;font-weight:700;cursor:pointer">→ Следующий раздел</button>';
+      }
+      sectionsHtml += '</div>';
+    }
+
+    sectionsHtml += '</div></div>';
   });
-  grid.innerHTML = html;
+
+  grid.innerHTML = journeyHtml + sectionsHtml;
+}
+
+function scJourneyOpen(idx) {
+  window._scOpenIdx = idx;
+  renderSelfCheckList();
 }
 
 function showSCList() {
   scCurrentCheck = null;
+  window._scOpenIdx = -1;
   document.getElementById('sc-list-view').style.display = '';
   document.getElementById('sc-session-view').style.display = 'none';
   document.getElementById('sc-done-view').style.display = 'none';
