@@ -82,16 +82,17 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 3px;
+  gap: 2px;
   color: rgba(255,255,255,.45);
   text-decoration: none;
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 700;
-  padding: 4px 0;
+  padding: 4px 2px;
   transition: color .2s;
   cursor: pointer;
+  min-width: 0;
 }
-.bottom-nav a span.icon { font-size: 20px; }
+.bottom-nav a span.icon { font-size: 18px; }
 .bottom-nav a:hover, .bottom-nav a.active { color: var(--gold); }
 /* ── Умник-чат ── */
 #screen-umnik { flex-direction:column; background:linear-gradient(160deg,#0f172a 0%,#1e1b4b 100%); }
@@ -323,9 +324,13 @@ body {
 .btn-primary:active { transform:translateY(0); }
 
 @media (max-width:600px) {
-  .login-fon2 { border-radius:24px; }
-  .login-fon2-body { padding:0 16px 28px; }
-  .role-photo { height:120px; }
+  .login-fon2 { border-radius:24px; max-width:100%; }
+  .login-fon2-body { padding:0 12px 24px; }
+  .role-photo { height:110px; }
+  .role-row { gap:8px; }
+  .role-info-block { padding:6px 6px 10px; }
+  .role-label-name { font-size:13px; }
+  .role-hint { font-size:11px; }
   .login-fon2-spacer { min-height:110px; }
 }
 
@@ -2512,8 +2517,8 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
 .map-btn-check { background:rgba(99,102,241,.2); border:1.5px solid rgba(139,92,246,.6); color:#c4b5fd; }
 .map-btn-check:hover { background:rgba(99,102,241,.32); }
 /* Блокировка последующих шагов */
-.map-btn-check.locked { opacity:.35; cursor:not-allowed; pointer-events:none; filter:grayscale(.5); }
-.map-btn-train.locked { opacity:.35; cursor:not-allowed; pointer-events:none; filter:grayscale(.5); }
+.map-btn-check.locked { opacity:.5; cursor:not-allowed; pointer-events:none; filter:grayscale(.3); }
+.map-btn-train.locked { opacity:.5; cursor:not-allowed; pointer-events:none; filter:grayscale(.3); }
 .map-quiz-item { background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.07); border-radius:10px; padding:10px 12px; margin-bottom:8px; }
 .map-quiz-num { font-size:10px; font-weight:900; color:rgba(255,255,255,.35); text-transform:uppercase; letter-spacing:1px; margin-bottom:4px; }
 .map-rule-btn { margin-top:8px; padding:5px 12px; border-radius:12px; border:1px solid rgba(250,204,21,.35); background:rgba(250,204,21,.08); color:#fbbf24; font-size:12px; font-weight:800; cursor:pointer; transition:all .2s; }
@@ -15257,11 +15262,12 @@ function ftRenderQuestion(el) {
     + '</div></div>';
 
   html += '<div style="background:rgba(255,255,255,0.05);border-radius:16px;padding:18px;margin-bottom:14px">'
-    + '<div style="font-size:15px;font-weight:600;line-height:1.5;margin-bottom:4px">';
+    + '<div style="font-size:15px;font-weight:600;line-height:1.5;margin-bottom:4px;color:#e2e8f0">';
 
   // Метка типа
   var typeLabel = q.type === 'truefalse' ? '🔵 Правда или ложь?' : q.type === 'match' ? '🔄 Соотнеси' : '🔢 Выбери ответ';
-  html += '<div style="font-size:11px;color:#7c3aed;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">' + typeLabel + '</div>';
+  var typeLabelColor = q.type === 'truefalse' ? '#60a5fa' : q.type === 'match' ? '#fb923c' : '#4ade80';
+  html += '<div style="font-size:11px;color:' + typeLabelColor + ';font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">' + typeLabel + '</div>';
   html += q.q + '</div></div>';
 
   html += '<div id="ft-options">';
