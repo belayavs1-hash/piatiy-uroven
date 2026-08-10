@@ -351,6 +351,25 @@ body {
   .role-hint { font-size:11px; }
   .login-fon2-spacer { min-height:110px; }
 }
+/* Маленькая высота экрана — уменьшаем всё чтобы влезло */
+@media (max-height:800px) {
+  .login-fon2-header { height:160px; }
+  .role-photo { height:170px; }
+  .login-fon2-body { padding:14px 28px 24px; }
+  .login-label { font-size:15px; margin-bottom:7px; }
+  .login-name-row { margin-bottom:12px; }
+  .btn-primary { margin-top:10px; height:48px; font-size:18px; }
+  .input-mode-btn { padding:5px 4px; }
+}
+@media (max-height:700px) {
+  .login-fon2-header { height:130px; }
+  .role-photo { height:130px; }
+  .login-fon2-body { padding:10px 20px 18px; }
+  .login-label { font-size:14px; margin-bottom:5px; }
+  .login-name-row { margin-bottom:8px; }
+  .login-input { height:42px; font-size:15px; }
+  .btn-primary { margin-top:8px; height:44px; font-size:16px; border-radius:14px; }
+}
 
 /* ===== HOME ===== */
 
