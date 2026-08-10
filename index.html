@@ -9728,6 +9728,10 @@ const ACHIEVEMENTS = [
   // ── Умник (common/rare) ──
   {id:"umnik_fan",       icon:"🤖", name:"Друг Умника",           desc:"Поговори с Умником 5 раз",                        goal:5,  xp:20,  progKey:"umnikChats",  cat:"umnik",  rarity:"common"},
   {id:"fraction_master", icon:"🎯", name:"Дробный мастер",        desc:"Реши 10 заданий про дроби",                       goal:10, xp:40,  progKey:"fracSolved",  cat:"umnik",  rarity:"rare"},
+  // ── Прогресс (common/rare) ──
+  {id:"solved_self",     icon:"💪", name:"Сам разобрался",        desc:"Реши задание без подсказок",                      goal:1,  xp:15,  progKey:"selfSolve",   cat:"start",  rarity:"common"},
+  {id:"no_give_up",      icon:"🏅", name:"Без ошибок",            desc:"Пройди проверочную на 100%",                      goal:1,  xp:50,  progKey:"perfectCheck", cat:"check",  rarity:"epic"},
+  {id:"found_error",     icon:"🔍", name:"Охотник за ошибками",   desc:"Пройди 3 проверочные работы",                     goal:3,  xp:30,  progKey:"selfChecks",  cat:"check",  rarity:"rare"},
   // ── Исследователь (rare/epic) — СЕКРЕТНЫЕ ──
   {id:"speed_round",     icon:"⏱", name:"Скоростной раунд",      desc:"???",                                              goal:5,  xp:35,  progKey:"speedSolve",  cat:"secret", rarity:"rare",  secret:true},
   {id:"fast_fingers",    icon:"⚡", name:"Молния",                desc:"???",                                              goal:1,  xp:50,  progKey:"fastSolve",   cat:"secret", rarity:"epic",  secret:true},
@@ -12312,7 +12316,6 @@ function topicTrainFromRow(btn) {
 const TOPIC_TRAINER_MAP = {
   // Натуральные числа
   "Цифры и числа": "add",
-  "Сравнение натуральных чисел": "add",
   "Шкалы и координатная прямая": "add",
   "Числовая информация в таблицах": "add",
   "Числовая информация в диаграммах": "add",
@@ -12407,7 +12410,7 @@ const TOPIC_TRAINER_MAP = {
   "Сокращение дробей": "fracprop",
   "Приведение дробей к общему знаменателю": "fradd2",
   "Сравнение, сложение и вычитание дробей с разными знаменателями": "fradd2",
-  "Умножение дробей": "decmul",
+  "Умножение дробей": "taskfr",
   "Нахождение части целого": "fradd",
   "Деление дробей": "div",
   "Нахождение целого по его части": "fradd",
@@ -12416,7 +12419,14 @@ const TOPIC_TRAINER_MAP = {
   "Округление чисел. Прикидка": "decadd",
 
   // §7
-  "Измерение углов. Транспортир": "angles"
+  "Измерение углов. Транспортир": "angles",
+
+  // Алиасы — названия тем из TASKS, не совпадающие с ключами выше
+  "Объём. Объём прямоугольного параллелепипеда": "geo_t",
+  "Нахождение части от числа": "fradd",
+  "Окружность и круг": "perim",
+  // Умножение дробей — обыкновенные, не десятичные
+  "Умножение обыкновенных дробей": "taskfr"
 };
 
 function topicStudy(id, ruleKey) {
@@ -15992,6 +16002,21 @@ function ftShowResult() {
   var total = FINAL_QUESTIONS.length;
   var score = FT_STATE.score;
   var pct = Math.round(score / total * 100);
+
+  // Начисляем XP: 1 за каждый правильный ответ + бонус за результат
+  var xpEarned = score;
+  if(pct >= 90) xpEarned += 30;
+  else if(pct >= 70) xpEarned += 15;
+  else if(pct >= 50) xpEarned += 5;
+  if(xpEarned > 0) addXP(xpEarned);
+
+  // Записываем ошибки в ST.mistakes
+  FINAL_QUESTIONS.forEach(function(q, i) {
+    if(!FT_STATE.answers[i]) {
+      addMistake('Итоговый тест', 'final_test', q.q ? q.q.replace(/<[^>]*>/g,'').slice(0,60) : ('Вопрос ' + (i+1)));
+    }
+  });
+  try { checkAchievements(); } catch(e) {}
   var grade, gradeColor, emoji;
   if(pct >= 90) { grade='Отлично! 🌟'; gradeColor='#4ade80'; emoji='🏆'; }
   else if(pct >= 70) { grade='Хорошо! 👍'; gradeColor='#facc15'; emoji='😊'; }
@@ -16002,6 +16027,7 @@ function ftShowResult() {
     + '<div style="font-size:64px;margin-bottom:12px">' + emoji + '</div>'
     + '<h2 style="margin:0 0 6px;font-size:24px;color:' + gradeColor + '">' + grade + '</h2>'
     + '<p style="font-size:18px;color:#94a3b8;margin:0 0 6px">Правильных ответов: <b style="color:#fff">' + score + '</b> из <b style="color:#fff">' + total + '</b></p>'
+    + (xpEarned > 0 ? '<div style="font-size:15px;color:#fbbf24;margin-bottom:8px">+' + xpEarned + ' XP ⭐</div>' : '')
     + '<div style="font-size:32px;font-weight:900;color:' + gradeColor + ';margin:12px 0">' + pct + '%</div>'
     + '<div style="height:10px;background:rgba(255,255,255,0.1);border-radius:5px;margin:0 0 24px">'
     + '<div style="height:10px;background:' + gradeColor + ';border-radius:5px;width:' + pct + '%"></div></div>'
@@ -16361,7 +16387,18 @@ function renderParent() {
   var periodSessions = periodHist.length;
   var periodTotal   = periodHist.reduce(function(s,h){ return s+(h.total||0); },0);
   var periodCorrect = periodHist.reduce(function(s,h){ return s+(h.correct||0); },0);
-  var periodXP      = periodHist.reduce(function(s,h){ return s+(h.xp||0); },0);
+  var trainerXP     = periodHist.reduce(function(s,h){ return s+(h.xp||0); },0);
+  // XP из домашки (ST.history записи с xp)
+  var hwXP = (ST.history||[]).reduce(function(s,h){
+    if(!inPeriod(h)) return s;
+    return s + (h.xp||0);
+  },0);
+  // XP из проверочных (1 XP за каждый правильный ответ)
+  var checkXP = (ST.selfCheckResults||[]).reduce(function(s,r){
+    if(parPeriod !== 'all' && r.ts && (now - r.ts) > periodMs) return s;
+    return s + (r.correct||0);
+  },0);
+  var periodXP = trainerXP + hwXP + checkXP;
   var periodMinutes = periodSessions * 3 + Object.keys(ST.solvedTasks||{}).length * 1;
   var hasData = periodSessions > 0 || Object.keys(ST.solvedTasks||{}).length > 0;
 
@@ -17333,6 +17370,7 @@ function checkAchievements() {
   if (streak >= 7)  grantAchievement('streak7');
   if (streak >= 14) grantAchievement('streak14');
   if (checks.length >= 1) grantAchievement('first_check');
+  if (checks.length >= 5) grantAchievement('five_checks');
   if (cleanChecks >= 1)   grantAchievement('clean_sheet');
   if ((ST.umnikChats||0) >= 5) grantAchievement('umnik_fan');
   if (fracSolved >= 5) grantAchievement('fraction_master');
