@@ -2473,9 +2473,15 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
 .err-result-lbl  { font-size:11px; color:#64748b; font-weight:700; margin-top:3px; }
 
 /* ===== FUN FACTS & CHEATSHEET ===== */
-.fact-card { background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.1); border-radius: 18px; padding: 18px 20px; margin-bottom: 14px; display: flex; gap: 14px; align-items: flex-start; }
-.fact-icon { font-size: 32px; flex-shrink: 0; line-height: 1; }
-.fact-title { font-size: 15px; font-weight: 900; color: #fff; margin-bottom: 6px; }
+.fact-card { background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.1); border-radius: 18px; margin-bottom: 10px; overflow: hidden; }
+.fact-header { display: flex; align-items: center; gap: 12px; padding: 14px 18px; cursor: pointer; user-select: none; transition: background .18s; }
+.fact-header:hover { background: rgba(255,255,255,.06); }
+.fact-icon { font-size: 28px; flex-shrink: 0; line-height: 1; }
+.fact-title { font-size: 15px; font-weight: 900; color: #fff; flex: 1; }
+.fact-arrow { font-size: 12px; color: rgba(255,255,255,.35); transition: transform .2s; flex-shrink: 0; }
+.fact-header.open .fact-arrow { transform: rotate(90deg); }
+.fact-body { display: none; padding: 0 18px 16px 58px; }
+.fact-body.open { display: block; }
 .fact-text { font-size: 14px; color: rgba(255,255,255,.75); line-height: 1.55; }
 .cs-tab { background:rgba(255,255,255,.07); border:1.5px solid rgba(255,255,255,.14); border-radius:10px; padding:6px 14px; font-size:13px; font-weight:700; color:rgba(255,255,255,.7); cursor:pointer; transition:all .18s; }
 .cs-tab:hover { background:rgba(129,140,248,.18); border-color:#818cf8; color:#c7d2fe; }
@@ -14866,6 +14872,8 @@ function renderFunFacts() {
   var container = document.getElementById('ff-cards');
   if (!container) return;
   container.innerHTML = (FUN_FACTS || []).map(function(f, i) {
+    var bid = 'ff-body-' + i;
+    var hid = 'ff-hdr-' + i;
     var qBlock = '';
     if (f.q && f.a) {
       var aid = 'ff-ans-' + i;
@@ -14877,14 +14885,24 @@ function renderFunFacts() {
         + 'style="font-size:12px;font-weight:800;padding:7px 14px;border-radius:10px;border:1.5px solid rgba(250,204,21,.4);background:rgba(250,204,21,.08);color:#facc15;cursor:pointer">👁 Показать ответ</button>'
         + '</div>';
     }
-    return '<div class="fact-card" style="animation-delay:' + (i * 0.06) + 's">'
+    return '<div class="fact-card">'
+      + '<div class="fact-header" id="' + hid + '" onclick="ffToggle(' + i + ')">'
       + '<div class="fact-icon">' + f.icon + '</div>'
-      + '<div class="fact-content">'
       + '<div class="fact-title">' + f.title + '</div>'
+      + '<span class="fact-arrow">▶</span>'
+      + '</div>'
+      + '<div class="fact-body" id="' + bid + '">'
       + '<div class="fact-text">' + f.text + '</div>'
       + qBlock
-      + '</div></div>';
+      + '</div>'
+      + '</div>';
   }).join('');
+}
+function ffToggle(i) {
+  var hdr = document.getElementById('ff-hdr-' + i);
+  var body = document.getElementById('ff-body-' + i);
+  hdr.classList.toggle('open');
+  body.classList.toggle('open');
 }
 
 function renderMistakes() {
