@@ -272,9 +272,10 @@ body {
 }
 .login-fon2-header img {
   width: 100%;
-  height: auto;
+  height: 100%;
   display: block;
-  margin-top: 0;
+  object-fit: cover;
+  object-position: center top;
 }
 @media (max-width: 600px) {
   .login-fon2-header { height: 160px; }
@@ -9801,11 +9802,11 @@ function renderProfile() {
   var solved = Object.keys(ST.solvedTasks || {}).length;
   var streak = ST.streak || 0;
   var level = xp < 300 ? "Новичок 🌱" : xp < 600 ? "Ученик 📚" : xp < 1500 ? "Знаток 💡" : xp < 3000 ? "Мастер 🏆" : "Эксперт 🎓";
-  var name = (ST.childName || ST.name || "Ученик");
+  var name = (ST.studentName || ST.childName || ST.name || "Ученик");
   el.innerHTML = '<div style="text-align:center;padding:20px 0 10px">'
     + '<div style="font-size:64px;margin-bottom:8px">🧑‍🎓</div>'
-    + '<div style="font-size:22px;font-weight:900;color:var(--ink)">' + name + '</div>'
-    + '<div style="font-size:14px;color:#6366f1;font-weight:700;margin-top:4px">' + level + '</div>'
+    + '<div style="font-size:22px;font-weight:900;color:#fff">' + name + '</div>'
+    + '<div style="font-size:14px;color:#818cf8;font-weight:700;margin-top:4px">' + level + '</div>'
     + '</div>'
     + '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin:16px 0">'
     + '<div class="white-card" style="text-align:center;padding:16px 8px">'
