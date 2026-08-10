@@ -1375,28 +1375,46 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
 .hp-dot.done { background: var(--blue); }
 
 /* ===== MAP ===== */
-.map-block { margin-bottom: 32px; }
+.map-block { margin-bottom: 10px; }
 .map-block-header {
-  font-size: 13px;
-  font-weight: 900;
-  color: rgba(255,255,255,.45);
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
-  margin-bottom: 10px;
-  padding-left: 2px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.10);
+  border-radius: 14px;
+  padding: 12px 16px;
+  cursor: pointer;
+  user-select: none;
+  transition: background .18s;
 }
+.map-block-header:hover { background: rgba(255,255,255,.10); }
+.map-block-header-para {
+  font-size: 12px; font-weight: 900; color: #818cf8;
+  background: rgba(129,140,248,.15); border-radius: 8px;
+  padding: 2px 8px; flex-shrink: 0; white-space: nowrap;
+}
+.map-block-header-title {
+  font-size: 14px; font-weight: 800; color: #fff; flex: 1;
+}
+.map-block-header-arrow {
+  font-size: 12px; color: rgba(255,255,255,.35); transition: transform .2s; flex-shrink: 0;
+}
+.map-block-header.open .map-block-header-arrow { transform: rotate(90deg); }
+.map-block-topics { display: none; padding: 6px 0 4px 0; }
+.map-block-topics.open { display: block; }
 .map-topic-row {
-  background: rgba(255,255,255,.05);
-  border: 1px solid rgba(255,255,255,.09);
-  border-radius: 16px;
-  padding: 14px 16px;
-  margin-bottom: 10px;
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.07);
+  border-radius: 14px;
+  padding: 12px 14px;
+  margin-bottom: 6px;
   display: flex;
   align-items: flex-start;
   gap: 12px;
 }
 .map-topic-name {
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 800;
   color: #fff;
   margin-bottom: 3px;
@@ -12198,29 +12216,27 @@ function mapDotClass(id, dot) {
 }
 
 function renderMap() {
-  const el = document.getElementById('map-content');
+  var el = document.getElementById('map-content');
   if(!el) return;
   if (!ST.mapProgress) ST.mapProgress = {};
-  el.innerHTML = TOPICS_MAP.map(function(block) {
+  el.innerHTML = TOPICS_MAP.map(function(block, bi) {
     var topicsHtml = block.topics.map(function(t) {
       var prog = ST.topicProgress[t.id] || 0;
       var ruleKey = Object.keys(TOPIC_RULES).find(function(k){ return k === t.name; }) || '';
       var mp = ST.mapProgress ? (ST.mapProgress[t.id] || 0) : 0;
-      var step1done = mp >= 1; // Теория пройдена
-      var step2done = mp >= 2; // Практика пройдена
-      var step3done = mp >= 3; // Тренажёр пройден
-      // Шаги с подписями
+      var step1done = mp >= 1;
+      var step2done = mp >= 2;
+      var step3done = mp >= 3;
       var s1cls = step1done ? 'map-step-item done-rule' : 'map-step-item';
       var s2cls = step2done ? 'map-step-item done-quiz' : 'map-step-item';
       var s3cls = step3done ? 'map-step-item done-train' : 'map-step-item';
       var stepsHtml = '<div class="map-steps">' +
-        '<div class="' + s1cls + '"><div class="map-step-icon">' + (step1done ? '✓' : '○') + '</div><span class="map-step-label">Теория</span></div>' +
+        '<div class="' + s1cls + '"><div class="map-step-icon">' + (step1done ? '✓' : '') + '</div><span class="map-step-label">Теория</span></div>' +
         '<span class="map-step-sep">›</span>' +
-        '<div class="' + s2cls + '"><div class="map-step-icon">' + (step2done ? '✓' : '○') + '</div><span class="map-step-label">Практика</span></div>' +
+        '<div class="' + s2cls + '"><div class="map-step-icon">' + (step2done ? '✓' : '') + '</div><span class="map-step-label">Практика</span></div>' +
         '<span class="map-step-sep">›</span>' +
-        '<div class="' + s3cls + '"><div class="map-step-icon">' + (step3done ? '✓' : '○') + '</div><span class="map-step-label">Тренажёр</span></div>' +
+        '<div class="' + s3cls + '"><div class="map-step-icon">' + (step3done ? '✓' : '') + '</div><span class="map-step-label">Тренажёр</span></div>' +
         '</div>';
-      // Кнопки — следующий шаг разблокирован только после предыдущего
       var lockPractice = !step1done ? ' locked' : '';
       var lockTrain    = !step2done ? ' locked' : '';
       return '<div class="map-topic-row" data-id="' + t.id + '" data-rule="' + ruleKey + '">' +
@@ -12237,10 +12253,24 @@ function renderMap() {
         '<div class="prog-pill">' + prog + '%</div>' +
         '</div>';
     }).join('');
+    var blockId = 'map-block-topics-' + bi;
+    var isOpen = bi === 0; // §1 открыт по умолчанию
     return '<div class="map-block">' +
-      '<div class="map-block-header">' + block.icon + ' ' + block.block + '</div>' +
-      topicsHtml + '</div>';
+      '<div class="map-block-header' + (isOpen ? ' open' : '') + '" onclick="mapToggleBlock(this)">' +
+        '<span class="map-block-header-para">' + block.icon + '</span>' +
+        '<span class="map-block-header-title">' + block.block + '</span>' +
+        '<span class="map-block-header-arrow">▶</span>' +
+      '</div>' +
+      '<div class="map-block-topics' + (isOpen ? ' open' : '') + '" id="' + blockId + '">' +
+        topicsHtml +
+      '</div>' +
+      '</div>';
   }).join('');
+}
+function mapToggleBlock(hdr) {
+  hdr.classList.toggle('open');
+  var topics = hdr.nextElementSibling;
+  topics.classList.toggle('open');
 }
 
 function topicStudyFromRow(btn) {
