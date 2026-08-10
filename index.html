@@ -288,7 +288,7 @@ body {
 .login-fon2-body {
   background: rgba(255,255,255,.97);
   border-radius: 0 0 32px 32px;
-  padding: 14px 28px 28px;
+  padding: 8px 28px 28px;
   position: relative;
   z-index: 1;
   box-shadow: 0 8px 32px rgba(30,60,180,.15), 0 2px 0 rgba(100,150,255,.1) inset;
@@ -322,7 +322,7 @@ body {
 .role-btn:hover { transform:translateY(-2px); box-shadow:0 10px 28px rgba(55,95,220,.25); opacity:.75; filter:none; }
 .role-btn.selected { border-color:#35c981; box-shadow:0 0 0 3px rgba(53,201,129,.3),0 4px 16px rgba(55,95,220,.15); opacity:1; filter:none; }
 .role-btn.selected::after { content:"✓"; position:absolute; top:8px; right:8px; width:26px; height:26px; border-radius:50%; display:grid; place-items:center; background:linear-gradient(135deg,#35c981,#2bb46f); color:#fff; font-weight:900; font-size:13px; z-index:2; }
-.role-photo { width:100%; height:190px; overflow:hidden; flex-shrink:0; background:#dbeafe; }
+.role-photo { width:100%; height:230px; overflow:hidden; flex-shrink:0; background:#dbeafe; }
 .role-photo img { width:100%; height:100%; object-fit:cover; display:block; }
 .role-info-block { padding:8px 10px 12px; }
 .role-label-name { font-size:15px; font-weight:900; color:#071b52; margin-bottom:2px; }
@@ -455,14 +455,13 @@ body.theme-dark {
   flex-shrink: 0;
 }
 .h-brand-text { font-size: 13px; font-weight: 900; color: var(--h-ink); line-height: 1.1; }
-.h-brand-sub { font-size: 10px; color: var(--h-muted); margin-top: 2px; transition: color .3s; }
-body.theme-dark .h-brand-sub { color: #ffd166; font-weight: 800; }
+.h-brand-sub { font-size: 10px; margin-top: 2px; font-weight: 800; }
 
 .h-nav { display: flex; flex-direction: column; justify-content: space-around; margin-top: 2px; margin-bottom: 4px; flex: 1; }
 .h-nav-item {
   display: flex; align-items: center; gap: 8px;
   padding: 6px 8px; border-radius: 10px;
-  font-size: 12px; font-weight: 700;
+  font-size: 14px; font-weight: 700;
   color: var(--h-nav-color);
   cursor: pointer; border: none; background: none;
   font-family: inherit; text-align: left;
@@ -692,7 +691,7 @@ body.theme-dark .h-test-btn:hover { background: #165e38; }
 body.theme-dark .h-step { opacity:.85; color:#c8d8ff; }
 
 /* 4 нижних тайла */
-.h-tiles { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; margin-top: 28px; }
+.h-tiles { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; margin-top: 16px; }
 
 /* ===== МОБИЛЬНАЯ АДАПТАЦИЯ ГЛАВНОЙ (≤ 900px) ===== */
 @media (max-width: 900px) {
@@ -722,7 +721,7 @@ body.theme-dark .h-step { opacity:.85; color:#c8d8ff; }
 .h-tile {
   background: var(--h-tile-bg);
   border: 1px solid var(--h-tile-border);
-  border-radius: 20px; padding: 18px 18px 16px;
+  border-radius: 16px; padding: 12px 14px 10px;
   cursor: pointer;
   display: grid; grid-template-columns: 1fr 42px; gap: 8px; align-items: end;
   box-shadow: var(--h-card-shadow);
@@ -748,9 +747,9 @@ body.theme-dark .h-tile.green2 { background: rgba(53,201,129,.15); }
 .h-tile.pink::before { background: linear-gradient(90deg,#ec49d9,#b020b0); }
 body.theme-light .h-tile.pink { background: linear-gradient(135deg,#fff,#fff5fc); }
 body.theme-dark .h-tile.pink { background: rgba(236,73,217,.15); }
-.h-tile-emoji { font-size: 28px; margin-bottom: 8px; display: block; }
-.h-tile-name { font-size: 16px; font-weight: 900; color: var(--h-ink); margin-bottom: 3px; transition: color .3s; }
-.h-tile-desc { font-size: 13px; color: var(--h-ink); opacity: .7; line-height: 1.35; transition: color .3s, opacity .3s; }
+.h-tile-emoji { font-size: 24px; margin-bottom: 6px; display: block; }
+.h-tile-name { font-size: 14px; font-weight: 900; color: var(--h-ink); margin-bottom: 2px; transition: color .3s; }
+.h-tile-desc { font-size: 12px; color: var(--h-ink); opacity: .7; line-height: 1.3; transition: color .3s, opacity .3s; }
 body.theme-dark .h-tile-desc { opacity: .85; }
 .h-tile-arrow {
   width: 38px; height: 38px; border-radius: 50%;
@@ -2906,7 +2905,7 @@ textarea, select { font-size: max(16px, 1em) !important; }
       <div class="h-logo">5★</div>
       <div>
         <div class="h-brand-text">Пятый<br>уровень</div>
-        <div class="h-brand-sub">Учись. Понимай. Побеждай.</div>
+        <div class="h-brand-sub"><span style="color:#4ade80">Учись.</span> <span style="color:#60a5fa">Понимай.</span> <span style="color:#f59e0b">Побеждай.</span></div>
       </div>
     </div>
 
