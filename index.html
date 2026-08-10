@@ -288,14 +288,14 @@ body {
 .login-fon2-body {
   background: rgba(255,255,255,.97);
   border-radius: 0 0 32px 32px;
-  padding: 20px 28px 36px;
+  padding: 14px 28px 28px;
   position: relative;
   z-index: 1;
   box-shadow: 0 8px 32px rgba(30,60,180,.15), 0 2px 0 rgba(100,150,255,.1) inset;
 }
 
 /* Заголовки */
-.login-label { font-size:17px; font-weight:900; color:#071b52; display:block; margin-bottom:10px; }
+.login-label { font-size:16px; font-weight:900; color:#071b52; display:block; margin-bottom:8px; }
 
 /* Имя */
 .login-name-row { display:grid; grid-template-columns:1fr 52px; gap:10px; margin-bottom:18px; align-items:stretch; }
@@ -322,7 +322,7 @@ body {
 .role-btn:hover { transform:translateY(-2px); box-shadow:0 10px 28px rgba(55,95,220,.25); opacity:.75; filter:none; }
 .role-btn.selected { border-color:#35c981; box-shadow:0 0 0 3px rgba(53,201,129,.3),0 4px 16px rgba(55,95,220,.15); opacity:1; filter:none; }
 .role-btn.selected::after { content:"✓"; position:absolute; top:8px; right:8px; width:26px; height:26px; border-radius:50%; display:grid; place-items:center; background:linear-gradient(135deg,#35c981,#2bb46f); color:#fff; font-weight:900; font-size:13px; z-index:2; }
-.role-photo { width:100%; height:230px; overflow:hidden; flex-shrink:0; background:#dbeafe; }
+.role-photo { width:100%; height:190px; overflow:hidden; flex-shrink:0; background:#dbeafe; }
 .role-photo img { width:100%; height:100%; object-fit:cover; display:block; }
 .role-info-block { padding:8px 10px 12px; }
 .role-label-name { font-size:15px; font-weight:900; color:#071b52; margin-bottom:2px; }
@@ -433,8 +433,8 @@ body.theme-dark {
   border-right: 1px solid var(--h-line);
   display: flex;
   flex-direction: column;
-  padding: 16px 14px;
-  gap: 4px;
+  padding: 10px 10px;
+  gap: 2px;
   position: sticky;
   top: 0;
   height: 100vh;
@@ -442,27 +442,27 @@ body.theme-dark {
   transition: background .3s, border-color .3s;
 }
 .h-brand {
-  display: flex; align-items: center; gap: 10px;
-  margin-bottom: 4px; padding-bottom: 12px;
+  display: flex; align-items: center; gap: 8px;
+  margin-bottom: 2px; padding-bottom: 8px;
   border-bottom: 1px solid var(--h-line);
 }
 .h-logo {
-  width: 44px; height: 44px; border-radius: 13px;
+  width: 36px; height: 36px; border-radius: 10px;
   background: linear-gradient(145deg,#18c9ff,#4c55ff);
-  box-shadow: 0 8px 20px rgba(47,107,255,.3);
+  box-shadow: 0 6px 14px rgba(47,107,255,.3);
   display: flex; align-items: center; justify-content: center;
-  font-size: 20px; font-weight: 900; color: var(--gold);
+  font-size: 17px; font-weight: 900; color: var(--gold);
   flex-shrink: 0;
 }
-.h-brand-text { font-size: 15px; font-weight: 900; color: var(--h-ink); line-height: 1.1; }
-.h-brand-sub { font-size: 11px; color: var(--h-muted); margin-top: 2px; transition: color .3s; }
+.h-brand-text { font-size: 13px; font-weight: 900; color: var(--h-ink); line-height: 1.1; }
+.h-brand-sub { font-size: 10px; color: var(--h-muted); margin-top: 2px; transition: color .3s; }
 body.theme-dark .h-brand-sub { color: #ffd166; font-weight: 800; }
 
-.h-nav { display: flex; flex-direction: column; justify-content: space-around; margin-top: 4px; margin-bottom: 8px; flex: 1; }
+.h-nav { display: flex; flex-direction: column; justify-content: space-around; margin-top: 2px; margin-bottom: 4px; flex: 1; }
 .h-nav-item {
-  display: flex; align-items: center; gap: 10px;
-  padding: 8px 10px; border-radius: 12px;
-  font-size: 14px; font-weight: 700;
+  display: flex; align-items: center; gap: 8px;
+  padding: 6px 8px; border-radius: 10px;
+  font-size: 12px; font-weight: 700;
   color: var(--h-nav-color);
   cursor: pointer; border: none; background: none;
   font-family: inherit; text-align: left;
@@ -471,49 +471,49 @@ body.theme-dark .h-brand-sub { color: #ffd166; font-weight: 800; }
 }
 .h-nav-item:hover { background: var(--h-nav-hover); color: var(--blue); }
 .h-nav-item.active { background: var(--h-nav-active-bg); color: var(--h-nav-active-color); box-shadow: 0 6px 16px rgba(83,92,255,.28); }
-.h-nav-icon { font-size: 17px; width: 20px; text-align: center; flex-shrink: 0; }
+.h-nav-icon { font-size: 15px; width: 18px; text-align: center; flex-shrink: 0; }
 body.theme-dark .h-nav-icon { filter: brightness(1.4) saturate(1.2); }
 
-.h-sidebar-bottom { display: flex; flex-direction: column; gap: 6px; }
+.h-sidebar-bottom { display: flex; flex-direction: column; gap: 4px; }
 
 /* Серия дней */
 .h-streak {
   background: var(--h-tile-bg);
   border: 1px solid var(--h-tile-border);
-  border-radius: 14px; padding: 10px 12px;
+  border-radius: 10px; padding: 7px 10px;
 }
-.h-streak-title { font-size: 12px; font-weight: 800; color: var(--h-ink); margin-bottom: 7px; display: flex; justify-content: space-between; }
-.h-streak-dots { display: flex; gap: 5px; }
-.h-streak-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--h-line); border: 1px solid var(--h-card-border); }
+.h-streak-title { font-size: 11px; font-weight: 800; color: var(--h-ink); margin-bottom: 5px; display: flex; justify-content: space-between; }
+.h-streak-dots { display: flex; gap: 4px; }
+.h-streak-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--h-line); border: 1px solid var(--h-card-border); }
 .h-streak-dot.done { background: linear-gradient(135deg,#475cff,#8a5cff); border-color: transparent; }
 
 /* Уровень */
 .h-level {
   background: var(--h-tile-bg);
   border: 1px solid var(--h-tile-border);
-  border-radius: 14px; padding: 10px 12px;
+  border-radius: 10px; padding: 7px 10px;
 }
-.h-level-row { display: flex; gap: 10px; align-items: center; margin-bottom: 7px; }
+.h-level-row { display: flex; gap: 8px; align-items: center; margin-bottom: 5px; }
 .h-level-hex {
-  width: 40px; height: 40px; flex-shrink: 0;
+  width: 32px; height: 32px; flex-shrink: 0;
   background: linear-gradient(145deg,#4c55ff,#7c3aed);
   clip-path: polygon(25% 6%,75% 6%,100% 50%,75% 94%,25% 94%,0 50%);
   display: grid; place-items: center;
-  font-size: 20px; font-weight: 900; color: #fff;
+  font-size: 16px; font-weight: 900; color: #fff;
 }
 .h-level-label { font-size: 10px; color: var(--h-muted); font-weight: 700; }
-.h-level-xp { font-size: 15px; font-weight: 900; color: var(--h-ink); }
-.h-level-bar { height: 6px; border-radius: 999px; background: var(--h-line); overflow: hidden; }
+.h-level-xp { font-size: 12px; font-weight: 900; color: var(--h-ink); }
+.h-level-bar { height: 5px; border-radius: 999px; background: var(--h-line); overflow: hidden; }
 .h-level-bar-fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg,#366eff,#8c58ff); transition: width .6s; }
 
 /* Переключатель темы */
 .h-theme-toggle {
   display: flex; align-items: center; justify-content: space-between;
-  padding: 10px 14px;
+  padding: 7px 10px;
   background: var(--h-tile-bg);
   border: 1px solid var(--h-tile-border);
-  border-radius: 14px;
-  font-size: 13px; font-weight: 700; color: var(--h-muted);
+  border-radius: 10px;
+  font-size: 11px; font-weight: 700; color: var(--h-muted);
   cursor: pointer;
 }
 .h-theme-switch {
@@ -531,10 +531,10 @@ body.theme-dark .h-nav-icon { filter: brightness(1.4) saturate(1.2); }
 body.theme-dark .h-theme-switch { background: linear-gradient(135deg,#4778ff,#7650ff); }
 body.theme-dark .h-theme-switch::after { transform: translateX(18px); }
 .h-logout-btn {
-  width: 100%; padding: 14px 14px; margin-top: 12px;
+  width: 100%; padding: 7px 10px; margin-top: 4px;
   background: none; border: 1px solid rgba(255,80,80,.25);
-  border-radius: 14px; cursor: pointer;
-  font-family: inherit; font-size: 13px; font-weight: 700;
+  border-radius: 10px; cursor: pointer;
+  font-family: inherit; font-size: 11px; font-weight: 700;
   color: #e05555; text-align: left;
   transition: background .15s, color .15s;
 }
