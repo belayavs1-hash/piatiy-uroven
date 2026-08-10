@@ -94,6 +94,77 @@ body {
 }
 .bottom-nav a span.icon { font-size: 18px; }
 .bottom-nav a:hover, .bottom-nav a.active { color: var(--gold); }
+/* ── Глобальный nav ── */
+#global-bottom-nav {
+  display: none;
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: rgba(10,15,35,.97);
+  backdrop-filter: blur(16px);
+  border-top: 1px solid rgba(255,255,255,.08);
+  padding: 8px 0 env(safe-area-inset-bottom);
+  z-index: 200;
+  flex-direction: row;
+  align-items: stretch;
+}
+#global-bottom-nav a {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  color: rgba(255,255,255,.45);
+  text-decoration: none;
+  font-size: 9px;
+  font-weight: 700;
+  padding: 4px 2px;
+  transition: color .2s;
+  cursor: pointer;
+  min-width: 0;
+}
+#global-bottom-nav a .gnav-icon { font-size: 20px; line-height: 1; }
+#global-bottom-nav a:hover, #global-bottom-nav a.active { color: var(--gold); }
+/* «Ещё» drawer */
+#gnav-more-drawer {
+  display: none;
+  position: fixed;
+  bottom: 56px; left: 0; right: 0;
+  background: rgba(10,15,40,.98);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(255,255,255,.12);
+  padding: 12px 16px;
+  z-index: 199;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+}
+#gnav-more-drawer.open { display: flex; }
+.gnav-more-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 10px 14px;
+  border-radius: 14px;
+  background: rgba(255,255,255,.07);
+  border: 1px solid rgba(255,255,255,.1);
+  color: rgba(255,255,255,.7);
+  font-size: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  min-width: 64px;
+  transition: background .15s, color .15s;
+}
+.gnav-more-item .gnav-icon { font-size: 22px; line-height: 1; }
+.gnav-more-item:hover, .gnav-more-item.active { background: rgba(99,102,241,.25); color: var(--gold); border-color: rgba(99,102,241,.4); }
+/* скрыть старые bottom-nav на мобиле раз глобальный активен */
+@media (max-width: 767px) {
+  body.has-global-nav .bottom-nav { display: none !important; }
+  #global-bottom-nav { display: flex; }
+}
+@media (max-width: 400px) {
+  #global-bottom-nav a { font-size: 8px; }
+}
 /* ── Умник-чат ── */
 #screen-umnik { flex-direction:column; background:linear-gradient(160deg,#0f172a 0%,#1e1b4b 100%); }
 .umnik-header { display:flex; align-items:center; gap:12px; padding:12px 16px; background:rgba(255,255,255,.05); border-bottom:1px solid rgba(255,255,255,.08); flex-shrink:0; }
@@ -4093,6 +4164,18 @@ button, .btn-find, .btn-check, .btn-ghost, .btn-secondary {
   </div>
   <div class="confetti" id="confetti"></div>
 </div>
+
+<!-- ===== GLOBAL BOTTOM NAV ===== -->
+<div id="gnav-more-drawer"></div>
+<div id="gnav-more-overlay" style="display:none;position:fixed;inset:0;z-index:198" onclick="gnavCloseMore()"></div>
+<nav id="global-bottom-nav">
+  <a id="gnav-hw"   onclick="gnavGo('screen-homework')">  <span class="gnav-icon">📚</span>Домашка</a>
+  <a id="gnav-map"  onclick="gnavGo('screen-map')">        <span class="gnav-icon">🗺</span>Темы</a>
+  <a id="gnav-chk"  onclick="gnavGo('screen-self-check')"><span class="gnav-icon">✅</span>Проверка</a>
+  <a id="gnav-ach"  onclick="gnavGo('screen-achievements')"><span class="gnav-icon">🏆</span>Достижения</a>
+  <a id="gnav-umnik" onclick="gnavUmnik()">               <span class="gnav-icon">🤖</span>Умник</a>
+  <a id="gnav-more" onclick="gnavToggleMore()">            <span class="gnav-icon">☰</span>Ещё</a>
+</nav>
 
 <script>
 // ===== DATA =====
@@ -9883,6 +9966,66 @@ function showScreen(id) {
   } else {
     window.scrollTo(0,0);
   }
+  try { gnavRender(id); } catch(e) {}
+}
+
+// ===== GLOBAL BOTTOM NAV =====
+var _gnavCurrentScreen = 'screen-homework';
+var _gnavMoreOpen = false;
+
+var GNAV_MAIN = ['screen-homework','screen-map','screen-self-check','screen-achievements'];
+var GNAV_MORE_ITEMS = [
+  { screen:'screen-trainers',   icon:'⚡', label:'Тренажёры' },
+  { screen:'screen-cheatsheet', icon:'📋', label:'Шпаргалки' },
+  { screen:'screen-funfacts',   icon:'💡', label:'Хочу знать' },
+  { screen:'screen-mistakes',   icon:'🧩', label:'Ошибки' },
+  { screen:'screen-profile',    icon:'👤', label:'Профиль' }
+];
+
+function gnavRender(activeId) {
+  _gnavCurrentScreen = activeId;
+  var inMore = GNAV_MORE_ITEMS.some(function(x){ return x.screen === activeId; });
+  document.getElementById('gnav-hw')   .classList.toggle('active', activeId==='screen-homework');
+  document.getElementById('gnav-map')  .classList.toggle('active', activeId==='screen-map');
+  document.getElementById('gnav-chk')  .classList.toggle('active', activeId==='screen-self-check');
+  document.getElementById('gnav-ach')  .classList.toggle('active', activeId==='screen-achievements');
+  document.getElementById('gnav-umnik').classList.toggle('active', activeId==='screen-umnik');
+  document.getElementById('gnav-more') .classList.toggle('active', inMore);
+  // Обновить drawer
+  var drawer = document.getElementById('gnav-more-drawer');
+  drawer.innerHTML = GNAV_MORE_ITEMS.map(function(it){
+    var isActive = it.screen === activeId;
+    return '<div class="gnav-more-item' + (isActive ? ' active' : '') + '" onclick="gnavGo(\'' + it.screen + '\');gnavCloseMore()">'
+      + '<span class="gnav-icon">' + it.icon + '</span>' + it.label + '</div>';
+  }).join('');
+  // Скрыть/показать глобальный nav — не на экранах логина и родителя
+  var hideOn = ['screen-login','screen-role','screen-parent'];
+  var shouldHide = hideOn.includes(activeId);
+  document.getElementById('global-bottom-nav').style.display = shouldHide ? 'none' : '';
+  document.body.classList.toggle('has-global-nav', !shouldHide);
+}
+
+function gnavGo(screenId) {
+  gnavCloseMore();
+  showScreen(screenId);
+  gnavRender(screenId);
+}
+
+function gnavUmnik() {
+  gnavCloseMore();
+  showUmnik(_gnavCurrentScreen);
+}
+
+function gnavToggleMore() {
+  _gnavMoreOpen = !_gnavMoreOpen;
+  document.getElementById('gnav-more-drawer').classList.toggle('open', _gnavMoreOpen);
+  document.getElementById('gnav-more-overlay').style.display = _gnavMoreOpen ? 'block' : 'none';
+}
+
+function gnavCloseMore() {
+  _gnavMoreOpen = false;
+  document.getElementById('gnav-more-drawer').classList.remove('open');
+  document.getElementById('gnav-more-overlay').style.display = 'none';
 }
 
 function fillAlreadySolved() {
