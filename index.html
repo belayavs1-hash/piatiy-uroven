@@ -818,9 +818,12 @@ body.theme-dark .h-step { opacity:.85; color:#c8d8ff; }
   .h-tiles > div:nth-child(3),
   .h-tiles > div:nth-child(4) { display: none !important; }
   .h-content > article:nth-child(3) { display: none !important; } /* Учебник */
-  .h-mascot { display: flex !important; justify-content: center; margin-top: 8px; }
-  .h-mascot-img { width: 120px; height: 120px; }
-  .h-math-float { display: none; }
+  /* Hero: текст + Умник в одну строку */
+  .h-hero { display: flex !important; flex-direction: row !important; align-items: center !important; gap: 0 !important; }
+  .h-hero > div:first-child { flex: 1; min-width: 0; }
+  .h-mascot { display: flex !important; flex-direction: column; align-items: center; justify-content: center; flex-shrink: 0; width: 110px; margin-top: 0; }
+  .h-mascot-img { width: 100px; height: 100px; }
+  .h-math-float { display: none !important; }
   /* Чат с Умником — большая кнопка под карточками */
   .h-mobile-umnik { display: flex !important; }
 }
