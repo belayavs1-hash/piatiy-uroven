@@ -99,9 +99,9 @@ body {
   display: none;
   position: fixed;
   bottom: 0; left: 0; right: 0;
-  background: rgba(10,15,35,.97);
+  background: rgba(22,32,70,.97);
   backdrop-filter: blur(16px);
-  border-top: 1px solid rgba(255,255,255,.08);
+  border-top: 1px solid rgba(255,255,255,.18);
   padding: 8px 0 env(safe-area-inset-bottom);
   z-index: 200;
   flex-direction: row;
@@ -818,15 +818,19 @@ body.theme-dark .h-step { opacity:.85; color:#c8d8ff; }
   .h-tiles > div:nth-child(3),
   .h-tiles > div:nth-child(4) { display: none !important; }
   .h-content > article:nth-child(3) { display: none !important; } /* Учебник */
-  /* Hero: текст + Умник в одну строку, вплотную к верху */
-  .h-hero { display: flex !important; flex-direction: row !important; align-items: flex-start !important; gap: 0 !important; margin-bottom: 10px !important; }
+  /* Hero: текст + Умник компактно */
+  .h-hero { display: flex !important; flex-direction: row !important; align-items: center !important; gap: 0 !important; margin-bottom: 0 !important; }
   .h-hero > div:first-child { flex: 1; min-width: 0; }
-  .h-mascot { display: flex !important; flex-direction: column; align-items: center; justify-content: flex-start; flex-shrink: 0; width: 120px; margin-top: -8px; }
-  .h-mascot-img { width: 120px; height: 120px; }
+  .h-mascot { display: flex !important; flex-direction: column; align-items: center; justify-content: center; flex-shrink: 0; width: 110px; margin-top: 0; }
+  .h-mascot-img { width: 110px; height: 110px; }
   .h-math-float { display: none !important; }
   /* Убрать лишние эмодзи из XP */
   .h-xp-sparkle { display: none !important; }
-  /* Чат с Умником — полная ширина как тайл */
+  /* XP компактнее */
+  .h-xp { height: 46px !important; padding: 0 16px !important; margin-bottom: 0 !important; }
+  /* Равные отступы между всеми плашками */
+  .h-main { gap: 10px !important; padding-top: 8px !important; }
+  /* Чат с Умником — полная ширина */
   .h-mobile-umnik { display: flex !important; width: 100% !important; box-sizing: border-box; }
 }
 .h-tile {
