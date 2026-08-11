@@ -3050,6 +3050,11 @@ textarea, select { font-size: max(16px, 1em) !important; }
         </div>
         <div class="h-level-bar"><div class="h-level-bar-fill" id="home-level-bar" style="width:0%"></div></div>
       </div>
+      <!-- Переключатель темы -->
+      <div class="h-theme-toggle" onclick="toggleHomeTheme()">
+        <span id="home-theme-label">🌙 Тёмная тема</span>
+        <div class="h-theme-switch"></div>
+      </div>
       <!-- Выйти -->
       <button class="h-logout-btn" onclick="doLogout()">← Выйти из аккаунта</button>
     </div>
@@ -10674,7 +10679,8 @@ function renderHome() {
     errSub.textContent = 'Интересные факты о числах и математике';
   }
   // восстановить тему
-  applyHomeTheme('dark');
+  const saved = localStorage.getItem('homeTheme') || 'dark';
+  applyHomeTheme(saved);
   spawnAmbientClouds();
 }
 function applyHomeTheme(theme) {
