@@ -811,9 +811,12 @@ body.theme-dark .h-step { opacity:.85; color:#c8d8ff; }
   .h-tile-emoji { font-size: 22px; }
   .h-tile-name { font-size: 14px; }
   .h-tile-desc { font-size: 12px; }
-  /* На мобиле: баннеры, Учебник и тайлы — скрыты; mascot показываем */
+  /* На мобиле: баннеры, Учебник скрыты; из тайлов — только Карта тем */
   .h-banners { display: none !important; }
-  .h-tiles { display: none !important; }
+  .h-tiles { grid-template-columns: 1fr !important; }
+  .h-tiles > div:nth-child(2),
+  .h-tiles > div:nth-child(3),
+  .h-tiles > div:nth-child(4) { display: none !important; }
   .h-content > article:nth-child(3) { display: none !important; } /* Учебник */
   .h-mascot { display: flex !important; justify-content: center; margin-top: 8px; }
   .h-mascot-img { width: 120px; height: 120px; }
