@@ -811,6 +811,15 @@ body.theme-dark .h-step { opacity:.85; color:#c8d8ff; }
   .h-tile-emoji { font-size: 22px; }
   .h-tile-name { font-size: 14px; }
   .h-tile-desc { font-size: 12px; }
+  /* На мобиле: баннеры, Учебник и тайлы — скрыты; mascot показываем */
+  .h-banners { display: none !important; }
+  .h-tiles { display: none !important; }
+  .h-content > article:nth-child(3) { display: none !important; } /* Учебник */
+  .h-mascot { display: flex !important; justify-content: center; margin-top: 8px; }
+  .h-mascot-img { width: 120px; height: 120px; }
+  .h-math-float { display: none; }
+  /* Чат с Умником — большая кнопка под карточками */
+  .h-mobile-umnik { display: flex !important; }
 }
 .h-tile {
   background: var(--h-tile-bg);
@@ -896,6 +905,17 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
 .h-banner-cheat .h-banner-glow { background:radial-gradient(circle,rgba(60,140,255,.25) 0%,transparent 70%); }
 .h-banner-umnik { background:linear-gradient(130deg,#1a1060,#2d1580,#160f6a); border:2.5px solid rgba(139,92,246,.5); box-shadow:0 4px 20px rgba(99,60,255,.25); gap:20px; }
 .h-banner-umnik-img { width:72px; height:72px; object-fit:contain; flex-shrink:0; filter:drop-shadow(0 4px 12px rgba(139,92,246,.5)); }
+.h-mobile-umnik {
+  display: none;
+  align-items: center; gap: 14px;
+  width: 100%; padding: 16px 20px;
+  background: linear-gradient(130deg,#1a1060,#2d1580);
+  border: 2px solid rgba(139,92,246,.5);
+  border-radius: 18px; cursor: pointer;
+  font-size: 17px; font-weight: 800; color: #fff;
+  box-shadow: 0 4px 20px rgba(99,60,255,.25);
+  margin-top: 4px;
+}
 
 /* Навигация главной — с аватаром (legacy, не используется в новом home) */
 .home-nav-logo {
@@ -3212,6 +3232,13 @@ textarea, select { font-size: max(16px, 1em) !important; }
       </div>
     </div>
 
+    <!-- Чат с Умником — только мобиль -->
+    <button class="h-mobile-umnik" onclick="showUmnik('screen-home')" style="display:none">
+      <img src="umnik_prygaet.png" style="width:36px;height:36px;object-fit:contain;flex-shrink:0" onerror="this.outerHTML='🤖'">
+      <span>Чат с Умником</span>
+      <span style="margin-left:auto;opacity:.6">›</span>
+    </button>
+
   </div>
 </div>
 
@@ -4056,10 +4083,13 @@ button, .btn-find, .btn-check, .btn-ghost, .btn-secondary {
 .ob-nav {
   display: flex; justify-content: space-between; align-items: center;
   width: 100%;
-  padding: 12px 0 max(20px, env(safe-area-inset-bottom));
+  padding: 12px 0 max(76px, calc(56px + env(safe-area-inset-bottom)));
   flex-shrink: 0;
   border-top: 1px solid rgba(255,255,255,.08);
   background: transparent;
+}
+@media (min-width: 768px) {
+  .ob-nav { padding: 12px 0 max(20px, env(safe-area-inset-bottom)); }
 }
 .ob-btn-skip {
   background: transparent; border: none;
@@ -4202,6 +4232,10 @@ button, .btn-find, .btn-check, .btn-ghost, .btn-secondary {
   <div class="gnav-sheet-handle"></div>
   <div class="gnav-sheet-title">ЕЩЁ</div>
   <div class="gnav-sheet-grid" id="gnav-sheet-grid"></div>
+  <div onclick="toggleHomeTheme();gnavCloseMore()" style="margin:4px 16px 24px;padding:14px 18px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:14px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;font-size:15px;font-weight:700;color:rgba(255,255,255,.8)">
+    <span id="gnav-theme-label">🌙 Тёмная тема</span>
+    <span style="font-size:12px;opacity:.5">переключить</span>
+  </div>
 </div>
 
 <nav id="global-bottom-nav">
@@ -10050,14 +10084,6 @@ function gnavUmnik() {
   showUmnik(_gnavCurrentScreen);
 }
 
-function gnavToggleMore() {
-  _gnavMoreOpen = !_gnavMoreOpen;
-  var sheet = document.getElementById('gnav-more-sheet');
-  var overlay = document.getElementById('gnav-sheet-overlay');
-  sheet.classList.toggle('open', _gnavMoreOpen);
-  overlay.style.display = _gnavMoreOpen ? 'block' : 'none';
-}
-
 function gnavCloseMore() {
   _gnavMoreOpen = false;
   var sheet = document.getElementById('gnav-more-sheet');
@@ -10065,6 +10091,23 @@ function gnavCloseMore() {
   if(sheet) sheet.classList.remove('open');
   if(overlay) overlay.style.display = 'none';
 }
+
+// Кнопка «назад» Android — закрывает sheet вместо выхода из приложения
+function gnavToggleMore() {
+  _gnavMoreOpen = !_gnavMoreOpen;
+  var sheet = document.getElementById('gnav-more-sheet');
+  var overlay = document.getElementById('gnav-sheet-overlay');
+  sheet.classList.toggle('open', _gnavMoreOpen);
+  overlay.style.display = _gnavMoreOpen ? 'block' : 'none';
+  if(_gnavMoreOpen) {
+    history.pushState({gnavSheet: true}, '');
+  }
+}
+window.addEventListener('popstate', function(e) {
+  if(_gnavMoreOpen) {
+    gnavCloseMore();
+  }
+});
 
 function fillAlreadySolved() {
   if(!currentTask) return;
@@ -10695,14 +10738,17 @@ function renderHome() {
 function applyHomeTheme(theme) {
   const scr = document.getElementById('screen-home');
   const lbl = document.getElementById('home-theme-label');
+  const gnavLbl = document.getElementById('gnav-theme-label');
   if(theme === 'dark') {
     scr.classList.remove('theme-light'); scr.classList.add('theme-dark');
     document.body.classList.remove('theme-light'); document.body.classList.add('theme-dark');
     if(lbl) lbl.textContent = '☀️ Светлая тема';
+    if(gnavLbl) gnavLbl.textContent = '☀️ Светлая тема';
   } else {
     scr.classList.remove('theme-dark'); scr.classList.add('theme-light');
     document.body.classList.remove('theme-dark'); document.body.classList.add('theme-light');
     if(lbl) lbl.textContent = '🌙 Тёмная тема';
+    if(gnavLbl) gnavLbl.textContent = '🌙 Тёмная тема';
   }
 }
 function toggleHomeTheme() {
