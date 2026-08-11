@@ -3075,11 +3075,20 @@ textarea, select { font-size: max(16px, 1em) !important; }
         </div>
         <!-- Плашки — та же ширина что и XP, умник и карточки не трогаем -->
         <div class="h-banners">
-          <button class="h-banner h-banner-umnik" style="grid-column:1/-1" onclick="showUmnik('screen-home')">
-            <img src="umnik_prygaet.png" class="h-banner-umnik-img" alt="Умник" onerror="this.outerHTML='<span style=\'font-size:56px\'>🤖</span>'">
+          <button class="h-banner h-banner-know" onclick="showScreen('screen-funfacts')">
+            <div class="h-banner-glow"></div>
+            <span class="h-banner-emoji">💡</span>
             <div class="h-banner-text">
-              <div class="h-banner-title">Чат с Умником</div>
-              <div class="h-banner-sub">Задай вопрос — объясню и помогу разобраться</div>
+              <div class="h-banner-title">Хочу всё знать</div>
+              <div class="h-banner-sub" id="banner-know-sub">Мои ошибки и разбор с Умником</div>
+            </div>
+          </button>
+          <button class="h-banner h-banner-cheat" onclick="showScreen('screen-cheatsheet')">
+            <div class="h-banner-glow"></div>
+            <span class="h-banner-emoji">📋</span>
+            <div class="h-banner-text">
+              <div class="h-banner-title">Шпаргалки</div>
+              <div class="h-banner-sub">Правила и формулы по темам учебника</div>
             </div>
           </button>
         </div>
