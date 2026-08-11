@@ -818,14 +818,16 @@ body.theme-dark .h-step { opacity:.85; color:#c8d8ff; }
   .h-tiles > div:nth-child(3),
   .h-tiles > div:nth-child(4) { display: none !important; }
   .h-content > article:nth-child(3) { display: none !important; } /* Учебник */
-  /* Hero: текст + Умник в одну строку */
-  .h-hero { display: flex !important; flex-direction: row !important; align-items: center !important; gap: 0 !important; }
+  /* Hero: текст + Умник в одну строку, вплотную к верху */
+  .h-hero { display: flex !important; flex-direction: row !important; align-items: flex-start !important; gap: 0 !important; margin-bottom: 10px !important; }
   .h-hero > div:first-child { flex: 1; min-width: 0; }
-  .h-mascot { display: flex !important; flex-direction: column; align-items: center; justify-content: center; flex-shrink: 0; width: 110px; margin-top: 0; }
-  .h-mascot-img { width: 100px; height: 100px; }
+  .h-mascot { display: flex !important; flex-direction: column; align-items: center; justify-content: flex-start; flex-shrink: 0; width: 120px; margin-top: -8px; }
+  .h-mascot-img { width: 120px; height: 120px; }
   .h-math-float { display: none !important; }
-  /* Чат с Умником — большая кнопка под карточками */
-  .h-mobile-umnik { display: flex !important; }
+  /* Убрать лишние эмодзи из XP */
+  .h-xp-sparkle { display: none !important; }
+  /* Чат с Умником — полная ширина как тайл */
+  .h-mobile-umnik { display: flex !important; width: 100% !important; box-sizing: border-box; }
 }
 .h-tile {
   background: var(--h-tile-bg);
@@ -2719,8 +2721,8 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
 .map-step-sep { color:rgba(255,255,255,.2); font-size:10px; margin:0 2px; }
 
 /* ===== КАРТА ТЕМ — ПРАВИЛА ===== */
-.map-topic-btns { display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; }
-.map-btn-study, .map-btn-train, .map-btn-check { padding:6px 14px; border-radius:14px; border:none; font-size:12px; font-weight:800; cursor:pointer; font-family:inherit; transition:all .2s; }
+.map-topic-btns { display:flex; gap:6px; margin-top:10px; flex-wrap:nowrap; }
+.map-btn-study, .map-btn-train, .map-btn-check { padding:6px 10px; border-radius:14px; border:none; font-size:11px; font-weight:800; cursor:pointer; font-family:inherit; transition:all .2s; white-space:nowrap; flex-shrink:0; }
 .map-btn-study { background:rgba(250,204,21,.1); border:1px solid rgba(250,204,21,.3); color:#fbbf24; }
 .map-btn-study:hover { background:rgba(250,204,21,.2); }
 .map-btn-train { background:rgba(245,158,11,.22); border:1.5px solid #f59e0b; color:#fbbf24; box-shadow:0 0 10px rgba(245,158,11,.25); }
