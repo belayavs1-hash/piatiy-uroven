@@ -894,6 +894,8 @@ body.theme-light .h-banner-know .h-banner-sub { color: #6a80a0; }
 body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
 .h-banner-glow { position:absolute; right:-8px; top:-8px; width:60px; height:60px; border-radius:50%; background:radial-gradient(circle,rgba(140,110,255,.3) 0%,transparent 70%); pointer-events:none; }
 .h-banner-cheat .h-banner-glow { background:radial-gradient(circle,rgba(60,140,255,.25) 0%,transparent 70%); }
+.h-banner-umnik { background:linear-gradient(130deg,#1a1060,#2d1580,#160f6a); border:2.5px solid rgba(139,92,246,.5); box-shadow:0 4px 20px rgba(99,60,255,.25); gap:20px; }
+.h-banner-umnik-img { width:72px; height:72px; object-fit:contain; flex-shrink:0; filter:drop-shadow(0 4px 12px rgba(139,92,246,.5)); }
 
 /* Навигация главной — с аватаром (legacy, не используется в новом home) */
 .home-nav-logo {
@@ -2928,16 +2930,16 @@ textarea, select { font-size: max(16px, 1em) !important; }
           <h2 class="ob-title">Зарабатывай очки!</h2>
           <p class="ob-text">За каждую правильно решённую задачу получаешь <b>XP</b>.<br>
           Копи очки, открывай достижения и повышай уровень.</p>
-          <div class="ob-xp-demo" style="flex-wrap:wrap;gap:6px;justify-content:center">
-            <div class="ob-xp-item"><span style="font-size:22px">🌱</span><div>Новичок<br><small>0 XP</small></div></div>
-            <div class="ob-arrow">→</div>
-            <div class="ob-xp-item"><span style="font-size:22px">📚</span><div>Ученик<br><small>300 XP</small></div></div>
-            <div class="ob-arrow">→</div>
-            <div class="ob-xp-item"><span style="font-size:22px">💡</span><div>Знаток<br><small>600 XP</small></div></div>
-            <div class="ob-arrow">→</div>
-            <div class="ob-xp-item"><span style="font-size:22px">🏆</span><div>Мастер<br><small>1500 XP</small></div></div>
-            <div class="ob-arrow">→</div>
-            <div class="ob-xp-item"><span style="font-size:22px">🎓</span><div>Эксперт<br><small>3000 XP</small></div></div>
+          <div class="ob-xp-demo" style="flex-wrap:nowrap;gap:4px;justify-content:center;width:100%;overflow:hidden">
+            <div class="ob-xp-item"><span style="font-size:20px">🌱</span><div style="font-size:11px">Новичок<br><small>0 XP</small></div></div>
+            <div class="ob-arrow" style="font-size:13px;flex-shrink:0">→</div>
+            <div class="ob-xp-item"><span style="font-size:20px">📚</span><div style="font-size:11px">Ученик<br><small>300 XP</small></div></div>
+            <div class="ob-arrow" style="font-size:13px;flex-shrink:0">→</div>
+            <div class="ob-xp-item"><span style="font-size:20px">💡</span><div style="font-size:11px">Знаток<br><small>600 XP</small></div></div>
+            <div class="ob-arrow" style="font-size:13px;flex-shrink:0">→</div>
+            <div class="ob-xp-item"><span style="font-size:20px">🏆</span><div style="font-size:11px">Мастер<br><small>1500</small></div></div>
+            <div class="ob-arrow" style="font-size:13px;flex-shrink:0">→</div>
+            <div class="ob-xp-item"><span style="font-size:20px">🎓</span><div style="font-size:11px">Эксперт<br><small>3000</small></div></div>
           </div>
           <p class="ob-hint">Умник никогда не даёт ответ сразу — только наводящие вопросы 😉</p>
         </div>
@@ -3048,11 +3050,6 @@ textarea, select { font-size: max(16px, 1em) !important; }
         </div>
         <div class="h-level-bar"><div class="h-level-bar-fill" id="home-level-bar" style="width:0%"></div></div>
       </div>
-      <!-- Переключатель темы -->
-      <div class="h-theme-toggle" onclick="toggleHomeTheme()">
-        <span id="home-theme-label">🌙 Тёмная тема</span>
-        <div class="h-theme-switch"></div>
-      </div>
       <!-- Выйти -->
       <button class="h-logout-btn" onclick="doLogout()">← Выйти из аккаунта</button>
     </div>
@@ -3073,20 +3070,11 @@ textarea, select { font-size: max(16px, 1em) !important; }
         </div>
         <!-- Плашки — та же ширина что и XP, умник и карточки не трогаем -->
         <div class="h-banners">
-          <button class="h-banner h-banner-know" onclick="showScreen('screen-funfacts')">
-            <div class="h-banner-glow"></div>
-            <span class="h-banner-emoji">💡</span>
+          <button class="h-banner h-banner-umnik" style="grid-column:1/-1" onclick="showUmnik('screen-home')">
+            <img src="umnik_prygaet.png" class="h-banner-umnik-img" alt="Умник" onerror="this.outerHTML='<span style=\'font-size:56px\'>🤖</span>'">
             <div class="h-banner-text">
-              <div class="h-banner-title">Хочу всё знать</div>
-              <div class="h-banner-sub" id="banner-know-sub">Мои ошибки и разбор с Умником</div>
-            </div>
-          </button>
-          <button class="h-banner h-banner-cheat" onclick="showScreen('screen-cheatsheet')">
-            <div class="h-banner-glow"></div>
-            <span class="h-banner-emoji">📋</span>
-            <div class="h-banner-text">
-              <div class="h-banner-title">Шпаргалки</div>
-              <div class="h-banner-sub">Правила и формулы по темам учебника</div>
+              <div class="h-banner-title">Чат с Умником</div>
+              <div class="h-banner-sub">Задай вопрос — объясню и помогу разобраться</div>
             </div>
           </button>
         </div>
@@ -3961,9 +3949,10 @@ button, .btn-find, .btn-check, .btn-ghost, .btn-secondary {
   width: 100%; max-width: 480px;
   display: flex; flex-direction: column;
   align-items: center;
-  padding: 24px 20px 20px;
-  min-height: 100vh;
+  padding: 24px 20px 0;
+  height: 100vh;
   position: relative;
+  box-sizing: border-box;
 }
 .ob-dots {
   display: flex; gap: 8px; margin-bottom: 28px; margin-top: 8px;
@@ -3978,7 +3967,8 @@ button, .btn-find, .btn-check, .btn-ghost, .btn-secondary {
 }
 .ob-slides {
   width: 100%; flex: 1;
-  overflow: hidden; position: relative;
+  overflow-y: auto; position: relative;
+  padding-bottom: 8px;
 }
 .ob-slide {
   display: none;
@@ -4051,7 +4041,11 @@ button, .btn-find, .btn-check, .btn-ghost, .btn-secondary {
 .ob-start-btn:active { transform: scale(.96); box-shadow: 0 4px 16px rgba(99,102,241,.4); }
 .ob-nav {
   display: flex; justify-content: space-between; align-items: center;
-  width: 100%; padding-top: 20px; margin-top: auto;
+  width: 100%;
+  padding: 12px 0 max(20px, env(safe-area-inset-bottom));
+  flex-shrink: 0;
+  border-top: 1px solid rgba(255,255,255,.08);
+  background: transparent;
 }
 .ob-btn-skip {
   background: transparent; border: none;
@@ -10680,8 +10674,7 @@ function renderHome() {
     errSub.textContent = 'Интересные факты о числах и математике';
   }
   // восстановить тему
-  const saved = localStorage.getItem('homeTheme') || 'dark';
-  applyHomeTheme(saved);
+  applyHomeTheme('dark');
   spawnAmbientClouds();
 }
 function applyHomeTheme(theme) {
