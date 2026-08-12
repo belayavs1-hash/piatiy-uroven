@@ -836,8 +836,8 @@ body.theme-dark .h-step { opacity:.85; color:#c8d8ff; }
   /* Равные отступы между всеми плашками */
   .h-main { gap: 10px !important; padding-top: 6px !important; }
   .h-content { gap: 10px !important; }
-  /* Чат с Умником — полная ширина, тот же padding что у тайла */
-  .h-mobile-umnik { display: flex !important; width: 100% !important; box-sizing: border-box; padding: 12px 14px 10px !important; }
+  /* Чат с Умником — точно как .h-tile */
+  .h-mobile-umnik { display: grid !important; grid-template-columns: 1fr 42px; gap: 8px; align-items: end; width: 100% !important; box-sizing: border-box; padding: 12px 14px 10px !important; }
 }
 .h-tile {
   background: var(--h-tile-bg);
@@ -924,27 +924,23 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
 .h-banner-umnik { background:linear-gradient(130deg,#1a1060,#2d1580,#160f6a); border:2.5px solid rgba(139,92,246,.5); box-shadow:0 4px 20px rgba(99,60,255,.25); gap:20px; }
 .h-banner-umnik-img { width:72px; height:72px; object-fit:contain; flex-shrink:0; filter:drop-shadow(0 4px 12px rgba(139,92,246,.5)); }
 .h-mobile-umnik {
-  display: none;
-  align-items: center; gap: 12px;
+  display: none; /* скрыт по умолчанию, показывается только на мобиле через медиа */
   width: 100%; padding: 12px 14px 10px;
   background: var(--h-tile-bg);
   border: 1px solid rgba(53,201,129,.4);
   border-radius: 16px; cursor: pointer;
-  font-size: 15px; font-weight: 800; color: var(--h-ink);
+  color: var(--h-ink);
   box-shadow: var(--h-card-shadow);
-  margin-top: 0; align-self: stretch;
+  align-self: stretch;
   position: relative; overflow: hidden;
-  transition: transform .2s, box-shadow .2s;
+  transition: transform .2s, box-shadow .2s, background .3s;
 }
 .h-mobile-umnik::before {
   content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
   border-radius: 16px 16px 0 0;
   background: linear-gradient(90deg,#22c572,#0ea55e);
 }
-.h-mobile-umnik .umnik-sub {
-  font-size: 12px; font-weight: 500; color: var(--h-muted); margin-top: 1px;
-}
-.h-mobile-umnik .umnik-text { display: flex; flex-direction: column; align-items: flex-start; flex: 1; }
+body.theme-dark .h-mobile-umnik { background: rgba(53,201,129,.15); }
 
 /* Навигация главной — с аватаром (legacy, не используется в новом home) */
 .home-nav-logo {
@@ -3263,12 +3259,12 @@ textarea, select { font-size: max(16px, 1em) !important; }
 
     <!-- Чат с Умником — только мобиль -->
     <button class="h-mobile-umnik" onclick="showUmnik('screen-home')" style="display:none">
-      <img src="umnik_prygaet.png" style="width:38px;height:38px;object-fit:contain;flex-shrink:0" onerror="this.outerHTML='🤖'">
-      <div class="umnik-text">
-        <span>Чат с Умником</span>
-        <span class="umnik-sub">Задай вопрос — объясню и помогу</span>
+      <div>
+        <span class="h-tile-emoji">🤖</span>
+        <div class="h-tile-name">Чат с Умником</div>
+        <div class="h-tile-desc">Задай вопрос — объясню и помогу</div>
       </div>
-      <span style="font-size:22px;opacity:.4;margin-left:auto">›</span>
+      <div class="h-tile-arrow">›</div>
     </button>
 
   </div>
