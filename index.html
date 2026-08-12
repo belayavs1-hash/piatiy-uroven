@@ -820,22 +820,21 @@ body.theme-dark .h-step { opacity:.85; color:#c8d8ff; }
   .h-tiles > div:nth-child(3),
   .h-tiles > div:nth-child(4) { display: none !important; }
   .h-content > article:nth-child(3) { display: none !important; } /* Учебник */
-  /* Hero: колонка — верхняя строка (привет + Умник), нижняя строка (XP на всю ширину) */
-  .h-hero { display: flex !important; flex-direction: column !important; gap: 8px !important; margin-bottom: 0 !important; }
-  .h-hero > div:first-child { display: flex; flex-direction: row; align-items: center; gap: 0; width: 100%; }
+  /* Hero: текст слева + Умник справа в одну строку */
+  .h-hero { display: flex !important; flex-direction: row !important; align-items: center !important; gap: 0 !important; margin-bottom: 0 !important; }
+  .h-hero > div:first-child { flex: 1; min-width: 0; display: flex; flex-direction: column; }
   .h-greeting { font-size: 20px !important; margin-bottom: 2px !important; }
-  .h-sub { font-size: 13px !important; margin-bottom: 0 !important; }
-  /* XP — на всю ширину, вне flex-строки с Умником */
-  .h-xp { width: 100% !important; box-sizing: border-box !important; height: 46px !important; padding: 0 16px !important; margin-top: 0 !important; order: 10; }
-  /* Умник — крупнее, справа от приветствия */
-  .h-mascot { display: flex !important; flex-direction: column; align-items: center; justify-content: center; flex-shrink: 0; width: 130px; margin-top: 0; margin-left: auto; }
-  .h-mascot-img { width: 130px; height: 130px; }
-  .h-math-float { display: none !important; }
+  .h-sub { font-size: 13px !important; margin-bottom: 6px !important; }
+  /* XP — под приветствием, во всю ширину левого блока */
+  .h-xp { width: 100% !important; box-sizing: border-box !important; height: 46px !important; padding: 0 14px !important; margin-top: 0 !important; }
   .h-xp-sparkle { display: none !important; }
+  /* Умник — крупнее, справа */
+  .h-mascot { display: flex !important; flex-direction: column; align-items: center; justify-content: center; flex-shrink: 0; width: 120px; margin-top: 0; }
+  .h-mascot-img { width: 120px; height: 120px; }
+  .h-math-float { display: none !important; }
   .h-banners { display: none !important; }
-  /* Равные отступы gap между всеми плашками */
+  /* Равные отступы между всеми плашками */
   .h-main { gap: 10px !important; padding-top: 6px !important; }
-  /* h-content и тайлы */
   .h-content { gap: 10px !important; }
   /* Чат с Умником — полная ширина, тот же padding что у тайла */
   .h-mobile-umnik { display: flex !important; width: 100% !important; box-sizing: border-box; padding: 12px 14px 10px !important; }
@@ -933,7 +932,7 @@ body.theme-light .h-banner-cheat .h-banner-sub { color: #6a80a0; }
   border-radius: 16px; cursor: pointer;
   font-size: 15px; font-weight: 800; color: var(--h-ink);
   box-shadow: var(--h-card-shadow);
-  margin-top: 0;
+  margin-top: 0; align-self: stretch;
   position: relative; overflow: hidden;
   transition: transform .2s, box-shadow .2s;
 }
