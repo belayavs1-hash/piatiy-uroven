@@ -194,7 +194,9 @@ body {
 .umnik-title { font-size:16px; font-weight:800; color:#fff; }
 .umnik-sub { font-size:11px; color:rgba(255,255,255,.5); }
 .umnik-messages { flex:1; overflow-y:auto; padding:14px; display:flex; flex-direction:column; gap:10px; max-width:760px; width:100%; margin:0 auto; box-sizing:border-box; }
-.umnik-msg { max-width:75%; padding:10px 14px; border-radius:16px; font-size:15px; line-height:1.5; white-space:pre-wrap; word-break:break-word; }
+.umnik-msg { max-width:75%; padding:10px 14px; border-radius:16px; font-size:15px; line-height:1.5; white-space:pre-wrap; word-break:break-word; overflow-x:auto; }
+.umnik-msg table { border-collapse:collapse; font-size:13px; min-width:max-content; white-space:normal; }
+.umnik-msg table td, .umnik-msg table th { padding:5px 8px; border:1px solid rgba(255,255,255,.15); }
 .umnik-msg.user { align-self:flex-end; background:linear-gradient(135deg,#4f46e5,#7c3aed); color:#fff; border-bottom-right-radius:4px; }
 .umnik-msg.bot { align-self:flex-start; background:rgba(255,255,255,.1); color:#e2e8f0; border-bottom-left-radius:4px; }
 .umnik-msg.bot b { color:#fbbf24; }
@@ -818,20 +820,25 @@ body.theme-dark .h-step { opacity:.85; color:#c8d8ff; }
   .h-tiles > div:nth-child(3),
   .h-tiles > div:nth-child(4) { display: none !important; }
   .h-content > article:nth-child(3) { display: none !important; } /* Учебник */
-  /* Hero: текст + Умник компактно */
-  .h-hero { display: flex !important; flex-direction: row !important; align-items: center !important; gap: 0 !important; margin-bottom: 0 !important; }
-  .h-hero > div:first-child { flex: 1; min-width: 0; }
-  .h-mascot { display: flex !important; flex-direction: column; align-items: center; justify-content: center; flex-shrink: 0; width: 110px; margin-top: 0; }
-  .h-mascot-img { width: 110px; height: 110px; }
+  /* Hero: колонка — верхняя строка (привет + Умник), нижняя строка (XP на всю ширину) */
+  .h-hero { display: flex !important; flex-direction: column !important; gap: 8px !important; margin-bottom: 0 !important; }
+  .h-hero > div:first-child { display: flex; flex-direction: row; align-items: center; gap: 0; width: 100%; }
+  .h-greeting { font-size: 20px !important; margin-bottom: 2px !important; }
+  .h-sub { font-size: 13px !important; margin-bottom: 0 !important; }
+  /* XP — на всю ширину, вне flex-строки с Умником */
+  .h-xp { width: 100% !important; box-sizing: border-box !important; height: 46px !important; padding: 0 16px !important; margin-top: 0 !important; order: 10; }
+  /* Умник — крупнее, справа от приветствия */
+  .h-mascot { display: flex !important; flex-direction: column; align-items: center; justify-content: center; flex-shrink: 0; width: 130px; margin-top: 0; margin-left: auto; }
+  .h-mascot-img { width: 130px; height: 130px; }
   .h-math-float { display: none !important; }
-  /* Убрать лишние эмодзи из XP */
   .h-xp-sparkle { display: none !important; }
-  /* XP компактнее */
-  .h-xp { height: 46px !important; padding: 0 16px !important; margin-bottom: 0 !important; }
-  /* Равные отступы между всеми плашками */
-  .h-main { gap: 10px !important; padding-top: 8px !important; }
-  /* Чат с Умником — полная ширина */
-  .h-mobile-umnik { display: flex !important; width: 100% !important; box-sizing: border-box; }
+  .h-banners { display: none !important; }
+  /* Равные отступы gap между всеми плашками */
+  .h-main { gap: 10px !important; padding-top: 6px !important; }
+  /* h-content и тайлы */
+  .h-content { gap: 10px !important; }
+  /* Чат с Умником — полная ширина, тот же padding что у тайла */
+  .h-mobile-umnik { display: flex !important; width: 100% !important; box-sizing: border-box; padding: 12px 14px 10px !important; }
 }
 .h-tile {
   background: var(--h-tile-bg);
@@ -3840,7 +3847,9 @@ textarea, select { font-size: max(16px, 1em) !important; }
 .sc-chat { display:flex; flex-direction:column; gap:10px; padding:0 0 12px; }
 .sc-msg { display:flex; gap:10px; align-items:flex-start; }
 .sc-msg.user { flex-direction:row-reverse; }
-.sc-bubble { max-width:82%; padding:12px 16px; border-radius:18px; font-size:15px; line-height:1.5; }
+.sc-bubble { max-width:82%; padding:12px 16px; border-radius:18px; font-size:15px; line-height:1.5; overflow-x:auto; }
+.sc-bubble table { border-collapse:collapse; font-size:13px; min-width:max-content; }
+.sc-bubble table td, .sc-bubble table th { padding:5px 8px; border:1px solid rgba(255,255,255,.15); }
 .sc-msg.bot .sc-bubble { background:rgba(255,255,255,.09); color:#fff; border-bottom-left-radius:4px; }
 .sc-msg.user .sc-bubble { background:linear-gradient(135deg,#4f46e5,#7c3aed); color:#fff; border-bottom-right-radius:4px; }
 .sc-msg.user .sc-bubble.ok { background:linear-gradient(135deg,#059669,#10b981); }
@@ -22572,9 +22581,11 @@ const SC_UNITS = /\s*(пачек|пачки|пачка|штук|штуки|шт�
 
 function scNormAns(s) {
   const converted = scWordsToNum(String(s));
-  // убираем единицы измерения произнесённые голосом после числа
   const stripped = converted.replace(SC_UNITS, '');
-  return stripped.toLowerCase().replace(/[.,;:!?\s]/g,' ').replace(/\s+/g,' ').trim();
+  // Заменяем кириллические буквы совпадающие с латинскими (А→A, В→B, С→C и т.д.)
+  const cyrToLat = {'а':'a','в':'b','с':'c','е':'e','к':'k','м':'m','н':'h','о':'o','р':'p','т':'t','х':'x'};
+  const normalized = stripped.replace(/[авсекмнортх]/gi, ch => cyrToLat[ch.toLowerCase()] || ch);
+  return normalized.toLowerCase().replace(/[.,;:!?\s]/g,' ').replace(/\s+/g,' ').trim();
 }
 
 function scIsCorrect(userAns, correctAns) {
