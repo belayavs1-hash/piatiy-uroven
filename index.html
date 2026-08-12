@@ -17208,8 +17208,10 @@ const UmnikTutor = (function() {
   };
 
   // Нормализация + замена опечаток
+  const _cyrToLat = {'а':'a','в':'b','с':'c','е':'e','к':'k','м':'m','н':'h','о':'o','р':'p','т':'t','х':'x'};
   function norm(s) {
     return s.trim().toLowerCase()
+      .replace(/[авсекмнортх]/g, ch => _cyrToLat[ch] || ch)
       .replace(/ё/g,'е')
       .replace(/[.,!?;:]/g,' ')
       .replace(/\s+/g,' ').trim();
