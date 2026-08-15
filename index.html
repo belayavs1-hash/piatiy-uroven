@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Пятый Уровень — ИИ-репетитор</title>
 <link rel="manifest" href="/manifest.json">
+<link rel="preload" href="uchenik.png" as="image">
+<link rel="preload" href="mama.png" as="image">
 <meta name="theme-color" content="#4f46e5">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -2825,14 +2827,14 @@ textarea, select { font-size: max(16px, 1em) !important; }
       <label class="login-label">Давай познакомимся! 🙌</label>
       <div class="role-row" style="margin-bottom:18px">
         <button class="role-btn selected" id="role-btn-student" onclick="selectRole(this,'student')">
-          <div class="role-photo" style="font-size:72px;display:flex;align-items:center;justify-content:center">🧑‍🎓</div>
+          <div class="role-photo"><img src="uchenik.png" alt="Ученик" loading="eager" decoding="async" onerror="this.parentNode.innerHTML='<div style=\'font-size:72px;display:flex;align-items:center;justify-content:center;height:100%\'>🧑‍🎓</div>'"></div>
           <div class="role-info-block">
             <div class="role-label-name">Ученик</div>
             <div class="role-hint">Решаю задачи и зарабатываю XP</div>
           </div>
         </button>
         <button class="role-btn" id="role-btn-parent" onclick="selectRole(this,'parent')">
-          <div class="role-photo" style="font-size:72px;display:flex;align-items:center;justify-content:center">👨‍👩‍👧</div>
+          <div class="role-photo"><img src="mama.png" alt="Родитель" loading="eager" decoding="async" onerror="this.parentNode.innerHTML='<div style=\'font-size:72px;display:flex;align-items:center;justify-content:center;height:100%\'>👨‍👩‍👧</div>'"></div>
           <div class="role-info-block">
             <div class="role-label-name">Родитель</div>
             <div class="role-hint">Смотрю прогресс ребёнка</div>
