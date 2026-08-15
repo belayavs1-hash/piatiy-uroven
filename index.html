@@ -2825,14 +2825,14 @@ textarea, select { font-size: max(16px, 1em) !important; }
       <label class="login-label">Давай познакомимся! 🙌</label>
       <div class="role-row" style="margin-bottom:18px">
         <button class="role-btn selected" id="role-btn-student" onclick="selectRole(this,'student')">
-          <div class="role-photo"><img src="uchenik.png" alt="Ученик" onerror="this.parentNode.innerHTML='<div style=\'font-size:56px;line-height:230px\'>🧑‍🎓</div>'"></div>
+          <div class="role-photo" style="font-size:72px;display:flex;align-items:center;justify-content:center">🧑‍🎓</div>
           <div class="role-info-block">
             <div class="role-label-name">Ученик</div>
             <div class="role-hint">Решаю задачи и зарабатываю XP</div>
           </div>
         </button>
         <button class="role-btn" id="role-btn-parent" onclick="selectRole(this,'parent')">
-          <div class="role-photo"><img src="mama.png" alt="Родитель" onerror="this.parentNode.innerHTML='<div style=\'font-size:56px;line-height:230px\'>👨‍👩‍👧</div>'"></div>
+          <div class="role-photo" style="font-size:72px;display:flex;align-items:center;justify-content:center">👨‍👩‍👧</div>
           <div class="role-info-block">
             <div class="role-label-name">Родитель</div>
             <div class="role-hint">Смотрю прогресс ребёнка</div>
@@ -10099,7 +10099,7 @@ function gnavRender(activeId) {
       + '<span class="gsicon">' + it.icon + '</span>' + it.label + '</div>';
   }).join('');
   // Скрыть/показать nav — не на экранах логина и родителя
-  var hideOn = ['screen-login','screen-role','screen-parent'];
+  var hideOn = ['screen-login','screen-role','screen-parent','screen-onboarding','screen-onboarding-parent','screen-umnik'];
   var shouldHide = hideOn.includes(activeId);
   document.getElementById('global-bottom-nav').style.display = shouldHide ? 'none' : '';
   document.body.classList.toggle('has-global-nav', !shouldHide);
