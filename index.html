@@ -10266,7 +10266,11 @@ async function checkPhotoSolution() {
       <button class="btn-find" style="margin-top:12px;width:100%;display:flex;align-items:center;justify-content:center;gap:10px" onclick="openWalkthrough(currentTask,'screen-photo-check',true,_lastDoneParts)">
         <img src="umnik_avatar2.png" style="width:28px;height:28px;object-fit:contain;filter:drop-shadow(0 0 4px rgba(147,197,253,.6))"> Разобрать с Умником
       </button>`;
-      if(currentTask) addMistake(currentTask.topic, 'photo_wrong');
+      if(currentTask) addMistake(currentTask.topic, 'photo_wrong', {
+        taskId: currentTask.id,
+        task: (currentTask.text||'').replace(/<[^>]+>/g,'').slice(0,120),
+        source: 'Фото · ' + (currentTask.para||'') + ' · ' + currentTask.id
+      });
     }
   } catch(e) {
     setPhotoStatus('error');
@@ -12100,17 +12104,6 @@ function checkWalkthrough() {
     });
   }
 
-  // Записать ошибку из домашки
-  if (currentTask) {
-    addMistake(currentTask.topic || 'Домашка', 'homework_wrong', {
-      taskId: currentTask.id,
-      task: (currentTask.text || '').replace(/<[^>]+>/g,'').slice(0, 120),
-      studentAnswer: userAns,
-      correctAnswer: currentTask.answer || '',
-      source: 'Домашка · ' + (currentTask.para || '') + ' · ' + currentTask.id
-    });
-  }
-
   // Показываем индикатор печати
   const typingDiv = document.createElement('div');
   typingDiv.className = 'chat-msg bot';
@@ -12487,7 +12480,13 @@ function checkSolution() {
       <div class="r-icon">❌</div>
       <div class="r-text">${doneStr}</div>
     </div>`;
-    addMistake(currentTask.topic, 'check_wrong');
+    addMistake(currentTask.topic, 'check_wrong', {
+      taskId: currentTask.id,
+      task: (currentTask.text||'').replace(/<[^>]+>/g,'').slice(0,120),
+      studentAnswer: document.getElementById('chk-input') ? document.getElementById('chk-input').value : '',
+      correctAnswer: currentTask.answer || '',
+      source: 'Проверочная · ' + (currentTask.para||'') + ' · ' + currentTask.id
+    });
     grantAchievement('found_error');
     document.getElementById('chk-after').style.display = 'none';
     setTimeout(function() { goToWalkthrough(); }, 1200);
@@ -16279,7 +16278,11 @@ function ftShowResult() {
   // Записываем ошибки в ST.mistakes
   FINAL_QUESTIONS.forEach(function(q, i) {
     if(!FT_STATE.answers[i]) {
-      addMistake('Итоговый тест', 'final_test', q.q ? q.q.replace(/<[^>]*>/g,'').slice(0,60) : ('Вопрос ' + (i+1)));
+      addMistake('Итоговый тест', 'final_test', {
+        task: q.q ? q.q.replace(/<[^>]*>/g,'').slice(0,120) : ('Вопрос ' + (i+1)),
+        correctAnswer: Array.isArray(q.a) ? q.a.join(', ') : String(q.a||''),
+        source: 'Итоговый тест · вопрос ' + (i+1)
+      });
     }
   });
   try { checkAchievements(); } catch(e) {}
