@@ -3334,7 +3334,7 @@ textarea, select { font-size: max(16px, 1em) !important; }
   <!-- Чат-поток — top подстраивается под шапку -->
   <div id="wt-chat" style="position:fixed;top:56px;left:0;right:0;bottom:140px;overflow-y:auto;padding:12px 16px 8px;max-width:680px;margin:0 auto;box-sizing:border-box"></div>
   <!-- Фиксированный ввод внизу -->
-  <div id="wt-input-bar" style="position:fixed;bottom:64px;left:0;right:0;padding:10px 12px;background:rgba(10,18,40,.97);backdrop-filter:blur(12px);border-top:1px solid rgba(100,149,255,.15);display:flex;gap:7px;box-sizing:border-box;width:100%">
+  <div id="wt-input-bar" style="position:fixed;bottom:64px;left:0;right:0;padding:10px 12px;background:rgba(10,18,40,.97);backdrop-filter:blur(12px);border-top:1px solid rgba(100,149,255,.15);display:flex;gap:7px;box-sizing:border-box;width:100%;z-index:210">
     <button id="wt-mic-btn" onclick="wtStartVoice()" title="Голос" style="padding:11px 13px;border-radius:22px;border:none;background:rgba(255,255,255,.08);color:#fff;font-size:19px;cursor:pointer;flex-shrink:0;line-height:1">🎤</button>
     <input type="text" id="wt-answer" placeholder="Напиши ответ или скажи голосом…" onkeydown="if(event.key==='Enter')checkWalkthrough()" style="flex:1;padding:11px 15px;border-radius:22px;border:1.5px solid rgba(100,149,255,.25);background:rgba(255,255,255,.07);color:#fff;font-family:inherit;font-size:16px;font-weight:600;outline:none">
     <button id="wt-hint-btn" onclick="wtAskHint()" title="Подсказка" style="padding:11px 13px;border-radius:22px;border:none;background:rgba(255,255,255,.08);color:#fbbf24;font-size:19px;cursor:pointer;flex-shrink:0;line-height:1">💡</button>
@@ -4229,7 +4229,7 @@ button, .btn-find, .btn-check, .btn-ghost, .btn-secondary {
     </div>
   </div>
   <!-- Фиксированная строка ввода -->
-  <div id="sc-input-wrap" style="display:none;position:fixed;bottom:60px;left:0;right:0;padding:10px 14px;background:rgba(14,11,36,.95);backdrop-filter:blur(10px);border-top:1px solid rgba(255,255,255,.08);z-index:50">
+  <div id="sc-input-wrap" style="display:none;position:fixed;bottom:64px;left:0;right:0;padding:10px 14px;background:rgba(14,11,36,.95);backdrop-filter:blur(10px);border-top:1px solid rgba(255,255,255,.08);z-index:210">
     <div class="sc-input-row">
       <button id="sc-mic-btn" onclick="scToggleMic()" style="padding:13px 15px;border-radius:14px;border:none;background:rgba(255,255,255,.12);color:#fff;font-size:18px;cursor:pointer;flex-shrink:0;transition:background .2s" title="Голосовой ввод">🎤</button>
       <input type="text" class="sc-inp" id="sc-input" placeholder="Твой ответ..." onkeydown="if(event.key==='Enter')scCheckAnswer()">
@@ -10106,7 +10106,7 @@ function gnavRender(activeId) {
       + '<span class="gsicon">' + it.icon + '</span>' + it.label + '</div>';
   }).join('');
   // Скрыть/показать nav — не на экранах логина и родителя
-  var hideOn = ['screen-login','screen-role','screen-parent','screen-onboarding','screen-onboarding-parent','screen-umnik'];
+  var hideOn = ['screen-login','screen-role','screen-parent','screen-onboarding','screen-onboarding-parent','screen-umnik','screen-self-check','screen-walkthrough'];
   var shouldHide = hideOn.includes(activeId);
   document.getElementById('global-bottom-nav').style.display = shouldHide ? 'none' : '';
   document.body.classList.toggle('has-global-nav', !shouldHide);
@@ -10406,7 +10406,7 @@ function updateParaProgress() {
 
 function updateAllXP() {
   const xpStr = '⭐ ' + Math.round(ST.xp) + ' XP';
-  ['nav-xp-home','nav-xp-hw','nav-xp-wt','nav-xp-chk','nav-xp-map','nav-xp-tr','nav-xp-par','nav-xp-as','nav-xp-ph'].forEach(id => {
+  ['nav-xp-prof','nav-xp-hw','nav-xp-wt','nav-xp-chk','nav-xp-map','nav-xp-tr','nav-xp-rule','nav-xp-as','nav-xp-ph','nav-xp-ff','nav-xp-mistakes','nav-xp-errtrain','nav-xp-cs','nav-xp-ach','nav-xp-ft'].forEach(id => {
     const el = document.getElementById(id);
     if(el) el.textContent = xpStr;
   });
