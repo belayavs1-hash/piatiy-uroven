@@ -10058,7 +10058,6 @@ function showScreen(id) {
   if(id === 'screen-homework') updateTopics();
   if(id === 'screen-home') { try { updateParaProgress(); } catch(e) {} }
   if(id === 'screen-profile') { try { renderProfile(); } catch(e) {} }
-  if(id === 'screen-profile') renderProfile();
   if(id === 'screen-funfacts') renderFunFacts();
   if(id === 'screen-mistakes') { try { renderMistakes(); } catch(e) {} }
   if(id === 'screen-achievements') { try { renderAchievements(); } catch(e) {} }
@@ -11997,6 +11996,13 @@ function checkWalkthrough() {
     } else {
       // wrong — вызываем AI репетитора с контекстом текущего пункта
       chatAddUser(userAns, 'almost');
+      if (currentTask) addMistake(currentTask.topic || 'Домашка', 'homework_wrong', {
+        taskId: currentTask.id,
+        task: (currentTask.text||'').replace(/<[^>]+>/g,'').slice(0,120),
+        studentAnswer: userAns,
+        correctAnswer: currentTask.answer || '',
+        source: 'Домашка · ' + (currentTask.para||'') + ' · ' + currentTask.id + ' · пункт ' + wtCurrentPart
+      });
       const partLabel = wtCurrentPart;
       const partMsg = 'Сейчас решаем пункт ' + partLabel + '). ' + userAns;
       wtTutorHistory.push({ role: 'user', content: partMsg });
@@ -23758,16 +23764,6 @@ function p92reset() {
 
 function p92show(n) { var g = document.getElementById("d92_" + n); if(g) g.setAttribute("opacity","1"); }
 function p92showAll() { ["B","S","R","Y","N","E","Z","X","F"].forEach(function(n){ p92show(n); }); }
-
-function p92showAll() {
-  ["B","S","R","Y","N","E","Z","X","F"].forEach(function(n){ p92show(n); });
-}
-function p92reset() {
-  ["B","S","R","Y","N","E","Z","X","F"].forEach(function(n){
-    var el = document.getElementById("p92pt_" + name);
-    if (el) el.setAttribute("opacity","0");
-  });
-}
 
 function p72Next() {
   _p72Step = 0;
