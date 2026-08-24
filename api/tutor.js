@@ -8,6 +8,26 @@ module.exports = async function handler(req, res) {
   const { task, messages } = req.body;
   if (!task || !messages) return res.status(400).json({ error: 'Missing task or messages' });
 
+  // Конвертирует HTML-таблицу в читаемый текст для промпта
+  function htmlTableToText(html) {
+    // Сначала обрабатываем таблицы
+    let result = html.replace(/<table[^>]*>([\s\S]*?)<\/table>/gi, (_, tbody) => {
+      const rows = [];
+      const rowMatches = tbody.matchAll(/<tr[^>]*>([\s\S]*?)<\/tr>/gi);
+      for (const row of rowMatches) {
+        const cells = [];
+        const cellMatches = row[1].matchAll(/<t[dh][^>]*>([\s\S]*?)<\/t[dh]>/gi);
+        for (const cell of cellMatches) {
+          cells.push(cell[1].replace(/<[^>]+>/g, '').trim());
+        }
+        rows.push(cells.join(' | '));
+      }
+      return '\n' + rows.join('\n') + '\n';
+    });
+    // Убираем оставшиеся теги
+    return result.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+  }
+
   // For sub-parts like а1, а2... extract which numbered value we're checking
   let partContext = '';
   let subValueHint = '';
@@ -34,7 +54,7 @@ module.exports = async function handler(req, res) {
     content: `Ты Умник — дружелюбный помощник по математике для ученика 5 класса (учебник Виленкина). Твоя главная задача — ПРОВЕРИТЬ ответ ученика и помочь если он ошибся.
 
 ЗАДАНИЕ:
-${task.text ? task.text.replace(/<[^>]+>/g, '') : ''}
+${task.text ? htmlTableToText(task.text) : ''}
 
 ПРАВИЛЬНЫЙ ОТВЕТ (только для твоей проверки — НЕ показывай ученику): ${task.answer || ''}${partContext}${subValueHint}
 

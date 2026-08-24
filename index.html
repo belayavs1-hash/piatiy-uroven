@@ -2507,8 +2507,11 @@ body.theme-dark .h-mobile-umnik { background: rgba(53,201,129,.15); }
 
 /* Карточка задания */
 .chat-task-card { background:rgba(255,255,255,.05); border:1px solid rgba(100,149,255,.18); border-radius:14px; padding:10px 12px; margin-bottom:2px; width:100%; box-sizing:border-box; overflow-x:auto; }
-.chat-task-card table { border-collapse:collapse; font-size:13px; min-width:max-content; }
-.chat-task-card table td, .chat-task-card table th { padding:4px 8px; border:1px solid rgba(100,149,255,.25); white-space:nowrap; }
+.chat-task-card table { border-collapse:collapse; font-size:12px; min-width:max-content; }
+.chat-task-card table td, .chat-task-card table th { padding:3px 6px; border:1px solid rgba(100,149,255,.25); white-space:nowrap; text-align:center; }
+/* Таблицы внутри текста задания (не в chat-bubble) */
+.chat-task-text table { border-collapse:collapse; font-size:12px; min-width:max-content; overflow-x:auto; display:block; }
+.chat-task-text table td, .chat-task-text table th { padding:3px 6px; border:1px solid rgba(100,149,255,.25); white-space:nowrap; text-align:center; }
 .chat-task-id { font-size:11px; font-weight:800; color:#818cf8; text-transform:uppercase; letter-spacing:1px; margin-bottom:3px; }
 .chat-task-topic { font-size:12px; color:rgba(255,255,255,.45); margin-bottom:7px; }
 .chat-task-text { font-size:14px; color:#e2e8f0; font-weight:500; line-height:1.55; }
