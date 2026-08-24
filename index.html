@@ -3965,6 +3965,14 @@ button, .btn-find, .btn-check, .btn-ghost, .btn-secondary {
     font-size: 14px;
     padding: 10px 12px;
   }
+  /* Пузырь с таблицей — расширяем на всю ширину и разрешаем горизонтальный скролл */
+  .chat-bubble:has(table) {
+    max-width: 100% !important;
+    overflow-x: auto;
+  }
+  .chat-task-card {
+    max-width: 100%;
+  }
   #wt-chat {
     padding: 8px;
   }
