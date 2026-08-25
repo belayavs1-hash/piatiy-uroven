@@ -2775,6 +2775,44 @@ textarea, select { font-size: max(16px, 1em) !important; }
 </head>
 <body class="on-login theme-light">
 
+<!-- ===== PASSWORD GATE ===== -->
+<div id="screen-password-gate" style="position:fixed;inset:0;background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);display:flex;align-items:center;justify-content:center;z-index:99999;font-family:'Nunito',sans-serif;">
+  <div style="background:rgba(255,255,255,0.07);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.15);border-radius:24px;padding:40px 36px;max-width:360px;width:90%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.4);">
+    <div style="font-size:48px;margin-bottom:12px;">🔐</div>
+    <div style="color:#fff;font-size:22px;font-weight:800;margin-bottom:6px;">Пятый уровень</div>
+    <div style="color:rgba(255,255,255,0.6);font-size:14px;margin-bottom:28px;">Введите код доступа</div>
+    <input id="gate-input" type="password" placeholder="Код доступа..." style="width:100%;box-sizing:border-box;padding:14px 18px;border-radius:12px;border:1.5px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.1);color:#fff;font-size:16px;font-family:'Nunito',sans-serif;outline:none;margin-bottom:12px;" onkeydown="if(event.key==='Enter')checkGatePassword()">
+    <div id="gate-error" style="color:#ff6b6b;font-size:13px;min-height:18px;margin-bottom:10px;"></div>
+    <button onclick="checkGatePassword()" style="width:100%;padding:14px;background:linear-gradient(135deg,#667eea,#764ba2);border:none;border-radius:12px;color:#fff;font-size:16px;font-weight:700;cursor:pointer;font-family:'Nunito',sans-serif;">Войти</button>
+    <div style="color:rgba(255,255,255,0.4);font-size:12px;margin-top:20px;">Код доступа можно получить у организатора</div>
+  </div>
+</div>
+
+<script>
+(function() {
+  var ACCESS_PASSWORD = 'урок5';
+  var STORAGE_KEY = 'piatiy_access_v1';
+
+  function checkGatePassword() {
+    var val = document.getElementById('gate-input').value.trim();
+    if (val === ACCESS_PASSWORD) {
+      try { localStorage.setItem(STORAGE_KEY, '1'); } catch(e) {}
+      document.getElementById('screen-password-gate').style.display = 'none';
+    } else {
+      document.getElementById('gate-error').textContent = 'Неверный код. Попробуйте ещё раз.';
+      document.getElementById('gate-input').value = '';
+    }
+  }
+  window.checkGatePassword = checkGatePassword;
+
+  try {
+    if (localStorage.getItem(STORAGE_KEY) === '1') {
+      document.getElementById('screen-password-gate').style.display = 'none';
+    }
+  } catch(e) {}
+})();
+</script>
+
 <!-- ===== LOGIN ===== -->
 <div id="screen-login" class="screen active">
 
