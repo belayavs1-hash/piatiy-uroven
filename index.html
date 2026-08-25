@@ -12205,7 +12205,7 @@ function checkWalkthrough() {
     wtTutorHistory.push({ role: 'assistant', content: reply });
     chatAddBot(processGeoReply(reply), false);
     // Если AI засчитал — завершаем задание
-    const _aiOk2 = (function(_r){ var _neg = /неs*(?:совсемs*)?(?:правильно|верно)/i.test(_r); var _hasQ = _r.indexOf('?') >= 0; var _pos = /правильно!s*✅/i.test(_r) && !_hasQ; return !_neg && _pos; })(reply);
+    const _aiOk2 = (function(_r){ var _neg = /не\s*(?:совсем\s*)?(?:правильно|верно)/i.test(_r); var _hasQ = _r.indexOf('?') >= 0; var _pos = /правильно!\s*✅/i.test(_r) && !_hasQ; return !_neg && _pos; })(reply);
     if (_aiOk2 && !wtIsMultiPart) {
       const _xp2 = 5;
       if (currentTask && currentTask.para === 'Повторение') {
