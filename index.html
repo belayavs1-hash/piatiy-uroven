@@ -2790,13 +2790,20 @@ textarea, select { font-size: max(16px, 1em) !important; }
 
 <script>
 (function() {
-  var ACCESS_PASSWORD = 'урок5';
+  // Список паролей — добавляй/удаляй коды здесь. Удалить = заблокировать клиента.
+  var PASSWORDS = ['урок5','урок51','урок52','урок53','урок54','урок55','урок56','урок57','урок58','урок59','урок510'];
+  // При изменении списка старые сессии автоматически сбрасываются
+  var SESSION_VERSION = PASSWORDS.join(',').length.toString();
   var STORAGE_KEY = 'piatiy_access_v1';
+  var VERSION_KEY = 'piatiy_ver_v1';
 
   function checkGatePassword() {
     var val = document.getElementById('gate-input').value.trim();
-    if (val === ACCESS_PASSWORD) {
-      try { localStorage.setItem(STORAGE_KEY, '1'); } catch(e) {}
+    if (PASSWORDS.indexOf(val) !== -1) {
+      try {
+        localStorage.setItem(STORAGE_KEY, '1');
+        localStorage.setItem(VERSION_KEY, SESSION_VERSION);
+      } catch(e) {}
       document.getElementById('screen-password-gate').style.display = 'none';
     } else {
       document.getElementById('gate-error').textContent = 'Неверный код. Попробуйте ещё раз.';
@@ -2806,7 +2813,15 @@ textarea, select { font-size: max(16px, 1em) !important; }
   window.checkGatePassword = checkGatePassword;
 
   try {
-    if (localStorage.getItem(STORAGE_KEY) === '1') {
+    var savedVersion = localStorage.getItem(VERSION_KEY);
+    var hasAccess = localStorage.getItem(STORAGE_KEY) === '1';
+    // Если версия паролей изменилась — сбросить сессию
+    if (hasAccess && savedVersion !== SESSION_VERSION) {
+      localStorage.removeItem(STORAGE_KEY);
+      localStorage.removeItem(VERSION_KEY);
+      hasAccess = false;
+    }
+    if (hasAccess) {
       document.getElementById('screen-password-gate').style.display = 'none';
     }
   } catch(e) {}
