@@ -1686,6 +1686,32 @@ body.theme-dark .h-mobile-umnik { background: rgba(53,201,129,.15); }
 .tr-name { font-size: 13px; font-weight: 800; color: #fff; margin-bottom: 4px; line-height:1.3; min-height:32px; display:flex; align-items:center; justify-content:center; }
 .tr-count { font-size: 11px; color: rgba(255,255,255,.5); }
 .tr-ext { display: inline-block; margin-left: 4px; font-size: 10px; color: #6366f1; font-weight: 700; }
+/* ===== Игры ===== */
+.games-section-title { font-size: 13px; font-weight: 800; color: rgba(255,255,255,.5); letter-spacing: .08em; text-transform: uppercase; margin-bottom: 12px; margin-top: 8px; }
+.games-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; margin-bottom: 32px; }
+.game-card {
+  background: rgba(255,255,255,.07);
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 18px;
+  padding: 20px 16px;
+  text-align: center;
+  cursor: pointer;
+  transition: transform .2s, box-shadow .2s, background .2s;
+  position: relative;
+  overflow: hidden;
+}
+.game-card::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; border-radius:18px 18px 0 0; background: linear-gradient(90deg,#10b981,#34d399); }
+.game-card:hover { transform: translateY(-4px); background:rgba(255,255,255,.12); box-shadow: 0 12px 30px rgba(0,0,0,.35); }
+.game-card-icon { font-size: 32px; margin-bottom: 10px; display: block; }
+.game-card-name { font-size: 13px; font-weight: 800; color: #fff; margin-bottom: 4px; line-height:1.3; min-height:32px; display:flex; align-items:center; justify-content:center; }
+.game-card-tag { font-size: 11px; color: rgba(255,255,255,.45); }
+/* iframe view */
+#tr-game-view { display:none; flex-direction:column; height:100%; }
+#tr-game-view .game-back-bar { display:flex; align-items:center; gap:12px; padding: 0 0 12px; flex-shrink:0; }
+#tr-game-view .game-back-btn { background:rgba(255,255,255,.1); border:none; color:#fff; padding:8px 18px; border-radius:20px; font-size:13px; font-weight:700; cursor:pointer; font-family:inherit; }
+#tr-game-view .game-back-btn:hover { background:rgba(255,255,255,.18); }
+#tr-game-view .game-back-title { font-size:14px; font-weight:700; color:#fff; opacity:.7; }
+#tr-game-frame { width:100%; border:none; border-radius:16px; background:#fff; flex:1; min-height:520px; }
 
 /* ===== TRAINER GAME ===== */
 .tg-wrap { max-width:600px; margin:0 auto; display:flex; flex-direction:column; gap:0; }
@@ -3653,6 +3679,33 @@ textarea, select { font-size: max(16px, 1em) !important; }
       <div style="text-align:center;padding:16px 0 8px">
         <button onclick="window.scrollTo({top:0,behavior:'smooth'})" style="padding:8px 24px;border-radius:20px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.06);color:rgba(255,255,255,.5);font-size:12px;font-weight:600;cursor:pointer">↑ Наверх</button>
       </div>
+      <!-- Игры -->
+      <div class="games-section-title">🎮 Игры</div>
+      <div class="games-grid">
+        <div class="game-card" onclick="openGame('https://boxapps.adu.by/public/game/3889','Числовые выражения')">
+          <span class="game-card-icon">🔢</span>
+          <div class="game-card-name">Числовые выражения</div>
+          <div class="game-card-tag">Сортировка</div>
+        </div>
+        <div class="game-card" onclick="openGame('https://boxapps.adu.by/public/game/2050','Правильные и неправильные дроби')">
+          <span class="game-card-icon">½</span>
+          <div class="game-card-name">Правильные и неправильные дроби</div>
+          <div class="game-card-tag">Сортировка</div>
+        </div>
+        <div class="game-card" onclick="openGame('https://boxapps.adu.by/public/game/2035','Запись дробей словами')">
+          <span class="game-card-icon">✏️</span>
+          <div class="game-card-name">Запись дробей словами</div>
+          <div class="game-card-tag">Ввод текста</div>
+        </div>
+      </div>
+    </div>
+    <!-- Игра в iframe -->
+    <div id="tr-game-view">
+      <div class="game-back-bar">
+        <button class="game-back-btn" onclick="closeGame()">← Назад</button>
+        <div class="game-back-title" id="tr-game-title"></div>
+      </div>
+      <iframe id="tr-game-frame" src="" allowfullscreen></iframe>
     </div>
     <!-- Экран старта тренажёра -->
     <div id="tr-start-view" style="display:none">
@@ -13287,6 +13340,7 @@ function showTrainerList(highlightId) {
   document.getElementById('tr-start-view').style.display = 'none';
   document.getElementById('tr-session-view').style.display = 'none';
   document.getElementById('tr-done-view').style.display = 'none';
+  document.getElementById('tr-game-view').style.display = 'none';
   document.getElementById('tr-title').textContent = '⚡ Тренажёры';
   document.getElementById('tr-back-btn').onclick = () => showScreen('screen-home');
   var hid = highlightId || currentTopicTrainerId;
@@ -13305,7 +13359,9 @@ function showTrainerList(highlightId) {
 }
 
 function trainersBack() {
-  if(document.getElementById('tr-session-view').style.display !== 'none') {
+  if(document.getElementById('tr-game-view').style.display !== 'none') {
+    closeGame();
+  } else if(document.getElementById('tr-session-view').style.display !== 'none') {
     if(!confirm('Выйти из тренажёра?')) return;
     showTrainerList();
   } else if(document.getElementById('tr-start-view').style.display !== 'none') {
@@ -13313,6 +13369,25 @@ function trainersBack() {
   } else {
     showScreen('screen-home');
   }
+}
+
+function openGame(url, title) {
+  document.getElementById('tr-list-view').style.display = 'none';
+  document.getElementById('tr-start-view').style.display = 'none';
+  document.getElementById('tr-session-view').style.display = 'none';
+  document.getElementById('tr-done-view').style.display = 'none';
+  var gv = document.getElementById('tr-game-view');
+  gv.style.display = 'flex';
+  document.getElementById('tr-game-title').textContent = title;
+  document.getElementById('tr-game-frame').src = url;
+  document.getElementById('tr-title').textContent = '🎮 Игры';
+  document.getElementById('tr-back-btn').onclick = closeGame;
+}
+
+function closeGame() {
+  document.getElementById('tr-game-frame').src = '';
+  document.getElementById('tr-game-view').style.display = 'none';
+  showTrainerList();
 }
 
 function startTrainer(id) {
