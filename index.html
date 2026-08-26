@@ -1676,6 +1676,7 @@ body.theme-dark .h-mobile-umnik { background: rgba(53,201,129,.15); }
   animation: trainerPulse 1.2s ease-in-out 3;
 }
 .trainer-card-highlight::before { background: linear-gradient(90deg,#f59e0b,#fbbf24) !important; }
+@keyframes spin { to { transform: rotate(360deg); } }
 @keyframes trainerPulse {
   0%,100% { box-shadow: 0 0 0 4px rgba(245,158,11,.25); transform: scale(1.03); }
   50%      { box-shadow: 0 0 0 10px rgba(245,158,11,.0); transform: scale(1.05); }
@@ -3676,9 +3677,6 @@ textarea, select { font-size: max(16px, 1em) !important; }
       <div class="screen-title">Тренажёры</div>
       <div class="screen-subtitle">Каждый тренажёр — 10 заданий. Решай, собирай XP, открывай предметы и повторяй ошибки с Умником.</div>
       <div class="trainers-grid" id="trainers-grid"></div>
-      <div style="text-align:center;padding:16px 0 8px">
-        <button onclick="window.scrollTo({top:0,behavior:'smooth'})" style="padding:8px 24px;border-radius:20px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.06);color:rgba(255,255,255,.5);font-size:12px;font-weight:600;cursor:pointer">↑ Наверх</button>
-      </div>
       <!-- Игры — карточки в общей сетке тренажёров -->
       <div class="trainers-grid" style="margin-top:0">
         <div class="game-card" onclick="openGame('https://boxapps.adu.by/public/game/3889','Числовые выражения')">
@@ -3697,14 +3695,24 @@ textarea, select { font-size: max(16px, 1em) !important; }
           <div class="game-card-tag">🎮 Игра</div>
         </div>
       </div>
+      <div style="text-align:center;padding:16px 0 8px">
+        <button onclick="window.scrollTo({top:0,behavior:'smooth'})" style="padding:8px 24px;border-radius:20px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.06);color:rgba(255,255,255,.5);font-size:12px;font-weight:600;cursor:pointer">↑ Наверх</button>
+      </div>
     </div>
     <!-- Игра в iframe -->
     <div id="tr-game-view">
       <div class="game-back-bar">
         <button class="game-back-btn" onclick="closeGame()">← Назад</button>
         <div class="game-back-title" id="tr-game-title"></div>
+        <a id="tr-game-extlink" href="#" target="_blank" style="margin-left:auto;font-size:12px;font-weight:700;color:rgba(255,255,255,.45);text-decoration:none;padding:6px 12px;border-radius:14px;border:1px solid rgba(255,255,255,.15)">↗ В новой вкладке</a>
       </div>
-      <iframe id="tr-game-frame" src="" allowfullscreen></iframe>
+      <div style="position:relative;flex:1;min-height:520px">
+        <div id="tr-game-loading" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;background:rgba(255,255,255,.04);border-radius:16px;color:rgba(255,255,255,.5);font-size:14px;font-weight:600">
+          <div style="width:32px;height:32px;border:3px solid rgba(255,255,255,.15);border-top-color:#10b981;border-radius:50%;animation:spin .8s linear infinite"></div>
+          Загружаем игру...
+        </div>
+        <iframe id="tr-game-frame" src="" allowfullscreen style="position:absolute;inset:0;width:100%;height:100%;border:none;border-radius:16px;background:#fff" onload="document.getElementById('tr-game-loading').style.display='none'"></iframe>
+      </div>
     </div>
     <!-- Экран старта тренажёра -->
     <div id="tr-start-view" style="display:none">
@@ -13378,8 +13386,10 @@ function openGame(url, title) {
   var gv = document.getElementById('tr-game-view');
   gv.style.display = 'flex';
   document.getElementById('tr-game-title').textContent = title;
+  document.getElementById('tr-game-loading').style.display = 'flex';
   document.getElementById('tr-game-frame').src = url;
-  document.getElementById('tr-title').textContent = '🎮 Игры';
+  document.getElementById('tr-game-extlink').href = url;
+  document.getElementById('tr-title').textContent = '🎮 ' + title;
   document.getElementById('tr-back-btn').onclick = closeGame;
 }
 
