@@ -10184,6 +10184,7 @@ function gnavGo(screenId) {
 }
 
 function gnavUmnik() {
+  if (!ST.user) return;
   gnavCloseMore();
   showUmnik(_gnavCurrentScreen);
 }
@@ -10198,6 +10199,7 @@ function gnavCloseMore() {
 
 // Кнопка «назад» Android — закрывает sheet вместо выхода из приложения
 function gnavToggleMore() {
+  if (!ST.user) return;
   _gnavMoreOpen = !_gnavMoreOpen;
   var sheet = document.getElementById('gnav-more-sheet');
   var overlay = document.getElementById('gnav-sheet-overlay');
