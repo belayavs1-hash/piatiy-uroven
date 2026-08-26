@@ -3679,17 +3679,17 @@ textarea, select { font-size: max(16px, 1em) !important; }
       <div class="trainers-grid" id="trainers-grid"></div>
       <!-- Игры — карточки в общей сетке тренажёров -->
       <div class="trainers-grid" style="margin-top:0">
-        <div class="game-card" onclick="openGame('https://boxapps.adu.by/public/game/3889','Числовые выражения')">
+        <div class="game-card" onclick="openGame('https://boxapps.adu.by/public/game/3889','Числовые выражения','🔢')">
           <span class="game-card-icon">🔢</span>
           <div class="game-card-name">Числовые выражения</div>
           <div class="game-card-tag">🎮 Игра</div>
         </div>
-        <div class="game-card" onclick="openGame('https://boxapps.adu.by/public/game/2050','Правильные и неправильные дроби')">
+        <div class="game-card" onclick="openGame('https://boxapps.adu.by/public/game/2050','Правильные и неправильные дроби','½')">
           <span class="game-card-icon">½</span>
           <div class="game-card-name">Правильные и неправильные дроби</div>
           <div class="game-card-tag">🎮 Игра</div>
         </div>
-        <div class="game-card" onclick="openGame('https://boxapps.adu.by/public/game/2035','Запись дробей словами')">
+        <div class="game-card" onclick="openGame('https://boxapps.adu.by/public/game/2035','Запись дробей словами','✏️')">
           <span class="game-card-icon">✏️</span>
           <div class="game-card-name">Запись дробей словами</div>
           <div class="game-card-tag">🎮 Игра</div>
@@ -3699,19 +3699,17 @@ textarea, select { font-size: max(16px, 1em) !important; }
         <button onclick="window.scrollTo({top:0,behavior:'smooth'})" style="padding:8px 24px;border-radius:20px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.06);color:rgba(255,255,255,.5);font-size:12px;font-weight:600;cursor:pointer">↑ Наверх</button>
       </div>
     </div>
-    <!-- Игра в iframe -->
+    <!-- Игра — открывается в новой вкладке -->
     <div id="tr-game-view">
       <div class="game-back-bar">
         <button class="game-back-btn" onclick="closeGame()">← Назад</button>
         <div class="game-back-title" id="tr-game-title"></div>
-        <a id="tr-game-extlink" href="#" target="_blank" style="margin-left:auto;font-size:12px;font-weight:700;color:rgba(255,255,255,.45);text-decoration:none;padding:6px 12px;border-radius:14px;border:1px solid rgba(255,255,255,.15)">↗ В новой вкладке</a>
       </div>
-      <div style="position:relative;flex:1;min-height:520px">
-        <div id="tr-game-loading" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;background:rgba(255,255,255,.04);border-radius:16px;color:rgba(255,255,255,.5);font-size:14px;font-weight:600">
-          <div style="width:32px;height:32px;border:3px solid rgba(255,255,255,.15);border-top-color:#10b981;border-radius:50%;animation:spin .8s linear infinite"></div>
-          Загружаем игру...
-        </div>
-        <iframe id="tr-game-frame" src="" allowfullscreen style="position:absolute;inset:0;width:100%;height:100%;border:none;border-radius:16px;background:#fff" onload="document.getElementById('tr-game-loading').style.display='none'"></iframe>
+      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;gap:24px;padding:40px 16px;text-align:center">
+        <div id="tr-game-icon" style="font-size:64px"></div>
+        <div style="font-size:20px;font-weight:800;color:#fff" id="tr-game-title2"></div>
+        <div style="font-size:14px;color:rgba(255,255,255,.5);max-width:280px;line-height:1.6">Игра откроется на отдельной странице. После выполнения вернись назад.</div>
+        <a id="tr-game-extlink" href="#" target="_blank" style="display:inline-block;padding:16px 40px;background:linear-gradient(135deg,#10b981,#34d399);color:#fff;font-size:16px;font-weight:800;border-radius:20px;text-decoration:none;font-family:inherit">🎮 Начать игру</a>
       </div>
     </div>
     <!-- Экран старта тренажёра -->
@@ -13378,7 +13376,7 @@ function trainersBack() {
   }
 }
 
-function openGame(url, title) {
+function openGame(url, title, icon) {
   document.getElementById('tr-list-view').style.display = 'none';
   document.getElementById('tr-start-view').style.display = 'none';
   document.getElementById('tr-session-view').style.display = 'none';
@@ -13386,15 +13384,14 @@ function openGame(url, title) {
   var gv = document.getElementById('tr-game-view');
   gv.style.display = 'flex';
   document.getElementById('tr-game-title').textContent = title;
-  document.getElementById('tr-game-loading').style.display = 'flex';
-  document.getElementById('tr-game-frame').src = url;
+  document.getElementById('tr-game-title2').textContent = title;
+  document.getElementById('tr-game-icon').textContent = icon || '🎮';
   document.getElementById('tr-game-extlink').href = url;
-  document.getElementById('tr-title').textContent = '🎮 ' + title;
+  document.getElementById('tr-title').textContent = '🎮 Игры';
   document.getElementById('tr-back-btn').onclick = closeGame;
 }
 
 function closeGame() {
-  document.getElementById('tr-game-frame').src = '';
   document.getElementById('tr-game-view').style.display = 'none';
   showTrainerList();
 }
