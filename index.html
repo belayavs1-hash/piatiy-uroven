@@ -24372,10 +24372,15 @@ function gameStartSpeech() {
   if (btn) { btn.textContent = '🔴'; btn.style.borderColor = '#ef4444'; }
   if (status) status.innerHTML = '<span style="color:rgba(255,255,255,.5)">Слушаю...</span>';
   rec.onresult = function(e) {
-    var text = e.results[0][0].transcript;
-    if (inp) inp.value = text;
+    var text = e.results[0][0].transcript.trim();
     if (btn) { btn.textContent = '🎤'; btn.style.borderColor = 'rgba(255,255,255,.2)'; }
-    if (status) status.innerHTML = '';
+    // если распознало цифры или / — попросить сказать словами
+    if (/[\d\/]/.test(text)) {
+      if (status) status.innerHTML = '<span style="color:#f59e0b">Скажи словами, например: «две десятых»</span>';
+      return;
+    }
+    if (inp) inp.value = text;
+    if (status) status.innerHTML = '<span style="color:rgba(255,255,255,.4)">Распознано: ' + text + '</span>';
     checkInputGame();
   };
   rec.onerror = function() {
