@@ -24283,7 +24283,12 @@ function checkSortGame() {
       chip.classList.add('game-chip-err');
     }
   });
-  setTimeout(function() { showGameResult(correct, shuffled.length); }, 900);
+  // показываем ошибки, кнопка «Проверить» меняется на «Посмотрел → К результатам»
+  var checkBtn = document.querySelector('#games-body .tg-finish-btn');
+  if (checkBtn) {
+    checkBtn.textContent = correct === shuffled.length ? '🏆 Смотреть результат' : '👀 Посмотрел ошибки → К результату';
+    checkBtn.onclick = function() { showGameResult(correct, shuffled.length); };
+  }
 }
 
 function resetSortGame() {
