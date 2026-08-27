@@ -24223,18 +24223,26 @@ function gameSelectChip(idx) {
   if (_gameState.checked) return;
   var chip = document.getElementById('gchip-' + idx);
   if (_selectedChip === idx) {
-    // снимаем выделение
     chip.classList.remove('selected');
     _selectedChip = null;
+    gameHighlightCols(false);
     return;
   }
-  // снять выделение с предыдущего
   if (_selectedChip !== null) {
     var prev = document.getElementById('gchip-' + _selectedChip);
     if (prev) prev.classList.remove('selected');
   }
   _selectedChip = idx;
   chip.classList.add('selected');
+  gameHighlightCols(true);
+}
+
+function gameHighlightCols(on) {
+  var ca = document.getElementById('game-colA');
+  var cb = document.getElementById('game-colB');
+  if (!ca || !cb) return;
+  if (on) { ca.classList.add('game-col-target'); cb.classList.add('game-col-target'); }
+  else { ca.classList.remove('game-col-target'); cb.classList.remove('game-col-target'); }
 }
 
 function gameDropToCol(col) {
@@ -24246,14 +24254,9 @@ function gameDropToCol(col) {
   _selectedChip = null;
   chip.dataset.loc = col;
   _gameState.placed[idx] = col;
+  if (chip.parentNode) chip.parentNode.removeChild(chip);
   document.getElementById('game-col' + col + '-items').appendChild(chip);
-  // убрать из bank
-  var bankEl = document.getElementById('game-bank');
-  if (bankEl && bankEl.contains(chip)) bankEl.removeChild(chip);
-  // убрать из другой колонки
-  var other = col === 'A' ? 'B' : 'A';
-  var otherItems = document.getElementById('game-col' + other + '-items');
-  if (otherItems && otherItems.contains(chip)) otherItems.removeChild(chip);
+  gameHighlightCols(false);
 }
 
 function checkSortGame() {
@@ -24315,14 +24318,21 @@ function renderInputQuestion() {
   var item = g.items[_inputIdx];
   var progress = (_inputIdx + 1) + ' / ' + g.items.length;
 
+  var hasSpeech = !!(window.SpeechRecognition || window.webkitSpeechRecognition);
+  var micBtn = hasSpeech
+    ? '<button onclick="gameStartSpeech()" id="game-mic-btn" style="flex-shrink:0;width:48px;height:48px;border-radius:50%;border:2px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:#fff;font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center" title="Сказать голосом">🎤</button>'
+    : '';
   var html = '<div style="padding:16px 0 24px">'
     + '<div style="font-size:12px;color:rgba(255,255,255,.4);margin-bottom:20px;text-align:center">' + progress + '</div>'
     + '<div style="text-align:center;margin-bottom:28px">'
-    + '<div style="display:inline-flex;align-items:center;justify-content:center;width:100px;height:100px;background:rgba(255,255,255,.06);border-radius:20px;border:2px solid rgba(255,255,255,.12)">'
+    + '<div style="display:inline-flex;align-items:center;justify-content:center;width:110px;height:110px;background:rgba(255,255,255,.06);border-radius:20px;border:2px solid rgba(255,255,255,.12)">'
     + '<span style="color:#fff;font-size:18px">' + fracSvg(item.frac[0], item.frac[1]) + '</span>'
     + '</div></div>'
     + '<div style="font-size:14px;color:rgba(255,255,255,.6);text-align:center;margin-bottom:14px">' + g.instruction + '</div>'
-    + '<input id="game-input" type="text" class="trainer-input" placeholder="Напиши словами..." autocomplete="off" onkeydown="if(event.key===\'Enter\')checkInputGame()">'
+    + '<div style="display:flex;gap:8px;align-items:center">'
+    + '<input id="game-input" type="text" class="trainer-input" style="flex:1;margin-bottom:0" placeholder="Напиши или скажи словами..." autocomplete="off" onkeydown="if(event.key===\'Enter\')checkInputGame()">'
+    + micBtn
+    + '</div>'
     + '<div id="game-input-status" style="min-height:36px;text-align:center;font-size:14px;font-weight:700;margin:10px 0"></div>'
     + '<button class="tg-finish-btn" onclick="checkInputGame()" style="width:100%">✅ Проверить</button>'
     + '</div>';
@@ -24344,6 +24354,35 @@ function checkInputGame() {
   } else {
     status.innerHTML = '<span style="color:#ef4444">❌ Попробуй ещё раз</span>';
   }
+}
+
+function gameStartSpeech() {
+  var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) return;
+  var btn = document.getElementById('game-mic-btn');
+  var inp = document.getElementById('game-input');
+  var status = document.getElementById('game-input-status');
+  var rec = new SR();
+  rec.lang = 'ru-RU';
+  rec.interimResults = false;
+  rec.maxAlternatives = 1;
+  if (btn) { btn.textContent = '🔴'; btn.style.borderColor = '#ef4444'; }
+  if (status) status.innerHTML = '<span style="color:rgba(255,255,255,.5)">Слушаю...</span>';
+  rec.onresult = function(e) {
+    var text = e.results[0][0].transcript;
+    if (inp) inp.value = text;
+    if (btn) { btn.textContent = '🎤'; btn.style.borderColor = 'rgba(255,255,255,.2)'; }
+    if (status) status.innerHTML = '';
+    checkInputGame();
+  };
+  rec.onerror = function() {
+    if (btn) { btn.textContent = '🎤'; btn.style.borderColor = 'rgba(255,255,255,.2)'; }
+    if (status) status.innerHTML = '<span style="color:#ef4444">Не удалось распознать</span>';
+  };
+  rec.onend = function() {
+    if (btn) { btn.textContent = '🎤'; btn.style.borderColor = 'rgba(255,255,255,.2)'; }
+  };
+  rec.start();
 }
 
 function showGameResult(correct, total) {
