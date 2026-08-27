@@ -24137,11 +24137,11 @@ var GAMES_DEF = [
       { frac: [4,7], answers: ['четыре седьмых','четыре седьмые'] },
       { frac: [8,13], answers: ['восемь тринадцатых'] },
       { frac: [3,4], whole: 2, answers: ['две целых три четвёртых','две целых три четверти'] },
-      { frac: [1,3], whole: 5, answers: ['пять целых одна треть','пять целых одну треть'] },
+      { frac: [1,3], whole: 5, answers: ['пять целых одна третья','пять целых одну третью'] },
       { frac: [2,5], whole: 3, answers: ['три целых две пятых','три целых две пятые'] },
       { frac: [3,8], whole: 7, answers: ['семь целых три восьмых','семь целых три восьмые'] },
       { frac: [81,100], answers: ['восемьдесят одна сотая','восемьдесят одну сотую'] },
-      { frac: [451,186], answers: ['четыреста пятьдесят одна сто восемьдесят шестая','четыреста пятьдесят одну сто восемьдесят шестую','451 сто восемьдесят шестая'] }
+      { frac: [451,186], answers: ['четыреста пятьдесят одна сто восемьдесят шестая','четыреста пятьдесят одну сто восемьдесят шестую'] }
     ]
   }
 ];
@@ -24351,13 +24351,12 @@ function checkInputGame() {
   } else {
     _gameState._attempts = (_gameState._attempts || 0) + 1;
     if (_gameState._attempts >= 2) {
-      // показать правильный ответ и дать двигаться дальше
       status.innerHTML = '<span style="color:#ef4444">❌ Правильно: <b>' + item.answers[0] + '</b></span>';
       var inp = document.getElementById('game-input');
       if (inp) { inp.disabled = true; inp.style.opacity = '.5'; }
       var btn = document.querySelector('#games-body .tg-finish-btn');
       if (btn) {
-        btn.textContent = '→ Следующая';
+        btn.textContent = '→ Дальше';
         btn.onclick = function() { _gameState._attempts = 0; _inputIdx++; renderInputQuestion(); };
       }
     } else {
