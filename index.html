@@ -24342,7 +24342,8 @@ function checkInputGame() {
   var item = g.items[_inputIdx];
   var val = (document.getElementById('game-input').value || '').trim().toLowerCase();
   if (!val) return;
-  var ok = item.answers.some(function(a) { return val === a.toLowerCase(); });
+  var norm = function(s) { return s.toLowerCase().replace(/ё/g,'е'); };
+  var ok = item.answers.some(function(a) { return norm(val) === norm(a); });
   var status = document.getElementById('game-input-status');
   if (ok) {
     status.innerHTML = '<span style="color:#10b981">✅ Верно!</span>';
