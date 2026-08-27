@@ -24386,15 +24386,30 @@ function gameStartSpeech() {
 }
 
 function showGameResult(correct, total) {
-  var perfect = correct === total;
   var gid = _currentGame.id;
+  var ratio = total > 0 ? correct / total : 0;
+  var emoji, title, subtitle, xpReward;
+  if (ratio === 1) {
+    emoji = '🏆'; title = 'Отлично! Задание выполнено!';
+    subtitle = 'Все карточки на своих местах!'; xpReward = 10;
+  } else if (ratio >= 0.8) {
+    emoji = '😊'; title = 'Молодец! Почти всё верно!';
+    subtitle = correct + ' из ' + total + ' — совсем чуть-чуть осталось!'; xpReward = 7;
+  } else if (ratio >= 0.5) {
+    emoji = '💪'; title = 'Неплохо! Продолжай тренироваться!';
+    subtitle = correct + ' из ' + total + ' — попробуй ещё раз, станет лучше.'; xpReward = 5;
+  } else {
+    emoji = '🌱'; title = 'У тебя всё получится!';
+    subtitle = correct + ' из ' + total + ' — повтори тему и попробуй снова.'; xpReward = 3;
+  }
   var html = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;text-align:center;gap:16px;padding:32px 16px">'
     + '<img src="umnik_stoit.png" style="height:110px;object-fit:contain" onerror="this.style.display=\'none\'">'
-    + '<div style="font-size:34px">' + (perfect ? '🏆' : '👏') + '</div>'
-    + '<div style="font-size:20px;font-weight:900;color:#fff">Молодец! ' + (perfect ? 'Задание выполнено!' : correct + ' из ' + total + ' верно!') + '</div>'
-    + '<div style="font-size:14px;color:rgba(255,255,255,.55);margin-top:-4px">Понравилось? Жми на сердечко!</div>'
-    + '<div id="game-heart-wrap" style="display:flex;flex-direction:column;align-items:center;gap:6px">'
-    +   '<div style="font-size:52px;cursor:pointer;transition:transform .18s" id="game-heart" onclick="gameToggleHeart()">🤍</div>'
+    + '<div style="font-size:40px">' + emoji + '</div>'
+    + '<div style="font-size:20px;font-weight:900;color:#fff">' + title + '</div>'
+    + '<div style="font-size:14px;color:rgba(255,255,255,.55);margin-top:-4px">' + subtitle + '</div>'
+    + '<div id="game-heart-wrap" style="display:flex;flex-direction:column;align-items:center;gap:6px;margin-top:4px">'
+    +   '<div style="font-size:13px;color:rgba(255,255,255,.45);margin-bottom:2px">Понравилось? Жми на сердечко!</div>'
+    +   '<div style="font-size:52px;cursor:pointer;transition:transform .18s" id="game-heart" onclick="gameToggleHeart(' + xpReward + ')">🤍</div>'
     +   '<div id="game-heart-xp" style="font-size:13px;font-weight:700;color:#f59e0b;min-height:20px"></div>'
     + '</div>'
     + '<button class="tg-finish-btn" onclick="openGame(\'' + gid + '\')" style="width:100%;max-width:320px;margin-top:8px">🔄 Сыграть ещё раз</button>'
@@ -24403,7 +24418,7 @@ function showGameResult(correct, total) {
   document.getElementById('games-body').innerHTML = html;
 }
 
-function gameToggleHeart() {
+function gameToggleHeart(xpReward) {
   var h = document.getElementById('game-heart');
   var xpEl = document.getElementById('game-heart-xp');
   if (!h) return;
@@ -24411,10 +24426,10 @@ function gameToggleHeart() {
     h.textContent = '❤️';
     h.style.transform = 'scale(1.35)';
     setTimeout(function(){ h.style.transform = 'scale(1)'; }, 220);
-    // начислить XP
-    addXP(5);
+    var pts = xpReward || 5;
+    addXP(pts);
     updateAllXP();
-    if (xpEl) xpEl.textContent = '+5 XP начислено ⭐';
+    if (xpEl) xpEl.textContent = '+' + pts + ' XP начислено ⭐';
     document.getElementById('nav-xp-games').textContent = '⭐ ' + (ST.xp || 0) + ' XP';
   } else {
     h.textContent = '🤍';
