@@ -24387,18 +24387,19 @@ function showGameResult(correct, total) {
   var gid = _currentGame.id;
   var ratio = total > 0 ? correct / total : 0;
   var emoji, title, subtitle, xpReward;
+  xpReward = correct; // XP = число правильных ответов
   if (ratio === 1) {
     emoji = '🏆'; title = 'Отлично! Задание выполнено!';
-    subtitle = 'Все карточки на своих местах!'; xpReward = 10;
+    subtitle = 'Все карточки на своих местах!';
   } else if (ratio >= 0.8) {
     emoji = '😊'; title = 'Молодец! Почти всё верно!';
-    subtitle = correct + ' из ' + total + ' — совсем чуть-чуть осталось!'; xpReward = 7;
+    subtitle = correct + ' из ' + total + ' — совсем чуть-чуть осталось!';
   } else if (ratio >= 0.5) {
     emoji = '💪'; title = 'Неплохо! Продолжай тренироваться!';
-    subtitle = correct + ' из ' + total + ' — попробуй ещё раз, станет лучше.'; xpReward = 5;
+    subtitle = correct + ' из ' + total + ' — попробуй ещё раз, станет лучше.';
   } else {
     emoji = '🌱'; title = 'У тебя всё получится!';
-    subtitle = correct + ' из ' + total + ' — повтори тему и попробуй снова.'; xpReward = 3;
+    subtitle = correct + ' из ' + total + ' — повтори тему и попробуй снова.';
   }
   var html = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;text-align:center;gap:16px;padding:32px 16px">'
     + '<img src="umnik_stoit.png" style="height:110px;object-fit:contain" onerror="this.style.display=\'none\'">'
