@@ -1688,13 +1688,25 @@ body.theme-dark .h-mobile-umnik { background: rgba(53,201,129,.15); }
 .tr-count { font-size: 11px; color: rgba(255,255,255,.5); }
 .tr-ext { display: inline-block; margin-left: 4px; font-size: 10px; color: #6366f1; font-weight: 700; }
 /* ===== Игры ===== */
-.game-col { background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1); border-radius: 14px; padding: 12px; min-height: 120px; }
-.game-col-title { font-size: 12px; font-weight: 800; color: rgba(255,255,255,.5); text-transform: uppercase; letter-spacing: .07em; margin-bottom: 10px; text-align: center; }
+.game-col { background: rgba(255,255,255,.05); border: 2px dashed rgba(255,255,255,.18); border-radius: 16px; padding: 12px; min-height: 130px; cursor: pointer; transition: border-color .2s, background .2s; }
+.game-col:hover { border-color: rgba(255,255,255,.35); background: rgba(255,255,255,.08); }
+.game-col.game-col-target { border-color: #6366f1; background: rgba(99,102,241,.1); }
+.game-col-title { font-size: 12px; font-weight: 800; color: rgba(255,255,255,.6); text-transform: uppercase; letter-spacing: .07em; margin-bottom: 10px; text-align: center; }
 .game-col-items { display: flex; flex-wrap: wrap; gap: 8px; min-height: 40px; }
-.game-chip { display: inline-flex; align-items: center; justify-content: center; background: rgba(255,255,255,.1); border: 1.5px solid rgba(255,255,255,.18); border-radius: 10px; padding: 8px 12px; font-size: 13px; font-weight: 700; color: #fff; cursor: pointer; transition: transform .15s, background .15s; user-select: none; }
-.game-chip:hover { background: rgba(255,255,255,.18); transform: scale(1.04); }
-.game-chip-ok { background: rgba(16,185,129,.2) !important; border-color: #10b981 !important; color: #6ee7b7 !important; }
-.game-chip-err { background: rgba(239,68,68,.2) !important; border-color: #ef4444 !important; color: #fca5a5 !important; }
+/* Палитра чипов — 8 цветов */
+.game-chip { display: inline-flex; align-items: center; justify-content: center; border-radius: 10px; padding: 9px 14px; font-size: 13px; font-weight: 700; cursor: pointer; transition: transform .15s, box-shadow .15s, opacity .15s; user-select: none; border: 2px solid transparent; }
+.game-chip:hover { transform: scale(1.06); }
+.game-chip.c0 { background:#fde68a; color:#78350f; border-color:#f59e0b; }
+.game-chip.c1 { background:#bfdbfe; color:#1e3a8a; border-color:#3b82f6; }
+.game-chip.c2 { background:#bbf7d0; color:#14532d; border-color:#22c55e; }
+.game-chip.c3 { background:#fecaca; color:#7f1d1d; border-color:#ef4444; }
+.game-chip.c4 { background:#e9d5ff; color:#4c1d95; border-color:#a855f7; }
+.game-chip.c5 { background:#fed7aa; color:#7c2d12; border-color:#f97316; }
+.game-chip.c6 { background:#a5f3fc; color:#164e63; border-color:#06b6d4; }
+.game-chip.c7 { background:#fbcfe8; color:#831843; border-color:#ec4899; }
+.game-chip.selected { transform: scale(1.1); box-shadow: 0 0 0 3px #fff, 0 0 0 5px #6366f1; }
+.game-chip-ok { opacity: 1 !important; box-shadow: 0 0 0 3px #10b981 !important; filter: brightness(1.1); }
+.game-chip-err { opacity: 1 !important; box-shadow: 0 0 0 3px #ef4444 !important; filter: brightness(.85); }
 .games-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; margin-bottom: 32px; }
 .game-card {
   background: rgba(255,255,255,.07);
@@ -24164,18 +24176,30 @@ function gamesBack() {
   showTrainerList();
 }
 
+var _selectedChip = null;
+var CHIP_COLORS = ['c0','c1','c2','c3','c4','c5','c6','c7'];
+
 function renderSortGame() {
   var g = _currentGame;
-  _gameState = { placed: {}, checked: false };
+  _gameState = { placed: {}, checked: false, colorMap: {} };
+  _selectedChip = null;
   var shuffled = g.items.slice().sort(function(){ return Math.random() - 0.5; });
   _gameState.shuffled = shuffled;
+  // назначаем цвета
+  shuffled.forEach(function(_, i) { _gameState.colorMap[i] = CHIP_COLORS[i % CHIP_COLORS.length]; });
 
   var html = '<div style="padding:16px 0 24px">'
-    + '<div style="font-size:13px;color:rgba(255,255,255,.55);margin-bottom:16px;line-height:1.6">' + g.instruction + '</div>'
-    + '<div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px;min-height:52px" id="game-bank"></div>'
+    + '<div style="font-size:13px;color:rgba(255,255,255,.6);margin-bottom:6px;line-height:1.6">Нажми на карточку — она <b>выделится</b>. Потом нажми на нужную группу.</div>'
+    + '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;min-height:52px;padding:10px;background:rgba(255,255,255,.04);border-radius:12px" id="game-bank"></div>'
     + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px">'
-    + '<div class="game-col" id="game-colA"><div class="game-col-title">' + g.colA + '</div><div class="game-col-items" id="game-colA-items"></div></div>'
-    + '<div class="game-col" id="game-colB"><div class="game-col-title">' + g.colB + '</div><div class="game-col-items" id="game-colB-items"></div></div>'
+    + '<div class="game-col" id="game-colA" onclick="gameDropToCol(\'A\')">'
+    +   '<div class="game-col-title">' + g.colA + '</div>'
+    +   '<div class="game-col-items" id="game-colA-items"></div>'
+    + '</div>'
+    + '<div class="game-col" id="game-colB" onclick="gameDropToCol(\'B\')">'
+    +   '<div class="game-col-title">' + g.colB + '</div>'
+    +   '<div class="game-col-items" id="game-colB-items"></div>'
+    + '</div>'
     + '</div>'
     + '<button class="tg-finish-btn" onclick="checkSortGame()" style="width:100%;margin-top:4px">✅ Проверить</button>'
     + '<button class="tg-finish-btn sec" onclick="resetSortGame()" style="width:100%;margin-top:8px">🔄 Сбросить</button>'
@@ -24185,69 +24209,92 @@ function renderSortGame() {
 
   shuffled.forEach(function(item, i) {
     var card = document.createElement('div');
-    card.className = 'game-chip';
+    card.className = 'game-chip ' + _gameState.colorMap[i];
     card.id = 'gchip-' + i;
     card.dataset.idx = i;
     card.dataset.loc = 'bank';
     card.innerHTML = item.frac ? fracSvg(item.frac[0], item.frac[1]) : item.text;
-    card.onclick = function() { gameMoveChip(i); };
+    card.onclick = function(e) { e.stopPropagation(); gameSelectChip(i); };
     document.getElementById('game-bank').appendChild(card);
   });
 }
 
-function gameMoveChip(idx) {
+function gameSelectChip(idx) {
   if (_gameState.checked) return;
-  var g = _currentGame;
   var chip = document.getElementById('gchip-' + idx);
-  var loc = chip.dataset.loc;
-  var target;
-  if (loc === 'bank') target = 'A';
-  else if (loc === 'A') target = 'B';
-  else target = 'bank';
-
-  chip.dataset.loc = target;
-  _gameState.placed[idx] = target;
-
-  if (target === 'bank') {
-    document.getElementById('game-bank').appendChild(chip);
-    delete _gameState.placed[idx];
-  } else {
-    document.getElementById('game-col' + target + '-items').appendChild(chip);
+  if (_selectedChip === idx) {
+    // снимаем выделение
+    chip.classList.remove('selected');
+    _selectedChip = null;
+    return;
   }
+  // снять выделение с предыдущего
+  if (_selectedChip !== null) {
+    var prev = document.getElementById('gchip-' + _selectedChip);
+    if (prev) prev.classList.remove('selected');
+  }
+  _selectedChip = idx;
+  chip.classList.add('selected');
+}
+
+function gameDropToCol(col) {
+  if (_gameState.checked) return;
+  if (_selectedChip === null) return;
+  var idx = _selectedChip;
+  var chip = document.getElementById('gchip-' + idx);
+  chip.classList.remove('selected');
+  _selectedChip = null;
+  chip.dataset.loc = col;
+  _gameState.placed[idx] = col;
+  document.getElementById('game-col' + col + '-items').appendChild(chip);
+  // убрать из bank
+  var bankEl = document.getElementById('game-bank');
+  if (bankEl && bankEl.contains(chip)) bankEl.removeChild(chip);
+  // убрать из другой колонки
+  var other = col === 'A' ? 'B' : 'A';
+  var otherItems = document.getElementById('game-col' + other + '-items');
+  if (otherItems && otherItems.contains(chip)) otherItems.removeChild(chip);
 }
 
 function checkSortGame() {
   var g = _currentGame;
   var shuffled = _gameState.shuffled;
+  if (_selectedChip !== null) {
+    var c = document.getElementById('gchip-' + _selectedChip);
+    if (c) c.classList.remove('selected');
+    _selectedChip = null;
+  }
   var allPlaced = shuffled.every(function(_, i) { return _gameState.placed[i]; });
   if (!allPlaced) {
-    alert('Распредели все карточки по группам!');
+    var bankEl = document.getElementById('game-bank');
+    bankEl.style.boxShadow = '0 0 0 2px #ef4444';
+    setTimeout(function(){ bankEl.style.boxShadow = ''; }, 1200);
     return;
   }
   _gameState.checked = true;
   var correct = 0;
   shuffled.forEach(function(item, i) {
     var chip = document.getElementById('gchip-' + i);
-    var placed = _gameState.placed[i];
-    if (placed === item.answer) {
+    if (_gameState.placed[i] === item.answer) {
       chip.classList.add('game-chip-ok');
       correct++;
     } else {
       chip.classList.add('game-chip-err');
     }
   });
-  setTimeout(function() { showGameResult(correct, shuffled.length); }, 800);
+  setTimeout(function() { showGameResult(correct, shuffled.length); }, 900);
 }
 
 function resetSortGame() {
   _gameState.checked = false;
   _gameState.placed = {};
+  _selectedChip = null;
   var shuffled = _gameState.shuffled;
   var bank = document.getElementById('game-bank');
   shuffled.forEach(function(_, i) {
     var chip = document.getElementById('gchip-' + i);
     chip.dataset.loc = 'bank';
-    chip.className = 'game-chip';
+    chip.className = 'game-chip ' + _gameState.colorMap[i];
     bank.appendChild(chip);
   });
   document.getElementById('game-colA-items').innerHTML = '';
@@ -24301,13 +24348,17 @@ function checkInputGame() {
 
 function showGameResult(correct, total) {
   var perfect = correct === total;
-  var html = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;text-align:center;gap:20px;padding:32px 16px">'
-    + '<img src="umnik_stoit.png" style="height:120px;object-fit:contain" onerror="this.style.display=\'none\'">'
-    + '<div style="font-size:36px">' + (perfect ? '🏆' : '👏') + '</div>'
-    + '<div style="font-size:22px;font-weight:900;color:#fff">' + (perfect ? 'Отлично! Всё верно!' : 'Молодец! ' + correct + ' из ' + total) + '</div>'
-    + '<div style="font-size:14px;color:rgba(255,255,255,.5)">' + (perfect ? 'Ты справился со всеми заданиями!' : 'Попробуй ещё раз — будет лучше!') + '</div>'
-    + '<div style="font-size:48px;cursor:pointer;transition:transform .2s" id="game-heart" onclick="gameToggleHeart()" title="Понравилось?">🤍</div>'
-    + '<button class="tg-finish-btn" onclick="openGame(\'' + _currentGame.id + '\')" style="width:100%;max-width:320px">🔄 Сыграть ещё раз</button>'
+  var gid = _currentGame.id;
+  var html = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;text-align:center;gap:16px;padding:32px 16px">'
+    + '<img src="umnik_stoit.png" style="height:110px;object-fit:contain" onerror="this.style.display=\'none\'">'
+    + '<div style="font-size:34px">' + (perfect ? '🏆' : '👏') + '</div>'
+    + '<div style="font-size:20px;font-weight:900;color:#fff">Молодец! ' + (perfect ? 'Задание выполнено!' : correct + ' из ' + total + ' верно!') + '</div>'
+    + '<div style="font-size:14px;color:rgba(255,255,255,.55);margin-top:-4px">Понравилось? Жми на сердечко!</div>'
+    + '<div id="game-heart-wrap" style="display:flex;flex-direction:column;align-items:center;gap:6px">'
+    +   '<div style="font-size:52px;cursor:pointer;transition:transform .18s" id="game-heart" onclick="gameToggleHeart()">🤍</div>'
+    +   '<div id="game-heart-xp" style="font-size:13px;font-weight:700;color:#f59e0b;min-height:20px"></div>'
+    + '</div>'
+    + '<button class="tg-finish-btn" onclick="openGame(\'' + gid + '\')" style="width:100%;max-width:320px;margin-top:8px">🔄 Сыграть ещё раз</button>'
     + '<button class="tg-finish-btn sec" onclick="gamesBack()" style="width:100%;max-width:320px">← К тренажёрам</button>'
     + '</div>';
   document.getElementById('games-body').innerHTML = html;
@@ -24315,9 +24366,21 @@ function showGameResult(correct, total) {
 
 function gameToggleHeart() {
   var h = document.getElementById('game-heart');
+  var xpEl = document.getElementById('game-heart-xp');
   if (!h) return;
-  if (h.textContent === '🤍') { h.textContent = '❤️'; h.style.transform = 'scale(1.3)'; setTimeout(function(){ h.style.transform = 'scale(1)'; }, 200); }
-  else { h.textContent = '🤍'; }
+  if (h.textContent === '🤍') {
+    h.textContent = '❤️';
+    h.style.transform = 'scale(1.35)';
+    setTimeout(function(){ h.style.transform = 'scale(1)'; }, 220);
+    // начислить XP
+    addXP(5);
+    updateAllXP();
+    if (xpEl) xpEl.textContent = '+5 XP начислено ⭐';
+    document.getElementById('nav-xp-games').textContent = '⭐ ' + (ST.xp || 0) + ' XP';
+  } else {
+    h.textContent = '🤍';
+    if (xpEl) xpEl.textContent = '';
+  }
 }
 </script>
 
