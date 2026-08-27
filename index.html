@@ -1688,7 +1688,13 @@ body.theme-dark .h-mobile-umnik { background: rgba(53,201,129,.15); }
 .tr-count { font-size: 11px; color: rgba(255,255,255,.5); }
 .tr-ext { display: inline-block; margin-left: 4px; font-size: 10px; color: #6366f1; font-weight: 700; }
 /* ===== Игры ===== */
-.games-section-title { font-size: 13px; font-weight: 800; color: rgba(255,255,255,.5); letter-spacing: .08em; text-transform: uppercase; margin-bottom: 12px; margin-top: 8px; }
+.game-col { background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1); border-radius: 14px; padding: 12px; min-height: 120px; }
+.game-col-title { font-size: 12px; font-weight: 800; color: rgba(255,255,255,.5); text-transform: uppercase; letter-spacing: .07em; margin-bottom: 10px; text-align: center; }
+.game-col-items { display: flex; flex-wrap: wrap; gap: 8px; min-height: 40px; }
+.game-chip { display: inline-flex; align-items: center; justify-content: center; background: rgba(255,255,255,.1); border: 1.5px solid rgba(255,255,255,.18); border-radius: 10px; padding: 8px 12px; font-size: 13px; font-weight: 700; color: #fff; cursor: pointer; transition: transform .15s, background .15s; user-select: none; }
+.game-chip:hover { background: rgba(255,255,255,.18); transform: scale(1.04); }
+.game-chip-ok { background: rgba(16,185,129,.2) !important; border-color: #10b981 !important; color: #6ee7b7 !important; }
+.game-chip-err { background: rgba(239,68,68,.2) !important; border-color: #ef4444 !important; color: #fca5a5 !important; }
 .games-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; margin-bottom: 32px; }
 .game-card {
   background: rgba(255,255,255,.07);
@@ -1707,12 +1713,6 @@ body.theme-dark .h-mobile-umnik { background: rgba(53,201,129,.15); }
 .game-card-name { font-size: 13px; font-weight: 800; color: #fff; margin-bottom: 4px; line-height:1.3; min-height:32px; display:flex; align-items:center; justify-content:center; }
 .game-card-tag { font-size: 11px; color: rgba(255,255,255,.45); }
 /* iframe view */
-#tr-game-view { display:none; flex-direction:column; height:100%; }
-#tr-game-view .game-back-bar { display:flex; align-items:center; gap:12px; padding: 0 0 12px; flex-shrink:0; }
-#tr-game-view .game-back-btn { background:rgba(255,255,255,.1); border:none; color:#fff; padding:8px 18px; border-radius:20px; font-size:13px; font-weight:700; cursor:pointer; font-family:inherit; }
-#tr-game-view .game-back-btn:hover { background:rgba(255,255,255,.18); }
-#tr-game-view .game-back-title { font-size:14px; font-weight:700; color:#fff; opacity:.7; }
-#tr-game-frame { width:100%; border:none; border-radius:16px; background:#fff; flex:1; min-height:520px; }
 
 /* ===== TRAINER GAME ===== */
 .tg-wrap { max-width:600px; margin:0 auto; display:flex; flex-direction:column; gap:0; }
@@ -3363,6 +3363,16 @@ textarea, select { font-size: max(16px, 1em) !important; }
   </div>
 </div>
 
+<!-- ===== GAMES ===== -->
+<div id="screen-games" class="screen">
+  <nav class="top-nav">
+    <button class="nav-back" onclick="gamesBack()">← Назад</button>
+    <div class="nav-logo" id="games-nav-title">🎮 Игры</div>
+    <div class="nav-xp" id="nav-xp-games">⭐ 0 XP</div>
+  </nav>
+  <div class="screen-body" id="games-body"></div>
+</div>
+
 <!-- ===== PROFILE ===== -->
 <div id="screen-profile" class="screen">
   <nav class="top-nav">
@@ -3679,17 +3689,17 @@ textarea, select { font-size: max(16px, 1em) !important; }
       <div class="trainers-grid" id="trainers-grid"></div>
       <!-- Игры — карточки в общей сетке тренажёров -->
       <div class="trainers-grid" style="margin-top:0">
-        <div class="game-card" onclick="openGame('https://boxapps.adu.by/public/game/3889','Числовые выражения','🔢')">
+        <div class="game-card" onclick="openGame('sort-expressions')">
           <span class="game-card-icon">🔢</span>
           <div class="game-card-name">Числовые выражения</div>
           <div class="game-card-tag">🎮 Игра</div>
         </div>
-        <div class="game-card" onclick="openGame('https://boxapps.adu.by/public/game/2050','Правильные и неправильные дроби','½')">
+        <div class="game-card" onclick="openGame('sort-fractions')">
           <span class="game-card-icon">½</span>
           <div class="game-card-name">Правильные и неправильные дроби</div>
           <div class="game-card-tag">🎮 Игра</div>
         </div>
-        <div class="game-card" onclick="openGame('https://boxapps.adu.by/public/game/2035','Запись дробей словами','✏️')">
+        <div class="game-card" onclick="openGame('input-fractions')">
           <span class="game-card-icon">✏️</span>
           <div class="game-card-name">Запись дробей словами</div>
           <div class="game-card-tag">🎮 Игра</div>
@@ -3697,19 +3707,6 @@ textarea, select { font-size: max(16px, 1em) !important; }
       </div>
       <div style="text-align:center;padding:16px 0 8px">
         <button onclick="window.scrollTo({top:0,behavior:'smooth'})" style="padding:8px 24px;border-radius:20px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.06);color:rgba(255,255,255,.5);font-size:12px;font-weight:600;cursor:pointer">↑ Наверх</button>
-      </div>
-    </div>
-    <!-- Игра — открывается в новой вкладке -->
-    <div id="tr-game-view">
-      <div class="game-back-bar">
-        <button class="game-back-btn" onclick="closeGame()">← Назад</button>
-        <div class="game-back-title" id="tr-game-title"></div>
-      </div>
-      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;gap:24px;padding:40px 16px;text-align:center">
-        <div id="tr-game-icon" style="font-size:64px"></div>
-        <div style="font-size:20px;font-weight:800;color:#fff" id="tr-game-title2"></div>
-        <div style="font-size:14px;color:rgba(255,255,255,.5);max-width:280px;line-height:1.6">Игра откроется на отдельной странице. После выполнения вернись назад.</div>
-        <a id="tr-game-extlink" href="#" target="_blank" style="display:inline-block;padding:16px 40px;background:linear-gradient(135deg,#10b981,#34d399);color:#fff;font-size:16px;font-weight:800;border-radius:20px;text-decoration:none;font-family:inherit">🎮 Начать игру</a>
       </div>
     </div>
     <!-- Экран старта тренажёра -->
@@ -10169,7 +10166,7 @@ function renderProfileProgress() {
 
 function showScreen(id) {
   if (id === 'screen-parent' && ST.user && ST.user.role !== 'parent') { return; }
-  const studentScreens = ['screen-home','screen-homework','screen-map','screen-trainers','screen-self-check','screen-walkthrough','screen-already-solved','screen-photo-check','screen-cheatsheet','screen-funfacts','screen-achievements','screen-profile','screen-final-test'];
+  const studentScreens = ['screen-home','screen-homework','screen-map','screen-trainers','screen-games','screen-self-check','screen-walkthrough','screen-already-solved','screen-photo-check','screen-cheatsheet','screen-funfacts','screen-achievements','screen-profile','screen-final-test'];
   if (studentScreens.includes(id) && ST.user && ST.user.role === 'parent') { return; }
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
@@ -13345,7 +13342,6 @@ function showTrainerList(highlightId) {
   document.getElementById('tr-start-view').style.display = 'none';
   document.getElementById('tr-session-view').style.display = 'none';
   document.getElementById('tr-done-view').style.display = 'none';
-  document.getElementById('tr-game-view').style.display = 'none';
   document.getElementById('tr-title').textContent = '⚡ Тренажёры';
   document.getElementById('tr-back-btn').onclick = () => showScreen('screen-home');
   var hid = highlightId || currentTopicTrainerId;
@@ -13364,9 +13360,7 @@ function showTrainerList(highlightId) {
 }
 
 function trainersBack() {
-  if(document.getElementById('tr-game-view').style.display !== 'none') {
-    closeGame();
-  } else if(document.getElementById('tr-session-view').style.display !== 'none') {
+  if(document.getElementById('tr-session-view').style.display !== 'none') {
     if(!confirm('Выйти из тренажёра?')) return;
     showTrainerList();
   } else if(document.getElementById('tr-start-view').style.display !== 'none') {
@@ -13376,25 +13370,6 @@ function trainersBack() {
   }
 }
 
-function openGame(url, title, icon) {
-  document.getElementById('tr-list-view').style.display = 'none';
-  document.getElementById('tr-start-view').style.display = 'none';
-  document.getElementById('tr-session-view').style.display = 'none';
-  document.getElementById('tr-done-view').style.display = 'none';
-  var gv = document.getElementById('tr-game-view');
-  gv.style.display = 'flex';
-  document.getElementById('tr-game-title').textContent = title;
-  document.getElementById('tr-game-title2').textContent = title;
-  document.getElementById('tr-game-icon').textContent = icon || '🎮';
-  document.getElementById('tr-game-extlink').href = url;
-  document.getElementById('tr-title').textContent = '🎮 Игры';
-  document.getElementById('tr-back-btn').onclick = closeGame;
-}
-
-function closeGame() {
-  document.getElementById('tr-game-view').style.display = 'none';
-  showTrainerList();
-}
 
 function startTrainer(id) {
   currentTrainer = TRAINERS_DEF.find(t => t.id === id);
@@ -24092,6 +24067,257 @@ function p577Show(){
     ?"<button onclick='p577Next();' style='display:block;margin-top:10px;font-size:13px;padding:7px 18px;border-radius:8px;border:none;background:#10b981;color:#fff;cursor:pointer;font-weight:700'>→ Следующий пункт</button>"
     :"<button onclick='p577Next();' style='display:block;margin-top:10px;font-size:13px;padding:7px 18px;border-radius:8px;border:none;background:#10b981;color:#fff;cursor:pointer;font-weight:700'>✅ Готово!</button>";
   chatAddBot("<b>Образец:</b><br>"+p.svg+nxt,false);
+}
+
+// ===== ИГРЫ =====
+var GAMES_DEF = [
+  {
+    id: 'sort-expressions',
+    type: 'sort',
+    title: 'Числовые выражения',
+    icon: '🔢',
+    instruction: 'Распредели выражения по группам — нажми на карточку, чтобы переместить её.',
+    colA: 'Числовые выражения',
+    colB: 'Выражения с переменными',
+    items: [
+      { text: '1025 + 3642 − (125 : 5)', answer: 'A' },
+      { text: '25 · (11 − 2) + (2⁵ − 3)', answer: 'A' },
+      { text: '125 · 3 − 15 : 5', answer: 'A' },
+      { text: '16 · 27 − 124 : 4', answer: 'A' },
+      { text: '(25 + 9) − 10', answer: 'A' },
+      { text: '2 + 8 · k', answer: 'B' },
+      { text: '2⁴ · p − 4⁵ : n', answer: 'B' },
+      { text: '2 · x + 5 · x', answer: 'B' },
+      { text: '35 : 7 · y + 10', answer: 'B' },
+      { text: '120563 − t : 4', answer: 'B' }
+    ]
+  },
+  {
+    id: 'sort-fractions',
+    type: 'sort',
+    title: 'Правильные и неправильные дроби',
+    icon: '½',
+    instruction: 'Распредели дроби по группам — нажми на карточку, чтобы переместить её.',
+    colA: 'Правильные дроби',
+    colB: 'Неправильные дроби',
+    items: [
+      { text: '7/458', frac: [7,458], answer: 'A' },
+      { text: '5/7', frac: [5,7], answer: 'A' },
+      { text: '3/8', frac: [3,8], answer: 'A' },
+      { text: '29/49', frac: [29,49], answer: 'A' },
+      { text: '81/100', frac: [81,100], answer: 'A' },
+      { text: '177/100', frac: [177,100], answer: 'B' },
+      { text: '123/5', frac: [123,5], answer: 'B' },
+      { text: '52/51', frac: [52,51], answer: 'B' },
+      { text: '67/65', frac: [67,65], answer: 'B' },
+      { text: '7/5', frac: [7,5], answer: 'B' },
+      { text: '12/12', frac: [12,12], answer: 'B' },
+      { text: '328/325', frac: [328,325], answer: 'B' }
+    ]
+  },
+  {
+    id: 'input-fractions',
+    type: 'input',
+    title: 'Запись дробей словами',
+    icon: '✏️',
+    instruction: 'Прочитай дробь и запиши её словами.',
+    items: [
+      { frac: [2,10], answers: ['две десятых','две десятые'] },
+      { frac: [1,5], answers: ['одна пятая','одну пятую'] },
+      { frac: [4,7], answers: ['четыре седьмых','четыре седьмые'] },
+      { frac: [8,13], answers: ['восемь тринадцатых'] },
+      { frac: [10,47], answers: ['десять сорок седьмых'] },
+      { frac: [15,23], answers: ['пятнадцать двадцать третьих'] },
+      { frac: [29,49], answers: ['двадцать девять сорок девятых'] },
+      { frac: [81,100], answers: ['восемьдесят одна сотая','восемьдесят одну сотую'] },
+      { frac: [451,186], answers: ['четыреста пятьдесят одна сто восемьдесят шестая','четыреста пятьдесят одну сто восемьдесят шестую'] },
+      { frac: [91,648], answers: ['девяносто одна шестьсот сорок восьмая','девяносто одну шестьсот сорок восьмую'] }
+    ]
+  }
+];
+
+var _currentGame = null;
+var _gameState = {};
+
+function fracSvg(n, d) {
+  var nw = Math.max(String(n).length, String(d).length) * 13 + 12;
+  var w = Math.max(nw, 40);
+  return '<svg viewBox="0 0 ' + w + ' 48" width="' + w + '" height="48" style="display:inline-block;vertical-align:middle">'
+    + '<text x="' + (w/2) + '" y="18" text-anchor="middle" font-size="15" font-weight="800" fill="currentColor">' + n + '</text>'
+    + '<line x1="4" y1="24" x2="' + (w-4) + '" y2="24" stroke="currentColor" stroke-width="2"/>'
+    + '<text x="' + (w/2) + '" y="42" text-anchor="middle" font-size="15" font-weight="800" fill="currentColor">' + d + '</text>'
+    + '</svg>';
+}
+
+function openGame(gameId) {
+  _currentGame = GAMES_DEF.find(function(g){ return g.id === gameId; });
+  if (!_currentGame) return;
+  showScreen('screen-games');
+  document.getElementById('games-nav-title').textContent = '🎮 ' + _currentGame.title;
+  document.getElementById('nav-xp-games').textContent = '⭐ ' + (ST.xp || 0) + ' XP';
+  if (_currentGame.type === 'sort') renderSortGame();
+  else renderInputGame();
+}
+
+function gamesBack() {
+  showScreen('screen-trainers');
+  showTrainerList();
+}
+
+function renderSortGame() {
+  var g = _currentGame;
+  _gameState = { placed: {}, checked: false };
+  var shuffled = g.items.slice().sort(function(){ return Math.random() - 0.5; });
+  _gameState.shuffled = shuffled;
+
+  var html = '<div style="padding:16px 0 24px">'
+    + '<div style="font-size:13px;color:rgba(255,255,255,.55);margin-bottom:16px;line-height:1.6">' + g.instruction + '</div>'
+    + '<div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px;min-height:52px" id="game-bank"></div>'
+    + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px">'
+    + '<div class="game-col" id="game-colA"><div class="game-col-title">' + g.colA + '</div><div class="game-col-items" id="game-colA-items"></div></div>'
+    + '<div class="game-col" id="game-colB"><div class="game-col-title">' + g.colB + '</div><div class="game-col-items" id="game-colB-items"></div></div>'
+    + '</div>'
+    + '<button class="tg-finish-btn" onclick="checkSortGame()" style="width:100%;margin-top:4px">✅ Проверить</button>'
+    + '<button class="tg-finish-btn sec" onclick="resetSortGame()" style="width:100%;margin-top:8px">🔄 Сбросить</button>'
+    + '</div>';
+
+  document.getElementById('games-body').innerHTML = html;
+
+  shuffled.forEach(function(item, i) {
+    var card = document.createElement('div');
+    card.className = 'game-chip';
+    card.id = 'gchip-' + i;
+    card.dataset.idx = i;
+    card.dataset.loc = 'bank';
+    card.innerHTML = item.frac ? fracSvg(item.frac[0], item.frac[1]) : item.text;
+    card.onclick = function() { gameMoveChip(i); };
+    document.getElementById('game-bank').appendChild(card);
+  });
+}
+
+function gameMoveChip(idx) {
+  if (_gameState.checked) return;
+  var g = _currentGame;
+  var chip = document.getElementById('gchip-' + idx);
+  var loc = chip.dataset.loc;
+  var target;
+  if (loc === 'bank') target = 'A';
+  else if (loc === 'A') target = 'B';
+  else target = 'bank';
+
+  chip.dataset.loc = target;
+  _gameState.placed[idx] = target;
+
+  if (target === 'bank') {
+    document.getElementById('game-bank').appendChild(chip);
+    delete _gameState.placed[idx];
+  } else {
+    document.getElementById('game-col' + target + '-items').appendChild(chip);
+  }
+}
+
+function checkSortGame() {
+  var g = _currentGame;
+  var shuffled = _gameState.shuffled;
+  var allPlaced = shuffled.every(function(_, i) { return _gameState.placed[i]; });
+  if (!allPlaced) {
+    alert('Распредели все карточки по группам!');
+    return;
+  }
+  _gameState.checked = true;
+  var correct = 0;
+  shuffled.forEach(function(item, i) {
+    var chip = document.getElementById('gchip-' + i);
+    var placed = _gameState.placed[i];
+    if (placed === item.answer) {
+      chip.classList.add('game-chip-ok');
+      correct++;
+    } else {
+      chip.classList.add('game-chip-err');
+    }
+  });
+  setTimeout(function() { showGameResult(correct, shuffled.length); }, 800);
+}
+
+function resetSortGame() {
+  _gameState.checked = false;
+  _gameState.placed = {};
+  var shuffled = _gameState.shuffled;
+  var bank = document.getElementById('game-bank');
+  shuffled.forEach(function(_, i) {
+    var chip = document.getElementById('gchip-' + i);
+    chip.dataset.loc = 'bank';
+    chip.className = 'game-chip';
+    bank.appendChild(chip);
+  });
+  document.getElementById('game-colA-items').innerHTML = '';
+  document.getElementById('game-colB-items').innerHTML = '';
+}
+
+var _inputIdx = 0;
+
+function renderInputGame() {
+  var g = _currentGame;
+  _inputIdx = 0;
+  renderInputQuestion();
+}
+
+function renderInputQuestion() {
+  var g = _currentGame;
+  if (_inputIdx >= g.items.length) { showGameResult(g.items.length, g.items.length); return; }
+  var item = g.items[_inputIdx];
+  var progress = (_inputIdx + 1) + ' / ' + g.items.length;
+
+  var html = '<div style="padding:16px 0 24px">'
+    + '<div style="font-size:12px;color:rgba(255,255,255,.4);margin-bottom:20px;text-align:center">' + progress + '</div>'
+    + '<div style="text-align:center;margin-bottom:28px">'
+    + '<div style="display:inline-flex;align-items:center;justify-content:center;width:100px;height:100px;background:rgba(255,255,255,.06);border-radius:20px;border:2px solid rgba(255,255,255,.12)">'
+    + '<span style="color:#fff;font-size:18px">' + fracSvg(item.frac[0], item.frac[1]) + '</span>'
+    + '</div></div>'
+    + '<div style="font-size:14px;color:rgba(255,255,255,.6);text-align:center;margin-bottom:14px">' + g.instruction + '</div>'
+    + '<input id="game-input" type="text" class="trainer-input" placeholder="Напиши словами..." autocomplete="off" onkeydown="if(event.key===\'Enter\')checkInputGame()">'
+    + '<div id="game-input-status" style="min-height:36px;text-align:center;font-size:14px;font-weight:700;margin:10px 0"></div>'
+    + '<button class="tg-finish-btn" onclick="checkInputGame()" style="width:100%">✅ Проверить</button>'
+    + '</div>';
+
+  document.getElementById('games-body').innerHTML = html;
+  setTimeout(function(){ var inp = document.getElementById('game-input'); if(inp) inp.focus(); }, 100);
+}
+
+function checkInputGame() {
+  var g = _currentGame;
+  var item = g.items[_inputIdx];
+  var val = (document.getElementById('game-input').value || '').trim().toLowerCase();
+  if (!val) return;
+  var ok = item.answers.some(function(a) { return val === a.toLowerCase(); });
+  var status = document.getElementById('game-input-status');
+  if (ok) {
+    status.innerHTML = '<span style="color:#10b981">✅ Верно!</span>';
+    setTimeout(function() { _inputIdx++; renderInputQuestion(); }, 900);
+  } else {
+    status.innerHTML = '<span style="color:#ef4444">❌ Попробуй ещё раз</span>';
+  }
+}
+
+function showGameResult(correct, total) {
+  var perfect = correct === total;
+  var html = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;text-align:center;gap:20px;padding:32px 16px">'
+    + '<img src="umnik_stoit.png" style="height:120px;object-fit:contain" onerror="this.style.display=\'none\'">'
+    + '<div style="font-size:36px">' + (perfect ? '🏆' : '👏') + '</div>'
+    + '<div style="font-size:22px;font-weight:900;color:#fff">' + (perfect ? 'Отлично! Всё верно!' : 'Молодец! ' + correct + ' из ' + total) + '</div>'
+    + '<div style="font-size:14px;color:rgba(255,255,255,.5)">' + (perfect ? 'Ты справился со всеми заданиями!' : 'Попробуй ещё раз — будет лучше!') + '</div>'
+    + '<div style="font-size:48px;cursor:pointer;transition:transform .2s" id="game-heart" onclick="gameToggleHeart()" title="Понравилось?">🤍</div>'
+    + '<button class="tg-finish-btn" onclick="openGame(\'' + _currentGame.id + '\')" style="width:100%;max-width:320px">🔄 Сыграть ещё раз</button>'
+    + '<button class="tg-finish-btn sec" onclick="gamesBack()" style="width:100%;max-width:320px">← К тренажёрам</button>'
+    + '</div>';
+  document.getElementById('games-body').innerHTML = html;
+}
+
+function gameToggleHeart() {
+  var h = document.getElementById('game-heart');
+  if (!h) return;
+  if (h.textContent === '🤍') { h.textContent = '❤️'; h.style.transform = 'scale(1.3)'; setTimeout(function(){ h.style.transform = 'scale(1)'; }, 200); }
+  else { h.textContent = '🤍'; }
 }
 </script>
 
