@@ -24136,12 +24136,12 @@ var GAMES_DEF = [
       { frac: [1,5], answers: ['одна пятая','одну пятую'] },
       { frac: [4,7], answers: ['четыре седьмых','четыре седьмые'] },
       { frac: [8,13], answers: ['восемь тринадцатых'] },
-      { frac: [10,47], answers: ['десять сорок седьмых'] },
-      { frac: [15,23], answers: ['пятнадцать двадцать третьих'] },
-      { frac: [29,49], answers: ['двадцать девять сорок девятых'] },
+      { frac: [3,4], whole: 2, answers: ['две целых три четвёртых','две целых три четверти'] },
+      { frac: [1,3], whole: 5, answers: ['пять целых одна треть','пять целых одну треть'] },
+      { frac: [2,5], whole: 3, answers: ['три целых две пятых','три целых две пятые'] },
+      { frac: [3,8], whole: 7, answers: ['семь целых три восьмых','семь целых три восьмые'] },
       { frac: [81,100], answers: ['восемьдесят одна сотая','восемьдесят одну сотую'] },
-      { frac: [451,186], answers: ['четыреста пятьдесят одна сто восемьдесят шестая','четыреста пятьдесят одну сто восемьдесят шестую'] },
-      { frac: [91,648], answers: ['девяносто одна шестьсот сорок восьмая','девяносто одну шестьсот сорок восьмую'] }
+      { frac: [451,186], answers: ['четыреста пятьдесят одна сто восемьдесят шестая','четыреста пятьдесят одну сто восемьдесят шестую','451 сто восемьдесят шестая'] }
     ]
   }
 ];
@@ -24324,8 +24324,8 @@ function renderInputQuestion() {
   var html = '<div style="padding:16px 0 24px">'
     + '<div style="font-size:12px;color:rgba(255,255,255,.4);margin-bottom:20px;text-align:center">' + progress + '</div>'
     + '<div style="text-align:center;margin-bottom:28px">'
-    + '<div style="display:inline-flex;align-items:center;justify-content:center;width:110px;height:110px;background:rgba(255,255,255,.06);border-radius:20px;border:2px solid rgba(255,255,255,.12)">'
-    + '<span style="color:#fff;font-size:18px">' + fracSvg(item.frac[0], item.frac[1]) + '</span>'
+    + '<div style="display:inline-flex;align-items:center;justify-content:center;min-width:110px;padding:0 16px;height:110px;background:rgba(255,255,255,.06);border-radius:20px;border:2px solid rgba(255,255,255,.12)">'
+    + '<span style="color:#fff;font-size:18px">' + (item.whole ? '<span style="font-size:28px;font-weight:900;margin-right:6px;vertical-align:middle">' + item.whole + '</span>' : '') + fracSvg(item.frac[0], item.frac[1]) + '</span>'
     + '</div></div>'
     + '<div style="font-size:14px;color:rgba(255,255,255,.6);text-align:center;margin-bottom:14px">' + g.instruction + '</div>'
     + '<input id="game-input" type="text" class="trainer-input" placeholder="Запиши словами..." autocomplete="off" onkeydown="if(event.key===\'Enter\')checkInputGame()">'
@@ -24346,9 +24346,23 @@ function checkInputGame() {
   var status = document.getElementById('game-input-status');
   if (ok) {
     status.innerHTML = '<span style="color:#10b981">✅ Верно!</span>';
+    _gameState._attempts = 0;
     setTimeout(function() { _inputIdx++; renderInputQuestion(); }, 900);
   } else {
-    status.innerHTML = '<span style="color:#ef4444">❌ Попробуй ещё раз</span>';
+    _gameState._attempts = (_gameState._attempts || 0) + 1;
+    if (_gameState._attempts >= 2) {
+      // показать правильный ответ и дать двигаться дальше
+      status.innerHTML = '<span style="color:#ef4444">❌ Правильно: <b>' + item.answers[0] + '</b></span>';
+      var inp = document.getElementById('game-input');
+      if (inp) { inp.disabled = true; inp.style.opacity = '.5'; }
+      var btn = document.querySelector('#games-body .tg-finish-btn');
+      if (btn) {
+        btn.textContent = '→ Следующая';
+        btn.onclick = function() { _gameState._attempts = 0; _inputIdx++; renderInputQuestion(); };
+      }
+    } else {
+      status.innerHTML = '<span style="color:#ef4444">❌ Попробуй ещё раз</span>';
+    }
   }
 }
 
