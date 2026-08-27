@@ -24376,7 +24376,7 @@ function gameStartSpeech() {
     if (btn) { btn.textContent = '🎤'; btn.style.borderColor = 'rgba(255,255,255,.2)'; }
     // если распознало цифры или / — попросить сказать словами
     if (/[\d\/]/.test(text)) {
-      if (status) status.innerHTML = '<span style="color:#f59e0b">Скажи словами, например: «две десятых»</span>';
+      if (status) status.innerHTML = '<span style="color:#ef4444">❌ Скажи словами</span>';
       return;
     }
     if (inp) inp.value = text;
