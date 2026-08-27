@@ -24130,7 +24130,7 @@ var GAMES_DEF = [
     type: 'input',
     title: 'Запись дробей словами',
     icon: '✏️',
-    instruction: 'Запиши дробь словами.',
+    instruction: 'Запиши или скажи дробь словами.',
     items: [
       { frac: [2,10], answers: ['две десятых','две десятые'] },
       { frac: [1,5], answers: ['одна пятая','одну пятую'] },
@@ -24333,7 +24333,7 @@ function renderInputQuestion() {
     + '</div></div>'
     + '<div style="font-size:14px;color:rgba(255,255,255,.6);text-align:center;margin-bottom:14px">' + g.instruction + '</div>'
     + '<div style="display:flex;gap:8px;align-items:center">'
-    + '<input id="game-input" type="text" class="trainer-input" style="flex:1;margin-bottom:0" placeholder="Запиши словами..." autocomplete="off" onkeydown="if(event.key===\'Enter\')checkInputGame()">'
+    + '<input id="game-input" type="text" class="trainer-input" style="flex:1;margin-bottom:0" placeholder="Запиши или скажи 🎤..." autocomplete="off" onkeydown="if(event.key===\'Enter\')checkInputGame()">'
     + micBtn
     + '</div>'
     + '<div id="game-input-status" style="min-height:36px;text-align:center;font-size:14px;font-weight:700;margin:10px 0"></div>'
