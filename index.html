@@ -24232,10 +24232,10 @@ function renderFCScreen() {
   html += '</div>'
     // сумма + серия внизу
     + '<div class="fc-sum-row">'
-    + '<div><div class="fc-sum-label">ТВОЯ СУММА</div><div id="fc-streak" style="font-size:11px;color:rgba(255,255,255,.35);margin-top:2px">Серия 🔥 <span id="fc-streak-val">' + _fc.streak + '</span></div></div>'
-    + '<div style="text-align:right"><div class="fc-sum-val" id="fc-cur-sum">0</div></div>'
+    + '<div><div class="fc-sum-label">ТВОЯ СУММА</div><div id="fc-select-hint" style="font-size:11px;color:rgba(255,255,255,.35);margin-top:2px">Выбери ' + round.count + ' числа</div></div>'
+    + '<div style="text-align:right"><div class="fc-sum-val" id="fc-cur-sum">0</div><div style="font-size:10px;color:rgba(255,255,255,.3);margin-top:2px">Серия 🔥 <span id="fc-streak-val">' + _fc.streak + '</span></div></div>'
     + '</div>'
-    + '<div class="fc-hint" id="fc-feedback">Нажми на несколько чисел</div>'
+    + '<div class="fc-hint" id="fc-feedback">Нажми на ' + round.count + ' числа</div>'
     + '</div>';
 
   document.getElementById('games-body').innerHTML = html;
@@ -24255,13 +24255,18 @@ function fcSelect(idx) {
     card.classList.add('fc-selected');
   }
 
-  // обновить счётчик суммы
+  // обновить счётчик суммы и подсказку
   var curSum = _fc.selected.reduce(function(s, i) {
     var c = document.getElementById('fc-card-' + i);
     return s + (c ? parseInt(c.dataset.val) : 0);
   }, 0);
   var sumEl = document.getElementById('fc-cur-sum');
-  if (sumEl) sumEl.textContent = curSum;
+  if (sumEl) sumEl.textContent = curSum || 0;
+  var hintEl = document.getElementById('fc-select-hint');
+  var need = _fc.round.count - _fc.selected.length;
+  if (hintEl) hintEl.textContent = need > 0 ? 'Ещё ' + need + ' числа' : 'Проверяем…';
+  var fb = document.getElementById('fc-feedback');
+  if (fb && need > 0) { fb.style.color = 'rgba(255,255,255,.3)'; fb.textContent = 'Нажми на ' + _fc.round.count + ' числа'; }
 
   if (_fc.selected.length === _fc.round.count) {
     var sum = curSum;
@@ -24322,8 +24327,9 @@ function fcSelect(idx) {
 }
 
 function fcStartFromLevel(lvl) {
-  // запустить игру, начиная с нужного уровня (сразу ставим correct чтобы уровень был правильным)
-  _fc = { score: 0, streak: 0, total: 0, correct: FC_THRESHOLDS[lvl - 1], level: lvl, timeLeft: 60, selected: [], timer: null };
+  // очистить старый таймер если был
+  if (_fc && _fc.timer) { clearInterval(_fc.timer); _fc.timer = null; }
+  _fc = { score: 0, streak: 0, total: 0, correct: FC_THRESHOLDS[lvl - 1], level: lvl, timeLeft: 60, selected: [], timer: null, _roundId: 0 };
   renderFCScreen();
   _fc.timer = setInterval(function() {
     _fc.timeLeft--;
@@ -24337,7 +24343,7 @@ function fcStartFromLevel(lvl) {
     }
     var tEl = document.getElementById('fc-timer');
     if (tEl) { tEl.textContent = _fc.timeLeft + 'с'; tEl.style.color = _fc.timeLeft <= 10 ? '#ef4444' : 'rgba(255,255,255,.5)'; }
-    if (_fc.timeLeft <= 0) { clearInterval(_fc.timer); endFocusCount(); }
+    if (_fc.timeLeft <= 0) { clearInterval(_fc.timer); _fc.timer = null; endFocusCount(); }
   }, 1000);
 }
 
