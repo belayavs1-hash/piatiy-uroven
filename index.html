@@ -24142,26 +24142,7 @@ function renderFocusCount() {
 }
 
 function startFocusCount() {
-  _fc = { score: 0, streak: 0, total: 0, correct: 0, level: 1, timeLeft: 60, selected: [], timer: null };
-  renderFCScreen();
-  _fc.timer = setInterval(function() {
-    _fc.timeLeft--;
-    // обновить SVG-кольцо и секунды
-    var ringWrap = document.getElementById('fc-ring-wrap');
-    if (ringWrap) {
-      var tmp = document.createElement('div');
-      tmp.innerHTML = fcTimerSVG(_fc.timeLeft);
-      var newSvg = tmp.firstElementChild;
-      var existSvg = ringWrap.querySelector('svg');
-      if (existSvg && newSvg) ringWrap.replaceChild(newSvg, existSvg);
-    }
-    var tEl = document.getElementById('fc-timer');
-    if (tEl) {
-      tEl.textContent = _fc.timeLeft + 'с';
-      tEl.style.color = _fc.timeLeft <= 10 ? '#ef4444' : 'rgba(255,255,255,.5)';
-    }
-    if (_fc.timeLeft <= 0) { clearInterval(_fc.timer); endFocusCount(); }
-  }, 1000);
+  fcStartFromLevel(1);
 }
 
 var FC_LEVELS = [
@@ -24340,32 +24321,70 @@ function fcSelect(idx) {
   }
 }
 
+function fcStartFromLevel(lvl) {
+  // запустить игру, начиная с нужного уровня (сразу ставим correct чтобы уровень был правильным)
+  _fc = { score: 0, streak: 0, total: 0, correct: FC_THRESHOLDS[lvl - 1], level: lvl, timeLeft: 60, selected: [], timer: null };
+  renderFCScreen();
+  _fc.timer = setInterval(function() {
+    _fc.timeLeft--;
+    var ringWrap = document.getElementById('fc-ring-wrap');
+    if (ringWrap) {
+      var tmp = document.createElement('div');
+      tmp.innerHTML = fcTimerSVG(_fc.timeLeft);
+      var newSvg = tmp.firstElementChild;
+      var existSvg = ringWrap.querySelector('svg');
+      if (existSvg && newSvg) ringWrap.replaceChild(newSvg, existSvg);
+    }
+    var tEl = document.getElementById('fc-timer');
+    if (tEl) { tEl.textContent = _fc.timeLeft + 'с'; tEl.style.color = _fc.timeLeft <= 10 ? '#ef4444' : 'rgba(255,255,255,.5)'; }
+    if (_fc.timeLeft <= 0) { clearInterval(_fc.timer); endFocusCount(); }
+  }, 1000);
+}
+
 function endFocusCount() {
   if (_fc && _fc.timer) { clearInterval(_fc.timer); _fc.timer = null; }
   var score = _fc ? _fc.score : 0;
   var correct = _fc ? _fc.correct : 0;
   var total = _fc ? _fc.total : 0;
+  var reachedLevel = _fc ? fcLevel() : 1;
   var accuracy = total > 0 ? Math.round(correct / total * 100) : 0;
-  var xpReward = score; // очки = XP без cap
-  var perfect = accuracy >= 90 && correct >= 10;
+  var xpReward = score;
+  // уровень считается достигнутым если перешли на него (correct >= порог)
+  var passedLevel1 = correct >= FC_THRESHOLDS[1]; // достиг уровня 2
 
-  var html = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:55vh;text-align:center;gap:16px;padding:24px 16px">'
-    + '<img src="umnik_stoit.png" style="height:100px;object-fit:contain" onerror="this.style.display=\'none\'">'
-    + '<div style="font-size:30px">' + (perfect ? '🏆' : score >= 10 ? '👏' : '💪') + '</div>'
-    + '<div style="font-size:20px;font-weight:900;color:#fff">' + (perfect ? 'Отличный результат!' : score >= 5 ? 'Молодец!' : 'У тебя получится!') + '</div>'
-    + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;max-width:280px;margin:4px 0">'
+  var emoji = reachedLevel >= 4 ? '🏆' : reachedLevel >= 3 ? '🎯' : reachedLevel >= 2 ? '👏' : '💪';
+  var title = reachedLevel >= 3 ? 'Отличный результат!' : reachedLevel >= 2 ? 'Молодец, уровень ' + reachedLevel + '!' : 'Тренируйся ещё!';
+
+  // кнопки: если не прошёл 1й уровень — «Попробовать снова»; если прошёл — «Перейти на уровень N+1» + «Начать сначала»
+  var nextLevel = Math.min(reachedLevel + 1, 5);
+  var btnsPrimary, btnsSecondary;
+  if (!passedLevel1) {
+    btnsPrimary = '<button onclick="openGame(\'focus-count\')" style="background:#e07b20;color:#fff;border:none;border-radius:14px;font-size:15px;font-weight:800;padding:16px;cursor:pointer;width:100%;max-width:300px">🔄 Попробовать снова</button>';
+    btnsSecondary = '<button onclick="gamesBack()" style="background:rgba(255,255,255,.08);color:rgba(255,255,255,.6);border:none;border-radius:14px;font-size:14px;font-weight:700;padding:14px;cursor:pointer;width:100%;max-width:300px">← К тренажёрам</button>';
+  } else {
+    btnsPrimary = '<button onclick="fcStartFromLevel(' + nextLevel + ')" style="background:#6366f1;color:#fff;border:none;border-radius:14px;font-size:15px;font-weight:800;padding:16px;cursor:pointer;width:100%;max-width:300px">→ Перейти на уровень ' + nextLevel + '</button>';
+    btnsSecondary = '<button onclick="openGame(\'focus-count\')" style="background:rgba(255,255,255,.08);color:rgba(255,255,255,.6);border:none;border-radius:14px;font-size:14px;font-weight:700;padding:14px;cursor:pointer;width:100%;max-width:300px">🔄 Начать сначала</button>'
+      + '<button onclick="gamesBack()" style="background:transparent;color:rgba(255,255,255,.35);border:none;font-size:13px;font-weight:700;padding:8px;cursor:pointer;width:100%;max-width:300px">← К тренажёрам</button>';
+  }
+
+  var html = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:55vh;text-align:center;gap:14px;padding:24px 16px">'
+    + '<img src="umnik_stoit.png" style="height:90px;object-fit:contain" onerror="this.style.display=\'none\'">'
+    + '<div style="font-size:32px">' + emoji + '</div>'
+    + '<div style="font-size:20px;font-weight:900;color:#fff">' + title + '</div>'
+    + (reachedLevel >= 2 ? '<div style="background:rgba(99,102,241,.2);border:1px solid rgba(99,102,241,.4);border-radius:10px;padding:6px 18px;font-size:12px;font-weight:800;color:#a5b4fc;letter-spacing:.06em">ДОСТИГНУТ УРОВЕНЬ ' + reachedLevel + '</div>' : '')
+    + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;max-width:280px;margin:2px 0">'
     + '<div style="background:rgba(255,255,255,.06);border-radius:12px;padding:14px 8px"><div style="font-size:26px;font-weight:900;color:#f59e0b">' + score + '</div><div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:2px">Очков</div></div>'
     + '<div style="background:rgba(255,255,255,.06);border-radius:12px;padding:14px 8px"><div style="font-size:26px;font-weight:900;color:#6366f1">' + accuracy + '%</div><div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:2px">Точность</div></div>'
     + '<div style="background:rgba(255,255,255,.06);border-radius:12px;padding:14px 8px"><div style="font-size:26px;font-weight:900;color:#10b981">' + correct + '</div><div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:2px">Верно</div></div>'
     + '<div style="background:rgba(255,255,255,.06);border-radius:12px;padding:14px 8px"><div style="font-size:26px;font-weight:900;color:#fff">' + total + '</div><div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:2px">Всего</div></div>'
     + '</div>'
-    + '<div style="font-size:14px;color:rgba(255,255,255,.55)">Понравилось? Жми на сердечко!</div>'
-    + '<div style="display:flex;flex-direction:column;align-items:center;gap:6px">'
-    + '<div style="font-size:48px;cursor:pointer;transition:transform .18s" id="game-heart" onclick="fcToggleHeart(' + xpReward + ')">🤍</div>'
-    + '<div id="game-heart-xp" style="font-size:13px;font-weight:700;color:#f59e0b;min-height:20px"></div>'
+    + '<div style="font-size:13px;color:rgba(255,255,255,.5)">Понравилось? Жми на сердечко!</div>'
+    + '<div style="display:flex;flex-direction:column;align-items:center;gap:4px">'
+    + '<div style="font-size:44px;cursor:pointer;transition:transform .18s" id="game-heart" onclick="fcToggleHeart(' + xpReward + ')">🤍</div>'
+    + '<div id="game-heart-xp" style="font-size:13px;font-weight:700;color:#f59e0b;min-height:18px"></div>'
     + '</div>'
-    + '<button class="tg-finish-btn" onclick="openGame(\'focus-count\')" style="width:100%;max-width:320px;margin-top:4px">🔄 Сыграть ещё раз</button>'
-    + '<button class="tg-finish-btn sec" onclick="gamesBack()" style="width:100%;max-width:320px">← К тренажёрам</button>'
+    + btnsPrimary
+    + btnsSecondary
     + '</div>';
 
   document.getElementById('games-body').innerHTML = html;
