@@ -24158,33 +24158,42 @@ function startFocusCount() {
   }, 1000);
 }
 
+// Пороги уровней: 8 → ур.2, 18 → ур.3, 28 → ур.4, 43 → ур.5
+// Уровень определяется по cumulative correct за сессию
+var FC_LEVELS = [
+  { min:0,  max:10, count:2, poolSize:6  },  // 1: 1-10, 2 слагаемых, 6 карточек
+  { min:10, max:15, count:2, poolSize:8  },  // 2: 1-15, 2 слагаемых, 8 карточек
+  { min:15, max:20, count:2, poolSize:8  },  // 3: 1-20, 2 слагаемых, 8 карточек
+  { min:20, max:30, count:3, poolSize:9  },  // 4: 1-30, 3 слагаемых, 9 карточек
+  { min:30, max:50, count:3, poolSize:12 }   // 5: 1-50, 3 слагаемых, 12 карточек
+];
+// Пороги перехода (кол-во верных за сессию)
+var FC_THRESHOLDS = [0, 8, 18, 28, 43];
+
 function fcLevel() {
-  // уровень 1: числа 1-10, 2 слагаемых; уровень 2: 1-20; уровень 3: 1-30 + 3 слагаемых
-  if (_fc.correct >= 15) return 3;
-  if (_fc.correct >= 7) return 2;
+  var c = _fc.correct;
+  if (c >= FC_THRESHOLDS[4]) return 5;
+  if (c >= FC_THRESHOLDS[3]) return 4;
+  if (c >= FC_THRESHOLDS[2]) return 3;
+  if (c >= FC_THRESHOLDS[1]) return 2;
   return 1;
 }
 
 function fcGenRound() {
   var lvl = fcLevel();
-  var max = lvl === 1 ? 10 : lvl === 2 ? 20 : 30;
-  var count = lvl < 3 ? 2 : 3;
-  // выбираем count слагаемых
+  var cfg = FC_LEVELS[lvl - 1];
   var nums = [], target = 0;
-  for (var i = 0; i < count; i++) {
-    var n = Math.floor(Math.random() * max) + 1;
+  for (var i = 0; i < cfg.count; i++) {
+    var n = Math.floor(Math.random() * cfg.max) + 1;
     nums.push(n); target += n;
   }
-  // генерируем пул карточек: правильные + отвлекающие
   var pool = nums.slice();
-  var poolSize = lvl === 1 ? 8 : lvl === 2 ? 10 : 12;
-  while (pool.length < poolSize) {
-    var rnd = Math.floor(Math.random() * max) + 1;
+  while (pool.length < cfg.poolSize) {
+    var rnd = Math.floor(Math.random() * cfg.max) + 1;
     pool.push(rnd);
   }
-  // перемешать
   pool.sort(function(){ return Math.random() - 0.5; });
-  return { target: target, answers: nums.slice().sort(function(a,b){return a-b;}), pool: pool, count: count };
+  return { target: target, answers: nums.slice().sort(function(a,b){return a-b;}), pool: pool, count: cfg.count };
 }
 
 function fcTimerSVG(timeLeft) {
@@ -24275,13 +24284,13 @@ function fcSelect(idx) {
     if (sum === _fc.round.target) {
       _fc.correct++;
       _fc.streak++;
-      var bonus = _fc.streak >= 3 ? 2 : 1;
-      _fc.score += _fc.level * bonus;
+      var pts = _fc.level; // 1 балл × уровень
+      _fc.score += pts;
       _fc.selected.forEach(function(i) {
         var c = document.getElementById('fc-card-' + i);
         if (c) { c.classList.remove('fc-selected'); c.classList.add('fc-ok'); setTimeout(function(){ c.classList.add('fc-used'); }, 280); }
       });
-      if (fb) { fb.style.color = '#22c55e'; fb.textContent = '✅ +' + (_fc.level * bonus) + ' очков' + (_fc.streak >= 3 ? ' · серия 🔥' : ''); }
+      if (fb) { fb.style.color = '#22c55e'; fb.textContent = '✅ +' + pts + ' очк' + (pts === 1 ? '' : 'а') + (_fc.streak >= 3 ? ' · серия 🔥' : ''); }
       _fc.selected = [];
       var sc = document.getElementById('fc-score');
       var sv = document.getElementById('fc-streak-val');
@@ -24310,7 +24319,7 @@ function endFocusCount() {
   var correct = _fc ? _fc.correct : 0;
   var total = _fc ? _fc.total : 0;
   var accuracy = total > 0 ? Math.round(correct / total * 100) : 0;
-  var xpReward = Math.min(score, 20);
+  var xpReward = score; // очки = XP без cap
   var perfect = accuracy >= 90 && correct >= 10;
 
   var html = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:55vh;text-align:center;gap:16px;padding:24px 16px">'
