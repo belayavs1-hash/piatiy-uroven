@@ -1693,6 +1693,7 @@ body.theme-dark .h-mobile-umnik { background: rgba(53,201,129,.15); }
 .fc-session-label { font-size:11px; font-weight:800; color:#e07b20; letter-spacing:.12em; text-transform:uppercase; }
 .fc-session-dot { display:inline-block; width:8px; height:8px; background:#e07b20; border-radius:50%; margin-right:6px; animation:fcPulse 1.4s ease-in-out infinite; }
 @keyframes fcPulse { 0%,100%{opacity:1} 50%{opacity:.35} }
+@keyframes fcLvlPop { from{transform:scale(.7);opacity:0} to{transform:scale(1);opacity:1} }
 .fc-timer-ring { position:relative; width:160px; height:160px; margin:0 auto 10px; flex-shrink:0; }
 .fc-timer-ring svg { transform:rotate(-90deg); }
 .fc-timer-center { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; }
@@ -24145,7 +24146,7 @@ function startFocusCount() {
   renderFCScreen();
   _fc.timer = setInterval(function() {
     _fc.timeLeft--;
-    // обновить SVG-кольцо таймера
+    // обновить SVG-кольцо и секунды
     var ringWrap = document.getElementById('fc-ring-wrap');
     if (ringWrap) {
       var tmp = document.createElement('div');
@@ -24154,21 +24155,24 @@ function startFocusCount() {
       var existSvg = ringWrap.querySelector('svg');
       if (existSvg && newSvg) ringWrap.replaceChild(newSvg, existSvg);
     }
+    var tEl = document.getElementById('fc-timer');
+    if (tEl) {
+      tEl.textContent = _fc.timeLeft + 'с';
+      tEl.style.color = _fc.timeLeft <= 10 ? '#ef4444' : 'rgba(255,255,255,.5)';
+    }
     if (_fc.timeLeft <= 0) { clearInterval(_fc.timer); endFocusCount(); }
   }, 1000);
 }
 
-// Пороги уровней: 8 → ур.2, 18 → ур.3, 28 → ур.4, 43 → ур.5
-// Уровень определяется по cumulative correct за сессию
 var FC_LEVELS = [
-  { min:0,  max:10, count:2, poolSize:6  },  // 1: 1-10, 2 слагаемых, 6 карточек
-  { min:10, max:15, count:2, poolSize:8  },  // 2: 1-15, 2 слагаемых, 8 карточек
-  { min:15, max:20, count:2, poolSize:8  },  // 3: 1-20, 2 слагаемых, 8 карточек
-  { min:20, max:30, count:3, poolSize:9  },  // 4: 1-30, 3 слагаемых, 9 карточек
-  { min:30, max:50, count:3, poolSize:12 }   // 5: 1-50, 3 слагаемых, 12 карточек
+  { max:10, count:2, poolSize:6  },  // 1: 1-10, 2 слагаемых, 6 карточек
+  { max:15, count:2, poolSize:8  },  // 2: 1-15, 2 слагаемых, 8 карточек
+  { max:20, count:2, poolSize:8  },  // 3: 1-20, 2 слагаемых, 8 карточек
+  { max:30, count:3, poolSize:9  },  // 4: 1-30, 3 слагаемых, 9 карточек
+  { max:50, count:3, poolSize:12 }   // 5: 1-50, 3 слагаемых, 12 карточек
 ];
-// Пороги перехода (кол-во верных за сессию)
-var FC_THRESHOLDS = [0, 8, 18, 28, 43];
+// Пороги перехода по кол-ву верных за сессию
+var FC_THRESHOLDS = [0, 5, 10, 16, 23];
 
 function fcLevel() {
   var c = _fc.correct;
@@ -24230,8 +24234,9 @@ function renderFCScreen() {
     + '<div class="fc-timer-ring" id="fc-ring-wrap">'
     + fcTimerSVG(_fc.timeLeft)
     + '<div class="fc-timer-center">'
-    + '<div class="fc-target-lbl">СОБЕРИ</div>'
+    + '<div class="fc-target-lbl">СОБЕРИ ЧИСЛО</div>'
     + '<div class="fc-timer-num" id="fc-target-num">' + round.target + '</div>'
+    + '<div id="fc-timer" style="font-size:13px;font-weight:800;color:' + (_fc.timeLeft <= 10 ? '#ef4444' : 'rgba(255,255,255,.5)') + ';margin-top:2px">' + _fc.timeLeft + 'с</div>'
     + '</div>'
     + '</div>'
     // подсказка уровня
@@ -24282,22 +24287,44 @@ function fcSelect(idx) {
     _fc.total++;
     var fb = document.getElementById('fc-feedback');
     if (sum === _fc.round.target) {
+      var prevLevel = fcLevel();
       _fc.correct++;
       _fc.streak++;
-      var pts = _fc.level; // 1 балл × уровень
+      var newLevel = fcLevel();
+      var pts = prevLevel; // балл за текущий уровень (до перехода)
       _fc.score += pts;
+      _fc.level = newLevel;
+      var levelUp = newLevel > prevLevel;
       _fc.selected.forEach(function(i) {
         var c = document.getElementById('fc-card-' + i);
         if (c) { c.classList.remove('fc-selected'); c.classList.add('fc-ok'); setTimeout(function(){ c.classList.add('fc-used'); }, 280); }
       });
-      if (fb) { fb.style.color = '#22c55e'; fb.textContent = '✅ +' + pts + ' очк' + (pts === 1 ? '' : 'а') + (_fc.streak >= 3 ? ' · серия 🔥' : ''); }
+      if (fb) {
+        fb.style.color = '#22c55e';
+        fb.textContent = '✅ +' + pts + ' очк' + (pts === 1 ? '' : 'а') + (_fc.streak >= 3 ? ' · серия 🔥' : '');
+      }
+      if (levelUp) {
+        // overlay-баннер поверх игры
+        var body = document.getElementById('games-body');
+        var overlay = document.createElement('div');
+        overlay.style.cssText = 'position:fixed;inset:0;z-index:300;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.6);backdrop-filter:blur(4px)';
+        overlay.innerHTML = '<div style="background:linear-gradient(135deg,#1e1b4b,#312e81);border:2px solid #6366f1;border-radius:20px;padding:28px 36px;text-align:center;animation:fcLvlPop .35s ease">'
+          + '<div style="font-size:40px">🎉</div>'
+          + '<div style="font-size:22px;font-weight:900;color:#fff;margin:8px 0 4px">УРОВЕНЬ ' + newLevel + '</div>'
+          + '<div style="font-size:14px;color:rgba(255,255,255,.6)">Задания стали сложнее!</div>'
+          + '<div style="font-size:13px;font-weight:800;color:#f59e0b;margin-top:8px">+' + newLevel + ' очк' + (newLevel === 1 ? '' : 'а') + ' за каждый ответ</div>'
+          + '</div>';
+        document.body.appendChild(overlay);
+        setTimeout(function(){ if (overlay.parentNode) overlay.parentNode.removeChild(overlay); }, 1200);
+      }
       _fc.selected = [];
       var sc = document.getElementById('fc-score');
       var sv = document.getElementById('fc-streak-val');
       if (sc) sc.textContent = _fc.score;
       if (sv) sv.textContent = _fc.streak;
       if (sumEl) sumEl.textContent = '0';
-      setTimeout(function() { if (_fc && _fc.timeLeft > 0) renderFCScreen(); }, 620);
+      var delay = levelUp ? 1200 : 620;
+      setTimeout(function() { if (_fc && _fc.timeLeft > 0) renderFCScreen(); }, delay);
     } else {
       _fc.streak = 0;
       if (fb) { fb.style.color = '#ef4444'; fb.textContent = '❌ Не та сумма — попробуй ещё'; }
