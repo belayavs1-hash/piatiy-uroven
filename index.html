@@ -24353,17 +24353,20 @@ function endFocusCount() {
   var passedLevel1 = correct >= FC_THRESHOLDS[1]; // достиг уровня 2
 
   var emoji = reachedLevel >= 4 ? '🏆' : reachedLevel >= 3 ? '🎯' : reachedLevel >= 2 ? '👏' : '💪';
-  var title = reachedLevel >= 3 ? 'Отличный результат!' : reachedLevel >= 2 ? 'Молодец, уровень ' + reachedLevel + '!' : 'Тренируйся ещё!';
+  var title = reachedLevel >= 3 ? 'Отличный результат!' : reachedLevel >= 2 ? 'Молодец!' : 'Тренируйся ещё!';
 
-  // кнопки: если не прошёл 1й уровень — «Попробовать снова»; если прошёл — «Перейти на уровень N+1» + «Начать сначала»
-  var nextLevel = Math.min(reachedLevel + 1, 5);
+  // кнопки: повторить тот уровень, на котором закончили
+  // если достигли 5-го — предложить пройти ещё раз с 5-го
   var btnsPrimary, btnsSecondary;
-  if (!passedLevel1) {
+  if (reachedLevel === 1) {
+    // не перешёл на уровень 2 → с самого начала
     btnsPrimary = '<button onclick="openGame(\'focus-count\')" style="background:#e07b20;color:#fff;border:none;border-radius:14px;font-size:15px;font-weight:800;padding:16px;cursor:pointer;width:100%;max-width:300px">🔄 Попробовать снова</button>';
     btnsSecondary = '<button onclick="gamesBack()" style="background:rgba(255,255,255,.08);color:rgba(255,255,255,.6);border:none;border-radius:14px;font-size:14px;font-weight:700;padding:14px;cursor:pointer;width:100%;max-width:300px">← К тренажёрам</button>';
   } else {
-    btnsPrimary = '<button onclick="fcStartFromLevel(' + nextLevel + ')" style="background:#6366f1;color:#fff;border:none;border-radius:14px;font-size:15px;font-weight:800;padding:16px;cursor:pointer;width:100%;max-width:300px">→ Перейти на уровень ' + nextLevel + '</button>';
-    btnsSecondary = '<button onclick="openGame(\'focus-count\')" style="background:rgba(255,255,255,.08);color:rgba(255,255,255,.6);border:none;border-radius:14px;font-size:14px;font-weight:700;padding:14px;cursor:pointer;width:100%;max-width:300px">🔄 Начать сначала</button>'
+    // достигли уровня N, но не прошли на N+1 → повторить уровень N
+    var repeatLabel = reachedLevel === 5 ? '🔄 Пройти уровень 5 ещё раз' : '🔄 Повторить уровень ' + reachedLevel;
+    btnsPrimary = '<button onclick="fcStartFromLevel(' + reachedLevel + ')" style="background:#6366f1;color:#fff;border:none;border-radius:14px;font-size:15px;font-weight:800;padding:16px;cursor:pointer;width:100%;max-width:300px">' + repeatLabel + '</button>';
+    btnsSecondary = '<button onclick="openGame(\'focus-count\')" style="background:rgba(255,255,255,.08);color:rgba(255,255,255,.6);border:none;border-radius:14px;font-size:14px;font-weight:700;padding:14px;cursor:pointer;width:100%;max-width:300px">↩ Начать с уровня 1</button>'
       + '<button onclick="gamesBack()" style="background:transparent;color:rgba(255,255,255,.35);border:none;font-size:13px;font-weight:700;padding:8px;cursor:pointer;width:100%;max-width:300px">← К тренажёрам</button>';
   }
 
