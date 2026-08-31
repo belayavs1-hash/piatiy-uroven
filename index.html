@@ -24122,7 +24122,7 @@ function renderFocusCount() {
     '<div style="display:flex;flex-direction:column;align-items:center;gap:20px;padding:32px 20px 48px;text-align:center;min-height:70vh">'
     + '<div style="font-size:36px">🎯</div>'
     + '<div style="font-size:22px;font-weight:900;color:#fff">ФОКУС-СЧЁТ</div>'
-    + '<div style="font-size:14px;color:rgba(255,255,255,.55);line-height:1.7;max-width:270px">Видишь цель — ищи числа, сумма которых равна ей. У тебя <b style="color:#e07b20">60 секунд</b>. Скорость и точность — вместе.</div>'
+    + '<div style="font-size:14px;color:rgba(255,255,255,.55);line-height:1.7;max-width:270px">Каждый уровень — <b style="color:#e07b20">60 секунд</b>. Набери <b style="color:#22c55e">5 верных</b> — переходишь на следующий. Всего 5 уровней.</div>'
     + '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;width:100%;max-width:300px">'
     + '<div style="background:#2a2824;border-radius:12px;padding:14px 8px;text-align:center"><div style="font-size:13px;font-weight:800;color:#e07b20">60 сек</div><div style="font-size:10px;color:rgba(255,255,255,.4);margin-top:3px;text-transform:uppercase;letter-spacing:.06em">Сессия</div></div>'
     + '<div style="background:#2a2824;border-radius:12px;padding:14px 8px;text-align:center"><div style="font-size:13px;font-weight:800;color:#22c55e">5 ур.</div><div style="font-size:10px;color:rgba(255,255,255,.4);margin-top:3px;text-transform:uppercase;letter-spacing:.06em">Уровней</div></div>'
@@ -24145,23 +24145,18 @@ function startFocusCount() {
   fcStartFromLevel(1);
 }
 
+// Каждый уровень = 60 секунд. Порог для перехода на следующий — 5 верных за минуту.
 var FC_LEVELS = [
-  { max:10, count:2, poolSize:6  },  // 1: 1-10, 2 слагаемых, 6 карточек
-  { max:15, count:2, poolSize:8  },  // 2: 1-15, 2 слагаемых, 8 карточек
-  { max:20, count:2, poolSize:8  },  // 3: 1-20, 2 слагаемых, 8 карточек
-  { max:30, count:3, poolSize:9  },  // 4: 1-30, 3 слагаемых, 9 карточек
-  { max:50, count:3, poolSize:12 }   // 5: 1-50, 3 слагаемых, 12 карточек
+  { max:10, count:2, poolSize:6  },  // 1: числа 1-10, найди 2
+  { max:15, count:2, poolSize:8  },  // 2: числа 1-15, найди 2
+  { max:20, count:2, poolSize:8  },  // 3: числа 1-20, найди 2
+  { max:30, count:3, poolSize:9  },  // 4: числа 1-30, найди 3
+  { max:50, count:3, poolSize:12 }   // 5: числа 1-50, найди 3
 ];
-// Пороги перехода по кол-ву верных за сессию
-var FC_THRESHOLDS = [0, 5, 10, 16, 23];
+var FC_PASS_THRESHOLD = 5; // верных за минуту для перехода на следующий уровень
 
 function fcLevel() {
-  var c = _fc.correct;
-  if (c >= FC_THRESHOLDS[4]) return 5;
-  if (c >= FC_THRESHOLDS[3]) return 4;
-  if (c >= FC_THRESHOLDS[2]) return 3;
-  if (c >= FC_THRESHOLDS[1]) return 2;
-  return 1;
+  return _fc ? _fc.level : 1; // уровень хранится в состоянии, не вычисляется
 }
 
 function fcGenRound() {
@@ -24273,35 +24268,19 @@ function fcSelect(idx) {
     _fc.total++;
     var fb = document.getElementById('fc-feedback');
     if (sum === _fc.round.target) {
-      var prevLevel = fcLevel();
       _fc.correct++;
       _fc.streak++;
-      var newLevel = fcLevel();
-      var pts = prevLevel; // балл за текущий уровень (до перехода)
+      var pts = _fc.level; // 1 балл × номер уровня
       _fc.score += pts;
-      _fc.level = newLevel;
-      var levelUp = newLevel > prevLevel;
       _fc.selected.forEach(function(i) {
         var c = document.getElementById('fc-card-' + i);
         if (c) { c.classList.remove('fc-selected'); c.classList.add('fc-ok'); setTimeout(function(){ c.classList.add('fc-used'); }, 280); }
       });
+      // показать прогресс к порогу
+      var left = FC_PASS_THRESHOLD - _fc.correct;
       if (fb) {
         fb.style.color = '#22c55e';
-        fb.textContent = '✅ +' + pts + ' очк' + (pts === 1 ? '' : 'а') + (_fc.streak >= 3 ? ' · серия 🔥' : '');
-      }
-      if (levelUp) {
-        // overlay-баннер поверх игры
-        var body = document.getElementById('games-body');
-        var overlay = document.createElement('div');
-        overlay.style.cssText = 'position:fixed;inset:0;z-index:300;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.6);backdrop-filter:blur(4px)';
-        overlay.innerHTML = '<div style="background:linear-gradient(135deg,#1e1b4b,#312e81);border:2px solid #6366f1;border-radius:20px;padding:28px 36px;text-align:center;animation:fcLvlPop .35s ease">'
-          + '<div style="font-size:40px">🎉</div>'
-          + '<div style="font-size:22px;font-weight:900;color:#fff;margin:8px 0 4px">УРОВЕНЬ ' + newLevel + '</div>'
-          + '<div style="font-size:14px;color:rgba(255,255,255,.6)">Задания стали сложнее!</div>'
-          + '<div style="font-size:13px;font-weight:800;color:#f59e0b;margin-top:8px">+' + newLevel + ' очк' + (newLevel === 1 ? '' : 'а') + ' за каждый ответ</div>'
-          + '</div>';
-        document.body.appendChild(overlay);
-        setTimeout(function(){ if (overlay.parentNode) overlay.parentNode.removeChild(overlay); }, 1200);
+        fb.textContent = '✅ +' + pts + ' очк' + (pts === 1 ? '' : 'а') + (left > 0 ? ' · ещё ' + left + ' для перехода' : ' · 🎉 уровень пройден!');
       }
       _fc.selected = [];
       var sc = document.getElementById('fc-score');
@@ -24327,9 +24306,11 @@ function fcSelect(idx) {
 }
 
 function fcStartFromLevel(lvl) {
-  // очистить старый таймер если был
   if (_fc && _fc.timer) { clearInterval(_fc.timer); _fc.timer = null; }
-  _fc = { score: 0, streak: 0, total: 0, correct: FC_THRESHOLDS[lvl - 1], level: lvl, timeLeft: 60, selected: [], timer: null, _roundId: 0 };
+  // correct сбрасывается в 0 — считаем верные за ЭТУ минуту; score накапливается между уровнями
+  var prevScore = (lvl > 1 && _fc) ? _fc.score : 0;
+  var prevStreak = (lvl > 1 && _fc) ? _fc.streak : 0;
+  _fc = { score: prevScore, streak: prevStreak, total: 0, correct: 0, level: lvl, timeLeft: 60, selected: [], timer: null };
   renderFCScreen();
   _fc.timer = setInterval(function() {
     _fc.timeLeft--;
@@ -24350,42 +24331,56 @@ function fcStartFromLevel(lvl) {
 function endFocusCount() {
   if (_fc && _fc.timer) { clearInterval(_fc.timer); _fc.timer = null; }
   var score = _fc ? _fc.score : 0;
-  var correct = _fc ? _fc.correct : 0;
+  var correct = _fc ? _fc.correct : 0;  // верных за ЭТУ минуту
   var total = _fc ? _fc.total : 0;
-  var reachedLevel = _fc ? fcLevel() : 1;
+  var currentLevel = _fc ? _fc.level : 1;
   var accuracy = total > 0 ? Math.round(correct / total * 100) : 0;
   var xpReward = score;
-  // уровень считается достигнутым если перешли на него (correct >= порог)
-  var passedLevel1 = correct >= FC_THRESHOLDS[1]; // достиг уровня 2
+  var passed = correct >= FC_PASS_THRESHOLD;  // прошёл ли этот уровень
+  var nextLevel = currentLevel + 1;
+  var isLast = currentLevel >= 5;
 
-  var emoji = reachedLevel >= 4 ? '🏆' : reachedLevel >= 3 ? '🎯' : reachedLevel >= 2 ? '👏' : '💪';
-  var title = reachedLevel >= 3 ? 'Отличный результат!' : reachedLevel >= 2 ? 'Молодец!' : 'Тренируйся ещё!';
-
-  // кнопки: повторить тот уровень, на котором закончили
-  // если достигли 5-го — предложить пройти ещё раз с 5-го
-  var btnsPrimary, btnsSecondary;
-  if (reachedLevel === 1) {
-    // не перешёл на уровень 2 → с самого начала
-    btnsPrimary = '<button onclick="openGame(\'focus-count\')" style="background:#e07b20;color:#fff;border:none;border-radius:14px;font-size:15px;font-weight:800;padding:16px;cursor:pointer;width:100%;max-width:300px">🔄 Попробовать снова</button>';
-    btnsSecondary = '<button onclick="gamesBack()" style="background:rgba(255,255,255,.08);color:rgba(255,255,255,.6);border:none;border-radius:14px;font-size:14px;font-weight:700;padding:14px;cursor:pointer;width:100%;max-width:300px">← К тренажёрам</button>';
+  var emoji, title, badge;
+  if (isLast && passed) {
+    emoji = '🏆'; title = 'Все уровни пройдены!'; badge = 'МАСТЕР ФОКУС-СЧЁТА';
+  } else if (passed) {
+    emoji = '🎯'; title = 'Уровень ' + currentLevel + ' пройден!'; badge = 'ПЕРЕХОД НА УРОВЕНЬ ' + nextLevel;
+  } else if (correct >= 3) {
+    emoji = '👏'; title = 'Почти! Ещё чуть-чуть'; badge = 'НУЖНО ' + FC_PASS_THRESHOLD + ' ВЕРНЫХ, У ТЕБЯ ' + correct;
   } else {
-    // достигли уровня N, но не прошли на N+1 → повторить уровень N
-    var repeatLabel = reachedLevel === 5 ? '🔄 Пройти уровень 5 ещё раз' : '🔄 Повторить уровень ' + reachedLevel;
-    btnsPrimary = '<button onclick="fcStartFromLevel(' + reachedLevel + ')" style="background:#6366f1;color:#fff;border:none;border-radius:14px;font-size:15px;font-weight:800;padding:16px;cursor:pointer;width:100%;max-width:300px">' + repeatLabel + '</button>';
-    btnsSecondary = '<button onclick="openGame(\'focus-count\')" style="background:rgba(255,255,255,.08);color:rgba(255,255,255,.6);border:none;border-radius:14px;font-size:14px;font-weight:700;padding:14px;cursor:pointer;width:100%;max-width:300px">↩ Начать с уровня 1</button>'
-      + '<button onclick="gamesBack()" style="background:transparent;color:rgba(255,255,255,.35);border:none;font-size:13px;font-weight:700;padding:8px;cursor:pointer;width:100%;max-width:300px">← К тренажёрам</button>';
+    emoji = '💪'; title = 'Тренируйся ещё!'; badge = 'НУЖНО ' + FC_PASS_THRESHOLD + ' ВЕРНЫХ, У ТЕБЯ ' + correct;
+  }
+
+  var badgeColor = passed ? 'rgba(99,102,241,.2)' : 'rgba(239,68,68,.15)';
+  var badgeBorder = passed ? 'rgba(99,102,241,.4)' : 'rgba(239,68,68,.3)';
+  var badgeText = passed ? '#a5b4fc' : '#fca5a5';
+
+  var btnsPrimary, btnsSecondary;
+  if (passed && !isLast) {
+    btnsPrimary = '<button onclick="fcStartFromLevel(' + nextLevel + ')" style="background:#6366f1;color:#fff;border:none;border-radius:14px;font-size:15px;font-weight:800;padding:16px;cursor:pointer;width:100%;max-width:300px">→ Перейти на уровень ' + nextLevel + '</button>';
+    btnsSecondary = '<button onclick="fcStartFromLevel(' + currentLevel + ')" style="background:rgba(255,255,255,.08);color:rgba(255,255,255,.6);border:none;border-radius:14px;font-size:13px;font-weight:700;padding:12px;cursor:pointer;width:100%;max-width:300px">🔄 Повторить уровень ' + currentLevel + '</button>'
+      + '<button onclick="openGame(\'focus-count\')" style="background:transparent;color:rgba(255,255,255,.35);border:none;font-size:13px;font-weight:700;padding:8px;cursor:pointer;width:100%;max-width:300px">↩ С уровня 1</button>'
+      + '<button onclick="gamesBack()" style="background:transparent;color:rgba(255,255,255,.25);border:none;font-size:12px;font-weight:700;padding:6px;cursor:pointer;width:100%;max-width:300px">← К тренажёрам</button>';
+  } else if (isLast && passed) {
+    btnsPrimary = '<button onclick="fcStartFromLevel(5)" style="background:#f59e0b;color:#fff;border:none;border-radius:14px;font-size:15px;font-weight:800;padding:16px;cursor:pointer;width:100%;max-width:300px">🔄 Пройти уровень 5 ещё раз</button>';
+    btnsSecondary = '<button onclick="openGame(\'focus-count\')" style="background:rgba(255,255,255,.08);color:rgba(255,255,255,.6);border:none;border-radius:14px;font-size:13px;font-weight:700;padding:12px;cursor:pointer;width:100%;max-width:300px">↩ С уровня 1</button>'
+      + '<button onclick="gamesBack()" style="background:transparent;color:rgba(255,255,255,.25);border:none;font-size:12px;font-weight:700;padding:6px;cursor:pointer;width:100%;max-width:300px">← К тренажёрам</button>';
+  } else {
+    btnsPrimary = '<button onclick="fcStartFromLevel(' + currentLevel + ')" style="background:#e07b20;color:#fff;border:none;border-radius:14px;font-size:15px;font-weight:800;padding:16px;cursor:pointer;width:100%;max-width:300px">🔄 Попробовать снова</button>';
+    btnsSecondary = (currentLevel > 1 ? '<button onclick="openGame(\'focus-count\')" style="background:rgba(255,255,255,.08);color:rgba(255,255,255,.6);border:none;border-radius:14px;font-size:13px;font-weight:700;padding:12px;cursor:pointer;width:100%;max-width:300px">↩ С уровня 1</button>' : '')
+      + '<button onclick="gamesBack()" style="background:transparent;color:rgba(255,255,255,.25);border:none;font-size:12px;font-weight:700;padding:6px;cursor:pointer;width:100%;max-width:300px">← К тренажёрам</button>';
   }
 
   var html = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:55vh;text-align:center;gap:14px;padding:24px 16px">'
     + '<img src="umnik_stoit.png" style="height:90px;object-fit:contain" onerror="this.style.display=\'none\'">'
     + '<div style="font-size:32px">' + emoji + '</div>'
     + '<div style="font-size:20px;font-weight:900;color:#fff">' + title + '</div>'
-    + (reachedLevel >= 2 ? '<div style="background:rgba(99,102,241,.2);border:1px solid rgba(99,102,241,.4);border-radius:10px;padding:6px 18px;font-size:12px;font-weight:800;color:#a5b4fc;letter-spacing:.06em">ДОСТИГНУТ УРОВЕНЬ ' + reachedLevel + '</div>' : '')
+    + '<div style="background:' + badgeColor + ';border:1px solid ' + badgeBorder + ';border-radius:10px;padding:6px 18px;font-size:11px;font-weight:800;color:' + badgeText + ';letter-spacing:.06em">' + badge + '</div>'
     + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;max-width:280px;margin:2px 0">'
     + '<div style="background:rgba(255,255,255,.06);border-radius:12px;padding:14px 8px"><div style="font-size:26px;font-weight:900;color:#f59e0b">' + score + '</div><div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:2px">Очков</div></div>'
     + '<div style="background:rgba(255,255,255,.06);border-radius:12px;padding:14px 8px"><div style="font-size:26px;font-weight:900;color:#6366f1">' + accuracy + '%</div><div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:2px">Точность</div></div>'
-    + '<div style="background:rgba(255,255,255,.06);border-radius:12px;padding:14px 8px"><div style="font-size:26px;font-weight:900;color:#10b981">' + correct + '</div><div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:2px">Верно</div></div>'
-    + '<div style="background:rgba(255,255,255,.06);border-radius:12px;padding:14px 8px"><div style="font-size:26px;font-weight:900;color:#fff">' + total + '</div><div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:2px">Всего</div></div>'
+    + '<div style="background:rgba(255,255,255,.06);border-radius:12px;padding:14px 8px"><div style="font-size:26px;font-weight:900;color:#10b981">' + correct + '</div><div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:2px">Верно за минуту</div></div>'
+    + '<div style="background:rgba(255,255,255,.06);border-radius:12px;padding:14px 8px"><div style="font-size:26px;font-weight:900;color:#fff">' + total + '</div><div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:2px">Всего попыток</div></div>'
     + '</div>'
     + '<div style="font-size:13px;color:rgba(255,255,255,.5)">Понравилось? Жми на сердечко!</div>'
     + '<div style="display:flex;flex-direction:column;align-items:center;gap:4px">'
