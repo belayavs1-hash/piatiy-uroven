@@ -1688,14 +1688,30 @@ body.theme-dark .h-mobile-umnik { background: rgba(53,201,129,.15); }
 .tr-count { font-size: 11px; color: rgba(255,255,255,.5); }
 .tr-ext { display: inline-block; margin-left: 4px; font-size: 10px; color: #6366f1; font-weight: 700; }
 /* ===== Фокус-счёт ===== */
+.fc-wrap { display:flex; flex-direction:column; align-items:center; gap:0; padding:10px 0 24px; min-height:100%; }
+.fc-header { width:100%; display:flex; align-items:center; justify-content:space-between; padding:0 16px; margin-bottom:14px; }
+.fc-session-label { font-size:11px; font-weight:800; color:#e07b20; letter-spacing:.12em; text-transform:uppercase; }
+.fc-session-dot { display:inline-block; width:8px; height:8px; background:#e07b20; border-radius:50%; margin-right:6px; animation:fcPulse 1.4s ease-in-out infinite; }
+@keyframes fcPulse { 0%,100%{opacity:1} 50%{opacity:.35} }
+.fc-timer-ring { position:relative; width:160px; height:160px; margin:0 auto 10px; flex-shrink:0; }
+.fc-timer-ring svg { transform:rotate(-90deg); }
+.fc-timer-center { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+.fc-timer-label { font-size:11px; color:rgba(255,255,255,.45); text-transform:uppercase; letter-spacing:.08em; margin-bottom:2px; }
+.fc-timer-num { font-size:48px; font-weight:900; color:#fff; line-height:1; }
+.fc-target-lbl { font-size:11px; color:rgba(255,255,255,.45); text-align:center; margin-bottom:4px; letter-spacing:.06em; text-transform:uppercase; }
+.fc-sum-row { width:100%; display:flex; align-items:center; justify-content:space-between; padding:10px 20px; background:rgba(0,0,0,.25); border-top:1px solid rgba(255,255,255,.08); }
+.fc-sum-label { font-size:12px; font-weight:700; color:rgba(255,255,255,.4); text-transform:uppercase; letter-spacing:.08em; }
+.fc-sum-val { font-size:22px; font-weight:900; color:#fff; }
+.fc-hint { font-size:11px; color:rgba(255,255,255,.3); text-align:center; margin-top:6px; }
+.fc-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; padding:0 16px; width:100%; }
+.fc-card { background:rgba(255,255,255,.09); border:1.5px solid rgba(255,255,255,.15); border-radius:10px; padding:18px 6px; font-size:26px; font-weight:900; color:#fff; text-align:center; cursor:pointer; transition:transform .12s, background .12s, border-color .12s, box-shadow .12s; user-select:none; }
+.fc-card:active { transform:scale(.95); }
+.fc-card.fc-selected { background:rgba(224,123,32,.25); border-color:#e07b20; box-shadow:0 0 0 2px rgba(224,123,32,.4); }
+.fc-card.fc-ok { background:rgba(34,197,94,.2); border-color:#22c55e; }
+.fc-card.fc-err { background:rgba(239,68,68,.2); border-color:#ef4444; }
+.fc-card.fc-used { opacity:.22; pointer-events:none; }
 .fc-stat { background:rgba(255,255,255,.06); border-radius:10px; padding:8px 4px; text-align:center; }
 .fc-stat-lbl { font-size:10px; color:rgba(255,255,255,.4); margin-top:2px; text-transform:uppercase; letter-spacing:.05em; }
-.fc-card { background:rgba(255,255,255,.1); border:2px solid rgba(255,255,255,.18); border-radius:12px; padding:14px 6px; font-size:22px; font-weight:900; color:#fff; text-align:center; cursor:pointer; transition:transform .12s, background .12s, border-color .12s; user-select:none; }
-.fc-card:hover { background:rgba(255,255,255,.18); transform:scale(1.06); }
-.fc-card.fc-selected { background:rgba(99,102,241,.35); border-color:#6366f1; transform:scale(1.1); box-shadow:0 0 0 3px rgba(99,102,241,.4); }
-.fc-card.fc-ok { background:rgba(16,185,129,.3); border-color:#10b981; }
-.fc-card.fc-err { background:rgba(239,68,68,.3); border-color:#ef4444; }
-.fc-card.fc-used { opacity:.3; pointer-events:none; }
 /* ===== Игры ===== */
 .game-col { background: rgba(255,255,255,.05); border: 2px dashed rgba(255,255,255,.18); border-radius: 16px; padding: 12px; min-height: 130px; cursor: pointer; transition: border-color .2s, background .2s; }
 .game-col:hover { border-color: rgba(255,255,255,.35); background: rgba(255,255,255,.08); }
@@ -24101,14 +24117,16 @@ var _fc = null; // состояние игры фокус-счёт
 
 function renderFocusCount() {
   document.getElementById('games-body').innerHTML =
-    '<div style="display:flex;flex-direction:column;align-items:center;gap:20px;padding:24px 0 40px;text-align:center">'
-    + '<div style="font-size:15px;color:rgba(255,255,255,.6);line-height:1.6;max-width:280px">За <b>60 секунд</b> найди две карточки, сумма которых равна заданному числу.</div>'
-    + '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;width:100%;max-width:320px">'
-    + '<div style="background:rgba(255,255,255,.06);border-radius:12px;padding:12px 8px;text-align:center"><div style="font-size:22px;font-weight:900;color:#f59e0b">⭐</div><div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:4px">Очки</div></div>'
-    + '<div style="background:rgba(255,255,255,.06);border-radius:12px;padding:12px 8px;text-align:center"><div style="font-size:22px;font-weight:900;color:#10b981">🔥</div><div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:4px">Серия</div></div>'
-    + '<div style="background:rgba(255,255,255,.06);border-radius:12px;padding:12px 8px;text-align:center"><div style="font-size:22px;font-weight:900;color:#6366f1">🎯</div><div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:4px">Точность</div></div>'
+    '<div style="display:flex;flex-direction:column;align-items:center;gap:20px;padding:32px 20px 48px;text-align:center;min-height:70vh">'
+    + '<div style="font-size:36px">🎯</div>'
+    + '<div style="font-size:22px;font-weight:900;color:#fff">ФОКУС-СЧЁТ</div>'
+    + '<div style="font-size:14px;color:rgba(255,255,255,.55);line-height:1.7;max-width:270px">Видишь цель — ищи числа, сумма которых равна ей. У тебя <b style="color:#e07b20">60 секунд</b>. Скорость и точность — вместе.</div>'
+    + '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;width:100%;max-width:300px">'
+    + '<div style="background:#2a2824;border-radius:12px;padding:14px 8px;text-align:center"><div style="font-size:13px;font-weight:800;color:#e07b20">60 сек</div><div style="font-size:10px;color:rgba(255,255,255,.4);margin-top:3px;text-transform:uppercase;letter-spacing:.06em">Сессия</div></div>'
+    + '<div style="background:#2a2824;border-radius:12px;padding:14px 8px;text-align:center"><div style="font-size:13px;font-weight:800;color:#22c55e">5 ур.</div><div style="font-size:10px;color:rgba(255,255,255,.4);margin-top:3px;text-transform:uppercase;letter-spacing:.06em">Уровней</div></div>'
+    + '<div style="background:#2a2824;border-radius:12px;padding:14px 8px;text-align:center"><div style="font-size:13px;font-weight:800;color:#fff">+XP</div><div style="font-size:10px;color:rgba(255,255,255,.4);margin-top:3px;text-transform:uppercase;letter-spacing:.06em">Награда</div></div>'
     + '</div>'
-    + '<button class="tg-finish-btn" onclick="startFocusCount()" style="width:100%;max-width:320px;font-size:18px;padding:18px">🚀 Начать игру</button>'
+    + '<button onclick="startFocusCount()" style="background:#e07b20;color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:800;padding:16px 40px;cursor:pointer;width:100%;max-width:300px;letter-spacing:.04em">НАЧАТЬ ИГРУ →</button>'
     + '</div>';
 }
 
@@ -24117,10 +24135,14 @@ function startFocusCount() {
   renderFCScreen();
   _fc.timer = setInterval(function() {
     _fc.timeLeft--;
-    var tEl = document.getElementById('fc-timer');
-    if (tEl) {
-      tEl.textContent = _fc.timeLeft + 'с';
-      tEl.style.color = _fc.timeLeft <= 10 ? '#ef4444' : '#fff';
+    // обновить SVG-кольцо таймера
+    var ringWrap = document.getElementById('fc-ring-wrap');
+    if (ringWrap) {
+      var tmp = document.createElement('div');
+      tmp.innerHTML = fcTimerSVG(_fc.timeLeft);
+      var newSvg = tmp.firstElementChild;
+      var existSvg = ringWrap.querySelector('svg');
+      if (existSvg && newSvg) ringWrap.replaceChild(newSvg, existSvg);
     }
     if (_fc.timeLeft <= 0) { clearInterval(_fc.timer); endFocusCount(); }
   }, 1000);
@@ -24155,38 +24177,60 @@ function fcGenRound() {
   return { target: target, answers: nums.slice().sort(function(a,b){return a-b;}), pool: pool, count: count };
 }
 
+function fcTimerSVG(timeLeft) {
+  var r = 68, cx = 80, cy = 80;
+  var total = 60;
+  var circ = 2 * Math.PI * r;
+  var pct = timeLeft / total;
+  var dash = circ * pct;
+  var gap = circ - dash;
+  var color = timeLeft <= 10 ? '#ef4444' : timeLeft <= 25 ? '#f59e0b' : '#e07b20';
+  return '<svg width="160" height="160" viewBox="0 0 160 160">'
+    + '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="none" stroke="#2a2824" stroke-width="10"/>'
+    + '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="none" stroke="' + color + '" stroke-width="10"'
+    + ' stroke-linecap="round" stroke-dasharray="' + dash.toFixed(1) + ' ' + gap.toFixed(1) + '" transform="rotate(-90 ' + cx + ' ' + cy + ')"/>'
+    + '</svg>';
+}
+
 function renderFCScreen() {
   var round = fcGenRound();
   _fc.round = round;
   _fc.selected = [];
   _fc.level = fcLevel();
 
-  var lvlColors = ['','#10b981','#f59e0b','#ef4444'];
   var accuracy = _fc.total > 0 ? Math.round(_fc.correct / _fc.total * 100) : 100;
+  var timerColor = _fc.timeLeft <= 10 ? '#ef4444' : '#fff';
 
-  var html = '<div style="display:flex;flex-direction:column;gap:14px;padding:8px 0 24px">'
-    // stats bar
-    + '<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px">'
-    + '<div class="fc-stat"><div id="fc-timer" style="font-size:20px;font-weight:900;color:#fff">' + _fc.timeLeft + 'с</div><div class="fc-stat-lbl">Время</div></div>'
-    + '<div class="fc-stat"><div style="font-size:20px;font-weight:900;color:#f59e0b" id="fc-score">' + _fc.score + '</div><div class="fc-stat-lbl">Очки</div></div>'
-    + '<div class="fc-stat"><div style="font-size:20px;font-weight:900;color:#10b981" id="fc-streak">🔥' + _fc.streak + '</div><div class="fc-stat-lbl">Серия</div></div>'
-    + '<div class="fc-stat"><div style="font-size:20px;font-weight:900;color:#6366f1" id="fc-acc">' + accuracy + '%</div><div class="fc-stat-lbl">Точность</div></div>'
+  var html = '<div class="fc-wrap">'
+    // header
+    + '<div class="fc-header">'
+    + '<div class="fc-session-label"><span class="fc-session-dot"></span>ТРЕНИРОВКА &bull; СЕССИЯ ИДЁТ</div>'
+    + '<div style="font-size:12px;font-weight:700;color:rgba(255,255,255,.5)">Очки: <span id="fc-score" style="color:#e07b20">' + _fc.score + '</span></div>'
     + '</div>'
-    // цель
-    + '<div style="text-align:center">'
-    + '<div style="font-size:12px;color:rgba(255,255,255,.5);margin-bottom:6px">Найди ' + round.count + ' числа в сумме:</div>'
-    + '<div style="font-size:52px;font-weight:900;color:#fff;line-height:1">' + round.target + '</div>'
-    + '<div style="font-size:11px;color:' + lvlColors[_fc.level] + ';font-weight:700;margin-top:4px;text-transform:uppercase">Уровень ' + _fc.level + '</div>'
+    // круговой таймер с целевым числом
+    + '<div class="fc-timer-ring" id="fc-ring-wrap">'
+    + fcTimerSVG(_fc.timeLeft)
+    + '<div class="fc-timer-center">'
+    + '<div class="fc-target-lbl">СОБЕРИ</div>'
+    + '<div class="fc-timer-num" id="fc-target-num">' + round.target + '</div>'
     + '</div>'
-    // карточки
-    + '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px" id="fc-pool">';
+    + '</div>'
+    // подсказка уровня
+    + '<div style="font-size:11px;color:rgba(255,255,255,.35);margin:-4px 0 8px;text-align:center;text-transform:uppercase;letter-spacing:.06em">Уровень ' + _fc.level + ' · найди ' + round.count + ' числа</div>'
+    // карточки 3 колонки
+    + '<div class="fc-grid" id="fc-pool">';
 
   round.pool.forEach(function(n, i) {
-    html += '<div class="fc-card" id="fc-card-' + i + '" data-val="' + n + '" data-idx="' + i + '" onclick="fcSelect(' + i + ')">' + n + '</div>';
+    html += '<div class="fc-card" id="fc-card-' + i + '" data-val="' + n + '" onclick="fcSelect(' + i + ')">' + n + '</div>';
   });
 
   html += '</div>'
-    + '<div id="fc-feedback" style="min-height:28px;text-align:center;font-size:14px;font-weight:700"></div>'
+    // сумма + серия внизу
+    + '<div class="fc-sum-row">'
+    + '<div><div class="fc-sum-label">ТВОЯ СУММА</div><div id="fc-streak" style="font-size:11px;color:rgba(255,255,255,.35);margin-top:2px">Серия 🔥 <span id="fc-streak-val">' + _fc.streak + '</span></div></div>'
+    + '<div style="text-align:right"><div class="fc-sum-val" id="fc-cur-sum">0</div></div>'
+    + '</div>'
+    + '<div class="fc-hint" id="fc-feedback">Нажми на несколько чисел</div>'
     + '</div>';
 
   document.getElementById('games-body').innerHTML = html;
@@ -24199,19 +24243,23 @@ function fcSelect(idx) {
 
   var alreadySel = _fc.selected.indexOf(idx);
   if (alreadySel >= 0) {
-    // снять выделение
     _fc.selected.splice(alreadySel, 1);
     card.classList.remove('fc-selected');
-    return;
+  } else {
+    _fc.selected.push(idx);
+    card.classList.add('fc-selected');
   }
-  _fc.selected.push(idx);
-  card.classList.add('fc-selected');
+
+  // обновить счётчик суммы
+  var curSum = _fc.selected.reduce(function(s, i) {
+    var c = document.getElementById('fc-card-' + i);
+    return s + (c ? parseInt(c.dataset.val) : 0);
+  }, 0);
+  var sumEl = document.getElementById('fc-cur-sum');
+  if (sumEl) sumEl.textContent = curSum;
 
   if (_fc.selected.length === _fc.round.count) {
-    // проверяем
-    var sum = _fc.selected.reduce(function(s, i) {
-      return s + parseInt(document.getElementById('fc-card-' + i).dataset.val);
-    }, 0);
+    var sum = curSum;
     _fc.total++;
     var fb = document.getElementById('fc-feedback');
     if (sum === _fc.round.target) {
@@ -24221,29 +24269,27 @@ function fcSelect(idx) {
       _fc.score += _fc.level * bonus;
       _fc.selected.forEach(function(i) {
         var c = document.getElementById('fc-card-' + i);
-        if (c) { c.classList.remove('fc-selected'); c.classList.add('fc-ok'); setTimeout(function(){ c.classList.add('fc-used'); }, 300); }
+        if (c) { c.classList.remove('fc-selected'); c.classList.add('fc-ok'); setTimeout(function(){ c.classList.add('fc-used'); }, 280); }
       });
-      if (fb) fb.innerHTML = '<span style="color:#10b981">✅ +' + (_fc.level * bonus) + (_fc.streak >= 3 ? ' 🔥 серия!' : '') + '</span>';
+      if (fb) { fb.style.color = '#22c55e'; fb.textContent = '✅ +' + (_fc.level * bonus) + ' очков' + (_fc.streak >= 3 ? ' · серия 🔥' : ''); }
       _fc.selected = [];
-      // обновить стату
       var sc = document.getElementById('fc-score');
-      var st = document.getElementById('fc-streak');
-      var ac = document.getElementById('fc-acc');
+      var sv = document.getElementById('fc-streak-val');
       if (sc) sc.textContent = _fc.score;
-      if (st) st.textContent = '🔥' + _fc.streak;
-      if (ac) ac.textContent = Math.round(_fc.correct / _fc.total * 100) + '%';
-      // новый раунд через 600мс
-      setTimeout(function() { if (_fc && _fc.timeLeft > 0) renderFCScreen(); }, 650);
+      if (sv) sv.textContent = _fc.streak;
+      if (sumEl) sumEl.textContent = '0';
+      setTimeout(function() { if (_fc && _fc.timeLeft > 0) renderFCScreen(); }, 620);
     } else {
       _fc.streak = 0;
-      if (fb) fb.innerHTML = '<span style="color:#ef4444">❌ Не та сумма, попробуй ещё</span>';
+      if (fb) { fb.style.color = '#ef4444'; fb.textContent = '❌ Не та сумма — попробуй ещё'; }
       _fc.selected.forEach(function(i) {
         var c = document.getElementById('fc-card-' + i);
-        if (c) { c.classList.add('fc-err'); setTimeout(function(){ c.classList.remove('fc-selected','fc-err'); }, 500); }
+        if (c) { c.classList.add('fc-err'); setTimeout(function(){ c.classList.remove('fc-selected','fc-err'); }, 480); }
       });
       _fc.selected = [];
-      var st2 = document.getElementById('fc-streak');
-      if (st2) st2.textContent = '🔥0';
+      if (sumEl) sumEl.textContent = '0';
+      var sv2 = document.getElementById('fc-streak-val');
+      if (sv2) sv2.textContent = '0';
     }
   }
 }
