@@ -4441,9 +4441,9 @@ button, .btn-find, .btn-check, .btn-ghost, .btn-secondary {
 
 <nav id="global-bottom-nav">
   <a id="gnav-hw"    onclick="gnavGo('screen-homework')">   <span class="gnav-icon">📚</span>Домашка</a>
-  <a id="gnav-chk"   onclick="gnavGo('screen-self-check')"> <span class="gnav-icon">✅</span>Проверка</a>
   <a id="gnav-map"   onclick="gnavGo('screen-map')">        <span class="gnav-icon">🗺</span>Темы</a>
   <a id="gnav-umnik" onclick="gnavUmnik()">                 <span class="gnav-icon">🤖</span>Умник</a>
+  <a id="gnav-games" onclick="gnavGo('screen-trainers')">   <span class="gnav-icon">🎮</span>Игры</a>
   <a id="gnav-more"  onclick="gnavToggleMore()">            <span class="gnav-icon">•••</span>Ещё</a>
 </nav>
 
@@ -10243,7 +10243,7 @@ var _gnavCurrentScreen = 'screen-homework';
 var _gnavMoreOpen = false;
 
 var GNAV_MORE_ITEMS = [
-  { screen:'screen-trainers',    icon:'⚡', label:'Тренажёры' },
+  { screen:'screen-self-check',  icon:'✅', label:'Проверка' },
   { screen:'screen-achievements',icon:'🏆', label:'Достижения' },
   { screen:'screen-funfacts',    icon:'💡', label:'Хочу знать' },
   { screen:'screen-mistakes',    icon:'🧩', label:'Мои ошибки' },
@@ -10254,10 +10254,11 @@ var GNAV_MORE_ITEMS = [
 function gnavRender(activeId) {
   _gnavCurrentScreen = activeId;
   var inMore = GNAV_MORE_ITEMS.some(function(x){ return x.screen === activeId; });
+  var gamesScreens = ['screen-trainers','screen-games'];
   document.getElementById('gnav-hw')   .classList.toggle('active', activeId==='screen-homework');
-  document.getElementById('gnav-chk')  .classList.toggle('active', activeId==='screen-self-check');
   document.getElementById('gnav-map')  .classList.toggle('active', activeId==='screen-map');
   document.getElementById('gnav-umnik').classList.toggle('active', activeId==='screen-umnik');
+  document.getElementById('gnav-games').classList.toggle('active', gamesScreens.includes(activeId));
   document.getElementById('gnav-more') .classList.toggle('active', inMore);
   // Обновить сетку bottom sheet
   var grid = document.getElementById('gnav-sheet-grid');
@@ -24125,6 +24126,15 @@ function renderFocusCount() {
     + '<div style="background:#2a2824;border-radius:12px;padding:14px 8px;text-align:center"><div style="font-size:13px;font-weight:800;color:#e07b20">60 сек</div><div style="font-size:10px;color:rgba(255,255,255,.4);margin-top:3px;text-transform:uppercase;letter-spacing:.06em">Сессия</div></div>'
     + '<div style="background:#2a2824;border-radius:12px;padding:14px 8px;text-align:center"><div style="font-size:13px;font-weight:800;color:#22c55e">5 ур.</div><div style="font-size:10px;color:rgba(255,255,255,.4);margin-top:3px;text-transform:uppercase;letter-spacing:.06em">Уровней</div></div>'
     + '<div style="background:#2a2824;border-radius:12px;padding:14px 8px;text-align:center"><div style="font-size:13px;font-weight:800;color:#fff">+XP</div><div style="font-size:10px;color:rgba(255,255,255,.4);margin-top:3px;text-transform:uppercase;letter-spacing:.06em">Награда</div></div>'
+    + '</div>'
+    + '<div style="width:100%;max-width:300px;text-align:left">'
+    + '<div style="font-size:11px;font-weight:800;color:rgba(255,255,255,.4);letter-spacing:.12em;text-transform:uppercase;margin-bottom:10px">ОДНА МЕХАНИКА · ЧЕТЫРЕ НАВЫКА</div>'
+    + '<div style="display:flex;flex-direction:column;gap:8px">'
+    + '<div style="display:flex;align-items:flex-start;gap:10px;background:rgba(255,255,255,.05);border-radius:10px;padding:10px 12px"><div style="font-size:11px;font-weight:900;color:#e07b20;min-width:20px;margin-top:1px">01</div><div><div style="font-size:13px;font-weight:800;color:#fff">Внимание</div><div style="font-size:11px;color:rgba(255,255,255,.45);margin-top:2px">Держишь цель в голове, замечаешь нужные числа среди остальных.</div></div></div>'
+    + '<div style="display:flex;align-items:flex-start;gap:10px;background:rgba(255,255,255,.05);border-radius:10px;padding:10px 12px"><div style="font-size:11px;font-weight:900;color:#e07b20;min-width:20px;margin-top:1px">02</div><div><div style="font-size:13px;font-weight:800;color:#fff">Устный счёт</div><div style="font-size:11px;color:rgba(255,255,255,.45);margin-top:2px">Складываешь числа без калькулятора и проверяешь ответ быстро.</div></div></div>'
+    + '<div style="display:flex;align-items:flex-start;gap:10px;background:rgba(224,123,32,.15);border:1px solid rgba(224,123,32,.3);border-radius:10px;padding:10px 12px"><div style="font-size:11px;font-weight:900;color:#e07b20;min-width:20px;margin-top:1px">03</div><div><div style="font-size:13px;font-weight:800;color:#fff">Скорость решения</div><div style="font-size:11px;color:rgba(255,255,255,.45);margin-top:2px">Таймер помогает быстрее выбирать вариант и переходить к следующей задаче.</div></div></div>'
+    + '<div style="display:flex;align-items:flex-start;gap:10px;background:rgba(255,255,255,.05);border-radius:10px;padding:10px 12px"><div style="font-size:11px;font-weight:900;color:#e07b20;min-width:20px;margin-top:1px">04</div><div><div style="font-size:13px;font-weight:800;color:#fff">Самоконтроль</div><div style="font-size:11px;color:rgba(255,255,255,.45);margin-top:2px">Видишь точность, серию правильных ответов и свой рабочий уровень.</div></div></div>'
+    + '</div>'
     + '</div>'
     + '<button onclick="startFocusCount()" style="background:#e07b20;color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:800;padding:16px 40px;cursor:pointer;width:100%;max-width:300px;letter-spacing:.04em">НАЧАТЬ ИГРУ →</button>'
     + '</div>';
