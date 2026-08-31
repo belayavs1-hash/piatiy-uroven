@@ -24173,11 +24173,16 @@ function fcLevel() {
 function fcGenRound() {
   var lvl = fcLevel();
   var cfg = FC_LEVELS[lvl - 1];
-  var nums = [], target = 0;
-  for (var i = 0; i < cfg.count; i++) {
-    var n = Math.floor(Math.random() * cfg.max) + 1;
-    nums.push(n); target += n;
-  }
+  var minTarget = Math.floor(cfg.max * cfg.count * 0.3); // минимум ~30% от максимально возможной суммы
+  var nums, target;
+  // генерируем пока цель не достаточно большая
+  do {
+    nums = []; target = 0;
+    for (var i = 0; i < cfg.count; i++) {
+      var n = Math.floor(Math.random() * cfg.max) + 1;
+      nums.push(n); target += n;
+    }
+  } while (target < minTarget);
   var pool = nums.slice();
   while (pool.length < cfg.poolSize) {
     var rnd = Math.floor(Math.random() * cfg.max) + 1;
@@ -24299,8 +24304,7 @@ function fcSelect(idx) {
       if (sc) sc.textContent = _fc.score;
       if (sv) sv.textContent = _fc.streak;
       if (sumEl) sumEl.textContent = '0';
-      var delay = levelUp ? 1200 : 620;
-      setTimeout(function() { if (_fc && _fc.timeLeft > 0) renderFCScreen(); }, delay);
+      setTimeout(function() { if (_fc && _fc.timeLeft > 0) renderFCScreen(); }, 700);
     } else {
       _fc.streak = 0;
       if (fb) { fb.style.color = '#ef4444'; fb.textContent = '❌ Не та сумма — попробуй ещё'; }
