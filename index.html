@@ -24122,7 +24122,17 @@ function renderFocusCount() {
     '<div style="display:flex;flex-direction:column;align-items:center;gap:20px;padding:32px 20px 48px;text-align:center;min-height:70vh">'
     + '<div style="font-size:36px">🎯</div>'
     + '<div style="font-size:22px;font-weight:900;color:#fff">ФОКУС-СЧЁТ</div>'
-    + '<div style="font-size:14px;color:rgba(255,255,255,.55);line-height:1.7;max-width:270px">Каждый уровень — <b style="color:#e07b20">60 секунд</b>. Набери <b style="color:#22c55e">5 верных</b> — переходишь на следующий. Всего 5 уровней.</div>'
+    + '<div style="font-size:14px;color:rgba(255,255,255,.55);line-height:1.7;max-width:270px">Каждый уровень — <b style="color:#e07b20">60 секунд</b>. Набери нужное количество верных ответов — переходишь выше. Всего 5 уровней.</div>'
+    + '<div style="background:rgba(255,255,255,.06);border-radius:12px;padding:10px 14px;width:100%;max-width:300px;text-align:left">'
+    + '<div style="font-size:10px;color:rgba(255,255,255,.4);margin-bottom:6px;text-transform:uppercase;letter-spacing:.08em">Порог для перехода</div>'
+    + '<div style="display:flex;flex-direction:column;gap:4px">'
+    + '<div style="display:flex;justify-content:space-between;font-size:12px;font-weight:700"><span style="color:rgba(255,255,255,.6)">Уровень 1 → 2</span><span style="color:#22c55e">5 верных</span></div>'
+    + '<div style="display:flex;justify-content:space-between;font-size:12px;font-weight:700"><span style="color:rgba(255,255,255,.6)">Уровень 2 → 3</span><span style="color:#22c55e">8 верных</span></div>'
+    + '<div style="display:flex;justify-content:space-between;font-size:12px;font-weight:700"><span style="color:rgba(255,255,255,.6)">Уровень 3 → 4</span><span style="color:#f59e0b">12 верных</span></div>'
+    + '<div style="display:flex;justify-content:space-between;font-size:12px;font-weight:700"><span style="color:rgba(255,255,255,.6)">Уровень 4 → 5</span><span style="color:#f59e0b">15 верных</span></div>'
+    + '<div style="display:flex;justify-content:space-between;font-size:12px;font-weight:700"><span style="color:rgba(255,255,255,.6)">Уровень 5 — финал</span><span style="color:#ef4444">20 верных</span></div>'
+    + '</div>'
+    + '</div>'
     + '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;width:100%;max-width:300px">'
     + '<div style="background:#2a2824;border-radius:12px;padding:14px 8px;text-align:center"><div style="font-size:13px;font-weight:800;color:#e07b20">60 сек</div><div style="font-size:10px;color:rgba(255,255,255,.4);margin-top:3px;text-transform:uppercase;letter-spacing:.06em">Сессия</div></div>'
     + '<div style="background:#2a2824;border-radius:12px;padding:14px 8px;text-align:center"><div style="font-size:13px;font-weight:800;color:#22c55e">5 ур.</div><div style="font-size:10px;color:rgba(255,255,255,.4);margin-top:3px;text-transform:uppercase;letter-spacing:.06em">Уровней</div></div>'
@@ -24153,7 +24163,8 @@ var FC_LEVELS = [
   { max:30, count:3, poolSize:9  },  // 4: числа 1-30, найди 3
   { max:50, count:3, poolSize:12 }   // 5: числа 1-50, найди 3
 ];
-var FC_PASS_THRESHOLD = 5; // верных за минуту для перехода на следующий уровень
+// верных за минуту для перехода с уровня N на N+1
+var FC_PASS_THRESHOLDS = [0, 5, 8, 12, 15, 20]; // индекс = номер уровня (0 не используется)
 
 function fcLevel() {
   return _fc ? _fc.level : 1; // уровень хранится в состоянии, не вычисляется
@@ -24277,7 +24288,7 @@ function fcSelect(idx) {
         if (c) { c.classList.remove('fc-selected'); c.classList.add('fc-ok'); setTimeout(function(){ c.classList.add('fc-used'); }, 280); }
       });
       // показать прогресс к порогу
-      var left = FC_PASS_THRESHOLD - _fc.correct;
+      var left = FC_PASS_THRESHOLDS[_fc.level] - _fc.correct;
       if (fb) {
         fb.style.color = '#22c55e';
         fb.textContent = '✅ +' + pts + ' очк' + (pts === 1 ? '' : 'а') + (left > 0 ? ' · ещё ' + left + ' для перехода' : ' · 🎉 уровень пройден!');
@@ -24336,19 +24347,21 @@ function endFocusCount() {
   var currentLevel = _fc ? _fc.level : 1;
   var accuracy = total > 0 ? Math.round(correct / total * 100) : 0;
   var xpReward = score;
-  var passed = correct >= FC_PASS_THRESHOLD;  // прошёл ли этот уровень
+  var threshold = FC_PASS_THRESHOLDS[currentLevel] || 5;
+  var passed = correct >= threshold;
   var nextLevel = currentLevel + 1;
   var isLast = currentLevel >= 5;
+  var halfWay = Math.floor(threshold / 2);
 
   var emoji, title, badge;
   if (isLast && passed) {
     emoji = '🏆'; title = 'Все уровни пройдены!'; badge = 'МАСТЕР ФОКУС-СЧЁТА';
   } else if (passed) {
     emoji = '🎯'; title = 'Уровень ' + currentLevel + ' пройден!'; badge = 'ПЕРЕХОД НА УРОВЕНЬ ' + nextLevel;
-  } else if (correct >= 3) {
-    emoji = '👏'; title = 'Почти! Ещё чуть-чуть'; badge = 'НУЖНО ' + FC_PASS_THRESHOLD + ' ВЕРНЫХ, У ТЕБЯ ' + correct;
+  } else if (correct >= halfWay) {
+    emoji = '👏'; title = 'Почти! Ещё чуть-чуть'; badge = 'НУЖНО ' + threshold + ' ВЕРНЫХ, У ТЕБЯ ' + correct;
   } else {
-    emoji = '💪'; title = 'Тренируйся ещё!'; badge = 'НУЖНО ' + FC_PASS_THRESHOLD + ' ВЕРНЫХ, У ТЕБЯ ' + correct;
+    emoji = '💪'; title = 'Тренируйся ещё!'; badge = 'НУЖНО ' + threshold + ' ВЕРНЫХ, У ТЕБЯ ' + correct;
   }
 
   var badgeColor = passed ? 'rgba(99,102,241,.2)' : 'rgba(239,68,68,.15)';
